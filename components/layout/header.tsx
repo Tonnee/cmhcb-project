@@ -1,7 +1,8 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { BookAppointmentButton } from "@/components/shared/book-appointment-button";
+import { MobileNav } from "./mobile-nav";
 
 interface NavLinkProps {
   href: string;
@@ -25,25 +26,23 @@ function NavLink({ href, children, active }: NavLinkProps) {
 export function Header(): React.JSX.Element {
   return (
     <header className="bg-white h-20 w-full sticky top-0 z-50 shadow-sm">
-      <div className="container mx-auto h-full flex items-center justify-between">
+      <div className="container mx-auto px-4 lg:px-8 h-full flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <div className="relative h-9 w-9 overflow-hidden rounded">
-            <Image
-              src="/cmhcb-mental-health-care-logo.png"
-              alt="Center for Mental Health and Care, Bangladesh Logo"
-              fill
-              className="object-cover"
-              sizes="36px"
-            />
-          </div>
+          <Image
+            src="/cmhcb-mental-health-care.png"
+            alt="Center for Mental Health and Care, Bangladesh Logo"
+            width={36}
+            height={36}
+            className="w-auto h-9 object-contain"
+          />
           <span className="font-marcellus text-base text-dark">
             CMHC, B
           </span>
         </Link>
 
         {/* Navigation Links */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
           <NavLink href="/" active>
             Home
           </NavLink>
@@ -123,10 +122,13 @@ export function Header(): React.JSX.Element {
           </NavLink>
         </nav>
 
-        {/* CTA Button */}
-        <Button href="/book" variant="primary" size="md">
-          Book Appointment
-        </Button>
+        {/* Right Actions: Desktop CTA & Mobile Menu Toggle */}
+        <div className="flex items-center gap-4">
+          <div className="hidden lg:block">
+            <BookAppointmentButton />
+          </div>
+          <MobileNav />
+        </div>
       </div>
     </header>
   );
