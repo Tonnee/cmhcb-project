@@ -37,8 +37,8 @@ Before generating ANY code, the AI MUST complete this checklist:
 
 1. **Server-first** — default to Server Components; push client boundaries to the smallest leaf node possible.
 2. **Type safety** — strict TypeScript everywhere; zero `any`, zero `@ts-ignore`.
-3. **Simplicity** — prefer fewer abstractions; delete code before adding code.
-4. **Composition** — small, single-responsibility components composed together.
+3. **Simplicity (YAGNI / KISS)** — "You aren't gonna need it". Avoid over-engineering. Build only what is necessary for the current requirement. Delete code before adding code.
+4. **Composition over Prop Drilling** — Use React children to pass server-rendered components into client wrappers. Avoid prop drilling > 2 levels.
 5. **Zero warnings** — no TypeScript errors, no ESLint warnings, no browser console errors in production.
 
 ---
@@ -62,12 +62,14 @@ Create directories only when the first file is added. Do not create empty direct
 │   ├── ui/                 # Atomic: Button, Input, Card, Badge, etc.
 │   ├── layout/             # Structural: Header, Footer, Sidebar, Container
 │   └── shared/             # Composed: shared across multiple features
-├── features/               # Domain-specific UI (one subfolder per feature)
+├── features/               # Domain-specific scaling (feature slices)
 │   └── feature-name/
 │       ├── components/     # Feature-scoped components
 │       ├── hooks/          # Feature-scoped hooks
+│       ├── actions/        # Feature-scoped server actions
+│       ├── lib/            # Feature-scoped utilities
 │       └── types.ts        # Feature-scoped types
-├── lib/                    # Pure utilities, constants, helpers (no React)
+├── lib/                    # Pure global utilities, constants, helpers
 ├── types/                  # Global shared type definitions
 ├── hooks/                  # Global shared custom hooks
 ├── data/                   # Static data, content arrays, config objects
@@ -109,10 +111,16 @@ Does the component need:
 - **Default: Server Component.** Never add `"use client"` unless the component meets a condition above.
 - **Leaf-node principle:** wrap only the interactive piece in a Client Component; keep parents as Server Components.
 - **Max 200 lines per file.** If exceeded, extract sub-components or utilities.
-- **Max 5 props per component.** Beyond 5, use a config object or composition pattern.
+- **Max 5 props per component.** Beyond 5, use a config object. Stop unnecessary prop drilling!
 - **Single default export per component file.** Named exports are permitted only for co-located types.
 - **No `"use client"` in `page.tsx` or `layout.tsx`.** Extract interactive parts into separate Client Components.
 - **Error boundaries** (`error.tsx`) MUST be Client Components with `"use client"`.
+
+### State Management & Prop Drilling
+
+- **Zero Unnecessary Prop Drilling:** Prop drilling past 2 levels is an anti-pattern. If you find yourself passing props through intermediary components that don't need them, you are doing it wrong.
+- **Use Composition:** Pass Server Components as `children` or explicit props directly to the Client Component wrappers that need them. 
+- **React Context Minimization:** Use React context strictly for globally needed, interactive client state (e.g., Theme, deeply nested UI toggles). Never use context for server data — rely on Next.js fetch caching.
 
 ---
 
@@ -208,20 +216,22 @@ const name = user!.name;
 
 ---
 
-## 7. Data & Server Actions
+## 7. Data, Server Actions & React 19
 
 ### Data Fetching
 
-- **Server-side only.** Fetch data in Server Components, `layout.tsx`, or `page.tsx`. Never use `useEffect` for data fetching.
-- **Pass data down** via props from Server Components to Client Components.
-- **No client-side fetch calls** (`fetch` inside `"use client"` components) unless interacting with a third-party client-only API.
+- **Server-side only.** Fetch data in Server Components (`layout.tsx`, `page.tsx`). Never use `useEffect` for data fetching.
+- **React 19 `use()` Hook:** Use the `use()` hook when consuming promises or context in Server and Client components where streaming is prioritized.
+- **Pass data down** via props from Server Components to leaf Client Components. Do not over-fetch and pass giant objects; extract only what the child needs.
+- **No client-side fetch calls** (`fetch` inside `"use client"` components) unless absolutely necessary. Fall back to libraries like SWR / React Query if required.
 
-### Server Actions
+### Server Actions & Form Mutations
 
-- **Mark with `"use server"`** at the top of the function or file.
-- **Validate all inputs** at the action boundary — never trust client data.
-- **Return typed results** — define explicit return types, not `Promise<any>`.
-- **Place in** `app/actions/` or co-locate in the relevant `app/route/` directory.
+- **Mark with `"use server"`** exclusively at the top of the file, keeping actions fully isolated from UI components.
+- **React 19 Hooks:** Leverage `<form action={serverAction}>`, `useActionState`, `useFormStatus`, and `useOptimistic` to handle mutation states locally without writing complex `onSubmit` handler boilerplate.
+- **Validate all inputs** using validation logic at the action boundary — never trust client data.
+- **Return typed results** — define explicit return types, not `Promise<any>`. Do not return raw Next.js/DB errors to the client.
+- **Location Requirements:** Place actions in `features/<name>/actions/` or closely co-locate in the relevant route. Avoid creating dumping grounds in a generic `app/actions/` folder.
 
 ---
 
@@ -260,7 +270,7 @@ Every component MUST satisfy:
 
 - **Early returns** — guard clauses before main logic; no deep nesting.
 - **Max nesting depth: 3 levels.** Extract functions or components if exceeded.
-- **DRY** — if the same logic or JSX appears 2+ times, extract to a shared component or utility.
+- **Zero Redundancy (DRY):** If logic or JSX patterns duplicate, extract heavily. Check existing `components/ui/` and `components/shared/` or `lib/` files before writing anything new. Avoid having 3 different variants of a "Card" performing the same visual task.
 - **Single-responsibility** — each function does one thing; each component renders one concept.
 - **No magic numbers/strings** — extract to named constants in `UPPER_SNAKE_CASE`.
 - **Destructure props** in the function signature, not in the function body.
@@ -312,10 +322,12 @@ If ANY check fails, fix before delivering. Do not deliver with known violations.
 
 | Anti-Pattern | Correct Approach |
 |---|---|
+| Over-engineering simple UI features | Apply KISS principles. Build what is required now without premature abstractions |
 | `"use client"` on `page.tsx` or `layout.tsx` | Extract interactive parts into leaf Client Components |
 | Component > 200 lines | Split into sub-components |
-| Prop drilling > 2 levels | Use composition pattern or React context |
-| `useEffect` for data fetching | Fetch in Server Components |
+| Prop drilling > 2 levels | Stop passing unused props. Pass components as `children` or use Context |
+| Redundant component creation | Reuse existing `components/ui/` primitives instead of duplicating |
+| `useEffect` for data fetching | Fetch in Server Components or use React 19 `use()` hook |
 | Raw `<img>` tag | `next/image` |
 | `<div onClick={...}>` | `<button>` with proper semantics |
 | Hardcoded strings/data in JSX | Extract to `data/` or constants |

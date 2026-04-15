@@ -2,6 +2,15 @@
 
 @theme {
   --container: 1156px;
+  --font-sans: var(--font-dm-sans), sans-serif;
+  --font-marcellus: var(--font-marcellus), serif;
+
+  --color-primary: #0D8C09;
+  --color-secondary: #72C100;
+  --color-accent: #F9A620;
+  --color-dark: #14080E;
+  --color-light-ash: #49475B;
+  --color-light: #F0F0F0;
 }
 
 
