@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { BookAppointmentButton } from "@/components/shared/book-appointment-button";
 import { MobileNav } from "./mobile-nav";
+import { Container } from "@/components/layout/container";
 
 interface NavLinkProps {
   href: string;
@@ -26,7 +27,7 @@ function NavLink({ href, children, active }: NavLinkProps) {
 export function Header(): React.JSX.Element {
   return (
     <header className="bg-white h-20 w-full sticky top-0 z-50 shadow-sm">
-      <div className="container mx-auto px-4 lg:px-8 h-full flex items-center justify-between">
+      <Container className="lg:px-8 h-full flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <Image
@@ -42,7 +43,7 @@ export function Header(): React.JSX.Element {
         </Link>
 
         {/* Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+        <nav className="hidden lg:flex items-center gap-5">
           <NavLink href="/" active>
             Home
           </NavLink>
@@ -123,13 +124,13 @@ export function Header(): React.JSX.Element {
         </nav>
 
         {/* Right Actions: Desktop CTA & Mobile Menu Toggle */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5">
           <div className="hidden lg:block">
             <BookAppointmentButton />
           </div>
           <MobileNav />
         </div>
-      </div>
+      </Container>
     </header>
   );
 }

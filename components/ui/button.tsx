@@ -3,20 +3,18 @@ import Link from "next/link";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "accent" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
   href?: string;
 }
 
 export function Button({
   className = "",
   variant = "primary",
-  size = "md",
   href,
   children,
   ...props
 }: ButtonProps): React.JSX.Element {
   const baseStyles =
-    "inline-flex items-center justify-center font-marcellus transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none rounded-full";
+    "inline-flex items-center justify-center font-marcellus h-11 px-6 text-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none rounded-full";
 
   const variants = {
     primary: "bg-primary text-white hover:bg-primary/90 shadow-sm",
@@ -26,13 +24,7 @@ export function Button({
     ghost: "hover:bg-light text-dark",
   };
 
-  const sizes = {
-    sm: "h-9 px-4 text-sm",
-    md: "h-11 px-6 text-base",
-    lg: "h-14 px-8 text-lg",
-  };
-
-  const combinedClasses = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
+  const combinedClasses = `${baseStyles} ${variants[variant]} ${className}`;
 
   if (href) {
     return (

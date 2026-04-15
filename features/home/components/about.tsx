@@ -1,34 +1,16 @@
 import * as React from "react";
-
-export function About(): React.JSX.Element {
-  return (
-    <section className="bg-white py-16 lg:py-24">
-      <div className="container mx-auto">
-        <h2 className="font-marcellus text-3xl lg:text-4xl text-dark mb-4">
-          About Us
-        </h2>
-      </div>
-    </section>
-  );
-}
-"use client";
-
-import imgBeautifulWomanHoldingClipboard2 from "figma:asset/f69e19a8baea8cac45192d39b0e2ea476429161b.png";
-import imgSuccessfulBusinessman1 from "figma:asset/99b661ad21df875f7a343f8ade58b1a254a740f3.png";
-import imgBodyOrgan1 from "figma:asset/e0a5a32077a2f5ce49919db75d2bb84b691b42bc.png";
-import imgHeart1 from "figma:asset/d3518cfa9d7f2f774281a786353c652c86991129.png";
-import imgLineChart1 from "figma:asset/77b90590adf0c862ea12802bd0cceadef4c764d9.png";
+import Image from "next/image";
+import { Container } from "@/components/layout/container";
 
 interface IconBadgeProps {
   children: React.ReactNode;
-  bgColor: string;
+  bgClass: string;
 }
 
-function IconBadge({ children, bgColor }: IconBadgeProps) {
+function IconBadge({ children, bgClass }: IconBadgeProps): React.JSX.Element {
   return (
     <span
-      className="inline-flex items-center justify-center w-11 h-11 rounded-full align-middle mx-1"
-      style={{ backgroundColor: bgColor }}
+      className={`inline-flex items-center justify-center w-11 h-11 rounded-full align-middle mx-1 ${bgClass}`}
     >
       {children}
     </span>
@@ -40,54 +22,67 @@ interface ImageBadgeProps {
   alt: string;
 }
 
-function ImageBadge({ src, alt }: ImageBadgeProps) {
+function ImageBadge({ src, alt }: ImageBadgeProps): React.JSX.Element {
   return (
-    <span className="inline-flex items-center justify-center w-11 h-11 rounded-full overflow-hidden align-middle mx-1 border-2 border-white shadow-md">
-      <img src={src} alt={alt} className="w-full h-full object-cover" />
+    <span className="relative inline-flex items-center justify-center w-11 h-11 rounded-full overflow-hidden align-middle mx-1 border-2 border-white shadow-md">
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="44px"
+        className="object-cover"
+      />
     </span>
   );
 }
 
-export default function AboutSection() {
+export default function About(): React.JSX.Element {
   return (
-    <section className="bg-white py-16">
-      <div className="max-w-[1366px] mx-auto px-[105px]">
-        <div className="max-w-[1001px] mx-auto">
-          <h2 className="font-['Marcellus',sans-serif] text-[32px] leading-[58px] text-black text-center">
+    <section className="bg-white py-16 lg:py-24">
+      <Container>
+        <div className="text-center">
+          <h2 className="font-marcellus text-3xl md:text-4xl leading-relaxed text-dark">
             We connect licensed therapists{" "}
             <ImageBadge
-              src={imgBeautifulWomanHoldingClipboard2}
-              alt="Licensed therapist"
+              src="/home-about-image/licensed-mental-health-therapist.png"
+              alt="Portrait of a licensed mental health therapist"
             />
             , mental health programs{" "}
-            <IconBadge bgColor="#035300">
-              <img
-                src={imgBodyOrgan1}
-                alt="Mental health"
-                className="w-[30px] h-[30px]"
+            <IconBadge bgClass="bg-primary-dark">
+              <Image
+                src="/home-about-image/mental-health-brain-icon.png"
+                alt="Mental health brain icon representing programs"
+                width={30}
+                height={30}
               />
             </IconBadge>
             , and personalized care{" "}
-            <IconBadge bgColor="#F9A620">
-              <img src={imgHeart1} alt="Care" className="w-[27px] h-[27px]" />
+            <IconBadge bgClass="bg-accent">
+              <Image
+                src="/home-about-image/personalized-care-heart-icon.png"
+                alt="Heart icon indicating personalized mental health care"
+                width={27}
+                height={27}
+              />
             </IconBadge>{" "}
             services, ensuring clients{" "}
             <ImageBadge
-              src={imgSuccessfulBusinessman1}
-              alt="Client"
+              src="/home-about-image/mental-health-therapy-client.png"
+              alt="Portrait of a successful mental health therapy client"
             />{" "}
             receive the support they need to thrive{" "}
-            <IconBadge bgColor="#72C100">
-              <img
-                src={imgLineChart1}
-                alt="Growth"
-                className="w-[26px] h-[26px]"
+            <IconBadge bgClass="bg-secondary">
+              <Image
+                src="/home-about-image/mental-health-progress-chart-icon.png"
+                alt="Growth chart icon signifying client progress"
+                width={26}
+                height={26}
               />
             </IconBadge>{" "}
             wherever they feel safe.
           </h2>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

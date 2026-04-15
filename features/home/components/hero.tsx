@@ -1,10 +1,11 @@
 import * as React from "react";
 import Image from "next/image";
+import { Container } from "@/components/layout/container";
 
 export function Hero(): React.JSX.Element {
   return (
     <section className="bg-white py-12">
-      <div className="container mx-auto">
+      <Container>
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-12">
           {/* Left Column - Text Content */}
@@ -59,7 +60,7 @@ export function Hero(): React.JSX.Element {
         </div>
 
         {/* Bottom Section - Three Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-6">
           {/* Left Card - Group Therapy Image */}
           <div className="relative rounded-3xl overflow-hidden h-60">
             <Image
@@ -91,7 +92,7 @@ export function Hero(): React.JSX.Element {
             />
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
