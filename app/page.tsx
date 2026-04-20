@@ -5,6 +5,8 @@ import Services from "@/features/home/components/services";
 import WellBeing from "@/features/home/components/well-being";
 import Training from "@/features/home/components/training";
 import Therapists from "@/features/home/components/therapists";
+import { UpcomingEvents } from "@/features/home/components/upcoming-events";
+import { ScheduleAppointment } from "@/features/home/components/schedule-appointment";
 
 export default function Page() {
   return (
@@ -16,6 +18,8 @@ export default function Page() {
       <WellBeing />
       <Training />
       <Therapists />
+      <ScheduleAppointment />
+      <UpcomingEvents />
     </main>
   );
 }

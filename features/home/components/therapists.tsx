@@ -59,7 +59,7 @@ export default function Therapists(): React.JSX.Element {
     <section className="bg-white py-20 lg:py-24">
       <Container>
         {/* Global Component Header Context */}
-        <div className="text-center mb-14 max-w-2xl mx-auto px-4">
+        <div className="text-center mb-14 mx-auto">
           <p className="font-sans font-medium text-base text-accent mb-3 tracking-wide">
             Our Therapist
           </p>
