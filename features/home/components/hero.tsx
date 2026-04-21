@@ -30,6 +30,7 @@ export function Hero(): React.JSX.Element {
               alt="Woman receiving professional psychotherapy counseling in a clinical setting"
               fill
               className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               priority
             />
             <div className="absolute bottom-0 left-0 w-full bg-dark-green-overlay p-8">
