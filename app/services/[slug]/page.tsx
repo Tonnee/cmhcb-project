@@ -1,3 +1,9 @@
-export default function Page() {
-  return <main>Page</main>
+import { PsychotherapyHero } from "@/features/services/components/psychotherapy-hero";
+
+export default function ServicesPage() {
+  return (
+    <main>
+      <PsychotherapyHero />
+    </main>
+  );
 }
