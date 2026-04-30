@@ -1,64 +1,67 @@
+import * as React from "react";
+import { LearnMoreLink } from "@/components/ui/learn-more-link";
 
+export type ServiceCardVariant = "primary" | "secondary";
 
 interface ServiceCardProps {
   title: string;
   features: string[];
   duration: string;
   fees: string;
-  bgColor?: string;
-  onLearnMore?: () => void;
+  href: string;
+  variant?: ServiceCardVariant;
 }
+
+const VARIANT_CLASSES = {
+  primary: {
+    card: "bg-accent",
+    bullet: "bg-white",
+    label: "text-white",
+    value: "text-black",
+  },
+  secondary: {
+    card: "bg-card-secondary",
+    bullet: "bg-light-ash/80",
+    label: "text-black",
+    value: "text-primary-dark",
+  },
+} as const;
 
 export default function ServiceCard({
   title,
   features,
   duration,
   fees,
-  bgColor = "#f9a620",
-  onLearnMore
-}: ServiceCardProps) {
-  return (
-    <div
-      className="relative w-full max-w-[567px] rounded-[24px] p-10 md:p-12"
-      style={{ backgroundColor: bgColor }}
-    >
-      {/* Title */}
-      <h2 className="font-['Marcellus:Regular',sans-serif] text-[32px] md:text-[40px] leading-[1.2] text-black mb-8">
-        {title}
-      </h2>
+  href,
+  variant = "primary",
+}: ServiceCardProps): React.JSX.Element {
+  const v = VARIANT_CLASSES[variant];
 
-      {/* Features List */}
+  return (
+    <article className={`relative w-full rounded-3xl p-10 md:p-12 ${v.card}`}>
+      <h3 className="font-marcellus text-3xl md:text-4xl leading-snug text-black mb-8">
+        {title}
+      </h3>
+
       <ul className="space-y-3 mb-8">
-        {features.map((feature, index) => (
-          <li key={index} className="flex items-center gap-5">
-            <div className="w-3 h-3 rounded-full bg-white flex-shrink-0" />
-            <span className="font-['DM_Sans:Regular',sans-serif] font-normal text-[20px] leading-[32px] text-black" style={{ fontVariationSettings: "'opsz' 14" }}>
+        {features.map((feature) => (
+          <li key={feature} className="flex items-center gap-5">
+            <span className={`w-3 h-3 rounded-full shrink-0 ${v.bullet}`} aria-hidden="true" />
+            <span className="font-sans font-normal text-xl leading-8 text-black">
               {feature}
             </span>
           </li>
         ))}
       </ul>
 
-      {/* Duration and Fees */}
-      <p className="font-['DM_Sans:SemiBold',sans-serif] font-semibold text-[20px] leading-[32px] text-black mb-6" style={{ fontVariationSettings: "'opsz' 14" }}>
-        <span className="text-white">Duration: </span>
-        <span>{duration}, </span>
-        <span className="text-white">Fees: </span>
-        <span>{fees}</span>
+      <p className="font-sans font-semibold text-xl leading-8 mb-6">
+        <span className={v.label}>Duration: </span>
+        <span className={v.value}>{duration}, </span>
+        <span className={v.label}>Fees: </span>
+        <span className={v.value}>{fees}</span>
       </p>
 
-      {/* Learn More Button */}
-      <button
-        onClick={onLearnMore}
-        className="flex items-center gap-3 group hover:gap-4 transition-all"
-      >
-        <span className="font-['Marcellus:Regular',sans-serif] text-[20px] text-black">
-          Learn More
-        </span>
-        <div className="w-5 h-5">
-          
-        </div>
-      </button>
-    </div>
+      <LearnMoreLink href={href} label={title} variant={variant} />
+    </article>
   );
 }

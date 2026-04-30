@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Marcellus, DM_Sans } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import "./globals.css";
+import { Footer } from "@/components/layout/footer";
 
 const marcellus = Marcellus({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans">
         <Header />
         {children}
+        <Footer/>
       </body>
     </html>
   );

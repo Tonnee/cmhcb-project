@@ -2,7 +2,7 @@ import * as React from "react";
 import Link from "next/link";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "accent" | "outline" | "ghost" | "white";
+  variant?: "primary" | "primary-dark" | "secondary" | "accent" | "outline" | "ghost" | "white";
   href?: string;
 }
 
@@ -18,6 +18,7 @@ export function Button({
 
   const variants = {
     primary: "bg-primary text-white hover:bg-primary/90 shadow-sm",
+    "primary-dark": "bg-primary-dark text-white hover:bg-primary-dark/90 shadow-sm",
     secondary: "bg-secondary text-white hover:bg-secondary/90 shadow-sm",
     accent: "bg-accent text-white hover:bg-accent/90 shadow-sm",
     outline: "border border-primary text-primary hover:bg-primary/10",

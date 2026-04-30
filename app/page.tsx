@@ -23,7 +23,6 @@ export default function Page() {
       <ScheduleAppointment />
       <UpcomingEvents />
       <Review />
-      <Footer/>
     </main>
   );
 }

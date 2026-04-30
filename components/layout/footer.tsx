@@ -29,7 +29,7 @@ const SOCIAL_ICON_MAP: Record<string, React.JSX.Element> = {
 
 function LogoCard(): React.JSX.Element {
   return (
-    <div className="bg-white rounded-3xl shadow-sm p-7 flex flex-col gap-5 w-full lg:w-[372px] lg:min-w-[372px]">
+    <div className="bg-white rounded-3xl shadow-sm p-14 flex flex-col gap-5 w-full lg:w-[372px] lg:min-w-[372px]">
       <div className="flex items-center gap-5">
         <div className="w-[109px] h-[109px] shrink-0 relative">
           <Image
@@ -81,7 +81,7 @@ function LogoCard(): React.JSX.Element {
 function LinkColumn({ column }: { column: FooterLinkColumn }): React.JSX.Element {
   return (
     <div className="flex flex-col gap-5">
-      <p className="font-marcellus text-base text-muted/70">
+      <p className="font-marcellus text-base text-muted/70 pt-20">
         {column.title}
       </p>
       <nav className="flex flex-col gap-4" aria-label={column.title}>
@@ -104,7 +104,7 @@ function LinkColumn({ column }: { column: FooterLinkColumn }): React.JSX.Element
 function ConnectColumn(): React.JSX.Element {
   return (
     <div className="flex flex-col gap-5">
-      <p className="font-marcellus text-base text-muted/70">
+      <p className="font-marcellus text-base text-muted/70 pt-20">
         Connect with Us
       </p>
 
