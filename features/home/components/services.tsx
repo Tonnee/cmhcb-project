@@ -3,72 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
 
-interface ServiceItem {
-  id: string;
-  image: string;
-  icon: string;
-  iconVariant: "primary" | "accent";
-  title: string;
-  description: string;
-  href: string;
-}
-
-const SERVICES_DATA: ServiceItem[] = [
-  {
-    id: "psychometric-assessment",
-    image: "/home-service-images/psychometric-assessment.png",
-    icon: "/home-service-images/psychometric-assessment-icon.png",
-    iconVariant: "primary",
-    title: "Psychometric Assessment",
-    description: "understand personality, emotional functioning, and mental health needs",
-    href: "/services/psychometric-assessment",
-  },
-  {
-    id: "individual-therapy",
-    image: "/home-service-images/individual-therapy.png",
-    icon: "/home-service-images/individual-therapy-icon.png",
-    iconVariant: "accent",
-    title: "Individual Therapy",
-    description: "understand personality, emotional functioning, and mental health needs",
-    href: "/services/individual-therapy",
-  },
-  {
-    id: "child-therapy",
-    image: "/home-service-images/child-therapy.png",
-    icon: "/home-service-images/child-therapy-icon.png",
-    iconVariant: "primary",
-    title: "Child Therapy",
-    description: "understand personality, emotional functioning, and mental health needs",
-    href: "/services/child-therapy",
-  },
-  {
-    id: "family-therapy",
-    image: "/home-service-images/family-therapy.png",
-    icon: "/home-service-images/family-therapy-icon.png",
-    iconVariant: "accent",
-    title: "Family Therapy",
-    description: "understand personality, emotional functioning, and mental health needs",
-    href: "/services/family-therapy",
-  },
-  {
-    id: "couple-therapy",
-    image: "/home-service-images/couple-therapy.png",
-    icon: "/home-service-images/couple-therapy-icon.png",
-    iconVariant: "primary",
-    title: "Couple Therapy",
-    description: "understand personality, emotional functioning, and mental health needs",
-    href: "/services/couple-therapy",
-  },
-  {
-    id: "iq-test",
-    image: "/home-service-images/iq-test.png",
-    icon: "/home-service-images/iq-test-icon.png",
-    iconVariant: "accent",
-    title: "IQ Test",
-    description: "understand personality, emotional functioning, and mental health needs",
-    href: "/services/iq-test",
-  },
-];
+import { SERVICES } from "@/features/services/data/services";
+import { type ServiceItem } from "@/features/services/data/services";
 
 function RightArrowIcon(): React.JSX.Element {
   return (
@@ -129,12 +65,12 @@ function ServiceCard({ item }: { item: ServiceItem }): React.JSX.Element {
           {item.title}
         </h3>
         <p className="font-sans text-sm text-light-ash max-w-[332px] mb-[18px] leading-relaxed">
-          {item.description}
+          {item.shortDescription}
         </p>
 
         <div className="mt-auto">
           <Link
-            href={item.href}
+            href={`/services/${item.slug}`}
             className="group inline-flex items-center gap-0 font-marcellus text-sm text-primary-dark transition-colors hover:text-dark-green hover:underline"
           >
             Learn More
@@ -165,8 +101,8 @@ export default function Services(): React.JSX.Element {
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-8">
-          {SERVICES_DATA.map((service) => (
-            <ServiceCard key={service.id} item={service} />
+          {SERVICES.map((service) => (
+            <ServiceCard key={service.slug} item={service} />
           ))}
         </div>
       </Container>

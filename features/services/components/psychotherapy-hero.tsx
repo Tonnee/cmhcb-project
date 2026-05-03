@@ -2,6 +2,7 @@ import * as React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/layout/container";
+import { Breadcrumb } from "@/components/shared/breadcrumb";
 
 export function PsychotherapyHero(): React.JSX.Element {
   return (
@@ -11,12 +12,13 @@ export function PsychotherapyHero(): React.JSX.Element {
           {/* Content Column */}
           <div className="relative z-10 flex flex-col justify-center">
             {/* Breadcrumb */}
-            <nav className="mb-6" aria-label="Breadcrumb">
-              <p className="font-sans font-normal text-sm">
-                <span className="text-primary-dark">Services</span>
-                <span className="text-light-ash/80"> &gt; Psychotherapeutic Services</span>
-              </p>
-            </nav>
+            <Breadcrumb
+              className="mb-6"
+              items={[
+                { label: "Services", href: "/services" },
+                { label: "Psychotherapeutic Services" },
+              ]}
+            />
 
             {/* Heading */}
             <h1 className="font-marcellus text-4xl md:text-5xl leading-tight text-footer-bg mb-6 max-w-lg">

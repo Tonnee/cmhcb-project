@@ -22,7 +22,6 @@
   --spacing-hero-image: 380px;
 }
 
-
 @utility container {
   max-width: var(--container);
   margin-left: auto;
