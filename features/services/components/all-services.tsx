@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
-import ServiceCard from "@/features/services/components/service-card";
+import FeatureCard from "@/components/shared/feature-card";
 import { ServicesApproachBlock } from "@/features/services/components/services-approach-block";
 import { SERVICES } from "@/features/services/data/services";
 
@@ -15,7 +15,7 @@ export function AllServices(): React.JSX.Element {
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {SERVICES.map((service) => (
-            <ServiceCard
+            <FeatureCard
               key={service.slug}
               title={service.title}
               features={service.features}

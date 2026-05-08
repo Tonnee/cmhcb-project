@@ -1,15 +1,19 @@
 import * as React from "react";
 import { LearnMoreLink } from "@/components/ui/learn-more-link";
 
-export type ServiceCardVariant = "primary" | "secondary";
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
-interface ServiceCardProps {
+export type FeatureCardVariant = "primary" | "secondary";
+
+interface FeatureCardProps {
   title: string;
-  features: string[];
+  features?: string[];
   duration: string;
   fees: string;
   href: string;
-  variant?: ServiceCardVariant;
+  variant?: FeatureCardVariant;
 }
 
 const VARIANT_CLASSES = {
@@ -27,14 +31,18 @@ const VARIANT_CLASSES = {
   },
 } as const;
 
-export default function ServiceCard({
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
+export default function FeatureCard({
   title,
   features,
   duration,
   fees,
   href,
   variant = "primary",
-}: ServiceCardProps): React.JSX.Element {
+}: FeatureCardProps): React.JSX.Element {
   const v = VARIANT_CLASSES[variant];
 
   return (
@@ -43,16 +51,18 @@ export default function ServiceCard({
         {title}
       </h3>
 
-      <ul className="space-y-3 mb-8">
-        {features.map((feature) => (
-          <li key={feature} className="flex items-center gap-5">
-            <span className={`w-3 h-3 rounded-full shrink-0 ${v.bullet}`} aria-hidden="true" />
-            <span className="font-sans font-normal text-xl leading-8 text-black">
-              {feature}
-            </span>
-          </li>
-        ))}
-      </ul>
+      {features && features.length > 0 && (
+        <ul className="space-y-3 mb-8">
+          {features.map((feature) => (
+            <li key={feature} className="flex items-center gap-5">
+              <span className={`w-3 h-3 rounded-full shrink-0 ${v.bullet}`} aria-hidden="true" />
+              <span className="font-sans font-normal text-xl leading-8 text-black">
+                {feature}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <p className="font-sans font-semibold text-xl leading-8 mb-6">
         <span className={v.label}>Duration: </span>

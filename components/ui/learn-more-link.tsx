@@ -1,15 +1,15 @@
 import * as React from "react";
 import Link from "next/link";
 import { FiArrowRight } from "react-icons/fi";
-import { type ServiceCardVariant } from "@/features/services/components/service-card";
+import { type FeatureCardVariant } from "@/components/shared/feature-card";
 
 interface LearnMoreLinkProps {
   href: string;
   label: string;
-  variant?: ServiceCardVariant;
+  variant?: FeatureCardVariant;
 }
 
-const VARIANT_COLOR: Record<ServiceCardVariant, string> = {
+const VARIANT_COLOR: Record<FeatureCardVariant, string> = {
   primary: "text-black",
   secondary: "text-primary-dark",
 };

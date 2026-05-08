@@ -1,4 +1,4 @@
-import { type ServiceCardVariant } from "@/features/services/components/service-card";
+import { type FeatureCardVariant } from "@/components/shared/feature-card";
 import { type ServiceDescriptionData } from "@/features/services/components/service-description";
 import { type FaqItem } from "@/features/services/components/service-faq";
 
@@ -16,7 +16,7 @@ export interface ServiceItem {
   features: string[];
   duration: string;
   fees: string;
-  variant: ServiceCardVariant;
+  variant: FeatureCardVariant;
 }
 
 export const SERVICES: ServiceItem[] = [
