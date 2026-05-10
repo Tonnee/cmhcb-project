@@ -17,19 +17,18 @@ export function Hero(): React.JSX.Element {
               <span className="text-dark">Empowering Your</span>
               <br />
               <span className="text-accent">Mind</span>
-              <span className="text-dark">, Transforming Your</span>
-              <br />
-              <span className="text-primary">Life</span>
+              <span className="text-dark">, Transforming <br /> Your</span>
+              <span className="text-primary"> Life</span>
             </h1>
           </div>
 
           {/* Right Column - Main Image with Overlay */}
-          <div className="lg:col-span-6 relative rounded-3xl overflow-hidden h-hero-image">
+          <div className="lg:col-span-6 relative rounded-3xl overflow-hidden h-hero-image group">
             <Image
               src="/hero-image/psychotherapy-counseling-session.png"
               alt="Woman receiving professional psychotherapy counseling in a clinical setting"
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               priority
             />
@@ -63,12 +62,12 @@ export function Hero(): React.JSX.Element {
         {/* Bottom Section - Three Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-6">
           {/* Left Card - Group Therapy Image */}
-          <div className="relative rounded-3xl overflow-hidden h-60">
+          <div className="relative rounded-3xl overflow-hidden h-60 group">
             <Image
               src="/hero-image/group-therapy-support-circle.png"
               alt="Group therapy support circle with participants seated together"
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             />
           </div>
 
@@ -84,12 +83,12 @@ export function Hero(): React.JSX.Element {
           </div>
 
           {/* Right Card - Family Therapy Image */}
-          <div className="relative rounded-3xl overflow-hidden h-60">
+          <div className="relative rounded-3xl overflow-hidden h-60 group">
             <Image
               src="/hero-image/family-therapy-psychologist-office.png"
               alt="Family attending a therapy session in a psychologist office"
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             />
           </div>
         </div>

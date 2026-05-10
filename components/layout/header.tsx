@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { BookAppointmentButton } from "@/components/shared/book-appointment-button";
 import { MobileNav } from "./mobile-nav";
 import { Container } from "@/components/layout/container";
@@ -109,9 +110,10 @@ function NavLink({ href, children, active }: NavLinkProps) {
 // Services Mega Menu
 // ---------------------------------------------------------------------------
 
-function ServicesMegaMenu() {
+function ServicesMegaMenu({ active }: { active?: boolean }) {
   const [open, setOpen] = React.useState(false);
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pathname = usePathname();
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -124,7 +126,7 @@ function ServicesMegaMenu() {
 
   return (
     <div
-      className="relative py-6"
+      className="relative"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -132,7 +134,7 @@ function ServicesMegaMenu() {
       <Link
         href="/services"
         className={`font-marcellus text-base flex items-center gap-1 transition-colors ${
-          open ? "text-primary" : "text-dark hover:text-primary"
+          open || active ? "text-primary" : "text-dark hover:text-primary"
         }`}
         id="services-menu-trigger"
         aria-haspopup="true"
@@ -190,7 +192,11 @@ function ServicesMegaMenu() {
                     href={`/services/${service.slug}`}
                     role="menuitem"
                     onClick={() => setOpen(false)}
-                    className="group flex flex-col gap-3 p-4 rounded-xl border border-transparent hover:border-primary/20 hover:bg-primary/5 transition-all duration-200 h-full"
+                    className={`group flex flex-col gap-3 p-4 rounded-xl border transition-all duration-200 h-full ${
+                      pathname === `/services/${service.slug}`
+                        ? "border-primary/30 bg-primary/5"
+                        : "border-transparent hover:border-primary/20 hover:bg-primary/5"
+                    }`}
                   >
                     {/* Icon */}
                     <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-200">
@@ -202,7 +208,9 @@ function ServicesMegaMenu() {
                     </span>
 
                     {/* Title */}
-                    <span className="font-marcellus text-sm text-dark group-hover:text-primary transition-colors leading-snug">
+                    <span className={`font-marcellus text-sm transition-colors leading-snug ${
+                      pathname === `/services/${service.slug}` ? "text-primary" : "text-dark group-hover:text-primary"
+                    }`}>
                       {service.title}
                     </span>
 
@@ -238,9 +246,10 @@ function ServicesMegaMenu() {
 // Training Mega Menu
 // ---------------------------------------------------------------------------
 
-function TrainingMegaMenu() {
+function TrainingMegaMenu({ active }: { active?: boolean }) {
   const [open, setOpen] = React.useState(false);
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pathname = usePathname();
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -261,7 +270,7 @@ function TrainingMegaMenu() {
       <Link
         href="/training"
         className={`font-marcellus text-base flex items-center gap-1 transition-colors ${
-          open ? "text-primary" : "text-dark hover:text-primary"
+          open || active ? "text-primary" : "text-dark hover:text-primary"
         }`}
         id="training-menu-trigger"
         aria-haspopup="true"
@@ -319,7 +328,11 @@ function TrainingMegaMenu() {
                     href={`/training/${training.slug}`}
                     role="menuitem"
                     onClick={() => setOpen(false)}
-                    className="group flex flex-col gap-3 p-4 rounded-xl border border-transparent hover:border-primary/20 hover:bg-primary/5 transition-all duration-200 h-full"
+                    className={`group flex flex-col gap-3 p-4 rounded-xl border transition-all duration-200 h-full ${
+                      pathname === `/training/${training.slug}`
+                        ? "border-primary/30 bg-primary/5"
+                        : "border-transparent hover:border-primary/20 hover:bg-primary/5"
+                    }`}
                   >
                     {/* Icon */}
                     <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-200">
@@ -331,7 +344,9 @@ function TrainingMegaMenu() {
                     </span>
 
                     {/* Title */}
-                    <span className="font-marcellus text-sm text-dark group-hover:text-primary transition-colors leading-snug">
+                    <span className={`font-marcellus text-sm transition-colors leading-snug ${
+                      pathname === `/training/${training.slug}` ? "text-primary" : "text-dark group-hover:text-primary"
+                    }`}>
                       {training.title}
                     </span>
 
@@ -366,8 +381,8 @@ function TrainingMegaMenu() {
 
 export function Header(): React.JSX.Element {
   return (
-    <header className="bg-white h-20 w-full sticky top-0 z-50 shadow-sm">
-      <Container className="lg:px-8 h-full flex items-center justify-between">
+    <header className="bg-white h-20 w-full sticky top-0 z-50">
+      <Container className="h-full flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <Image
@@ -381,13 +396,8 @@ export function Header(): React.JSX.Element {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-5" aria-label="Main navigation">
-          <NavLink href="/" active>Home</NavLink>
-          <ServicesMegaMenu />
-          <TrainingMegaMenu />
-          <NavLink href="/therapist">Therapist</NavLink>
-          <NavLink href="/support">Support</NavLink>
-          <NavLink href="/success-stories">Success Stories</NavLink>
+        <nav className="hidden lg:flex items-center gap-7" aria-label="Main navigation">
+          <HeaderLinks />
         </nav>
 
         {/* Right Actions */}
@@ -401,3 +411,19 @@ export function Header(): React.JSX.Element {
     </header>
   );
 }
+
+function HeaderLinks() {
+  const pathname = usePathname();
+
+  return (
+    <>
+      <NavLink href="/" active={pathname === "/"}>Home</NavLink>
+      <ServicesMegaMenu active={pathname.startsWith("/services")} />
+      <TrainingMegaMenu active={pathname.startsWith("/training")} />
+      <NavLink href="/therapist" active={pathname.startsWith("/therapist")}>Therapist</NavLink>
+      <NavLink href="/support" active={pathname.startsWith("/support")}>Support</NavLink>
+      <NavLink href="/success-stories" active={pathname.startsWith("/success-stories")}>Success Stories</NavLink>
+    </>
+  );
+}
+
