@@ -123,10 +123,8 @@ export function UpcomingEvents(): React.JSX.Element {
               Upcoming Events
             </p>
 
-            <h2 className="font-marcellus text-4xl lg:text-5xl leading-tight text-dark mb-6 max-w-[500px]">
-              &quot;Understanding Anxiety: { " " }
-              <br className="hidden lg:block" />
-              Tools for Everyday Coping&quot;
+            <h2 className="font-marcellus text-[40px] leading-tight text-dark mb-6 max-w-[500px]">
+              &quot;Understanding Anxiety: <br className="hidden lg:block" />{ " " }Tools for Everyday Coping&quot;
             </h2>
 
             <p className="font-sans text-base text-light-ash mb-12 max-w-xl leading-relaxed">

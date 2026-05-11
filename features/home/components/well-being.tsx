@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Container } from "@/components/layout/container";
-import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { WellBeingStats } from "./well-being-stats";
 
 interface StatItem {
   id: string;
@@ -75,21 +75,7 @@ export default function WellBeing(): React.JSX.Element {
 
           {/* Right Stats Grid */}
           <div className="xl:col-span-6 xl:col-start-7">
-            <div className="grid grid-cols-2 gap-x-5 gap-y-16">
-              {STATS_DATA.map((stat) => (
-                <div key={stat.id} className="flex flex-col">
-                  <div className="font-sans font-medium text-4xl md:text-5xl lg:text-[56px] text-white mb-5 tracking-tight flex items-baseline">
-                    <AnimatedCounter end={stat.value} suffix={stat.suffix} />
-                  </div>
-                  <h3 className="font-sans text-base md:text-lg text-white/90 mb-1 leading-snug">
-                    {stat.title}
-                  </h3>
-                  <p className="font-sans text-sm text-white/60 leading-relaxed">
-                    {stat.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <WellBeingStats stats={STATS_DATA} />
           </div>
         </div>
       </Container>

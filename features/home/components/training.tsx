@@ -87,8 +87,8 @@ export default function Training(): React.JSX.Element {
           </div>
 
           {/* Right: Image */}
-          <div className="flex-shrink-0 w-full lg:w-[470px]">
-            <div className="relative rounded-3xl overflow-hidden aspect-[3/4] lg:h-[664px] lg:w-[470px] shadow-sm">
+          <div className="shrink-0 w-full lg:w-[470px]">
+            <div className="relative rounded-3xl overflow-hidden aspect-3/4 lg:h-[664px] lg:w-[470px]">
               <Image
                 src="/mental-health-training-program.png"
                 alt="Mental health professional"
