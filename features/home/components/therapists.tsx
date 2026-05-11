@@ -1,14 +1,14 @@
 import * as React from "react";
 import { Container } from "@/components/layout/container";
-import { TherapistCarousel, Therapist } from "@/features/home/components/therapist-carousel";
+import { TherapistCarousel } from "@/features/home/components/therapist-carousel";
+import { type Therapist } from "@/components/shared/therapist-card";
 
 const THERAPISTS_DATA: Therapist[] = [
   { 
     id: "t1", 
     image: "/home-therapist/therapist-ruma-khondaker-1.png", 
     name: "Ruma Khondaker", 
-    role: "Psychiatrist", 
-    showOverlay: true 
+    role: "Psychiatrist"
   },
   { 
     id: "t2", 

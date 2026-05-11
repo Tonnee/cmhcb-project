@@ -6,32 +6,13 @@ import { Container } from "@/components/layout/container";
 import { SERVICES } from "@/features/services/data/services";
 import { type ServiceItem } from "@/features/services/data/services";
 
-function RightArrowIcon(): React.JSX.Element {
-  return (
-    <svg
-      className="inline-block ml-1"
-      fill="none"
-      viewBox="0 0 12 12"
-      width="12"
-      height="12"
-      aria-hidden="true"
-    >
-      <path
-        d="M2.5 6h7M6.5 2.5l3.5 3.5-3.5 3.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+import { RightArrowIcon } from "@/components/ui/icons";
 
 function ServiceCard({ item }: { item: ServiceItem }): React.JSX.Element {
   const iconBgClass = item.iconVariant === "primary" ? "bg-primary" : "bg-accent";
 
   return (
-    <div className="rounded-[16px] shadow-sm border bg-white border-gray-50 flex flex-col items-center pb-6 transition-shadow hover:shadow-md">
+    <div className="rounded-[16px] border bg-white border-gray-50 flex flex-col items-center pb-6 transition-shadow hover:shadow-sm">
       {/* Image Block */}
       <div className="relative w-full px-5 pt-5 shrink-0">
         <div className="relative h-[220px] w-full rounded-[10px] overflow-hidden bg-gray-100">
@@ -62,7 +43,9 @@ function ServiceCard({ item }: { item: ServiceItem }): React.JSX.Element {
       {/* Content Block */}
       <div className="flex flex-col items-center text-center px-5 pt-[56px] flex-1 w-full">
         <h3 className="font-marcellus text-xl text-dark mb-2.5">
-          {item.title}
+          <Link href={`/services/${item.slug}`} className="transition-colors hover:text-accent">
+            {item.title}
+          </Link>
         </h3>
         <p className="font-sans text-sm text-light-ash max-w-[332px] mb-[18px] leading-relaxed">
           {item.shortDescription}
@@ -75,7 +58,7 @@ function ServiceCard({ item }: { item: ServiceItem }): React.JSX.Element {
           >
             Learn More
             <span className="transition-transform group-hover:translate-x-1">
-              <RightArrowIcon />
+              <RightArrowIcon className="inline-block ml-1" width="12" height="12" />
             </span>
           </Link>
         </div>
