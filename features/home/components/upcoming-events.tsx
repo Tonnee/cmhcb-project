@@ -113,7 +113,7 @@ export function UpcomingEvents(): React.JSX.Element {
   ];
 
   return (
-    <section className="bg-white py-20">
+    <section className="py-20">
       <div className="container">
         {/* Featured Event */}
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-[86px] mb-20">

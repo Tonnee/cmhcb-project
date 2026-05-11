@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/container";
 
 export function Hero(): React.JSX.Element {
   return (
-    <section className="bg-white py-12">
+    <section className="py-12">
       <Container>
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-12">

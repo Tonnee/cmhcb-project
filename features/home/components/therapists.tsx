@@ -56,7 +56,7 @@ const THERAPISTS_DATA: Therapist[] = [
 
 export default function Therapists(): React.JSX.Element {
   return (
-    <section className="bg-white py-20 lg:py-24">
+    <section className="py-20 lg:py-24">
       <Container>
         {/* Global Component Header Context */}
         <div className="text-center mb-14 mx-auto">

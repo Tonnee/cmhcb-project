@@ -38,7 +38,7 @@ function ImageBadge({ src, alt }: ImageBadgeProps): React.JSX.Element {
 
 export default function About(): React.JSX.Element {
   return (
-    <section className="bg-white py-16 lg:py-24">
+    <section className="py-16 lg:py-24">
       <Container>
         <div className="text-center">
           <h2 className="font-marcellus text-3xl md:text-4xl leading-relaxed text-dark">

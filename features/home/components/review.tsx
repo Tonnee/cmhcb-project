@@ -47,7 +47,7 @@ function ReviewPhoto({ src, alt }: ReviewPhotoProps): React.JSX.Element {
 
 export function Review(): React.JSX.Element {
   return (
-    <section className="bg-white py-20">
+    <section className="py-20">
       <div className="container">
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-20 items-start">
 

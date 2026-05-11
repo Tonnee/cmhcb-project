@@ -63,7 +63,7 @@ export default function WellBeing(): React.JSX.Element {
           {/* Left Text Block */}
           <div className="xl:col-span-5 flex flex-col gap-5 pr-0 xl:pr-8">
             <h2 className="font-marcellus text-4xl lg:text-5xl text-white leading-tight">
-              Our Commitment to <br className="hidden md:block" />
+              Our Commitment to 
               Your <span className="text-accent">Well-Being</span>
             </h2>
             <p className="font-sans text-base lg:text-lg text-white/80 leading-relaxed max-w-lg mt-2">

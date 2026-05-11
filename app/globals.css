@@ -17,8 +17,10 @@
   --color-footer-bg: #1E1E1E;
   --color-muted: #D9D9D9;
   --color-card-secondary: rgba(73, 71, 91, 0.1);
+  --color-page-bg: #F9FFF9;
 
-  --font-size-hero-heading: 63px;
+  --text-hero-heading: 54px;
+  --text-hero-heading--line-height: 1.1;
   --spacing-hero-image: 380px;
 }
 

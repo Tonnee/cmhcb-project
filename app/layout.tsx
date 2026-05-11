@@ -32,7 +32,7 @@ export default function RootLayout({
       lang="en"
       className={`h-full antialiased ${marcellus.variable} ${dmSans.variable}`}
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="min-h-full flex flex-col font-sans bg-page-bg">
         <Header />
         {children}
         <Footer/>

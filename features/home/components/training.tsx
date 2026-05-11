@@ -51,7 +51,7 @@ function TrainingItem({ title, description }: TrainingItemProps): React.JSX.Elem
 
 export default function Training(): React.JSX.Element {
   return (
-    <section className="bg-white py-16 lg:py-24">
+    <section className="py-16 lg:py-24">
       <Container>
         <div className="flex flex-col lg:flex-row items-center gap-y-12 gap-x-5">
           {/* Left: Content */}

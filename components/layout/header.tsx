@@ -380,8 +380,22 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
 // ---------------------------------------------------------------------------
 
 export function Header(): React.JSX.Element {
+  const [isScrolled, setIsScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="bg-white h-20 w-full sticky top-0 z-50">
+    <header
+      className={`bg-page-bg h-20 w-full sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled ? "bg-white border-b border-black/5" : "border-b border-transparent"
+      }`}
+    >
       <Container className="h-full flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
