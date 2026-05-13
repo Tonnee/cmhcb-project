@@ -5,7 +5,7 @@ import { ServiceDescription } from "@/features/services/components/service-descr
 import { ServiceProfessionals } from "@/features/services/components/service-professionals";
 import { Faq } from "@/components/shared/faq";
 import { SERVICES } from "@/features/services/data/services";
-import { type Therapist } from "@/features/home/components/therapist-carousel";
+import { type Therapist } from "@/components/shared/therapist-card";
 
 // Shared therapist data — reused from the home page dataset
 const THERAPISTS: Therapist[] = [
