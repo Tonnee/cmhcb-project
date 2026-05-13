@@ -1,6 +1,6 @@
 import { type FeatureCardVariant } from "@/components/shared/feature-card";
 import { type ServiceDescriptionData } from "@/features/services/components/service-description";
-import { type FaqItem } from "@/features/services/components/service-faq";
+import { type FaqItem } from "@/components/shared/faq";
 
 export interface ServiceItem {
   slug: string;
