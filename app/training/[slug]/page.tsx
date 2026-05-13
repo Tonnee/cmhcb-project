@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { PageHero } from "@/components/shared/page-hero";
 import { ServiceDescription } from "@/features/services/components/service-description";
 import { ServiceProfessionals } from "@/features/services/components/service-professionals";
-import { ServiceFaq } from "@/features/services/components/service-faq";
+import { Faq } from "@/components/shared/faq";
 import { TRAININGS } from "@/features/training/data/trainings";
 import { type Therapist } from "@/features/home/components/therapist-carousel";
 
@@ -65,7 +65,7 @@ export default async function TrainingDetailPage({
         heading="Our Trainers"
         description="All training programmes are facilitated by qualified professionals with both clinical expertise and extensive training delivery experience."
       />
-      <ServiceFaq
+      <Faq
         heading={`Frequently Asked Questions \u2013 ${training.title}`}
         items={training.faq}
       />

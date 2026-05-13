@@ -42,19 +42,17 @@ export function FaqAccordionItem({
         className="w-full text-left py-6 flex items-center justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm"
       >
         <h3
-          className={`font-marcellus text-2xl transition-colors ${
-            isOpen ? "text-primary-dark" : "text-dark hover:text-primary-dark"
-          }`}
+          className={`font-marcellus text-2xl transition-colors ${isOpen ? "text-primary-dark" : "text-dark hover:text-primary-dark"
+            }`}
         >
           {item.question}
         </h3>
         <HiChevronDown
           aria-hidden="true"
-          className={`flex-shrink-0 w-6 h-6 transition-all duration-300 ${
-            isOpen
+          className={`flex-shrink-0 w-6 h-6 transition-all duration-300 ${isOpen
               ? "rotate-180 text-primary-dark"
               : "rotate-0 text-light-ash"
-          }`}
+            }`}
         />
       </button>
 
@@ -87,10 +85,10 @@ export function FaqAccordionItem({
 }
 
 // ---------------------------------------------------------------------------
-// ServiceFaq — full section with label + heading + accordion list
+// Faq — full section with label + heading + accordion list
 // ---------------------------------------------------------------------------
 
-interface ServiceFaqProps {
+interface FaqProps {
   /** Short label shown above the heading in accent colour. Defaults to "FAQ" */
   label?: string;
   /** Main section heading */
@@ -99,12 +97,12 @@ interface ServiceFaqProps {
   className?: string;
 }
 
-export function ServiceFaq({
+export function Faq({
   label = "FAQ",
   heading,
   items,
   className = "",
-}: ServiceFaqProps): React.JSX.Element {
+}: FaqProps): React.JSX.Element {
   const [openIndex, setOpenIndex] = React.useState<number | null>(0);
 
   const toggle = (index: number) => {
@@ -112,7 +110,7 @@ export function ServiceFaq({
   };
 
   return (
-    <section className={`py-12 lg:py-16 bg-white ${className}`}>
+    <section className={`py-12 lg:py-16 ${className}`}>
       <Container className="lg:px-8">
         {/* Section label + heading */}
         <div className="text-center mb-12">

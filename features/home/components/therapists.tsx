@@ -3,56 +3,7 @@ import { Container } from "@/components/layout/container";
 import { TherapistCarousel } from "@/features/home/components/therapist-carousel";
 import { type Therapist } from "@/components/shared/therapist-card";
 
-const THERAPISTS_DATA: Therapist[] = [
-  { 
-    id: "t1", 
-    image: "/home-therapist/therapist-ruma-khondaker-1.png", 
-    name: "Ruma Khondaker", 
-    role: "Psychiatrist"
-  },
-  { 
-    id: "t2", 
-    image: "/home-therapist/therapist-ruma-khondaker-2.png", 
-    name: "Ruma Khondaker", 
-    role: "Psychiatrist" 
-  },
-  { 
-    id: "t3", 
-    image: "/home-therapist/therapist-ruma-khondaker-3.png", 
-    name: "Ruma Khondaker", 
-    role: "Psychiatrist" 
-  },
-  { 
-    id: "t4", 
-    image: "/home-therapist/therapist-ruma-khondaker-4.png", 
-    name: "Ruma Khondaker", 
-    role: "Psychiatrist" 
-  },
-  { 
-    id: "t5", 
-    image: "/home-therapist/therapist-ruma-khondaker-1.png", 
-    name: "Dr. Nadia", 
-    role: "Clinical Psychologist" 
-  },
-  { 
-    id: "t6", 
-    image: "/home-therapist/therapist-ruma-khondaker-2.png", 
-    name: "Dr. Hasan", 
-    role: "Child Therapist" 
-  },
-  { 
-    id: "t7", 
-    image: "/home-therapist/therapist-ruma-khondaker-3.png", 
-    name: "Dr. Rahman", 
-    role: "Psychiatrist" 
-  },
-  { 
-    id: "t8", 
-    image: "/home-therapist/therapist-ruma-khondaker-4.png", 
-    name: "Dr. Sarah", 
-    role: "Mental Health Counselor" 
-  },
-];
+import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 
 export default function Therapists(): React.JSX.Element {
   return (

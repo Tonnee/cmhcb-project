@@ -8,6 +8,9 @@ export interface Therapist {
   image: string;
   name: string;
   role: string;
+  bio?: string;
+  activities?: string[];
+  services?: string[];
 }
 
 export interface TherapistCardProps {
@@ -37,13 +40,15 @@ export function TherapistCard({
     <div className={`group/card flex flex-col items-center min-w-0 ${className}`}>
       {/* Photo */}
       <div className={`relative w-full rounded-3xl overflow-hidden aspect-[4/5] md:h-[320px] md:aspect-auto ${imageClassName}`}>
-        <Image
-          src={therapist.image}
-          alt={therapist.name}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover object-top transition-transform duration-500 group-hover/card:scale-105 pointer-events-none"
-        />
+        <Link href={`/therapists/${therapist.id}`} className="block w-full h-full relative z-0">
+          <Image
+            src={therapist.image}
+            alt={therapist.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover object-top transition-transform duration-500 group-hover/card:scale-105"
+          />
+        </Link>
 
         {/* Make Appointment overlay */}
         {interactive && (
@@ -62,9 +67,12 @@ export function TherapistCard({
 
       {/* Name & Role */}
       <div className="flex flex-col items-center mt-4 gap-[4px]">
-        <p className="font-marcellus text-base text-dark whitespace-nowrap tracking-wide">
+        <Link 
+          href={`/therapists/${therapist.id}`}
+          className="font-marcellus text-base text-dark hover:text-primary transition-colors whitespace-nowrap tracking-wide"
+        >
           {therapist.name}
-        </p>
+        </Link>
         <p className="font-sans font-medium text-[15px] text-accent whitespace-nowrap">
           {therapist.role}
         </p>

@@ -56,9 +56,9 @@ export function MobileNav(): React.JSX.Element {
             Training
           </Link>
           <Link
-            href="/therapist"
+            href="/therapists"
             className={`font-marcellus text-base p-3 rounded-lg transition-colors ${
-              pathname.startsWith("/therapist") ? "text-primary bg-primary/5" : "text-dark hover:bg-gray-50"
+              pathname.startsWith("/therapists") ? "text-primary bg-primary/5" : "text-dark hover:bg-gray-50"
             }`}
             onClick={() => setIsOpen(false)}
           >

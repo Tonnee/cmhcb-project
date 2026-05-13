@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { PageHero } from "@/components/shared/page-hero";
 import { ServiceDescription } from "@/features/services/components/service-description";
 import { ServiceProfessionals } from "@/features/services/components/service-professionals";
-import { ServiceFaq } from "@/features/services/components/service-faq";
+import { Faq } from "@/components/shared/faq";
 import { SERVICES } from "@/features/services/data/services";
 import { type Therapist } from "@/features/home/components/therapist-carousel";
 
@@ -61,7 +61,7 @@ export default async function ServiceDetailPage({
         }}
       />
       <ServiceProfessionals therapists={THERAPISTS} />
-      <ServiceFaq
+      <Faq
         heading={`Frequently Asked Questions \u2013 ${service.title}`}
         items={service.faq}
       />
