@@ -18,7 +18,7 @@ export const FOOTER_LINK_COLUMNS: FooterLinkColumn[] = [
   {
     title: "Important Links",
     links: [
-      { label: "Our Therapist", href: "/therapists", isHighlighted: true },
+      { label: "Our Therapist", href: "/therapists" },
       { label: "Services", href: "/services" },
       { label: "Training", href: "/training" },
       { label: "Blog", href: "/blog" },

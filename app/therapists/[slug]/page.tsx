@@ -2,6 +2,7 @@ import * as React from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
+import { SectionHeading } from "@/components/shared/section-heading";
 import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 import { SERVICES } from "@/features/services/data/services";
 import { ServiceCard } from "@/components/shared/service-card";
@@ -9,7 +10,7 @@ import { BookAppointmentButton } from "@/components/shared/book-appointment-butt
 
 function CheckIcon(): React.JSX.Element {
   return (
-    <div className="flex-shrink-0 w-6 h-6 mt-0.5 overflow-hidden relative">
+    <div className="shrink-0 w-6 h-6 mt-0.5 overflow-hidden relative">
       <svg className="block w-full h-full text-primary" fill="currentColor" viewBox="0 0 24 24">
         <path fillRule="evenodd" clipRule="evenodd" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-1.15-5.603l5.5-6a1 1 0 00-1.478-1.355l-4.8 5.236-2.316-2.317a1 1 0 10-1.414 1.414l3.05 3.05a1.002 1.002 0 001.458-.028z" />
       </svg>
@@ -106,14 +107,11 @@ export default async function TherapistProfilePage({
       {/* Services Section */}
       {therapist.services && therapist.services.length > 0 && (
         <Container className="mb-24 mt-40">
-          <div className="text-center mb-14 px-4">
-            <p className="font-sans font-medium text-base text-accent mb-3 tracking-wide">
-              Areas of Expertise
-            </p>
-            <h2 className="font-marcellus text-3xl md:text-4xl text-dark leading-snug">
-              Services Provided by <span className="text-primary-dark">{therapist.name}</span>
-            </h2>
-          </div>
+          <SectionHeading 
+            subtitle="Areas of Expertise"
+            title={<>Services Provided by <span className="text-primary-dark">{therapist.name}</span></>}
+            className="mb-14"
+          />
 
           <div className="flex flex-wrap justify-center gap-5 lg:gap-8">
             {therapist.services

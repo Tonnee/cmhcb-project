@@ -68,6 +68,7 @@ export function Hero(): React.JSX.Element {
               alt="Group therapy support circle with participants seated together"
               fill
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              sizes="(max-width: 768px) 100vw, 33vw"
             />
           </div>
 
@@ -89,6 +90,7 @@ export function Hero(): React.JSX.Element {
               alt="Family attending a therapy session in a psychologist office"
               fill
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              sizes="(max-width: 768px) 100vw, 33vw"
             />
           </div>
         </div>

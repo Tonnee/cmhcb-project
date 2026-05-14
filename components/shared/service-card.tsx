@@ -30,6 +30,7 @@ export function ServiceCard({ item }: { item: ServiceItem }): React.JSX.Element 
               src={item.icon}
               alt=""
               fill
+              sizes="44px"
               className="object-contain"
             />
           </div>

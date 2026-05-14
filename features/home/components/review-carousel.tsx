@@ -5,6 +5,7 @@
 import * as React from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
+import { SectionHeading } from "@/components/shared/section-heading";
 import type { Testimonial } from "@/data/testimonials";
 
 interface ReviewCarouselProps {
@@ -51,17 +52,12 @@ export function ReviewCarousel({
 
   return (
     <div className="flex-1 pt-16">
-      {/* Section label */}
-      <p className="font-sans font-medium text-base text-accent mb-4">
-        Clients Feedback
-      </p>
-
-      {/* Heading */}
-      <h2 className="font-marcellus text-4xl leading-normal text-dark mb-14">
-        Our Client Stories of{" "}
-        <span className="text-primary">Healing</span> and{" "}
-        <span className="text-accent">Growth</span>
-      </h2>
+      <SectionHeading 
+        subtitle="Clients Feedback"
+        title={<>Our Client Stories of <span className="text-primary">Healing</span> and <span className="text-accent">Growth</span></>}
+        align="left"
+        className="mb-14"
+      />
 
       {/* Embla viewport — hidden, drives state only */}
       <div className="overflow-hidden" ref={emblaRef} aria-hidden="true">

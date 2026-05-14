@@ -2,6 +2,7 @@ import * as React from "react";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
+import { SectionHeading } from "@/components/shared/section-heading";
 
 function CheckIcon(): React.JSX.Element {
   return (
@@ -56,14 +57,12 @@ export default function Training(): React.JSX.Element {
         <div className="flex flex-col lg:flex-row items-center gap-y-12 gap-x-5">
           {/* Left: Content */}
           <div className="flex flex-col flex-1 w-full lg:pr-10 xl:pr-16">
-            <p className="font-sans text-accent font-medium text-base mb-3 tracking-wide">
-              Our Training Programs
-            </p>
-
-            <h2 className="font-marcellus text-4xl lg:text-[42px] text-dark leading-[1.2] mb-8">
-              Want to Make a <span className="text-primary-dark">Difference</span>
-              <br className="hidden md:block" /> in Mental Health?
-            </h2>
+            <SectionHeading 
+              subtitle="Our Training Programs"
+              title={<>Want to Make a <span className="text-primary-dark">Difference</span><br className="hidden md:block" /> in Mental Health?</>}
+              align="left"
+              className="mb-8"
+            />
 
             <p className="font-sans text-base text-light-ash leading-relaxed max-w-[568px] mb-10">
               Our specialized trainings equip professionals, educators, and

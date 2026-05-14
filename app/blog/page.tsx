@@ -4,12 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
-import { EVENTS_DATA } from "@/features/events/data/events";
-import { EventList } from "@/features/events/components/event-list";
+import { BLOG_POSTS } from "@/features/blog/data/blogs";
+import { BlogList } from "@/features/blog/components/blog-list";
 import { Button } from "@/components/ui/button";
 import { RightArrowIcon } from "@/components/ui/icons";
 import { SectionHeading } from "@/components/shared/section-heading";
-import { LocationPinIcon } from "@/components/layout/footer-icons";
 
 // Simple icon components for the meta details
 function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Element {
@@ -23,51 +22,35 @@ function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Ele
   );
 }
 
-
-
-function ClockIcon({ className = "" }: { className?: string }): React.JSX.Element {
+function UserIcon({ className = "" }: { className?: string }): React.JSX.Element {
   return (
     <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+      <circle cx="12" cy="7" r="4"></circle>
     </svg>
   );
 }
 
 export const metadata: Metadata = {
-  title: "Upcoming Mental Health Events & Workshops | CMHC,B",
-  description: "Join our upcoming workshops, seminars, and events focused on mental well-being and psychological support.",
+  title: "Mental Health Blog & Resources | CMHC,B",
+  description: "Explore our latest articles, insights, and resources on mental health, therapy, and well-being.",
 };
 
-export default function EventsPage(): React.JSX.Element {
-  const now = new Date().getTime();
-
-  // Sort events by date: nearest future event first, then latest past event
-  const sortedEvents = [...EVENTS_DATA].sort((a, b) => {
-    const timeA = new Date(a.date).getTime();
-    const timeB = new Date(b.date).getTime();
-
-    const isAUpcoming = timeA >= now;
-    const isBUpcoming = timeB >= now;
-
-    if (isAUpcoming && isBUpcoming) return timeA - timeB; // Nearest future first
-    if (!isAUpcoming && !isBUpcoming) return timeB - timeA; // Latest past first
-    return isAUpcoming ? -1 : 1; // Upcoming always before past
-  });
-
-  const featuredEvent = sortedEvents[0];
-  const remainingEvents = sortedEvents.slice(1);
+export default function BlogPage(): React.JSX.Element {
+  // Assuming the first featured post or the first post in the array is the featured one
+  const featuredPost = BLOG_POSTS.find(post => post.isFeatured) || BLOG_POSTS[0];
+  const remainingPosts = BLOG_POSTS.filter(post => post.id !== featuredPost.id);
 
   return (
     <main className="pt-12 pb-24">
-      {/* Featured Event Section */}
+      {/* Featured Blog Section */}
       <section className="mb-40">
         <Container>
           <Breadcrumb
             className="mb-8"
             items={[
               { label: "Home", href: "/" },
-              { label: "Events", href: "/events" },
+              { label: "Blog", href: "/blog" },
             ]}
           />
           
@@ -76,15 +59,15 @@ export default function EventsPage(): React.JSX.Element {
             <div className="shrink-0 w-full lg:w-[474px]">
               <div className="relative w-full h-[350px] lg:h-[510px] rounded-[24px] overflow-hidden bg-gray-100 group">
                 <Image
-                  src={featuredEvent.image}
-                  alt={featuredEvent.title}
+                  src={featuredPost.image}
+                  alt={featuredPost.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 474px"
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   priority
                 />
                 <div className="absolute top-6 left-6 flex gap-2 flex-wrap">
-                  {featuredEvent.tags.map(tag => (
+                  {featuredPost.tags.map(tag => (
                     <span key={tag} className="px-4 py-1.5 bg-white/90 backdrop-blur-sm text-dark rounded-full font-sans text-xs font-semibold shadow-sm">
                       {tag}
                     </span>
@@ -96,15 +79,15 @@ export default function EventsPage(): React.JSX.Element {
             {/* Right side - Featured Content */}
             <div className="flex-1 flex flex-col justify-center">
               <p className="font-sans font-medium text-base text-accent mb-6 uppercase tracking-wider">
-                {new Date(featuredEvent.date).getTime() >= now ? "Upcoming Event" : "Past Event"}
+                Featured Blog
               </p>
 
               <h1 className="font-marcellus text-[40px] leading-tight text-dark mb-6 max-w-[500px]">
-                {featuredEvent.title}
+                {featuredPost.title}
               </h1>
 
               <p className="font-sans text-base text-light-ash mb-12 max-w-xl leading-relaxed">
-                {featuredEvent.description}
+                {featuredPost.excerpt}
               </p>
 
               {/* Meta info */}
@@ -112,30 +95,29 @@ export default function EventsPage(): React.JSX.Element {
                 <div className="flex items-center gap-2 text-primary">
                   <CalendarIcon className="w-5 h-5 shrink-0" />
                   <span className="font-sans text-base text-dark">
-                    {new Date(featuredEvent.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    {new Date(featuredPost.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2 text-primary">
-                  <ClockIcon className="w-5 h-5 shrink-0" />
+                  <UserIcon className="w-5 h-5 shrink-0" />
                   <span className="font-sans text-base text-dark">
-                    {featuredEvent.time}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 text-primary">
-                  <LocationPinIcon />
-                  <span className="font-sans text-base text-dark">
-                    {featuredEvent.location}
+                    By{" "}
+                    <Link 
+                      href={`/therapists/${featuredPost.author.toLowerCase().replace(/\./g, '').replace(/\s+/g, '-')}`}
+                      className="font-medium hover:underline hover:text-primary transition-colors"
+                    >
+                      {featuredPost.author}
+                    </Link>
                   </span>
                 </div>
               </div>
 
               {/* CTA Button */}
               <div>
-                <Button href={`/events/${featuredEvent.slug}`} variant="primary" className="group">
+                <Button href={`/blog/${featuredPost.slug}`} variant="primary" className="group">
                   <span className="flex items-center gap-2">
-                    {new Date(featuredEvent.date).getTime() >= now ? "Register Now" : "Read More"}
+                    Read More
                     <span className="transition-transform group-hover:translate-x-1">
                       <RightArrowIcon className="w-4 h-4" />
                     </span>
@@ -147,16 +129,16 @@ export default function EventsPage(): React.JSX.Element {
         </Container>
       </section>
 
-      {/* All Events List Section */}
+      {/* All Blogs List Section */}
       <section>
         <Container>
-          <SectionHeading
-            subtitle="Upcoming Events"            
-            title={<>Our Latest <span className="text-primary-dark">Workshops</span> & Seminars</>}
+                  <SectionHeading
+          subtitle="All Blogs"            
+            title={<>Latest <span className="text-primary-dark">Articles</span> & Insights</>}
             className="mt-20 mb-10"
           />
           
-          <EventList events={remainingEvents} />
+          <BlogList posts={remainingPosts} />
         </Container>
       </section>
     </main>

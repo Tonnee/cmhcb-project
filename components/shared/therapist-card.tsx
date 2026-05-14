@@ -39,7 +39,7 @@ export function TherapistCard({
   return (
     <div className={`group/card flex flex-col items-center min-w-0 ${className}`}>
       {/* Photo */}
-      <div className={`relative w-full rounded-3xl overflow-hidden aspect-[4/5] md:h-[320px] md:aspect-auto ${imageClassName}`}>
+      <div className={`relative w-full rounded-3xl overflow-hidden aspect-4/5 md:h-[320px] md:aspect-auto ${imageClassName}`}>
         <Link href={`/therapists/${therapist.id}`} className="block w-full h-full relative z-0">
           <Image
             src={therapist.image}

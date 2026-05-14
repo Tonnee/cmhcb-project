@@ -27,6 +27,8 @@ export interface PageHeroProps {
   onCtaClick?: () => void;
   /** Additional className for the outer <section>. */
   className?: string;
+  /** Optional extra content to render below description. */
+  children?: React.ReactNode;
 }
 
 export function PageHero({
@@ -40,6 +42,7 @@ export function PageHero({
   ctaHref = "/book",
   onCtaClick,
   className = "",
+  children,
 }: PageHeroProps): React.JSX.Element {
   const allBreadcrumbs: BreadcrumbItem[] = [
     ...breadcrumbs,
@@ -48,7 +51,7 @@ export function PageHero({
 
   return (
     <section
-      className={`relative w-full h-[420px] overflow-hidden ${className}`}
+      className={`relative w-full h-auto min-h-[420px] py-20 overflow-hidden ${className}`}
     >
       {/* Background image */}
       <Image
@@ -83,18 +86,29 @@ export function PageHero({
         </h1>
 
         {/* Description */}
-        <p className="font-sans text-base leading-5 text-white/90 max-w-[896px] mb-8">
-          {description}
-        </p>
+        {description && (
+          <p className="font-sans text-base leading-5 text-white/90 max-w-[896px] mb-8">
+            {description}
+          </p>
+        )}
+
+        {/* Extra content */}
+        {children && (
+          <div className="mb-8">
+            {children}
+          </div>
+        )}
 
         {/* CTA */}
-        <Button
-          variant="white"
-          href={onCtaClick ? undefined : ctaHref}
-          onClick={onCtaClick}
-        >
-          {ctaLabel}
-        </Button>
+        {ctaLabel && (
+          <Button
+            variant="white"
+            href={onCtaClick ? undefined : ctaHref}
+            onClick={onCtaClick}
+          >
+            {ctaLabel}
+          </Button>
+        )}
       </div>
     </section>
   );

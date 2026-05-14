@@ -1,6 +1,8 @@
 import * as React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { SectionHeading } from "@/components/shared/section-heading";
+import { LocationPinIcon } from "@/components/layout/footer-icons";
 
 function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Element {
   return (
@@ -22,14 +24,7 @@ function ClockIcon({ className = "" }: { className?: string }): React.JSX.Elemen
   );
 }
 
-function LocationIcon({ className = "" }: { className?: string }): React.JSX.Element {
-  return (
-    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-      <circle cx="12" cy="10" r="3" />
-    </svg>
-  );
-}
+
 
 interface EventCardProps {
   title: string;
@@ -119,13 +114,12 @@ export function UpcomingEvents(): React.JSX.Element {
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-[86px] mb-20">
           {/* Left side - Event details */}
           <div className="flex-1 flex flex-col justify-center">
-            <p className="font-sans font-medium text-base text-accent mb-6">
-              Upcoming Events
-            </p>
-
-            <h2 className="font-marcellus text-[40px] leading-tight text-dark mb-6 max-w-[500px]">
-              &quot;Understanding Anxiety: <br className="hidden lg:block" />{ " " }Tools for Everyday Coping&quot;
-            </h2>
+            <SectionHeading 
+              subtitle="Upcoming Events"
+              title={<>&quot;Understanding Anxiety: <br className="hidden lg:block" /> Tools for Everyday Coping&quot;</>}
+              align="left"
+              className="mb-6"
+            />
 
             <p className="font-sans text-base text-light-ash mb-12 max-w-xl leading-relaxed">
               Join our interactive workshop to explore the roots of anxiety and learn practical coping
@@ -150,7 +144,7 @@ export function UpcomingEvents(): React.JSX.Element {
               </div>
 
               <div className="flex items-center gap-2 text-primary">
-                <LocationIcon className="w-5 h-5 shrink-0" />
+                <LocationPinIcon />
                 <span className="font-sans text-base text-dark">
                   Trauma-Informed Care
                 </span>

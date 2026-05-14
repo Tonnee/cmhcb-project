@@ -14,13 +14,13 @@ export function Button({
   ...props
 }: ButtonProps): React.JSX.Element {
   const baseStyles =
-    "inline-flex items-center justify-center font-marcellus h-11 px-6 text-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none rounded-full";
+    "inline-flex items-center justify-center font-marcellus h-11 px-6 text-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none rounded-full antialiased";
 
   const variants = {
-    primary: "bg-primary text-white hover:bg-primary/90 shadow-sm",
-    "primary-dark": "bg-primary-dark text-white hover:bg-primary-dark/90 shadow-sm",
-    secondary: "bg-secondary text-white hover:bg-secondary/90 shadow-sm",
-    accent: "bg-accent text-white hover:bg-accent/90 shadow-sm",
+    primary: "bg-primary text-white hover:bg-primary/90",
+    "primary-dark": "bg-primary-dark text-white hover:bg-primary-dark/90",
+    secondary: "bg-secondary text-white hover:bg-secondary/90",
+    accent: "bg-accent text-white hover:bg-accent/90",
     outline: "border border-primary text-primary hover:bg-primary/10",
     ghost: "hover:bg-light text-dark",
     white: "bg-white text-dark hover:bg-white/90 shadow-sm",
