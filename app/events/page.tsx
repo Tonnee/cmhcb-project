@@ -73,8 +73,8 @@ export default function EventsPage(): React.JSX.Element {
           
           <div className="flex flex-col lg:flex-row gap-16 lg:gap-[86px]">
             {/* Left side - Featured Image */}
-            <div className="shrink-0 w-full lg:w-[474px]">
-              <div className="relative w-full h-[350px] lg:h-[510px] rounded-[24px] overflow-hidden bg-gray-100 group">
+            <div className="shrink-0 w-full lg:w-[474px] flex flex-col">
+              <div className="relative w-full min-h-[350px] flex-1 rounded-[24px] overflow-hidden bg-gray-100 group">
                 <Image
                   src={featuredEvent.image}
                   alt={featuredEvent.title}
@@ -108,26 +108,38 @@ export default function EventsPage(): React.JSX.Element {
               </p>
 
               {/* Meta info */}
-              <div className="flex flex-col gap-4 mb-10">
-                <div className="flex items-center gap-2 text-primary">
-                  <CalendarIcon className="w-5 h-5 shrink-0" />
-                  <span className="font-sans text-base text-dark">
-                    {new Date(featuredEvent.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                  </span>
+              <div className="flex flex-col gap-6 mb-10">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <CalendarIcon className="w-5 h-5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-sans font-semibold text-base text-dark">
+                      {new Date(featuredEvent.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-primary">
-                  <ClockIcon className="w-5 h-5 shrink-0" />
-                  <span className="font-sans text-base text-dark">
-                    {featuredEvent.time}
-                  </span>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <ClockIcon className="w-5 h-5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-sans font-semibold text-base text-dark">
+                      {featuredEvent.time}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-primary">
-                  <LocationPinIcon />
-                  <span className="font-sans text-base text-dark">
-                    {featuredEvent.location}
-                  </span>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <LocationPinIcon />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-sans font-semibold text-base text-dark">
+                      {featuredEvent.location}
+                    </span>
+                  </div>
                 </div>
               </div>
 

@@ -8,7 +8,7 @@ export function ServiceCard({ item }: { item: ServiceItem }): React.JSX.Element 
   const iconBgClass = item.iconVariant === "primary" ? "bg-primary" : "bg-accent";
 
   return (
-    <div className="rounded-[16px] border bg-white border-gray-50 flex flex-col items-center pb-6 transition-shadow hover:shadow-sm">
+    <div className="rounded-[16px] bg-white border border-muted/50 flex flex-col items-center pb-6 transition-all hover:border-accent hover:shadow-md">
       {/* Image Block */}
       <div className="relative w-full px-5 pt-5 shrink-0">
         <div className="relative h-[220px] w-full rounded-[10px] overflow-hidden bg-gray-100">

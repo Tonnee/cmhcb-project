@@ -16,27 +16,27 @@ export interface SocialLink {
 
 export const FOOTER_LINK_COLUMNS: FooterLinkColumn[] = [
   {
-    title: "Important Links",
+    title: "Company & Services",
     links: [
-      { label: "Our Therapist", href: "/therapists" },
+      { label: "About Us", href: "/about" },
       { label: "Services", href: "/services" },
+      { label: "Our Therapists", href: "/therapists" },
       { label: "Training", href: "/training" },
-      { label: "Blog", href: "/blog" },
-      { label: "FAQs", href: "/faqs" },
-      { label: "Workshops", href: "/workshops" },
-      { label: "Support", href: "/support" },
+      { label: "Affiliation", href: "/affiliation" },
+      { label: "Success Stories", href: "/success-stories" },
+      { label: "Gallery", href: "/gallery" },
     ],
   },
   {
-    title: "Important Links",
+    title: "Resources & Support",
     links: [
+      { label: "Support", href: "/support" },
       { label: "Events", href: "/events" },
-      { label: "Success Stories", href: "/success-stories" },
-      { label: "Gallery", href: "/gallery" },
-      { label: "Affiliation", href: "/affiliation" },
-      { label: "About Us", href: "/about" },
-      { label: "Contact", href: "/contact" },
-      { label: "News & Events", href: "/news-events" },
+      { label: "Workshops", href: "/workshops" },
+      { label: "Blog", href: "/blog" },
+      { label: "FAQs", href: "/faqs" },
+      { label: "Contact Us", href: "/contact" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
     ],
   },
 ];

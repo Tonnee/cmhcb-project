@@ -24,7 +24,7 @@ const VARIANT_CLASSES = {
     value: "text-black",
   },
   secondary: {
-    card: "bg-card-secondary",
+    card: "bg-white border border-muted/50 transition-all hover:border-accent hover:shadow-md",
     bullet: "bg-light-ash/80",
     label: "text-black",
     value: "text-primary-dark",

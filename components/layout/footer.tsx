@@ -30,7 +30,7 @@ const SOCIAL_ICON_MAP: Record<string, React.JSX.Element> = {
 function LinkColumn({ column }: { column: FooterLinkColumn }): React.JSX.Element {
   return (
     <div className="flex flex-col gap-6">
-      <h3 className="font-marcellus text-xl text-white">
+      <h3 className="font-marcellus text-base text-white">
         {column.title}
       </h3>
       <nav className="flex flex-col gap-4" aria-label={column.title}>
@@ -38,11 +38,10 @@ function LinkColumn({ column }: { column: FooterLinkColumn }): React.JSX.Element
           <Link
             key={link.label}
             href={link.href}
-            className={`font-sans text-sm transition-colors duration-200 ${
-              link.isHighlighted
-                ? "text-accent hover:text-white"
-                : "text-white/60 hover:text-accent"
-            }`}
+            className={`font-sans text-sm transition-colors duration-200 ${link.isHighlighted
+              ? "text-accent hover:text-white"
+              : "text-white/60 hover:text-accent"
+              }`}
           >
             {link.label}
           </Link>
@@ -56,12 +55,12 @@ export function Footer(): React.JSX.Element {
   return (
     <footer className="bg-footer-bg mt-auto border-t-4 border-primary">
       <div className="container pt-20 pb-10">
-        
+
         {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-20">
-          
-          {/* Brand & Mission - 4 cols */}
-          <div className="lg:col-span-4 flex flex-col gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-12 mb-20">
+
+          {/* Brand & Mission - 3 cols */}
+          <div className="lg:col-span-3 flex flex-col gap-10">
             <div className="rounded-2xl flex items-center gap-6 w-fit">
               <div className="w-[70px] h-[70px] shrink-0 relative">
                 <Image
@@ -76,7 +75,7 @@ export function Footer(): React.JSX.Element {
                 Center for Mental Health and Care, Bangladesh
               </p>
             </div>
-            
+
             <p className="font-sans text-white/70 leading-relaxed max-w-[320px]">
               Empowering your mind and transforming your life with compassionate, evidence-based mental health care.
             </p>
@@ -98,7 +97,7 @@ export function Footer(): React.JSX.Element {
           </div>
 
           {/* Links 1 - 2 cols */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 lg:ml-6">
             <LinkColumn column={FOOTER_LINK_COLUMNS[0]} />
           </div>
 
@@ -107,9 +106,9 @@ export function Footer(): React.JSX.Element {
             <LinkColumn column={FOOTER_LINK_COLUMNS[1]} />
           </div>
 
-          {/* Contact - 4 cols */}
-          <div className="lg:col-span-4 flex flex-col gap-6 lg:ml-8">
-            <h3 className="font-marcellus text-xl text-white">Contact Us</h3>
+          {/* Contact - 3 cols */}
+          <div className="lg:col-span-3 flex flex-col gap-6">
+            <h3 className="font-marcellus text-base text-white">Contact Us</h3>
             <address className="flex flex-col gap-5 not-italic">
               <div className="flex items-start gap-4 group">
                 <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
@@ -162,7 +161,7 @@ export function Footer(): React.JSX.Element {
               </Link>
             ))}
           </nav>
-          
+
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-sm text-white/50 font-sans">
             <p>CMHC,B &copy; {new Date().getFullYear()}. All rights reserved.</p>
             <span className="hidden sm:inline text-white/20">|</span>

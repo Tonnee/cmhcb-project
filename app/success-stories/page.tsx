@@ -1,3 +1,40 @@
-export default function Page() {
-  return <main>Page</main>
+import * as React from "react";
+import { type Metadata } from "next";
+import { PageFeatureHero } from "@/components/shared/page-feature-hero";
+import { AllSuccessStories } from "@/features/success-stories/components/all-success-stories";
+
+export const metadata: Metadata = {
+  title: "Success Stories & Client Feedback | CMHCB",
+  description: "Read inspiring stories from our clients. Discover how therapy, training, and mental health support at CMHCB have changed lives.",
+};
+
+export default function SuccessStoriesPage(): React.JSX.Element {
+  return (
+    <main>
+      <PageFeatureHero
+        breadcrumbs={[{ label: "Success Stories", href: "/success-stories" }]}
+        title="Real experiences, real impact"
+        description="Our clients share their journeys of transformation — honest reflections on the care, empathy, and support they received at CMHCB. Read how mental health care has empowered them to reclaim their lives."
+        image={{
+          src: "/home-review/mental-health-therapy-client-woman.png",
+          alt: "A happy client sharing their successful journey with CMHCB",
+        }}
+        ctas={[
+          {
+            label: "Read Stories",
+            variant: "primary",
+            href: "#stories",
+            className: "bg-primary-dark hover:bg-primary-dark/90 border-primary-dark",
+          },
+          {
+            label: "Book Appointment",
+            variant: "outline",
+            href: "/contact",
+            className: "text-primary-dark border-primary-dark hover:bg-primary-dark/10",
+          },
+        ]}
+      />
+      <AllSuccessStories />
+    </main>
+  );
 }
