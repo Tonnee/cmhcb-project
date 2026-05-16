@@ -4,18 +4,30 @@ import * as React from "react";
 import { TherapistCard } from "@/components/shared/therapist-card";
 import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 
+/** Returns the primary role (text before the first "|") for filter categorization */
+function getPrimaryRole(role: string): string {
+  return role.split("|")[0].trim();
+}
+
 export function TherapistList(): React.JSX.Element {
   const [activeCategory, setActiveCategory] = React.useState("All");
 
-  const categories = ["All", ...Array.from(new Set(THERAPISTS_DATA.map((t) => t.role)))];
+  // Derive unique primary-role categories
+  const categories = [
+    "All",
+    ...Array.from(new Set(THERAPISTS_DATA.map((t) => getPrimaryRole(t.role)))),
+  ];
 
-  const filteredTherapists = activeCategory === "All"
-    ? THERAPISTS_DATA
-    : THERAPISTS_DATA.filter((t) => t.role === activeCategory);
+  const filteredTherapists =
+    activeCategory === "All"
+      ? THERAPISTS_DATA
+      : THERAPISTS_DATA.filter(
+          (t) => getPrimaryRole(t.role) === activeCategory
+        );
 
   return (
     <div className="w-full">
-      {/* Tabs */}
+      {/* Filter Tabs */}
       <div className="flex flex-wrap justify-center gap-3 mb-12">
         {categories.map((category) => (
           <button
@@ -42,6 +54,13 @@ export function TherapistList(): React.JSX.Element {
           />
         ))}
       </div>
+
+      {/* Empty state */}
+      {filteredTherapists.length === 0 && (
+        <p className="text-center font-sans text-light-ash py-16">
+          No therapists found for this category.
+        </p>
+      )}
     </div>
   );
 }

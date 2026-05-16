@@ -3,6 +3,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { RightArrowIcon } from "@/components/ui/icons";
 
+export interface TherapistFeeItem {
+  label: string;
+  amount: string;
+  note?: string;
+}
+
+export interface TherapistFeeCategory {
+  category: string;
+  items: TherapistFeeItem[];
+}
+
 export interface Therapist {
   id: string;
   image: string;
@@ -11,6 +22,11 @@ export interface Therapist {
   bio?: string;
   activities?: string[];
   services?: string[];
+  education?: string[];
+  training?: string[];
+  expertise?: string[];
+  experience?: string[];
+  fees?: TherapistFeeCategory[];
 }
 
 export interface TherapistCardProps {
@@ -74,7 +90,7 @@ export function TherapistCard({
           {therapist.name}
         </Link>
         <p className="font-sans font-medium text-[15px] text-accent whitespace-nowrap">
-          {therapist.role}
+          {therapist.role.split("|")[0].trim()}
         </p>
       </div>
     </div>
