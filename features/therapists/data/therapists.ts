@@ -71,7 +71,7 @@ export const THERAPISTS_DATA: Therapist[] = [
   {
     id: "t6",
     image: "/home-therapist/therapist-ruma-khondaker-2.png",
-    name: "Dr. Hasan",
+    name: "Tariq Hasan",
     role: "Child Therapist",
     bio: bioPlaceholder,
     activities: [
@@ -84,7 +84,7 @@ export const THERAPISTS_DATA: Therapist[] = [
   {
     id: "t7",
     image: "/home-therapist/therapist-ruma-khondaker-3.png",
-    name: "Dr. Rahman",
+    name: "Dr. Rahman Khan",
     role: "Psychiatrist",
     bio: bioPlaceholder,
     activities: [
@@ -97,7 +97,7 @@ export const THERAPISTS_DATA: Therapist[] = [
   {
     id: "t8",
     image: "/home-therapist/therapist-ruma-khondaker-4.png",
-    name: "Dr. Sarah",
+    name: "Dr. Sarah Ahmed",
     role: "Mental Health Counselor",
     bio: bioPlaceholder,
     activities: [

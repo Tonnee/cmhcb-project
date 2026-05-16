@@ -1,5 +1,6 @@
 import * as React from "react";
 import Image from "next/image";
+import { HiArrowLongRight } from "react-icons/hi2";
 import { Container } from "@/components/layout/container";
 
 export function Hero(): React.JSX.Element {
@@ -37,20 +38,7 @@ export function Hero(): React.JSX.Element {
                 <h3 className="font-marcellus text-xl text-accent">
                   Find Your Therapist
                 </h3>
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
+                <HiArrowLongRight className="w-6 h-6 text-white" aria-hidden="true" />
               </div>
               <p className="font-sans text-sm text-white/75">
                 Connect with the right help, right when you need it.

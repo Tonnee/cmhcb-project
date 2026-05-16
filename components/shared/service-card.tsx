@@ -23,7 +23,7 @@ export function ServiceCard({ item }: { item: ServiceItem }): React.JSX.Element 
 
         {/* Floating Icon */}
         <div
-          className={`absolute left-1/2 -translate-x-1/2 -bottom-[42px] w-[85px] h-[85px] rounded-full flex items-center justify-center border-4 border-white shadow-sm z-10 ${iconBgClass}`}
+          className={`absolute left-1/2 -translate-x-1/2 -bottom-[42px] w-[85px] h-[85px] rounded-2xl flex items-center justify-center border-4 border-white shadow-sm z-10 ${iconBgClass}`}
         >
           <div className="relative w-[44px] h-[44px]">
             <Image

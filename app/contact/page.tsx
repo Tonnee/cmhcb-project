@@ -47,8 +47,8 @@ export default function ContactPage(): React.JSX.Element {
             <div className="flex flex-col gap-8 mb-12">
               {/* Phone */}
               <div className="flex items-start gap-5">
-                <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <PhoneIcon />
+                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <PhoneIcon className="w-6 h-6" />
                 </div>
                 <div className="pt-1">
                   <h3 className="font-bold text-dark text-lg mb-1">Phone</h3>
@@ -60,8 +60,8 @@ export default function ContactPage(): React.JSX.Element {
 
               {/* Email */}
               <div className="flex items-start gap-5">
-                <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <EmailIcon />
+                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <EmailIcon className="w-6 h-6" />
                 </div>
                 <div className="pt-1">
                   <h3 className="font-bold text-dark text-lg mb-1">Email</h3>
@@ -73,8 +73,8 @@ export default function ContactPage(): React.JSX.Element {
 
               {/* Address */}
               <div className="flex items-start gap-5">
-                <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <LocationPinIcon />
+                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <LocationPinIcon className="w-6 h-6" />
                 </div>
                 <div className="pt-1">
                   <h3 className="font-bold text-dark text-lg mb-1">Address</h3>
@@ -91,17 +91,17 @@ export default function ContactPage(): React.JSX.Element {
             <div>
               <h3 className="font-bold text-dark text-lg mb-5">Follow Us</h3>
               <div className="flex items-center gap-4 text-primary">
-                <a href="#" className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Facebook">
-                  <FacebookIcon />
+                <a href="#" className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Facebook">
+                  <FacebookIcon className="w-6 h-6" />
                 </a>
-                <a href="#" className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Instagram">
-                  <InstagramIcon />
+                <a href="#" className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Instagram">
+                  <InstagramIcon className="w-6 h-6" />
                 </a>
-                <a href="#" className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Twitter">
-                  <TwitterXIcon />
+                <a href="#" className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Twitter">
+                  <TwitterXIcon className="w-6 h-6" />
                 </a>
-                <a href="#" className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="LinkedIn">
-                  <LinkedInIcon />
+                <a href="#" className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="LinkedIn">
+                  <LinkedInIcon className="w-6 h-6" />
                 </a>
               </div>
             </div>

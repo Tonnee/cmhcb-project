@@ -40,7 +40,7 @@ export function ServiceProfessionals({
               <h2 className="font-marcellus text-3xl text-dark">{heading}</h2>
               <p className="font-sans text-xl leading-8 text-dark">{description}</p>
             </div>
-            <Button variant="primary-dark" href="/book" className="self-start">
+            <Button variant="primary-dark" href="/appointment" className="self-start">
               Schedule a Session
             </Button>
           </div>

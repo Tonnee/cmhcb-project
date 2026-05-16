@@ -88,7 +88,7 @@ export function Footer(): React.JSX.Element {
                   aria-label={social.label}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/5 text-white flex items-center justify-center hover:bg-accent hover:text-dark transition-colors"
+                  className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center hover:bg-accent hover:text-dark transition-colors"
                 >
                   {SOCIAL_ICON_MAP[social.label]}
                 </a>
@@ -111,7 +111,7 @@ export function Footer(): React.JSX.Element {
             <h3 className="font-marcellus text-base text-white">Contact Us</h3>
             <address className="flex flex-col gap-5 not-italic">
               <div className="flex items-start gap-4 group">
-                <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
+                <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
                   <LocationPinIcon />
                 </div>
                 <div className="pt-1 md:pt-1.5">
@@ -127,7 +127,7 @@ export function Footer(): React.JSX.Element {
               </div>
 
               <div className="flex items-center gap-4 group">
-                <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
+                <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
                   <PhoneIcon />
                 </div>
                 <a href={`tel:${CONTACT_INFO.phone}`} className="font-sans text-sm text-white/70 group-hover:text-accent transition-colors">
@@ -136,7 +136,7 @@ export function Footer(): React.JSX.Element {
               </div>
 
               <div className="flex items-center gap-4 group">
-                <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
+                <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
                   <EmailIcon />
                 </div>
                 <a href={`mailto:${CONTACT_INFO.email}`} className="font-sans text-sm text-white/70 group-hover:text-accent transition-colors">

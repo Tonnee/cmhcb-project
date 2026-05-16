@@ -1,4 +1,5 @@
 import * as React from "react";
+import { HiShieldCheck, HiGlobeAlt } from "react-icons/hi2";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
@@ -28,10 +29,8 @@ export function MissionVision(): React.JSX.Element {
             </div>
           </div>
           <div className="w-full lg:w-1/2 flex flex-col items-start text-left">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-primary" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
+            <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+              <HiShieldCheck className="w-8 h-8 text-primary" />
             </div>
             <h3 className="font-marcellus text-3xl md:text-4xl text-dark mb-6">Our Mission</h3>
             <p className="font-sans text-light-ash text-lg leading-relaxed">
@@ -54,12 +53,8 @@ export function MissionVision(): React.JSX.Element {
             </div>
           </div>
           <div className="w-full lg:w-1/2 flex flex-col items-start text-left">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-primary" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                <path d="M2 12h20" />
-              </svg>
+            <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+              <HiGlobeAlt className="w-8 h-8 text-primary" />
             </div>
             <h3 className="font-marcellus text-3xl md:text-4xl text-dark mb-6">Our Vision</h3>
             <p className="font-sans text-light-ash text-lg leading-relaxed">

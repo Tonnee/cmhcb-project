@@ -20,7 +20,7 @@ export function ScheduleAppointment(): React.JSX.Element {
           </div>
 
           {/* CTA Button */}
-          <Button href="/contact" variant="white">
+          <Button href="/appointment" variant="white">
             Explore More
           </Button>
         </div>

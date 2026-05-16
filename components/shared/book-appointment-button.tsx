@@ -4,14 +4,18 @@ import { Button } from "@/components/ui/button";
 interface BookAppointmentButtonProps {
   className?: string;
   variant?: "primary" | "secondary" | "accent" | "outline" | "ghost" | "white";
+  therapistId?: string;
 }
 
 export function BookAppointmentButton({
   className = "",
   variant = "primary",
+  therapistId,
 }: BookAppointmentButtonProps): React.JSX.Element {
+  const href = therapistId ? `/appointment?therapist=${therapistId}` : "/appointment";
+
   return (
-    <Button href="/book" variant={variant} className={className}>
+    <Button href={href} variant={variant} className={className}>
       Book Appointment
     </Button>
   );

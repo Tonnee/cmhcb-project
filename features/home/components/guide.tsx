@@ -38,7 +38,7 @@ export default function Guide(): React.JSX.Element {
             <Button
               variant="primary"
               className="mt-10 self-start"
-              href="/contact"
+              href="/appointment"
             >
               Book Appointment
             </Button>

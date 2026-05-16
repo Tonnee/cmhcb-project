@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { HiMagnifyingGlass } from "react-icons/hi2";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { FaqAccordionItem } from "@/components/shared/faq";
@@ -53,15 +54,7 @@ export function FaqTabsSection(): React.JSX.Element {
               className="w-full h-14 pl-6 pr-12 rounded-full border border-muted focus:border-primary-dark focus:ring-1 focus:ring-primary-dark outline-none font-sans transition-colors shadow-sm"
               aria-label="Search FAQs"
             />
-            <svg
-              className="absolute right-6 top-1/2 -translate-y-1/2 text-light-ash w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <HiMagnifyingGlass className="absolute right-6 top-1/2 -translate-y-1/2 text-light-ash w-5 h-5" aria-hidden="true" />
           </div>
 
           {/* Tabs */}

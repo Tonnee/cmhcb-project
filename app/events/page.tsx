@@ -1,4 +1,5 @@
 import * as React from "react";
+import { HiCalendarDays, HiClock, HiMapPin } from "react-icons/hi2";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,29 +10,18 @@ import { EventList } from "@/features/events/components/event-list";
 import { Button } from "@/components/ui/button";
 import { RightArrowIcon } from "@/components/ui/icons";
 import { SectionHeading } from "@/components/shared/section-heading";
-import { LocationPinIcon } from "@/components/layout/footer-icons";
 
 // Simple icon components for the meta details
 function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Element {
-  return (
-    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-      <line x1="16" y1="2" x2="16" y2="6" />
-      <line x1="8" y1="2" x2="8" y2="6" />
-      <line x1="3" y1="10" x2="21" y2="10" />
-    </svg>
-  );
+  return <HiCalendarDays className={className} />;
 }
 
-
-
 function ClockIcon({ className = "" }: { className?: string }): React.JSX.Element {
-  return (
-    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>
-  );
+  return <HiClock className={className} />;
+}
+
+function LocationPinIcon({ className = "" }: { className?: string }): React.JSX.Element {
+  return <HiMapPin className={className} />;
 }
 
 export const metadata: Metadata = {
@@ -110,8 +100,8 @@ export default function EventsPage(): React.JSX.Element {
               {/* Meta info */}
               <div className="flex flex-col gap-6 mb-10">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                    <CalendarIcon className="w-5 h-5" />
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <CalendarIcon className="w-6 h-6" />
                   </div>
                   <div className="flex flex-col">
                     <span className="font-sans font-semibold text-base text-dark">
@@ -121,8 +111,8 @@ export default function EventsPage(): React.JSX.Element {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                    <ClockIcon className="w-5 h-5" />
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <ClockIcon className="w-6 h-6" />
                   </div>
                   <div className="flex flex-col">
                     <span className="font-sans font-semibold text-base text-dark">
@@ -132,8 +122,8 @@ export default function EventsPage(): React.JSX.Element {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                    <LocationPinIcon />
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <LocationPinIcon className="w-6 h-6" />
                   </div>
                   <div className="flex flex-col">
                     <span className="font-sans font-semibold text-base text-dark">

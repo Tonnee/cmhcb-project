@@ -1,17 +1,12 @@
 import * as React from "react";
+import { HiCheck } from "react-icons/hi2";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/shared/section-heading";
 
-function CheckIcon(): React.JSX.Element {
-  return (
-    <div className="flex-shrink-0 w-6 h-6 mt-0.5 overflow-hidden relative">
-      <svg className="block w-full h-full text-primary" fill="currentColor" viewBox="0 0 24 24">
-        <path fillRule="evenodd" clipRule="evenodd" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-1.15-5.603l5.5-6a1 1 0 00-1.478-1.355l-4.8 5.236-2.316-2.317a1 1 0 10-1.414 1.414l3.05 3.05a1.002 1.002 0 001.458-.028z" />
-      </svg>
-    </div>
-  );
+function CheckIcon({ className = "" }: { className?: string }): React.JSX.Element {
+  return <HiCheck className={className} />;
 }
 
 interface TrainingItemProps {
@@ -36,12 +31,14 @@ const TRAINING_DATA: TrainingItemProps[] = [
 
 function TrainingItem({ title, description }: TrainingItemProps): React.JSX.Element {
   return (
-    <div className="flex gap-4 items-start">
-      <CheckIcon />
-      <div className="flex flex-col gap-[6px]">
-        <p className="font-marcellus text-[17px] text-dark leading-snug">
+    <div className="flex gap-4 items-center">
+      <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+        <CheckIcon className="w-6 h-6" />
+      </div>
+      <div className="flex flex-col">
+        <h4 className="font-marcellus text-lg text-dark">
           {title}
-        </p>
+        </h4>
         <p className="font-sans text-[15px] text-light-ash leading-relaxed max-w-lg">
           {description}
         </p>

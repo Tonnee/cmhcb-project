@@ -1,31 +1,46 @@
 import * as React from "react";
+import { HiAcademicCap, HiClock, HiTrophy } from "react-icons/hi2";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 import { SERVICES } from "@/features/services/data/services";
+import { BLOG_POSTS } from "@/features/blog/data/blogs";
+import { BlogCard } from "@/features/blog/components/blog-card";
 import { ServiceCard } from "@/components/shared/service-card";
 import { BookAppointmentButton } from "@/components/shared/book-appointment-button";
 
-function CheckIcon(): React.JSX.Element {
-  return (
-    <div className="shrink-0 w-6 h-6 mt-0.5 overflow-hidden relative">
-      <svg className="block w-full h-full text-primary" fill="currentColor" viewBox="0 0 24 24">
-        <path fillRule="evenodd" clipRule="evenodd" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-1.15-5.603l5.5-6a1 1 0 00-1.478-1.355l-4.8 5.236-2.316-2.317a1 1 0 10-1.414 1.414l3.05 3.05a1.002 1.002 0 001.458-.028z" />
-      </svg>
-    </div>
-  );
+function EducationIcon({ className = "" }: { className?: string }): React.JSX.Element {
+  return <HiAcademicCap className={className} />;
 }
 
-function TherapistDetailItem({ title, description }: { title: string; description: string }): React.JSX.Element {
+function AwardIcon({ className = "" }: { className?: string }): React.JSX.Element {
+  return <HiTrophy className={className} />;
+}
+
+function ClockIcon({ className = "" }: { className?: string }): React.JSX.Element {
+  return <HiClock className={className} />;
+}
+
+function TherapistDetailItem({ 
+  title, 
+  description, 
+  icon: Icon 
+}: { 
+  title: string; 
+  description: string;
+  icon: React.ElementType;
+}): React.JSX.Element {
   return (
-    <div className="flex gap-4 items-start">
-      <CheckIcon />
-      <div className="flex flex-col gap-[6px]">
-        <p className="font-marcellus text-[17px] text-dark leading-snug">
+    <div className="flex gap-4 items-center">
+      <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+        <Icon className="w-6 h-6" />
+      </div>
+      <div className="flex flex-col">
+        <h4 className="font-marcellus text-lg text-dark">
           {title}
-        </p>
+        </h4>
         <p className="font-sans text-[15px] text-light-ash leading-relaxed max-w-lg">
           {description}
         </p>
@@ -50,6 +65,11 @@ export default async function TherapistProfilePage({
     notFound();
   }
 
+  const therapistBlogs = BLOG_POSTS.filter(post => 
+    post.author.toLowerCase().includes(therapist.name.toLowerCase()) ||
+    therapist.name.toLowerCase().includes(post.author.toLowerCase())
+  );
+
   return (
     <main className="pt-24 pb-24">
       <Container>
@@ -70,27 +90,30 @@ export default async function TherapistProfilePage({
 
             <div className="flex flex-col gap-8 mb-12">
               <TherapistDetailItem
+                icon={EducationIcon}
                 title="Education"
                 description="MBBS from Dhaka Medical College, followed by specialized fellowship and FCPS in Psychiatry."
               />
               <TherapistDetailItem
+                icon={AwardIcon}
                 title="Training"
                 description="Advanced certification in Cognitive Behavioral Therapy (CBT) and Trauma-Informed Care."
               />
               <TherapistDetailItem
+                icon={ClockIcon}
                 title="Service Hours"
                 description="Available for appointments Sunday to Thursday from 10:00 AM to 6:00 PM."
               />
             </div>
 
             <div className="self-start">
-              <BookAppointmentButton />
+              <BookAppointmentButton therapistId={therapist.id} />
             </div>
           </div>
 
           {/* Right: Image */}
           <div className="shrink-0 w-full lg:w-[470px]">
-            <div className="relative rounded-3xl overflow-hidden aspect-[3/4] lg:h-[664px] lg:w-[470px] bg-gray-100 shadow-sm">
+            <div className="relative rounded-3xl overflow-hidden aspect-3/4 lg:h-[664px] lg:w-[470px] bg-gray-100 shadow-sm">
               <Image
                 src={therapist.image}
                 alt={therapist.name}
@@ -123,6 +146,32 @@ export default async function TherapistProfilePage({
                 </div>
               ))
             }
+          </div>
+        </Container>
+      )}
+
+      {/* Therapist Blogs Section */}
+      {therapistBlogs.length > 0 && (
+        <Container className="mb-24">
+          <div className="flex items-end justify-between mb-10">
+            <SectionHeading 
+              subtitle="Insights & Articles"
+              title={<>Latest Articles by <span className="text-primary-dark">{therapist.name}</span></>}
+              align="left"
+              className="mb-0"
+            />
+            <Link 
+              href="/blog" 
+              className="font-sans text-primary font-semibold hover:underline flex items-center gap-2 mb-2"
+            >
+              View all blogs <HiArrowSmallRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {therapistBlogs.map((post) => (
+              <BlogCard key={post.id} post={post} />
+            ))}
           </div>
         </Container>
       )}

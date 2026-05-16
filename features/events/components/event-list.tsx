@@ -1,9 +1,11 @@
 "use client";
 
 import * as React from "react";
+import { HiMagnifyingGlass } from "react-icons/hi2";
 import { Event } from "@/features/events/data/events";
 import { EventCard } from "@/features/events/components/event-card";
 import { Pagination } from "@/components/shared/pagination";
+import { Select } from "@/components/ui/select";
 
 interface EventListProps {
   events: Event[];
@@ -69,10 +71,7 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
             className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-sans text-sm transition-shadow"
           />
           <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+            <HiMagnifyingGlass className="w-5 h-5" />
           </div>
         </div>
 
@@ -81,22 +80,15 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
           <label htmlFor="sort-order" className="font-sans text-sm text-dark font-medium whitespace-nowrap">
             Sort by:
           </label>
-          <div className="relative">
-            <select
-              id="sort-order"
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
-              className="w-full sm:w-auto pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-sans text-sm bg-white cursor-pointer appearance-none"
-            >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-            </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-          </div>
+          <Select
+            id="sort-order"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
+            className="sm:w-auto"
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </Select>
         </div>
       </div>
 

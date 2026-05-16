@@ -9,7 +9,7 @@ export const SERVICE_INFO_BLOCKS: SplitBlockContent[] = [
       "Students and working professionals",
       "Organizations and institutions",
     ],
-    cta: { label: "Book Appointment", href: "/book" },
+    cta: { label: "Book Appointment", href: "/appointment" },
     image: {
       src: "/compassionate-mental-health-professional.png",
       alt: "A professional mental health therapy session",
@@ -23,7 +23,7 @@ export const SERVICE_INFO_BLOCKS: SplitBlockContent[] = [
       "Personalized care plans",
       "Trusted mental health center in Bangladesh",
     ],
-    cta: { label: "Schedule a Session", href: "/book" },
+    cta: { label: "Schedule a Session", href: "/appointment" },
     image: {
       src: "/compassionate-mental-health-professional.png",
       alt: "A client in a supportive mental health environment",

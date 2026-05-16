@@ -29,7 +29,7 @@ export default function SuccessStoriesPage(): React.JSX.Element {
           {
             label: "Book Appointment",
             variant: "outline",
-            href: "/contact",
+            href: "/appointment",
             className: "text-primary-dark border-primary-dark hover:bg-primary-dark/10",
           },
         ]}

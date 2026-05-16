@@ -10,7 +10,7 @@ interface IconBadgeProps {
 function IconBadge({ children, bgClass }: IconBadgeProps): React.JSX.Element {
   return (
     <span
-      className={`inline-flex items-center justify-center w-11 h-11 rounded-full align-middle mx-1 ${bgClass}`}
+      className={`inline-flex items-center justify-center w-11 h-11 rounded-lg align-middle mx-1 bg-primary/10 text-primary`}
     >
       {children}
     </span>
@@ -24,7 +24,7 @@ interface ImageBadgeProps {
 
 function ImageBadge({ src, alt }: ImageBadgeProps): React.JSX.Element {
   return (
-    <span className="relative inline-flex items-center justify-center w-11 h-11 rounded-full overflow-hidden align-middle mx-1 border-2 border-white shadow-md">
+    <span className="relative inline-flex items-center justify-center w-11 h-11 rounded-lg overflow-hidden align-middle mx-1 border-2 border-white shadow-md">
       <Image
         src={src}
         alt={alt}
@@ -48,7 +48,7 @@ export default function About(): React.JSX.Element {
               alt="Portrait of a licensed mental health therapist"
             />
             , mental health programs{" "}
-            <IconBadge bgClass="bg-primary-dark">
+            <IconBadge bgClass="">
               <Image
                 src="/home-about-image/mental-health-brain-icon.png"
                 alt="Mental health brain icon representing programs"
@@ -57,7 +57,7 @@ export default function About(): React.JSX.Element {
               />
             </IconBadge>
             , and personalized care{" "}
-            <IconBadge bgClass="bg-accent">
+            <IconBadge bgClass="">
               <Image
                 src="/home-about-image/personalized-care-heart-icon.png"
                 alt="Heart icon indicating personalized mental health care"
@@ -71,7 +71,7 @@ export default function About(): React.JSX.Element {
               alt="Portrait of a successful mental health therapy client"
             />{" "}
             receive the support they need to thrive{" "}
-            <IconBadge bgClass="bg-secondary">
+            <IconBadge bgClass="">
               <Image
                 src="/home-about-image/mental-health-progress-chart-icon.png"
                 alt="Growth chart icon signifying client progress"

@@ -1,27 +1,16 @@
 import * as React from "react";
+import { HiCalendarDays, HiClock } from "react-icons/hi2";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { LocationPinIcon } from "@/components/layout/footer-icons";
 
 function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Element {
-  return (
-    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-      <line x1="16" y1="2" x2="16" y2="6" />
-      <line x1="8" y1="2" x2="8" y2="6" />
-      <line x1="3" y1="10" x2="21" y2="10" />
-    </svg>
-  );
+  return <HiCalendarDays className={className} />;
 }
 
 function ClockIcon({ className = "" }: { className?: string }): React.JSX.Element {
-  return (
-    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>
-  );
+  return <HiClock className={className} />;
 }
 
 
@@ -55,24 +44,32 @@ function EventCard({ title, date, time, colorMode, description, isInfoCard = fal
           <h3 className={`font-marcellus text-2xl leading-8 ${textClass}`}>
             {title}
           </h3>
-          <div className="flex flex-col gap-4">
-            {date && (
-              <div className="flex items-center gap-2">
-                <CalendarIcon className={`w-5 h-5 shrink-0 ${textClass}`} />
-                <span className={`font-sans text-base leading-normal ${textClass}`}>
-                  {date}
-                </span>
+        <div className="flex flex-col gap-5">
+          {date && (
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${
+                colorMode === "accent" ? "bg-dark/10" : "bg-white/10"
+              }`}>
+                <CalendarIcon className={`w-6 h-6 ${textClass}`} />
               </div>
-            )}
-            {time && (
-              <div className="flex items-center gap-1.5">
-                <ClockIcon className={`w-5 h-5 shrink-0 ${textClass}`} />
-                <span className={`font-sans text-base leading-normal ${textClass}`}>
-                  {time}
-                </span>
+              <span className={`font-sans text-base leading-normal ${textClass}`}>
+                {date}
+              </span>
+            </div>
+          )}
+          {time && (
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${
+                colorMode === "accent" ? "bg-dark/10" : "bg-white/10"
+              }`}>
+                <ClockIcon className={`w-6 h-6 ${textClass}`} />
               </div>
-            )}
-          </div>
+              <span className={`font-sans text-base leading-normal ${textClass}`}>
+                {time}
+              </span>
+            </div>
+          )}
+        </div>
         </>
       )}
     </div>
@@ -128,26 +125,41 @@ export function UpcomingEvents(): React.JSX.Element {
             </p>
 
             {/* Event meta info */}
-            <div className="flex flex-col gap-4 mb-10">
-              <div className="flex items-center gap-2 text-primary">
-                <CalendarIcon className="w-5 h-5 shrink-0" />
-                <span className="font-sans text-base text-dark">
-                  Saturday, July 20, 2025
-                </span>
+            <div className="flex flex-col gap-6 mb-10">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <CalendarIcon className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-marcellus text-lg text-dark leading-tight">
+                    Saturday, July 20, 2025
+                  </span>
+                  <span className="font-sans text-sm text-light-ash">Date of Event</span>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2 text-primary">
-                <ClockIcon className="w-5 h-5 shrink-0" />
-                <span className="font-sans text-base text-dark">
-                  10:00 AM – 1:00 PM
-                </span>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <ClockIcon className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-marcellus text-lg text-dark leading-tight">
+                    10:00 AM – 1:00 PM
+                  </span>
+                  <span className="font-sans text-sm text-light-ash">Time of Session</span>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2 text-primary">
-                <LocationPinIcon />
-                <span className="font-sans text-base text-dark">
-                  Trauma-Informed Care
-                </span>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <LocationPinIcon />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-marcellus text-lg text-dark leading-tight">
+                    Trauma-Informed Care
+                  </span>
+                  <span className="font-sans text-sm text-light-ash">Category / Type</span>
+                </div>
               </div>
             </div>
 

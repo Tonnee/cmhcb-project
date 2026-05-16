@@ -53,7 +53,7 @@ export function TherapistCard({
         {/* Make Appointment overlay */}
         {interactive && (
           <Link
-            href="/book"
+            href="/appointment"
             draggable={false}
             className="absolute bottom-0 left-0 right-0 h-[87px] flex items-center px-6 gap-2.5 bg-dark-green-overlay backdrop-blur-[2px] opacity-0 invisible group-hover/card:opacity-100 group-hover/card:visible transition-all duration-300 hover:bg-dark-green/95 group/link z-10"
           >

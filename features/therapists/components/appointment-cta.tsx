@@ -31,7 +31,7 @@ export function AppointmentCta(): React.JSX.Element {
           We&apos;re here to support you, let&apos;s work together to create a path toward healing, growth, and balance.
         </p>
 
-        <Button href="/book" variant="white">
+        <Button href="/appointment" variant="white">
           Book an Appointment
         </Button>
       </div>

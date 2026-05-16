@@ -14,7 +14,7 @@ export function Button({
   ...props
 }: ButtonProps): React.JSX.Element {
   const baseStyles =
-    "inline-flex items-center justify-center font-marcellus h-11 px-6 text-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none rounded-full antialiased";
+    "inline-flex items-center justify-center font-marcellus h-11 px-6 text-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none rounded-xl antialiased";
 
   const variants = {
     primary: "bg-primary text-white hover:bg-primary/90",

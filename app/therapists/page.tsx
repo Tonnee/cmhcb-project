@@ -15,7 +15,7 @@ export default function TherapistsPage() {
   return (
     <main className="pt-32 pb-0">
       <Container className="mb-24">
-        <SectionHeading title="Meet Our Therapists" className="mb-14" />
+        <SectionHeading title="Meet Our Therapists" level="h1" className="mb-14" />
         <TherapistList />
       </Container>
       <AppointmentCta />

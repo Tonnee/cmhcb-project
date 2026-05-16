@@ -2,6 +2,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BlogPost } from "@/features/blog/data/blogs";
+import { HiArrowSmallRight } from "react-icons/hi2";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -42,7 +43,7 @@ export function BlogCard({ post, className = "" }: BlogCardProps): React.JSX.Ele
             {new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
           <span className="font-sans font-semibold text-primary text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-            Read More <span aria-hidden="true">&rarr;</span>
+            Read More <HiArrowSmallRight className="w-4 h-4" />
           </span>
         </div>
       </div>
