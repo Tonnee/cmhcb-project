@@ -36,7 +36,7 @@ export function EmergencySupport(): React.JSX.Element {
           align="center"
         />
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-6 max-w-4xl mx-auto">
           {EMERGENCY_CONTACTS.map((contact) => (
             <div
               key={contact.title}

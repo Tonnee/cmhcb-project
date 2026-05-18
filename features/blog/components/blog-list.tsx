@@ -2,10 +2,10 @@
 
 import * as React from "react";
 import { HiMagnifyingGlass } from "react-icons/hi2";
-import Image from "next/image";
 import { BlogPost } from "@/features/blog/data/blogs";
 import { BlogCard } from "@/features/blog/components/blog-card";
 import { Select } from "@/components/ui/select";
+import { Pagination } from "@/components/shared/pagination";
 
 interface BlogListProps {
   posts: BlogPost[];
@@ -14,6 +14,18 @@ interface BlogListProps {
 export function BlogList({ posts }: BlogListProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState<"newest" | "oldest">("newest");
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 12;
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOrder(e.target.value as "newest" | "oldest");
+    setCurrentPage(1);
+  };
 
   // Filter and sort the posts
   const filteredAndSortedPosts = React.useMemo(() => {
@@ -39,17 +51,29 @@ export function BlogList({ posts }: BlogListProps): React.JSX.Element {
     return result;
   }, [posts, searchQuery, sortOrder]);
 
+  const totalPages = Math.ceil(filteredAndSortedPosts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentPosts = filteredAndSortedPosts.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    const element = document.getElementById("blog-list");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-10">
+    <div id="blog-list" className="flex flex-col gap-10">
       {/* Controls Section */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
         {/* Search */}
         <div className="relative w-full sm:max-w-md">
           <input
             type="text"
             placeholder="Search by title or tag..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-sans text-sm transition-shadow"
           />
           <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -65,7 +89,7 @@ export function BlogList({ posts }: BlogListProps): React.JSX.Element {
           <Select
             id="sort-order"
             value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
+            onChange={handleSortChange}
             className="sm:w-auto"
           >
             <option value="newest">Newest First</option>
@@ -75,11 +99,19 @@ export function BlogList({ posts }: BlogListProps): React.JSX.Element {
       </div>
 
       {/* Grid Section */}
-      {filteredAndSortedPosts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredAndSortedPosts.map((post) => (
-            <BlogCard key={post.id} post={post} />
-          ))}
+      {currentPosts.length > 0 ? (
+        <div className="flex flex-col gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentPosts.map((post) => (
+              <BlogCard key={post.id} post={post} />
+            ))}
+          </div>
+          
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
       ) : (
         <div className="text-center py-20 bg-gray-50 rounded-3xl border border-gray-100">

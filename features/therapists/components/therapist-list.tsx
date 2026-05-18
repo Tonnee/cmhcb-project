@@ -45,7 +45,7 @@ export function TherapistList(): React.JSX.Element {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ">
         {filteredTherapists.map((therapist) => (
           <TherapistCard
             key={therapist.id}

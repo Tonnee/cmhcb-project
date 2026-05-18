@@ -104,9 +104,9 @@ export default async function BlogPostPage({
       {/* Meet Author Section - 1 column layout similar to ServiceProfessionals */}
       <section className="bg-gray-50 py-20 lg:py-28">
         <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-11 gap-16 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-11 gap-6 lg:gap-6 items-center">
             {/* Left side info */}
-            <div className="lg:col-span-6 flex flex-col gap-8">
+            <div className="lg:col-span-6 flex flex-col gap-6">
               <div className="flex flex-col gap-6">
                 <h2 className="font-marcellus text-[32px] lg:text-[40px] text-dark leading-tight">
                   Meet the <span className="text-primary">Author</span>
@@ -141,7 +141,7 @@ export default async function BlogPostPage({
             title={<>Read More <span className="text-primary-dark">Articles</span></>}
             className="mb-16"
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {otherPosts.map((p) => (
               <BlogCard key={p.id} post={p} />
             ))}

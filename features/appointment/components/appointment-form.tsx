@@ -225,7 +225,7 @@ function AppointmentFormContent() {
         {/* Session Preference */}
         <div className="md:col-span-2">
           <label className={labelClasses}>Session Preference</label>
-          <div className="flex flex-wrap gap-4 mt-2">
+          <div className="flex flex-wrap gap-6 mt-2">
             <label className="flex items-center gap-2 cursor-pointer group">
               <input
                 type="radio"

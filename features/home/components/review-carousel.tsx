@@ -72,7 +72,7 @@ export function ReviewCarousel({
       </div>
 
       {/* Avatar */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-6">
         <div className="relative w-[67px] h-[67px] rounded-full overflow-hidden shrink-0">
           <Image
             src={activeTestimonial.avatar}

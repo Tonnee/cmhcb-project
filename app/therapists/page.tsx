@@ -38,7 +38,7 @@ export default function TherapistsPage() {
     <main className="pt-20 pb-0">
       {/* ── Page Header ──────────────────────────────────────────────── */}
       <Container className="mb-20">
-        <div className="flex flex-col lg:flex-row items-center gap-y-12 gap-x-5 mb-24">
+        <div className="flex flex-col lg:flex-row items-center gap-y-12 gap-6 mb-24">
           {/* Left: Content */}
           <div className="flex flex-col flex-1 w-full lg:pr-10 xl:pr-16">
             <SectionHeading
@@ -56,9 +56,9 @@ export default function TherapistsPage() {
             </p>
 
             {/* Stats as icon-list items */}
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6">
               {stats.map((stat) => (
-                <div key={stat.label} className="flex gap-4 items-center">
+                <div key={stat.label} className="flex gap-6 items-center">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                     <span className="font-marcellus text-lg leading-none">{stat.value}</span>
                   </div>

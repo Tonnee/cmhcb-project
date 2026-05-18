@@ -59,9 +59,9 @@ export default function WellBeing(): React.JSX.Element {
       </div>
 
       <Container className="relative z-10">
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-center">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-center">
           {/* Left Text Block */}
-          <div className="xl:col-span-5 flex flex-col gap-5 pr-0 xl:pr-8">
+          <div className="xl:col-span-5 flex flex-col gap-6 pr-0 xl:pr-8">
             <h2 className="font-marcellus text-4xl lg:text-5xl text-white leading-tight">
               Our Commitment to 
               Your <span className="text-accent">Well-Being</span>

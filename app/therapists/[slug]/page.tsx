@@ -147,7 +147,7 @@ export default async function TherapistProfilePage({
 
             {/* Experience Stats */}
             {hasExperience && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 mb-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
                 {therapist.experience!.map((exp, i) => (
                   <ExperienceStat key={i} label={exp} />
                 ))}
@@ -216,7 +216,7 @@ export default async function TherapistProfilePage({
                   </h3>
                   <div className="flex flex-col gap-3">
                     {feeCategory.items.map((item, ii) => (
-                      <div key={ii} className="flex items-start justify-between gap-4">
+                      <div key={ii} className="flex items-start justify-between gap-6">
                         <div className="flex flex-col">
                           <span className="font-sans text-[14px] text-light-ash">{item.label}</span>
                           {item.note && (
@@ -251,7 +251,7 @@ export default async function TherapistProfilePage({
             className="mb-14"
           />
 
-          <div className="flex flex-wrap justify-center gap-5 lg:gap-8">
+          <div className="flex flex-wrap justify-center gap-6 lg:gap-6">
             {therapist.services
               .map((s) => SERVICES.find((svc) => svc.slug === s))
               .filter(Boolean)
@@ -282,7 +282,7 @@ export default async function TherapistProfilePage({
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {therapistBlogs.map((post) => (
               <BlogCard key={post.id} post={post} />
             ))}

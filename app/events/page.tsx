@@ -99,7 +99,7 @@ export default function EventsPage(): React.JSX.Element {
 
               {/* Meta info */}
               <div className="flex flex-col gap-6 mb-10">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                     <CalendarIcon className="w-6 h-6" />
                   </div>
@@ -110,7 +110,7 @@ export default function EventsPage(): React.JSX.Element {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                     <ClockIcon className="w-6 h-6" />
                   </div>
@@ -121,7 +121,7 @@ export default function EventsPage(): React.JSX.Element {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                     <LocationPinIcon className="w-6 h-6" />
                   </div>

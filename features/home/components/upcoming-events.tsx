@@ -44,11 +44,10 @@ function EventCard({ title, date, time, colorMode, description, isInfoCard = fal
           <h3 className={`font-marcellus text-2xl leading-8 ${textClass}`}>
             {title}
           </h3>
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
           {date && (
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${
-                colorMode === "accent" ? "bg-dark/10" : "bg-white/10"
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${ colorMode === "accent" ? "bg-dark/10" : "bg-white/10"
               }`}>
                 <CalendarIcon className={`w-6 h-6 ${textClass}`} />
               </div>
@@ -59,8 +58,7 @@ function EventCard({ title, date, time, colorMode, description, isInfoCard = fal
           )}
           {time && (
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${
-                colorMode === "accent" ? "bg-dark/10" : "bg-white/10"
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${ colorMode === "accent" ? "bg-dark/10" : "bg-white/10"
               }`}>
                 <ClockIcon className={`w-6 h-6 ${textClass}`} />
               </div>
@@ -126,7 +124,7 @@ export function UpcomingEvents(): React.JSX.Element {
 
             {/* Event meta info */}
             <div className="flex flex-col gap-6 mb-10">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-6">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <CalendarIcon className="w-6 h-6" />
                 </div>
@@ -138,7 +136,7 @@ export function UpcomingEvents(): React.JSX.Element {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-6">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <ClockIcon className="w-6 h-6" />
                 </div>
@@ -150,7 +148,7 @@ export function UpcomingEvents(): React.JSX.Element {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-6">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <LocationPinIcon />
                 </div>
@@ -186,7 +184,7 @@ export function UpcomingEvents(): React.JSX.Element {
         </div>
 
         {/* Event Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {upcomingEvents.map((event) => (
             <EventCard key={event.title} {...event} />
           ))}

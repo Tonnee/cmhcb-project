@@ -42,7 +42,7 @@ export function PageFeatureHero({
   return (
     <section className="relative w-full min-h-[500px] lg:h-[500px] py-12 lg:py-16">
       <Container className="relative h-full">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-6 items-center h-full">
           {/* Content Column */}
           <div className="relative z-10 flex flex-col justify-center">
             <Breadcrumb className="mb-6" items={breadcrumbs} />
@@ -55,7 +55,7 @@ export function PageFeatureHero({
               {description}
             </p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-6">
               {ctas.map((cta) => (
                 <Button
                   key={cta.label}

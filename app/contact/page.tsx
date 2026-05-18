@@ -33,7 +33,7 @@ export default function ContactPage(): React.JSX.Element {
       />
 
       <Container className="py-16 md:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-6">
           
           {/* Left Column: Contact Details */}
           <div className="flex flex-col justify-center">
@@ -44,9 +44,9 @@ export default function ContactPage(): React.JSX.Element {
               Whether you have a question about our services, need assistance, or just want to talk, we are here for you. Reach out to us through any of the channels below.
             </p>
 
-            <div className="flex flex-col gap-8 mb-12">
+            <div className="flex flex-col gap-6 mb-12">
               {/* Phone */}
-              <div className="flex items-start gap-5">
+              <div className="flex items-start gap-6">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <PhoneIcon className="w-6 h-6" />
                 </div>
@@ -59,7 +59,7 @@ export default function ContactPage(): React.JSX.Element {
               </div>
 
               {/* Email */}
-              <div className="flex items-start gap-5">
+              <div className="flex items-start gap-6">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <EmailIcon className="w-6 h-6" />
                 </div>
@@ -72,7 +72,7 @@ export default function ContactPage(): React.JSX.Element {
               </div>
 
               {/* Address */}
-              <div className="flex items-start gap-5">
+              <div className="flex items-start gap-6">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <LocationPinIcon className="w-6 h-6" />
                 </div>
@@ -90,7 +90,7 @@ export default function ContactPage(): React.JSX.Element {
             {/* Social Media */}
             <div>
               <h3 className="font-bold text-dark text-lg mb-5">Follow Us</h3>
-              <div className="flex items-center gap-4 text-primary">
+              <div className="flex items-center gap-6 text-primary">
                 <a href="#" className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Facebook">
                   <FacebookIcon className="w-6 h-6" />
                 </a>

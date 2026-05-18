@@ -41,9 +41,7 @@ export function Pagination({
             onClick={() => onPageChange(pageNumber)}
             aria-current={isCurrentPage ? "page" : undefined}
             aria-label={`Page ${pageNumber}`}
-            className={`w-10 h-10 flex items-center justify-center rounded-full font-sans font-medium text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-              isCurrentPage
-                ? "bg-accent text-white shadow-sm"
+            className={`w-10 h-10 flex items-center justify-center rounded-full font-sans font-medium text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${ isCurrentPage ? "bg-accent text-white shadow-sm"
                 : "bg-white text-dark border border-muted hover:border-accent hover:text-accent"
             }`}
           >

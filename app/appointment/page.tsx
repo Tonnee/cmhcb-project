@@ -15,7 +15,7 @@ export default function AppointmentPage() {
   return (
     <main className="flex-1 bg-page-bg py-16 lg:py-24">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-6 items-start">
           {/* Left Side: Content */}
           <div className="lg:col-span-5 lg:sticky lg:top-32">
             <SectionHeading
@@ -32,7 +32,7 @@ export default function AppointmentPage() {
             </p>
 
             <div className="space-y-6">
-              <div className="flex gap-4 items-center">
+              <div className="flex gap-6 items-center">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <HiUserGroup className="w-6 h-6 text-primary" />
                 </div>
@@ -44,7 +44,7 @@ export default function AppointmentPage() {
                 </div>
               </div>
 
-              <div className="flex gap-4 items-center">
+              <div className="flex gap-6 items-center">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <HiClock className="w-6 h-6 text-primary" />
                 </div>
@@ -56,7 +56,7 @@ export default function AppointmentPage() {
                 </div>
               </div>
 
-              <div className="flex gap-4 items-center">
+              <div className="flex gap-6 items-center">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 text-primary">
                   <PhoneIcon className="w-6 h-6" />
                 </div>

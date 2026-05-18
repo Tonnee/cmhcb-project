@@ -54,7 +54,7 @@ export default function FeatureCard({
       {features && features.length > 0 && (
         <ul className="space-y-3 mb-8">
           {features.map((feature) => (
-            <li key={feature} className="flex items-center gap-5">
+            <li key={feature} className="flex items-center gap-6">
               <span className={`w-3 h-3 rounded-full shrink-0 ${v.bullet}`} aria-hidden="true" />
               <span className="font-sans font-normal text-xl leading-8 text-black">
                 {feature}

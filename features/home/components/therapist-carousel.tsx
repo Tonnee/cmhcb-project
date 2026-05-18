@@ -44,7 +44,7 @@ export function TherapistCarousel({ therapists }: TherapistCarouselProps): React
   return (
     <div className="w-full">
       <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-x-5 pb-6 pt-2 select-none">
+        <div className="flex gap-6 pb-6 pt-2 select-none">
           {therapists.map((therapist) => (
             <TherapistCard
               key={therapist.id}

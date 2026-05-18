@@ -15,7 +15,7 @@ function InfoCard({ title, description, variant }: InfoCardProps): React.JSX.Ele
   const descClass = variant === "primary" ? "text-light" : "text-dark";
 
   return (
-    <div className={`h-[280px] w-full rounded-3xl p-6 flex flex-col gap-4 shrink-0 ${bgClass}`}>
+    <div className={`h-[280px] w-full rounded-3xl p-6 flex flex-col gap-6 shrink-0 ${bgClass}`}>
       <h3 className={`font-marcellus text-2xl leading-8 ${textClass}`}>
         {title}
       </h3>
@@ -52,7 +52,7 @@ export function Review(): React.JSX.Element {
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-20 items-start">
 
           {/* Left side — 2×2 grid */}
-          <div className="shrink-0 grid grid-cols-2 gap-5 w-full lg:w-[568px]">
+          <div className="shrink-0 grid grid-cols-2 gap-6 w-full lg:w-[568px]">
             <ReviewPhoto
               src="/home-review/mental-health-therapy-client-woman.png"
               alt="Happy mental health therapy client sharing her positive experience at CMHCB"

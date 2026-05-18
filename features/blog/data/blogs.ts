@@ -81,4 +81,16 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Tariq Hasan",
     tags: ["Burnout", "Workplace", "Stress"],
   },
+  ...Array.from({ length: 15 }).map((_, i) => ({
+    id: `dummy-${i + 6}`,
+    slug: `dummy-post-${i + 6}`,
+    title: `Exploring Mental Wellness Insights - Part ${i + 1}`,
+    excerpt: "This is a placeholder excerpt for testing the pagination system. It explores various aspects of psychological well-being and resilience.",
+    content: sampleContent,
+    image: "/hero-image/psychotherapy-counseling-session.png",
+    publishedAt: new Date(Date.now() - i * 86400000).toISOString(),
+    author: "Editorial Team",
+    tags: ["Wellness", "Mental Health"],
+  }))
 ];
+

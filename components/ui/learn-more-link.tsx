@@ -22,7 +22,7 @@ export function LearnMoreLink({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center gap-3 transition-all hover:gap-5 ${VARIANT_COLOR[variant]}`}
+      className={`inline-flex items-center gap-3 transition-all hover:gap-6 ${VARIANT_COLOR[variant]}`}
       aria-label={`Learn more about ${label}`}
     >
       <span className="font-marcellus text-xl">Learn More</span>

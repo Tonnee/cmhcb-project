@@ -26,13 +26,13 @@ export function SplitContentBlock({
   const { heading, items, cta, image } = content;
 
   return (
-    <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <div className="grid lg:grid-cols-2 gap-6 items-center">
       <div className={`flex flex-col ${reverse ? "lg:order-2" : ""}`}>
         <h2 className="font-marcellus text-4xl text-dark mb-10">{heading}</h2>
 
         <ul className="space-y-5 mb-10">
           {items.map((item) => (
-            <li key={item} className="flex items-center gap-5">
+            <li key={item} className="flex items-center gap-6">
               <span
                 className="w-3 h-3 rounded-full shrink-0 bg-light-ash/80"
                 aria-hidden="true"

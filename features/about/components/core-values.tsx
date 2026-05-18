@@ -45,7 +45,7 @@ export function CoreValues(): React.JSX.Element {
           </div>
 
           {/* Right Grid */}
-          <div className="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-6">
             {VALUES.map((value, idx) => (
               <div key={idx} className="bg-white p-8 rounded-3xl border border-muted/50 hover:border-accent hover:shadow-md transition-all group">
                 <div className="w-14 h-14 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300">

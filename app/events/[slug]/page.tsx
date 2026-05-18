@@ -127,7 +127,7 @@ export default async function EventRegistrationPage({
               title={<>Explore Other <span className="text-primary-dark">Events</span></>}
               className="mb-16"
             />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {otherEvents.map((e) => (
                 <EventCard key={e.id} event={e} />
               ))}
@@ -176,9 +176,9 @@ export default async function EventRegistrationPage({
               {event.description}
             </p>
 
-            <div className="flex flex-col gap-8 ">
+            <div className="flex flex-col gap-6 ">
               {/* Date */}
-              <div className="flex items-start gap-5">
+              <div className="flex items-start gap-6">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <CalendarIcon className="w-6 h-6" />
                 </div>
@@ -191,7 +191,7 @@ export default async function EventRegistrationPage({
               </div>
 
               {/* Time */}
-              <div className="flex items-start gap-5">
+              <div className="flex items-start gap-6">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <ClockIcon className="w-6 h-6" />
                 </div>
@@ -204,7 +204,7 @@ export default async function EventRegistrationPage({
               </div>
 
               {/* Location */}
-              <div className="flex items-start gap-5">
+              <div className="flex items-start gap-6">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <LocationPinIcon className="w-6 h-6" />
                 </div>

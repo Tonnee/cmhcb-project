@@ -140,7 +140,7 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
 
             {/* Service cards grid */}
             <ul
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
               role="list"
             >
               {SERVICES.map((service) => (
@@ -261,7 +261,7 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
 
             {/* Training cards grid */}
             <ul
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
               role="list"
             >
               {TRAININGS.slice(0, 6).map((training) => (
@@ -350,7 +350,7 @@ export function Header(): React.JSX.Element {
         </nav>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-6">
           <div className="hidden lg:block">
             <BookAppointmentButton />
           </div>

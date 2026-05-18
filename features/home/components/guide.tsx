@@ -7,7 +7,7 @@ export default function Guide(): React.JSX.Element {
   return (
     <section className="py-16 lg:py-24">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-y-12 gap-x-5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-6">
           {/* Left: Image */}
           <div className="lg:col-span-5">
             <div className="relative rounded-[24px] overflow-hidden aspect-4/5 lg:h-[572px]">

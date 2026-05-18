@@ -39,7 +39,7 @@ export function FaqAccordionItem({
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={answerId}
-        className="w-full text-left py-6 flex items-center justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm"
+        className="w-full text-left py-6 flex items-center justify-between gap-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm"
       >
         <h3
           className={`font-marcellus text-2xl transition-colors ${isOpen ? "text-primary-dark" : "text-dark hover:text-primary-dark"
@@ -49,8 +49,7 @@ export function FaqAccordionItem({
         </h3>
         <HiChevronDown
           aria-hidden="true"
-          className={`flex-shrink-0 w-6 h-6 transition-all duration-300 ${isOpen
-              ? "rotate-180 text-primary-dark"
+          className={`flex-shrink-0 w-6 h-6 transition-all duration-300 ${isOpen ? "rotate-180 text-primary-dark"
               : "rotate-0 text-light-ash"
             }`}
         />

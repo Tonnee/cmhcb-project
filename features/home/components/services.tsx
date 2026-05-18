@@ -19,7 +19,7 @@ export default function Services(): React.JSX.Element {
         />
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
           {SERVICES.map((service) => (
             <ServiceCard key={service.slug} item={service} />
           ))}

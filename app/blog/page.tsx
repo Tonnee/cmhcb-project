@@ -57,7 +57,7 @@ export default function BlogPage(): React.JSX.Element {
           <div className="flex flex-col lg:flex-row gap-16 lg:gap-[86px]">
             {/* Left side - Featured Image */}
             <div className="shrink-0 w-full lg:w-[474px]">
-              <div className="relative w-full h-[350px] lg:h-[510px] rounded-[24px] overflow-hidden bg-gray-100 group">
+              <div className="relative w-full h-[350px] lg:h-full min-h-[350px] lg:min-h-[400px] rounded-[24px] overflow-hidden bg-gray-100 group">
                 <Image
                   src={featuredPost.image}
                   alt={featuredPost.title}
@@ -91,25 +91,34 @@ export default function BlogPage(): React.JSX.Element {
               </p>
 
               {/* Meta info */}
-              <div className="flex flex-col gap-4 mb-10">
-                <div className="flex items-center gap-2 text-primary">
-                  <CalendarIcon className="w-5 h-5 shrink-0" />
-                  <span className="font-sans text-base text-dark">
-                    {new Date(featuredPost.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                  </span>
+              <div className="flex flex-col gap-6 mb-10">
+                <div className="flex items-center gap-6">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <CalendarIcon className="w-6 h-6" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-marcellus text-lg text-dark leading-tight">
+                      {new Date(featuredPost.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    </span>
+                    <span className="font-sans text-sm text-light-ash">Date of Publish</span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-primary">
-                  <UserIcon className="w-5 h-5 shrink-0" />
-                  <span className="font-sans text-base text-dark">
-                    By{" "}
-                    <Link 
-                      href={`/therapists/${featuredPost.author.toLowerCase().replace(/\./g, '').replace(/\s+/g, '-')}`}
-                      className="font-medium hover:underline hover:text-primary transition-colors"
-                    >
-                      {featuredPost.author}
-                    </Link>
-                  </span>
+                <div className="flex items-center gap-6">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <UserIcon className="w-6 h-6" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-marcellus text-lg text-dark leading-tight">
+                      <Link 
+                        href={`/therapists/${featuredPost.author.toLowerCase().replace(/\./g, '').replace(/\s+/g, '-')}`}
+                        className="hover:text-primary transition-colors"
+                      >
+                        {featuredPost.author}
+                      </Link>
+                    </span>
+                    <span className="font-sans text-sm text-light-ash">Author</span>
+                  </div>
                 </div>
               </div>
 

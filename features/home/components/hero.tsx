@@ -8,7 +8,7 @@ export function Hero(): React.JSX.Element {
     <section className="py-12">
       <Container>
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
           {/* Left Column - Text Content */}
           <div className="lg:col-span-6 flex flex-col justify-center">
             <p className="font-sans text-sm text-light-ash/80 mb-6">
@@ -48,7 +48,7 @@ export function Hero(): React.JSX.Element {
         </div>
 
         {/* Bottom Section - Three Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
           {/* Left Card - Group Therapy Image */}
           <div className="relative rounded-3xl overflow-hidden h-60 group">
             <Image

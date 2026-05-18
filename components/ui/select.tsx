@@ -13,7 +13,7 @@ export function Select({
   return (
     <div className="relative w-full">
       <select
-        className={`w-full px-4 py-3 rounded-xl border border-muted bg-white font-sans text-dark focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 appearance-none cursor-pointer ${className}`}
+        className={`w-full pl-4 pr-12 py-3 rounded-xl border border-muted bg-white font-sans text-dark focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 appearance-none cursor-pointer ${className}`}
         {...props}
       >
         {children}

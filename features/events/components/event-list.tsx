@@ -60,7 +60,7 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
   return (
     <div className="flex flex-col gap-10">
       {/* Controls Section */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
         {/* Search */}
         <div className="relative w-full sm:max-w-md">
           <input
@@ -95,7 +95,7 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
       {/* Grid Section */}
       {filteredAndSortedEvents.length > 0 ? (
         <div className="flex flex-col gap-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {paginatedEvents.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}

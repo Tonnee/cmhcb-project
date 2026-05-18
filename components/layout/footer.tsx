@@ -33,7 +33,7 @@ function LinkColumn({ column }: { column: FooterLinkColumn }): React.JSX.Element
       <h3 className="font-marcellus text-base text-white">
         {column.title}
       </h3>
-      <nav className="flex flex-col gap-4" aria-label={column.title}>
+      <nav className="flex flex-col gap-6" aria-label={column.title}>
         {column.links.map((link) => (
           <Link
             key={link.label}
@@ -57,7 +57,7 @@ export function Footer(): React.JSX.Element {
       <div className="container pt-20 pb-10">
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-12 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-6 mb-20">
 
           {/* Brand & Mission - 3 cols */}
           <div className="lg:col-span-3 flex flex-col gap-10">
@@ -80,7 +80,7 @@ export function Footer(): React.JSX.Element {
               Empowering your mind and transforming your life with compassionate, evidence-based mental health care.
             </p>
 
-            <div className="flex items-center gap-4 mt-2">
+            <div className="flex items-center gap-6 mt-2">
               {SOCIAL_LINKS.map((social: SocialLinkType) => (
                 <a
                   key={social.label}
@@ -109,8 +109,8 @@ export function Footer(): React.JSX.Element {
           {/* Contact - 3 cols */}
           <div className="lg:col-span-3 flex flex-col gap-6">
             <h3 className="font-marcellus text-base text-white">Contact Us</h3>
-            <address className="flex flex-col gap-5 not-italic">
-              <div className="flex items-start gap-4 group">
+            <address className="flex flex-col gap-6 not-italic">
+              <div className="flex items-start gap-6 group">
                 <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
                   <LocationPinIcon />
                 </div>
@@ -126,7 +126,7 @@ export function Footer(): React.JSX.Element {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 group">
+              <div className="flex items-center gap-6 group">
                 <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
                   <PhoneIcon />
                 </div>
@@ -135,7 +135,7 @@ export function Footer(): React.JSX.Element {
                 </a>
               </div>
 
-              <div className="flex items-center gap-4 group">
+              <div className="flex items-center gap-6 group">
                 <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
                   <EmailIcon />
                 </div>

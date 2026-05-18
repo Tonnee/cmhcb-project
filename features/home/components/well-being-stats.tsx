@@ -45,7 +45,7 @@ export function WellBeingStats({ stats }: WellBeingStatsProps): React.JSX.Elemen
   }, []);
 
   return (
-    <div ref={ref} className="grid grid-cols-2 gap-x-5 gap-y-16">
+    <div ref={ref} className="grid grid-cols-2 gap-6 ">
       {stats.map((stat) => (
         <div key={stat.id} className="flex flex-col">
           <div className="font-sans font-medium text-4xl md:text-5xl lg:text-[56px] text-white mb-5 tracking-tight flex items-baseline">

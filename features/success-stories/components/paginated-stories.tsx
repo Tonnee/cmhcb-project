@@ -28,13 +28,13 @@ export function PaginatedStories({ testimonials, itemsPerPage = 6 }: PaginatedSt
 
   return (
     <div className="flex flex-col gap-12">
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentTestimonials.map((testimonial) => (
           <div
             key={testimonial.id}
             className="bg-white rounded-3xl p-8 md:p-10 border border-muted hover:border-accent hover:shadow-md transition-all flex flex-col h-full"
           >
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-6 mb-6">
               <div className="relative w-[60px] h-[60px] rounded-full overflow-hidden shrink-0 bg-gray-100">
                 <Image
                   src={testimonial.avatar}
