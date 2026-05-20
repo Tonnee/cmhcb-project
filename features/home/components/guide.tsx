@@ -23,9 +23,12 @@ export default function Guide(): React.JSX.Element {
 
           {/* Right: Content */}
           <div className="flex flex-col lg:col-span-6 lg:col-start-7">
-            <h2 className="font-marcellus text-4xl md:text-5xl leading-tight text-dark">
-              Guiding You Toward <br className="hidden lg:block" />
-              Mental Well-Being
+            <h2 className="font-marcellus text-3xl md:text-5xl leading-tight text-dark">
+              Guiding You Toward
+              <span className="block">
+                <span className="text-accent mr-2">Mental</span>
+                <span className="text-primary-dark">Well-Being</span>
+              </span>
             </h2>
 
             <p className="font-sans text-lg md:text-xl leading-relaxed text-dark mt-8 max-w-xl">

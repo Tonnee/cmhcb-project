@@ -131,7 +131,7 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
               </div>
               <Link
                 href="/services"
-                className="text-sm font-sans text-primary hover:text-primary-dark underline-offset-2 hover:underline transition-colors"
+                className="text-sm font-sans text-primary hover:text-accent underline-offset-2 transition-colors"
                 onClick={() => setOpen(false)}
               >
                 View all services →
@@ -178,12 +178,12 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
             <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-between">
               <p className="text-sm font-sans text-light-ash">
                 Not sure which service is right for you?{" "}
-                <Link href="/support" className="text-primary hover:underline" onClick={() => setOpen(false)}>
+                <Link href="/support" className="text-primary hover:text-accent" onClick={() => setOpen(false)}>
                   Talk to us
                 </Link>
               </p>
               <div onClick={() => setOpen(false)}>
-                <BookAppointmentButton />
+                <BookAppointmentButton variant="primary"/>
               </div>
             </div>
           </Container>

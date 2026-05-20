@@ -28,7 +28,7 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
 
       {/* Content Block */}
       <div className="p-6 flex flex-col flex-1">
-        <h3 className="font-marcellus text-xl text-dark mb-3 leading-snug transition-colors group-hover:text-primary">
+        <h3 className="font-marcellus text-xl text-primary-dark mb-3 leading-snug transition-colors group-hover:text-accent">
           {item.title}
         </h3>
         <p className="font-sans text-sm text-light-ash leading-relaxed mb-6 flex-1 line-clamp-3">
@@ -37,9 +37,9 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
 
         <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
           <span className="font-sans text-xs text-light-ash font-medium">
-            {item.duration} • {item.fees}
+            {item.duration} / {item.fees}
           </span>
-          <span className="font-sans font-semibold text-primary text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+          <span className="font-sans font-semibold text-primary-dark text-sm flex items-center gap-1 group-hover:text-accent transition-all">
             Learn More
             <RightArrowIcon width="12" height="12" />
           </span>

@@ -13,8 +13,6 @@ function ClockIcon({ className = "" }: { className?: string }): React.JSX.Elemen
   return <HiClock className={className} />;
 }
 
-
-
 interface EventCardProps {
   title: string;
   date?: string;
@@ -32,16 +30,16 @@ function EventCard({ title, date, time, colorMode, description, isInfoCard = fal
     <div className={`h-[280px] rounded-[24px] p-6 flex flex-col justify-between ${bgClass}`}>
       {isInfoCard ? (
         <>
-          <h3 className={`font-marcellus text-2xl leading-8 ${textClass}`}>
+          <h3 className={`font-marcellus text-3xl leading-8 ${textClass}`}>
             {title}
           </h3>
-          <p className={`font-sans text-sm leading-normal ${textClass}`}>
+          <p className={`font-sans text-base leading-normal ${textClass}`}>
             {description}
           </p>
         </>
       ) : (
         <>
-          <h3 className={`font-marcellus text-2xl leading-8 ${textClass}`}>
+          <h3 className={`font-marcellus text-xl leading-8 ${textClass}`}>
             {title}
           </h3>
         <div className="flex flex-col gap-6">
@@ -77,7 +75,7 @@ function EventCard({ title, date, time, colorMode, description, isInfoCard = fal
 export function UpcomingEvents(): React.JSX.Element {
   const upcomingEvents: EventCardProps[] = [
     {
-      title: "More Events",
+      title: "Future Events",
       description: "Join us in our upcoming events to learn, connect, and grow together in a supportive environment. Your journey to mental wellness and awareness starts here.",
       colorMode: "accent",
       isInfoCard: true,
@@ -111,8 +109,9 @@ export function UpcomingEvents(): React.JSX.Element {
           <div className="flex-1 flex flex-col justify-center">
             <SectionHeading 
               subtitle="Upcoming Events"
-              title={<>&quot;Understanding Anxiety: <br className="hidden lg:block" /> Tools for Everyday Coping&quot;</>}
+              title={<>&quot;Understanding <span className="text-primary">Anxiety</span>: <br className="hidden lg:block" /> <span className="text-accent">Tools</span> for Everyday Coping&quot;</>}
               align="left"
+              size="md"
               className="mb-6"
             />
 
@@ -171,7 +170,7 @@ export function UpcomingEvents(): React.JSX.Element {
 
           {/* Right side - Event image */}
           <div className="shrink-0 w-full lg:w-[474px]">
-            <div className="relative w-full h-[350px] lg:h-[510px] rounded-[24px] overflow-hidden bg-gray-100">
+            <div className="relative w-full h-[350px] lg:h-full rounded-[24px] overflow-hidden bg-gray-100">
               <Image
                 src="/understanding-anxiety-workshop-event.png"
                 alt="Understanding Anxiety Workshop"
@@ -191,7 +190,7 @@ export function UpcomingEvents(): React.JSX.Element {
         </div>
 
         {/* Bottom CTA section */}
-        <div className="mt-24 flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
+        <div className="mt-24 flex flex-col items-center justify-center text-center mx-auto">
           <p className="font-marcellus text-lg md:text-xl leading-relaxed text-dark mb-10">
             Stay informed and engaged with CMHC,B&apos;s year-round programs, workshops, and awareness events. Our
             annual event calendar highlights key training sessions, mental health awareness days, and community

@@ -10,7 +10,7 @@ interface IconBadgeProps {
 function IconBadge({ children, bgClass }: IconBadgeProps): React.JSX.Element {
   return (
     <span
-      className={`inline-flex items-center justify-center w-11 h-11 rounded-lg align-middle mx-1 bg-primary/10 text-primary`}
+      className={`inline-flex items-center justify-center w-11 h-11 rounded-full align-middle mx-1 bg-primary/10 text-primary`}
     >
       {children}
     </span>
@@ -24,7 +24,7 @@ interface ImageBadgeProps {
 
 function ImageBadge({ src, alt }: ImageBadgeProps): React.JSX.Element {
   return (
-    <span className="relative inline-flex items-center justify-center w-11 h-11 rounded-lg overflow-hidden align-middle mx-1 border-2 border-white shadow-md">
+    <span className="relative inline-flex items-center justify-center w-11 h-11 rounded-full overflow-hidden align-middle mx-1 border-2 border-white shadow-md">
       <Image
         src={src}
         alt={alt}

@@ -15,6 +15,7 @@ interface ReviewCarouselProps {
 export function ReviewCarousel({
   testimonials,
 }: ReviewCarouselProps): React.JSX.Element {
+  const displayTestimonials = testimonials.slice(0, 3);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: true,
@@ -46,9 +47,7 @@ export function ReviewCarousel({
     [emblaApi]
   );
 
-  const activeTestimonial = testimonials[activeIndex];
-
-  if (!activeTestimonial) return <></>;
+  if (displayTestimonials.length === 0) return <></>;
 
   return (
     <div className="flex-1 pt-16">
@@ -59,43 +58,40 @@ export function ReviewCarousel({
         className="mb-14"
       />
 
-      {/* Embla viewport — hidden, drives state only */}
-      <div className="overflow-hidden" ref={emblaRef} aria-hidden="true">
-        <div className="flex">
-          {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="min-w-0 shrink-0 grow-0 basis-full">
-              {/* Slide content is rendered outside for layout control */}
-              <span className="sr-only">{testimonial.name}</span>
+      {/* Embla viewport */}
+      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex select-none">
+          {displayTestimonials.map((testimonial) => (
+            <div key={testimonial.id} className="min-w-0 shrink-0 grow-0 basis-full cursor-grab active:cursor-grabbing">
+              {/* Avatar */}
+              <div className="flex items-center gap-6">
+                <div className="relative w-[67px] h-[67px] rounded-full overflow-hidden shrink-0">
+                  <Image
+                    src={testimonial.avatar}
+                    alt={`${testimonial.name} - ${testimonial.role} testimonial`}
+                    fill
+                    sizes="67px"
+                    className="object-cover"
+                  />
+                </div>
+                <div>
+                  <p className="font-sans font-semibold text-base leading-6 text-dark">
+                    {testimonial.name}
+                  </p>
+                  <p className="font-sans text-xs leading-6 text-light-ash">
+                    {testimonial.role}
+                  </p>
+                </div>
+              </div>
+
+              {/* Quote */}
+              <blockquote className="font-sans text-base leading-6 text-dark mt-6 mb-6">
+                &ldquo;{testimonial.quote}&rdquo;
+              </blockquote>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Avatar */}
-      <div className="flex items-center gap-6">
-        <div className="relative w-[67px] h-[67px] rounded-full overflow-hidden shrink-0">
-          <Image
-            src={activeTestimonial.avatar}
-            alt={`${activeTestimonial.name} - ${activeTestimonial.role} testimonial`}
-            fill
-            sizes="67px"
-            className="object-cover"
-          />
-        </div>
-        <div>
-          <p className="font-sans font-semibold text-base leading-6 text-dark">
-            {activeTestimonial.name}
-          </p>
-          <p className="font-sans text-xs leading-6 text-light-ash">
-            {activeTestimonial.role}
-          </p>
-        </div>
-      </div>
-
-      {/* Quote */}
-      <blockquote className="font-sans text-base leading-6 text-dark mt-6 mb-6">
-        &ldquo;{activeTestimonial.quote}&rdquo;
-      </blockquote>
 
       {/* Pagination dots */}
       <div className="flex items-center gap-2" role="tablist" aria-label="Testimonial navigation">

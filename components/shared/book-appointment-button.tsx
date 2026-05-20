@@ -9,7 +9,7 @@ interface BookAppointmentButtonProps {
 
 export function BookAppointmentButton({
   className = "",
-  variant = "primary",
+  variant = "outline",
   therapistId,
 }: BookAppointmentButtonProps): React.JSX.Element {
   const href = therapistId ? `/appointment?therapist=${therapistId}` : "/appointment";

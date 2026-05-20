@@ -56,8 +56,9 @@ export default function Training(): React.JSX.Element {
           <div className="flex flex-col flex-1 w-full lg:pr-10 xl:pr-16">
             <SectionHeading 
               subtitle="Our Training Programs"
-              title={<>Want to Make a <span className="text-primary-dark">Difference</span><br className="hidden md:block" /> in Mental Health?</>}
+              title={<>Want to Make a <span className="text-primary-dark">Difference</span> in <span className="text-accent">Mental Health</span>?</>}
               align="left"
+              size="md"
               className="mb-8"
             />
 

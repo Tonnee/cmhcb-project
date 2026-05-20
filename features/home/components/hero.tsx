@@ -14,7 +14,7 @@ export function Hero(): React.JSX.Element {
             <p className="font-sans text-sm text-light-ash/80 mb-6">
               Center for Mental Health and Care, Bangladesh
             </p>
-            <h1 className="font-marcellus text-4xl lg:text-hero-heading leading-tight mb-8">
+            <h1 className="font-marcellus font-bold text-4xl lg:text-hero-heading leading-tight mb-8">
               <span className="text-dark">Empowering Your</span>
               <br />
               <span className="text-accent">Mind</span>

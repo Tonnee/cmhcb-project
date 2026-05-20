@@ -66,18 +66,20 @@ export function TherapistCard({
           />
         </Link>
 
-        {/* Make Appointment overlay */}
+        {/* Appointment CTA Button */}
         {interactive && (
-          <Link
-            href="/appointment"
-            draggable={false}
-            className="absolute bottom-0 left-0 right-0 h-[87px] flex items-center px-6 gap-2.5 bg-dark-green-overlay backdrop-blur-[2px] opacity-0 invisible group-hover/card:opacity-100 group-hover/card:visible transition-all duration-300 hover:bg-dark-green/95 group/link z-10"
-          >
-            <p className="font-marcellus text-xl text-accent flex-1">Make Appointment</p>
-            <div className="transition-transform duration-300 group-hover/link:translate-x-1">
-              <RightArrowIcon className="text-white w-5 h-5" />
-            </div>
-          </Link>
+          <div className="absolute bottom-4 left-4 right-4 z-10">
+            <Link
+              href="/appointment"
+              draggable={false}
+              className="w-full inline-flex items-center justify-center font-marcellus h-10 px-5 text-sm rounded-xl bg-primary text-white hover:bg-primary-dark hover:text-white transition-all duration-300 font-medium group/btn shadow-sm hover:shadow-md select-none"
+            >
+              <span className="flex items-center justify-center gap-2">
+                Make Appointment
+                <RightArrowIcon className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+              </span>
+            </Link>
+          </div>
         )}
       </div>
 
@@ -85,7 +87,7 @@ export function TherapistCard({
       <div className="flex flex-col items-center mt-4 gap-[4px]">
         <Link 
           href={`/therapists/${therapist.id}`}
-          className="font-marcellus text-base text-dark hover:text-primary transition-colors whitespace-nowrap tracking-wide"
+          className="font-marcellus font-semibold text-base text-dark hover:text-primary transition-colors whitespace-nowrap tracking-wide"
         >
           {therapist.name}
         </Link>
