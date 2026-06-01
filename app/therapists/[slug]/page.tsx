@@ -19,18 +19,12 @@ import { BLOG_POSTS } from "@/features/blog/data/blogs";
 import { BlogCard } from "@/features/blog/components/blog-card";
 import { ServiceCard } from "@/components/shared/service-card";
 import { BookAppointmentButton } from "@/components/shared/book-appointment-button";
+import { Tag } from "@/components/ui/tag";
+import { Button } from "@/components/ui/button";
 
 /* ------------------------------------------------------------------ */
 /* Small reusable sub-components                                        */
 /* ------------------------------------------------------------------ */
-
-function ProfileTag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-primary/30 px-3 py-1 font-sans text-xs font-medium text-primary">
-      {children}
-    </span>
-  );
-}
 
 function SectionCard({
   icon: Icon,
@@ -141,7 +135,7 @@ export default async function TherapistProfilePage({
           {/* Column 2: Bio & Profile Details */}
           <div className="lg:col-span-5 flex flex-col gap-10">
             <div>
-              <p className="font-sans text-accent font-medium text-sm mb-2 tracking-widest capitalize">
+              <p className="font-sans text-accent font-medium text-xs mb-2 tracking-widest capitalize">
                 {therapist.role}
               </p>
               <h1 className="font-marcellus text-4xl lg:text-5xl text-primary-dark leading-[1.1] mb-6">
@@ -150,7 +144,7 @@ export default async function TherapistProfilePage({
               {therapist.expertise && therapist.expertise.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-8">
                   {therapist.expertise.slice(0, 3).map((exp, i) => (
-                    <ProfileTag key={i}>{exp}</ProfileTag>
+                    <Tag key={i} variant="outline">{exp}</Tag>
                   ))}
                 </div>
               )}
@@ -183,7 +177,11 @@ export default async function TherapistProfilePage({
                 )}
                 {hasExpertise && (
                   <SectionCard icon={HiBriefcase} title="Areas of Expertise">
-                    <BulletList items={therapist.expertise!} />
+                    <div className="flex flex-wrap gap-2">
+                      {therapist.expertise!.map((exp, i) => (
+                        <Tag key={i} variant="primary">{exp}</Tag>
+                      ))}
+                    </div>
                   </SectionCard>
                 )}
               </div>
@@ -195,8 +193,7 @@ export default async function TherapistProfilePage({
             {hasFees ? (
               <>
                 <div className="flex items-center gap-3 pb-4 border-b border-white/20">
-                  <HiCurrencyDollar className="w-6 h-6 text-accent" />
-                  <h2 className="font-marcellus text-xl text-white tracking-wide font-semibold">Rates &amp; Fees</h2>
+                  <h2 className="font-marcellus text-xl text-white tracking-wide font-semibold">Fees</h2>
                 </div>
                 <div className="flex flex-col gap-6">
                   {therapist.fees!.map((feeCategory, ci) => (
@@ -262,19 +259,16 @@ export default async function TherapistProfilePage({
       {/* ── Therapist Blogs Section ──────────────────────────────────── */}
       {therapistBlogs.length > 0 && (
         <Container className="mb-24">
-          <div className="flex items-end justify-between mb-10">
+          <div className="flex items-center justify-between mb-10">
             <SectionHeading
               subtitle="Insights & Articles"
               title={<>Latest Articles by <span className="text-primary-dark">{therapist.name}</span></>}
               align="left"
               className="mb-0"
             />
-            <Link
-              href="/blog"
-              className="font-sans text-primary font-semibold hover:underline flex items-center gap-2 mb-2"
-            >
-              View all blogs <HiArrowSmallRight className="w-4 h-4" />
-            </Link>
+            <Button href="/blog" variant="primary-dark">
+              View all blogs
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

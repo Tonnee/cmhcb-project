@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LearnMoreLink } from "@/components/ui/learn-more-link";
+import { LinkButton } from "@/components/ui/link-button";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -59,7 +59,9 @@ export default function FeatureCard({
         <p className="font-sans font-semibold text-xs tracking-wider text-light-ash/60 uppercase">
           {duration} &bull; {fees}
         </p>
-        <LearnMoreLink href={href} label={title} variant={variant} />
+        <LinkButton href={href} label={`Learn more about ${title}`} variant="marcellus">
+          Learn More
+        </LinkButton>
       </div>
     </article>
   );

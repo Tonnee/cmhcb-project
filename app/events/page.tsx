@@ -10,6 +10,7 @@ import { EventList } from "@/features/events/components/event-list";
 import { Button } from "@/components/ui/button";
 import { RightArrowIcon } from "@/components/ui/icons";
 import { SectionHeading } from "@/components/shared/section-heading";
+import { Tag } from "@/components/ui/tag";
 
 // Simple icon components for the meta details
 function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Element {
@@ -75,9 +76,9 @@ export default function EventsPage(): React.JSX.Element {
                 />
                 <div className="absolute top-6 left-6 flex gap-2 flex-wrap">
                   {featuredEvent.tags.map(tag => (
-                    <span key={tag} className="px-4 py-1.5 bg-white/90 backdrop-blur-sm text-dark rounded-full font-sans text-xs font-semibold shadow-sm">
+                    <Tag key={tag} variant="glass-light">
                       {tag}
-                    </span>
+                    </Tag>
                   ))}
                 </div>
               </div>

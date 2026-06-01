@@ -1,7 +1,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { RightArrowIcon } from "@/components/ui/icons";
+import { TherapistAppointmentButton, TherapistProfileButton } from "@/components/ui/therapist-buttons";
 
 export interface TherapistFeeItem {
   label: string;
@@ -54,44 +54,39 @@ export function TherapistCard({
 }: TherapistCardProps): React.JSX.Element {
   return (
     <div className={`group/card flex flex-col items-center min-w-0 ${className}`}>
-      {/* Photo */}
-      <div className={`relative w-full rounded-3xl overflow-hidden aspect-4/5 md:h-[320px] md:aspect-auto ${imageClassName}`}>
+      {/* Photo Container */}
+      <div className={`relative w-full rounded-[32px] overflow-hidden aspect-4/5 md:h-[340px] md:aspect-auto bg-gray-50 ${imageClassName}`}>
         <Link href={`/therapists/${therapist.id}`} className="block w-full h-full relative z-0">
           <Image
             src={therapist.image}
             alt={therapist.name}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className="object-cover object-top transition-transform duration-500 group-hover/card:scale-105"
           />
         </Link>
 
-        {/* Appointment CTA Button */}
+        {/* Dark overlay on hover */}
+        <div className="absolute inset-0 bg-primary-dark/10 opacity-0 group-hover/card:opacity-100 transition-all duration-300 pointer-events-none z-10" />
+
+        {/* Hover Action Buttons */}
         {interactive && (
-          <div className="absolute bottom-4 left-4 right-4 z-10">
-            <Link
-              href="/appointment"
-              draggable={false}
-              className="w-full inline-flex items-center justify-center font-marcellus h-10 px-5 text-sm rounded-xl bg-primary text-white hover:bg-primary-dark hover:text-white transition-all duration-300 font-medium group/btn shadow-sm hover:shadow-md select-none"
-            >
-              <span className="flex items-center justify-center gap-2">
-                Make Appointment
-                <RightArrowIcon className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
-              </span>
-            </Link>
+          <div className="absolute inset-x-4 bottom-4 z-20 flex flex-col gap-2 opacity-0 translate-y-4 group-hover/card:opacity-100 group-hover/card:translate-y-0 transition-all duration-300">
+            <TherapistProfileButton href={`/therapists/${therapist.id}`} />
+            <TherapistAppointmentButton href={`/appointment?therapist=${therapist.id}`} />
           </div>
         )}
       </div>
 
       {/* Name & Role */}
-      <div className="flex flex-col items-center mt-4 gap-[4px]">
+      <div className="flex flex-col items-center mt-4 gap-1.5">
         <Link 
           href={`/therapists/${therapist.id}`}
-          className="font-marcellus font-semibold text-base text-dark hover:text-primary transition-colors whitespace-nowrap tracking-wide"
+          className="font-marcellus font-medium text-lg text-dark hover:text-accent transition-colors tracking-wide text-center"
         >
           {therapist.name}
         </Link>
-        <p className="font-sans font-medium text-[15px] text-accent whitespace-nowrap">
+        <p className="font-sans text-xs font-semibold tracking-wider text-light-ash/60 uppercase text-center">
           {therapist.role.split("|")[0].trim()}
         </p>
       </div>

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Event } from "@/features/events/data/events";
 import { HiCalendarDays, HiClock, HiArrowSmallRight } from "react-icons/hi2";
+import { Tag } from "@/components/ui/tag";
 
 interface EventCardProps {
   event: Event;
@@ -27,9 +28,7 @@ export function EventCard({ event, className = "" }: EventCardProps): React.JSX.
       <div className="p-6 flex flex-col flex-1">
         <div className="flex flex-wrap gap-2 mb-4">
           {event.tags.map(tag => (
-            <span key={tag} className="px-3 py-1 bg-primary/10 text-primary rounded-full font-sans text-xs font-medium">
-              {tag}
-            </span>
+            <Tag key={tag}>{tag}</Tag>
           ))}
         </div>
         <h3 className="font-marcellus text-xl text-dark mb-3 leading-snug group-hover:text-primary transition-colors">

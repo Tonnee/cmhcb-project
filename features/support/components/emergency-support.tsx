@@ -1,78 +1,127 @@
 import * as React from "react";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
+import { HiPhone, HiExclamationTriangle, HiHeart, HiShieldCheck } from "react-icons/hi2";
 
 interface EmergencyContact {
   title: string;
   description: string;
   phone: string;
   hours: string;
+  icon: React.ElementType;
   isPrimary?: boolean;
 }
 
 const EMERGENCY_CONTACTS: EmergencyContact[] = [
   {
-    title: "National Emergency Service",
-    description: "For immediate life-threatening medical emergencies or if you or someone else is in immediate danger.",
-    phone: "999",
-    hours: "Available 24/7",
-  },
-  {
     title: "CMHCB Crisis Helpline",
-    description: "Speak directly with one of our trained mental health crisis counsellors for immediate support and guidance.",
+    description: "Speak directly with our trained psychological first-aid team for immediate mental health support, emotional guidance, crisis interventions, and safety planning.",
     phone: "+880 1974-349569",
     hours: "Available 24/7",
+    icon: HiPhone,
     isPrimary: true,
+  },
+  {
+    title: "National Emergency Service",
+    description: "Call immediately for urgent, life-threatening medical emergencies, police assistance, ambulance dispatch, or physical safety threats.",
+    phone: "999",
+    hours: "Available 24/7",
+    icon: HiExclamationTriangle,
+  },
+  {
+    title: "National Child Helpline",
+    description: "Toll-free national emergency helpline dedicated to children and youth in distress, offering immediate protection, support, and counseling.",
+    phone: "1098",
+    hours: "Available 24/7",
+    icon: HiShieldCheck,
   },
 ];
 
 export function EmergencySupport(): React.JSX.Element {
   return (
-    <section className="py-16 md:py-24 bg-page-bg">
+    <section className="py-20 md:py-28 bg-page-bg">
       <Container>
         <SectionHeading
-          title="Emergency Contacts"
-          subtitle="Get Immediate Help"
+          title="Emergency Helplines"
+          subtitle="Immediate Assistance"
           align="center"
+          className="mb-16"
         />
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-6 max-w-4xl mx-auto">
-          {EMERGENCY_CONTACTS.map((contact) => (
-            <div
-              key={contact.title}
-              className={`rounded-[20px] p-8 md:p-10 transition-all ${contact.isPrimary
-                ? "bg-accent text-black"
-                : "bg-white text-dark hover:shadow-sm"
-                }`}
-            >
-              <h3 className="font-marcellus text-2xl md:text-3xl mb-3">
-                {contact.title}
-              </h3>
-              <p
-                className={`font-sans text-sm md:text-base leading-relaxed mb-6 ${contact.isPrimary ? "text-black/80" : "text-light-ash"
-                  }`}
-              >
-                {contact.description}
-              </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch max-w-6xl mx-auto">
+          {EMERGENCY_CONTACTS.map((contact) => {
+            const Icon = contact.icon;
+            if (contact.isPrimary) {
+              return (
+                <div
+                  key={contact.title}
+                  className="bg-primary-dark text-white rounded-[32px] p-8 md:p-10 flex flex-col justify-between w-full h-full border border-primary-dark shadow-[0_12px_40px_rgba(3,83,0,0.12)] hover:shadow-[0_16px_48px_rgba(3,83,0,0.18)] transition-all duration-300"
+                >
+                  <div>
+                    <div className="w-14 h-14 rounded-2xl bg-white/10 text-accent flex items-center justify-center mb-8 shrink-0">
+                      <Icon className="w-8 h-8" />
+                    </div>
+                    <h3 className="font-marcellus text-3xl mb-4 tracking-wide text-white font-medium">
+                      {contact.title}
+                    </h3>
+                    <p className="font-sans text-[15px] leading-relaxed text-white/80 mb-8">
+                      {contact.description}
+                    </p>
+                  </div>
 
-              <div className="space-y-1.5 mt-auto">
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`font-sans font-bold text-2xl ${contact.isPrimary ? "text-black" : "text-primary-dark"
-                      }`}
+                  <div className="pt-8 border-t border-white/10 mt-auto">
+                    <a
+                      href={`tel:${contact.phone.replace(/[\s+-]/g, "")}`}
+                      className="font-sans font-bold text-2xl text-accent hover:text-white transition-colors duration-300 block mb-2"
+                    >
+                      {contact.phone}
+                    </a>
+                    <p className="font-sans text-xs uppercase tracking-wider font-semibold text-white/50">
+                      {contact.hours}
+                    </p>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <div
+                key={contact.title}
+                className="bg-white rounded-[32px] p-8 md:p-10 border border-muted/30 hover:border-primary-dark/30 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.04)] flex flex-col justify-between w-full h-full"
+              >
+                <div>
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-8 shrink-0">
+                    <Icon className="w-8 h-8" />
+                  </div>
+                  <h3 className="font-marcellus text-3xl mb-4 tracking-wide text-dark font-medium">
+                    {contact.title}
+                  </h3>
+                  <p className="font-sans text-[15px] leading-relaxed text-light-ash/90 mb-8">
+                    {contact.description}
+                  </p>
+                </div>
+
+                <div className="pt-8 border-t border-muted/20 mt-auto">
+                  <a
+                    href={`tel:${contact.phone.replace(/[\s+-]/g, "")}`}
+                    className="font-sans font-bold text-2xl text-primary hover:text-primary-dark transition-colors duration-300 block mb-2"
                   >
                     {contact.phone}
-                  </span>
+                  </a>
+                  <p className="font-sans text-xs uppercase tracking-wider font-semibold text-light-ash/60">
+                    {contact.hours}
+                  </p>
                 </div>
-                <p
-                  className={`font-sans text-xs uppercase tracking-wider font-medium ${contact.isPrimary ? "text-black/70" : "text-light-ash/70"
-                    }`}
-                >
-                  {contact.hours}
-                </p>
               </div>
-            </div>
-          ))}
+            );
+          })}
+        </div>
+
+        {/* Advisory Disclaimer */}
+        <div className="mt-20 text-center max-w-3xl mx-auto px-4">
+          <p className="font-sans text-sm text-light-ash/80 leading-relaxed border-t border-muted/20 pt-10">
+            <span className="font-semibold text-dark">Important Advisory:</span> CMHCB and associated emotional helper helplines provide psychological support, mental health counseling, and crisis triage. If you or someone you know is in immediate physical danger, experiencing a severe drug/medical emergency, or threatened by active self-harm, please dial the National Emergency Hotline (<span className="font-semibold text-primary-dark">999</span>) or proceed immediately to the nearest hospital emergency department.
+          </p>
         </div>
       </Container>
     </section>

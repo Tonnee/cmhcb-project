@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/shared/section-heading";
 import { BlogCard } from "@/features/blog/components/blog-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Tag } from "@/components/ui/tag";
 
 // Shared icon components to match blog/page.tsx
 function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Element {
@@ -86,9 +87,9 @@ export default async function BlogPostPage({
           
           <div className="flex flex-wrap justify-center gap-3">
             {post.tags.map(tag => (
-              <span key={tag} className="px-4 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-full text-xs font-medium tracking-wide">
+              <Tag key={tag} variant="glass">
                 {tag}
-              </span>
+              </Tag>
             ))}
           </div>
         </div>

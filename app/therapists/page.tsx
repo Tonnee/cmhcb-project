@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { TherapistList } from "@/features/therapists/components/therapist-list";
@@ -37,8 +38,8 @@ export default function TherapistsPage() {
   return (
     <main className="pt-20 pb-0">
       {/* ── Page Header ──────────────────────────────────────────────── */}
-      <Container className="mb-20">
-        <div className="flex flex-col lg:flex-row items-center gap-y-12 gap-6 mb-24">
+      <Container className="mb-40">
+        <div className="flex flex-col lg:flex-row items-stretch gap-12 lg:gap-20 mb-24">
           {/* Left: Content */}
           <div className="flex flex-col flex-1 w-full lg:pr-10 xl:pr-16">
             <SectionHeading
@@ -55,28 +56,31 @@ export default function TherapistsPage() {
               systemic family therapy and trauma-focused interventions.
             </p>
 
-            {/* Stats as icon-list items */}
-            <div className="flex flex-col gap-6">
+            {/* Stats as modern editorial counters */}
+            <div className="grid grid-cols-3 gap-6 md:gap-8 pt-8 border-t border-muted/20">
               {stats.map((stat) => (
-                <div key={stat.label} className="flex gap-6 items-center">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                    <span className="font-marcellus text-lg leading-none">{stat.value}</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <h4 className="font-marcellus text-lg text-dark">{stat.label}</h4>
-                  </div>
+                <div key={stat.label} className="flex flex-col gap-1">
+                  <span className="font-marcellus text-3xl md:text-4xl text-primary-dark leading-none font-medium">
+                    {stat.value}
+                  </span>
+                  <span className="font-sans text-[10px] md:text-xs font-semibold tracking-wider text-light-ash/60 uppercase">
+                    {stat.label}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Right: Image */}
-          <div className="shrink-0 w-full lg:w-[470px]">
-            <div className="relative rounded-3xl overflow-hidden aspect-3/4 lg:h-[664px] lg:w-[470px]">
-              <img
+          <div className="shrink-0 w-full lg:w-[470px] flex">
+            <div className="relative rounded-[32px] overflow-hidden aspect-[3/4] lg:aspect-auto w-full lg:h-full min-h-[350px] lg:min-h-0 bg-gray-50 flex-1">
+              <Image
                 src="/compassionate-mental-health-professional.png"
                 alt="Our therapists team"
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 470px"
+                className="object-cover"
+                priority
               />
             </div>
           </div>

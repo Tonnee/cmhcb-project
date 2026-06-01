@@ -2,7 +2,8 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BlogPost } from "@/features/blog/data/blogs";
-import { HiArrowSmallRight } from "react-icons/hi2";
+import { Tag } from "@/components/ui/tag";
+import { LinkButton } from "@/components/ui/link-button";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -27,9 +28,7 @@ export function BlogCard({ post, className = "" }: BlogCardProps): React.JSX.Ele
       <div className="p-6 flex flex-col flex-1">
         <div className="flex flex-wrap gap-2 mb-4">
           {post.tags.map(tag => (
-            <span key={tag} className="px-3 py-1 bg-primary/10 text-primary rounded-full font-sans text-xs font-medium">
-              {tag}
-            </span>
+            <Tag key={tag}>{tag}</Tag>
           ))}
         </div>
         <h3 className="font-marcellus text-xl text-dark mb-3 leading-snug group-hover:text-primary transition-colors">
@@ -42,9 +41,7 @@ export function BlogCard({ post, className = "" }: BlogCardProps): React.JSX.Ele
           <span className="font-sans text-xs text-light-ash font-medium">
             {new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
-          <span className="font-sans font-semibold text-primary text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-            Read More <HiArrowSmallRight className="w-4 h-4" />
-          </span>
+          <LinkButton variant="accent">Read More</LinkButton>
         </div>
       </div>
     </Link>

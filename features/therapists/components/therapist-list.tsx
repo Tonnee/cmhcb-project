@@ -45,13 +45,14 @@ export function TherapistList(): React.JSX.Element {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ">
+      <div className="flex flex-wrap justify-center gap-6">
         {filteredTherapists.map((therapist) => (
-          <TherapistCard
-            key={therapist.id}
-            therapist={therapist}
-            className="w-full"
-          />
+          <div key={therapist.id} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] max-w-[320px] sm:max-w-none mx-auto sm:mx-0 mb-10">
+            <TherapistCard
+              therapist={therapist}
+              className="w-full"
+            />
+          </div>
         ))}
       </div>
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { type ServiceItem } from "@/features/services/data/services";
-import { RightArrowIcon } from "@/components/ui/icons";
+import { LinkButton } from "@/components/ui/link-button";
 
 interface ServiceCardProps {
   item: ServiceItem;
@@ -39,10 +39,7 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
           <span className="font-sans text-xs text-light-ash font-medium">
             {item.duration} / {item.fees}
           </span>
-          <span className="font-sans font-semibold text-primary-dark text-sm flex items-center gap-1 group-hover:text-accent transition-all">
-            Learn More
-            <RightArrowIcon width="12" height="12" />
-          </span>
+          <LinkButton variant="primary-dark">Learn More</LinkButton>
         </div>
       </div>
     </Link>
