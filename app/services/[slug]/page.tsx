@@ -43,14 +43,17 @@ export default async function ServiceDetailPage({
   return (
     <main>
       <PageHero
-        breadcrumbs={[{ label: "Services", href: "/services" }]}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Services", href: "/services" },
+        ]}
         currentPage={service.heroTitle}
         title={service.heroTitle}
         description={service.heroDescription}
         imageSrc="/pages-hero-background/1.png"
         imageAlt="Professional psychotherapy in Dhaka - CMHCB"
         ctaLabel="Book an Appointment"
-        ctaHref="/book"
+        ctaHref={`/appointment?service=${slug}`}
       />
       <ServiceDescription
         introduction={service.description.introduction}

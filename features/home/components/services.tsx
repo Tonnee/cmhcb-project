@@ -14,7 +14,7 @@ export default function Services(): React.JSX.Element {
         {/* Header */}
         <SectionHeading 
           subtitle="Services We Provide"
-          title={<>Professional Psychology <span className="text-primary-dark">Therapy Services</span><br className="hidden md:block" /> You Can Choose</>}
+          title={<><span className="text-primary-dark">Professional</span> Psychology Therapy <span className="text-accent">Services</span><br className="hidden md:block" /> You Can Choose</>}
           className="mb-14 px-4"
         />
 

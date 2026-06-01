@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 interface BookAppointmentButtonProps {
   className?: string;
-  variant?: "primary" | "secondary" | "accent" | "outline" | "ghost" | "white";
+  variant?: "primary" | "primary-dark" | "secondary" | "accent" | "outline" | "ghost" | "white";
   therapistId?: string;
 }
 

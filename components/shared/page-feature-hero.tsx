@@ -44,10 +44,10 @@ export function PageFeatureHero({
       <Container className="relative h-full">
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-6 items-center h-full">
           {/* Content Column */}
-          <div className="relative z-10 flex flex-col justify-center">
+          <div className="relative z-10 flex flex-col justify-center mr-20">
             <Breadcrumb className="mb-6" items={breadcrumbs} />
 
-            <h1 className="font-marcellus text-4xl md:text-5xl leading-tight text-footer-bg mb-6 max-w-lg">
+            <h1 className="font-marcellus text-3xl md:text-4xl leading-tight text-footer-bg mb-6 max-w-lg">
               {title}
             </h1>
 

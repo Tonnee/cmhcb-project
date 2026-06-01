@@ -16,21 +16,6 @@ interface FeatureCardProps {
   variant?: FeatureCardVariant;
 }
 
-const VARIANT_CLASSES = {
-  primary: {
-    card: "bg-accent",
-    bullet: "bg-white",
-    label: "text-white",
-    value: "text-black",
-  },
-  secondary: {
-    card: "bg-white border border-muted/50 transition-all hover:border-accent hover:shadow-md",
-    bullet: "bg-light-ash/80",
-    label: "text-black",
-    value: "text-primary-dark",
-  },
-} as const;
-
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -43,35 +28,39 @@ export default function FeatureCard({
   href,
   variant = "primary",
 }: FeatureCardProps): React.JSX.Element {
-  const v = VARIANT_CLASSES[variant];
-
   return (
-    <article className={`relative w-full rounded-3xl p-10 md:p-12 ${v.card}`}>
-      <h3 className="font-marcellus text-3xl md:text-4xl leading-snug text-black mb-8">
-        {title}
-      </h3>
+    <article className="group relative w-full bg-white rounded-3xl p-8 md:p-10 border border-muted/30 hover:border-primary-dark/60 transition-all duration-300 flex flex-col justify-between min-h-[320px] hover:shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+      <div>
+        {/* Top Accent Line */}
+        <div className="w-8 h-1 bg-accent/40 group-hover:w-16 group-hover:bg-primary-dark transition-all duration-300 mb-8 rounded-full" />
+        
+        {/* Heading */}
+        <h3 className="font-marcellus text-2xl md:text-3xl text-dark mb-6 tracking-wide leading-snug group-hover:text-primary-dark transition-colors duration-300">
+          {title}
+        </h3>
 
-      {features && features.length > 0 && (
-        <ul className="space-y-3 mb-8">
-          {features.map((feature) => (
-            <li key={feature} className="flex items-center gap-6">
-              <span className={`w-3 h-3 rounded-full shrink-0 ${v.bullet}`} aria-hidden="true" />
-              <span className="font-sans font-normal text-xl leading-8 text-black">
-                {feature}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+        {/* Features List */}
+        {features && features.length > 0 && (
+          <ul className="space-y-3.5 mb-8">
+            {features.map((feature) => (
+              <li key={feature} className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0 mt-[10px]" aria-hidden="true" />
+                <span className="font-sans font-normal text-base text-light-ash/80 leading-relaxed">
+                  {feature}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-      <p className="font-sans font-semibold text-xl leading-8 mb-6">
-        <span className={v.label}>Duration: </span>
-        <span className={v.value}>{duration}, </span>
-        <span className={v.label}>Fees: </span>
-        <span className={v.value}>{fees}</span>
-      </p>
-
-      <LearnMoreLink href={href} label={title} variant={variant} />
+      {/* Footer Info & CTA */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-muted/20 mt-auto">
+        <p className="font-sans font-semibold text-xs tracking-wider text-light-ash/60 uppercase">
+          {duration} &bull; {fees}
+        </p>
+        <LearnMoreLink href={href} label={title} variant={variant} />
+      </div>
     </article>
   );
 }

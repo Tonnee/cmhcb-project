@@ -10,7 +10,7 @@ interface LearnMoreLinkProps {
 }
 
 const VARIANT_COLOR: Record<FeatureCardVariant, string> = {
-  primary: "text-black",
+  primary: "text-primary-dark",
   secondary: "text-primary-dark",
 };
 
@@ -22,11 +22,11 @@ export function LearnMoreLink({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center gap-3 transition-all hover:gap-6 ${VARIANT_COLOR[variant]}`}
+      className={`inline-flex items-center gap-3 transition-all hover:text-accent group-hover:text-accent group-hover:translate-x-2 ${VARIANT_COLOR[variant]}`}
       aria-label={`Learn more about ${label}`}
     >
-      <span className="font-marcellus text-xl">Learn More</span>
-      <FiArrowRight className="w-5 h-5" aria-hidden="true" />
+      <span className="font-marcellus text-lg">Learn More</span>
+      <FiArrowRight className="w-4 h-4" aria-hidden="true" />
     </Link>
   );
 }

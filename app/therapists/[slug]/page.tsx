@@ -26,7 +26,7 @@ import { BookAppointmentButton } from "@/components/shared/book-appointment-butt
 
 function ProfileTag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 font-sans text-sm font-medium text-primary">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-primary/30 px-3 py-1 font-sans text-xs font-medium text-primary">
       {children}
     </span>
   );
@@ -42,25 +42,26 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-      <div className="flex items-center gap-3 mb-5">
-        <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-          <Icon className="w-5 h-5" />
-        </div>
-        <h3 className="font-marcellus text-xl text-dark">{title}</h3>
+    <div className="group relative rounded-3xl border border-muted/30 bg-white p-8 hover:border-primary-dark/60 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.02)] flex flex-col">
+      {/* Top Accent Line */}
+      <div className="w-8 h-1 bg-accent/40 group-hover:w-16 group-hover:bg-primary-dark transition-all duration-300 mb-6 rounded-full" />
+      
+      <div className="flex items-center gap-3 mb-6">
+        <Icon className="w-5 h-5 text-primary-dark shrink-0" />
+        <h3 className="font-marcellus text-xl text-dark tracking-wide">{title}</h3>
       </div>
-      {children}
+      <div className="flex-1">{children}</div>
     </div>
   );
 }
 
 function BulletList({ items }: { items: string[] }) {
   return (
-    <ul className="flex flex-col gap-2.5">
+    <ul className="flex flex-col gap-3.5">
       {items.map((item, i) => (
-        <li key={i} className="flex items-start gap-2.5">
-          <HiCheckBadge className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-          <span className="font-sans text-[15px] text-light-ash leading-relaxed">{item}</span>
+        <li key={i} className="flex items-start gap-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0 mt-[10px]" aria-hidden="true" />
+          <span className="font-sans text-sm md:text-base text-light-ash/80 leading-relaxed">{item}</span>
         </li>
       ))}
     </ul>
@@ -72,16 +73,16 @@ function ExperienceStat({ label }: { label: string }) {
   const match = label.match(/^(\d[\d+,]*\+?)\s*(.*)/);
   if (match) {
     return (
-      <div className="flex flex-col items-center text-center p-5 rounded-2xl bg-primary/5 border border-primary/10">
-        <span className="font-marcellus text-3xl text-primary mb-1">{match[1]}</span>
-        <span className="font-sans text-sm text-light-ash leading-snug">{match[2]}</span>
+      <div className="flex flex-col items-start">
+        <span className="font-marcellus text-4xl text-primary-dark mb-1">{match[1]}</span>
+        <span className="font-sans text-xs font-semibold tracking-wider text-light-ash/60 uppercase">{match[2]}</span>
       </div>
     );
   }
   return (
-    <div className="flex items-center gap-2.5 p-4 rounded-2xl bg-primary/5 border border-primary/10">
-      <HiStar className="w-5 h-5 text-primary shrink-0" />
-      <span className="font-sans text-[15px] text-dark font-medium leading-snug">{label}</span>
+    <div className="flex items-start gap-3">
+      <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0 mt-[10px]" aria-hidden="true" />
+      <span className="font-sans text-sm font-semibold tracking-wider text-dark/80 uppercase">{label}</span>
     </div>
   );
 }
@@ -119,127 +120,121 @@ export default async function TherapistProfilePage({
   const hasFees = therapist.fees && therapist.fees.length > 0;
 
   return (
-    <main className="pt-24 pb-24">
-      {/* ── Hero ─────────────────────────────────────────────────────── */}
+    <main className="pt-24 pb-24 bg-page-bg">
       <Container>
-        <div className="flex flex-col lg:flex-row items-start gap-y-12 gap-x-12 xl:gap-x-20">
-          {/* Left: Content */}
-          <div className="flex flex-col flex-1 w-full">
-            <p className="font-sans text-accent font-medium text-sm mb-3 tracking-widest uppercase">
-              {therapist.role}
-            </p>
-
-            <h1 className="font-marcellus text-4xl lg:text-[48px] text-dark leading-[1.15] mb-6">
-              {therapist.name}
-            </h1>
-
-            {therapist.expertise && therapist.expertise.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-6">
-                {therapist.expertise.slice(0, 3).map((exp, i) => (
-                  <ProfileTag key={i}>{exp}</ProfileTag>
-                ))}
-              </div>
-            )}
-
-            <p className="font-sans text-[16px] text-light-ash leading-[1.8] max-w-[600px] mb-10">
-              {therapist.bio ?? "Detailed biography coming soon."}
-            </p>
-
-            {/* Experience Stats */}
-            {hasExperience && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
-                {therapist.experience!.map((exp, i) => (
-                  <ExperienceStat key={i} label={exp} />
-                ))}
-              </div>
-            )}
-
-            <div className="self-start">
-              <BookAppointmentButton therapistId={therapist.id} />
-            </div>
-          </div>
-
-          {/* Right: Image */}
-          <div className="shrink-0 w-full lg:w-[430px]">
-            <div className="relative rounded-3xl overflow-hidden aspect-3/4 lg:h-[600px] lg:w-[430px] bg-gray-100 shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-start">
+          
+          {/* Column 1: Portrait (Sticky) */}
+          <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-32">
+            <div className="relative rounded-[32px] overflow-hidden aspect-3/4 w-full">
               <Image
                 src={therapist.image}
                 alt={therapist.name}
                 fill
-                sizes="(max-width: 1024px) 100vw, 430px"
+                sizes="(max-width: 1024px) 100vw, 400px"
                 className="object-cover object-top"
                 priority
               />
             </div>
           </div>
-        </div>
 
-        {/* ── Profile Detail Cards ──────────────────────────────────── */}
-        {(hasEducation || hasTraining || hasExpertise) && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-16">
-            {hasEducation && (
-              <SectionCard icon={HiAcademicCap} title="Education">
-                <BulletList items={therapist.education!} />
-              </SectionCard>
-            )}
-            {hasTraining && (
-              <SectionCard icon={HiSparkles} title="Training">
-                <BulletList items={therapist.training!} />
-              </SectionCard>
-            )}
-            {hasExpertise && (
-              <SectionCard icon={HiBriefcase} title="Areas of Expertise">
-                <BulletList items={therapist.expertise!} />
-              </SectionCard>
-            )}
-          </div>
-        )}
-
-        {/* ── Rates & Fees ──────────────────────────────────────────── */}
-        {hasFees && (
-          <div className="mt-16">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                <HiCurrencyDollar className="w-5 h-5" />
-              </div>
-              <h2 className="font-marcellus text-2xl text-dark">Rates &amp; Fees</h2>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {therapist.fees!.map((feeCategory, ci) => (
-                <div
-                  key={ci}
-                  className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
-                >
-                  <h3 className="font-marcellus text-lg text-dark mb-4 pb-3 border-b border-gray-100">
-                    {feeCategory.category}
-                  </h3>
-                  <div className="flex flex-col gap-3">
-                    {feeCategory.items.map((item, ii) => (
-                      <div key={ii} className="flex items-start justify-between gap-6">
-                        <div className="flex flex-col">
-                          <span className="font-sans text-[14px] text-light-ash">{item.label}</span>
-                          {item.note && (
-                            <span className="font-sans text-[12px] text-light-ash/70 italic mt-0.5">
-                              {item.note}
-                            </span>
-                          )}
-                        </div>
-                        <span className="font-marcellus text-[15px] text-primary font-semibold whitespace-nowrap">
-                          {item.amount}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+          {/* Column 2: Bio & Profile Details */}
+          <div className="lg:col-span-5 flex flex-col gap-10">
+            <div>
+              <p className="font-sans text-accent font-medium text-sm mb-2 tracking-widest capitalize">
+                {therapist.role}
+              </p>
+              <h1 className="font-marcellus text-4xl lg:text-5xl text-primary-dark leading-[1.1] mb-6">
+                {therapist.name}
+              </h1>
+              {therapist.expertise && therapist.expertise.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {therapist.expertise.slice(0, 3).map((exp, i) => (
+                    <ProfileTag key={i}>{exp}</ProfileTag>
+                  ))}
                 </div>
-              ))}
+              )}
+
+              <h2 className="font-marcellus text-2xl text-dark mb-4 tracking-wide mt-8">Biography</h2>
+              <p className="font-sans text-[16px] text-light-ash leading-[1.8] w-full">
+                {therapist.bio ?? "Detailed biography coming soon."}
+              </p>
             </div>
 
-            <div className="mt-8 flex justify-center">
-              <BookAppointmentButton therapistId={therapist.id} />
-            </div>
+            {/* Experience Stats */}
+            {hasExperience && (
+              <div className="pt-6 border-t border-muted/20">
+                <BulletList items={therapist.experience!} />
+              </div>
+            )}
+
+            {/* Profile Detail Cards (stacked vertically) */}
+            {(hasEducation || hasTraining || hasExpertise) && (
+              <div className="flex flex-col gap-6 mt-4">
+                {hasEducation && (
+                  <SectionCard icon={HiAcademicCap} title="Education">
+                    <BulletList items={therapist.education!} />
+                  </SectionCard>
+                )}
+                {hasTraining && (
+                  <SectionCard icon={HiSparkles} title="Training">
+                    <BulletList items={therapist.training!} />
+                  </SectionCard>
+                )}
+                {hasExpertise && (
+                  <SectionCard icon={HiBriefcase} title="Areas of Expertise">
+                    <BulletList items={therapist.expertise!} />
+                  </SectionCard>
+                )}
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Column 3: Rates, Fees & Appointment CTA (Sticky) */}
+          <div className="lg:col-span-3 flex flex-col gap-8 lg:sticky lg:top-32 bg-primary-dark rounded-3xl p-6 shadow-[0_8px_30px_rgba(3,83,0,0.15)] text-white border border-primary-dark">
+            {hasFees ? (
+              <>
+                <div className="flex items-center gap-3 pb-4 border-b border-white/20">
+                  <HiCurrencyDollar className="w-6 h-6 text-accent" />
+                  <h2 className="font-marcellus text-xl text-white tracking-wide font-semibold">Rates &amp; Fees</h2>
+                </div>
+                <div className="flex flex-col gap-6">
+                  {therapist.fees!.map((feeCategory, ci) => (
+                    <div key={ci} className="flex flex-col">
+                      <h3 className="font-sans font-bold text-xs tracking-wider text-white/60 uppercase mb-3">
+                        {feeCategory.category}
+                      </h3>
+                      <div className="flex flex-col gap-3">
+                        {feeCategory.items.map((item, ii) => (
+                          <div key={ii} className="flex flex-col gap-1">
+                            <div className="flex items-start justify-between gap-4">
+                              <span className="font-sans text-[13px] font-medium text-white/90">{item.label}</span>
+                              <span className="font-marcellus text-[14px] text-accent font-semibold whitespace-nowrap">
+                                {item.amount}
+                              </span>
+                            </div>
+                            {item.note && (
+                              <span className="font-sans text-[11px] text-white/70 italic">
+                                {item.note}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-6 text-white/70">
+                Rates and fees info not available.
+              </div>
+            )}
+            
+            <BookAppointmentButton therapistId={therapist.id} variant="white" className="w-full justify-center" />
+          </div>
+
+        </div>
       </Container>
 
       {/* ── Services Section ─────────────────────────────────────────── */}

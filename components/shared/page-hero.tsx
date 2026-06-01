@@ -39,7 +39,7 @@ export function PageHero({
   imageSrc = "/pages-hero-background/1.png",
   imageAlt = "",
   ctaLabel = "Book an Appointment",
-  ctaHref = "/book",
+  ctaHref = "/appointment",
   onCtaClick,
   className = "",
   children,

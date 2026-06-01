@@ -18,6 +18,7 @@ export function AppointmentForm() {
 function AppointmentFormContent() {
   const searchParams = useSearchParams();
   const therapistId = searchParams.get("therapist");
+  const serviceSlug = searchParams.get("service");
 
   const [formData, setFormData] = React.useState({
     name: "",
@@ -40,12 +41,20 @@ function AppointmentFormContent() {
         setFormData((prev) => ({
           ...prev,
           therapist: therapist.id,
-          // If the therapist has services, pre-select the first one
-          service: therapist.services?.[0] || prev.service,
+          // Pre-select the service from query parameter, or therapist's first service, or previous service
+          service: serviceSlug || therapist.services?.[0] || prev.service,
+        }));
+      }
+    } else if (serviceSlug) {
+      const serviceExists = SERVICES.some((s) => s.slug === serviceSlug);
+      if (serviceExists) {
+        setFormData((prev) => ({
+          ...prev,
+          service: serviceSlug,
         }));
       }
     }
-  }, [therapistId]);
+  }, [therapistId, serviceSlug]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -62,7 +71,7 @@ function AppointmentFormContent() {
   };
 
   const inputClasses =
-    "w-full px-4 py-3 rounded-xl border border-muted bg-white font-sans text-dark focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 placeholder:text-light-ash/50";
+    "w-full px-4 py-3 rounded-xl border border-muted bg-white font-sans text-dark focus:outline-none focus:ring-2 focus:ring-primary-dark/20 focus:border-primary-dark transition-all duration-200 placeholder:text-light-ash/50";
   const labelClasses = "block font-sans text-sm font-medium text-dark mb-1.5 ml-1";
 
   return (
@@ -233,9 +242,9 @@ function AppointmentFormContent() {
                 value="online"
                 checked={formData.preference === "online"}
                 onChange={handleChange}
-                className="w-5 h-5 text-primary border-muted focus:ring-primary focus:ring-offset-0 transition-all cursor-pointer"
+                className="w-5 h-5 accent-primary-dark border-muted focus:ring-primary-dark focus:ring-offset-0 transition-all cursor-pointer"
               />
-              <span className="font-sans text-dark group-hover:text-primary transition-colors">
+              <span className="font-sans text-dark group-hover:text-primary-dark transition-colors">
                 Online Session
               </span>
             </label>
@@ -246,9 +255,9 @@ function AppointmentFormContent() {
                 value="in-person"
                 checked={formData.preference === "in-person"}
                 onChange={handleChange}
-                className="w-5 h-5 text-primary border-muted focus:ring-primary focus:ring-offset-0 transition-all cursor-pointer"
+                className="w-5 h-5 accent-primary-dark border-muted focus:ring-primary-dark focus:ring-offset-0 transition-all cursor-pointer"
               />
-              <span className="font-sans text-dark group-hover:text-primary transition-colors">
+              <span className="font-sans text-dark group-hover:text-primary-dark transition-colors">
                 In Person Session
               </span>
             </label>
@@ -272,7 +281,7 @@ function AppointmentFormContent() {
         </div>
       </div>
 
-      <Button type="submit" variant="primary" className="w-full py-4 text-lg">
+      <Button type="submit" variant="primary-dark" className="w-full py-4 text-lg cursor-pointer">
         Submit Appointment Request
       </Button>
     </form>

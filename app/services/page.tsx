@@ -5,9 +5,12 @@ import { ServiceInfoSection } from "@/features/services/components/service-info-
 
 export default function ServicesPage(): React.JSX.Element {
   return (
-    <main>
+    <main className="bg-page-bg">
       <PageFeatureHero
-        breadcrumbs={[{ label: "Services", href: "/services" }]}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Services", href: "/services" },
+        ]}
         title="Professional, ethical, and evidence-based mental health care"
         description="At CMHC,B, we provide compassionate and confidential psychotherapeutic services to support individuals, couples, families, and organizations in improving mental well-being and quality of life."
         image={{
@@ -17,9 +20,8 @@ export default function ServicesPage(): React.JSX.Element {
         ctas={[
           {
             label: "Book an Appointment",
-            variant: "primary",
-            href: "/book",
-            className: "bg-primary-dark hover:bg-primary-dark/90 border-primary-dark",
+            variant: "primary-dark",
+            href: "/appointment",
           },
           {
             label: "Talk to a Professional",

@@ -48,7 +48,8 @@ function Bullet({ highlighted }: { highlighted: boolean }) {
   return (
     <span
       aria-hidden="true"
-      className={`inline-block w-3 h-3 rounded-full flex-shrink-0 mt-[10px] ${ highlighted ? "bg-accent" : "bg-light-ash/80"
+      className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 mt-[10px] ${
+        highlighted ? "bg-accent" : "bg-primary/40"
       }`}
     />
   );
@@ -64,11 +65,13 @@ function Section({ section }: { section: ServiceDescriptionSection }) {
       >
         {section.title}
       </h3>
-      <ul className="space-y-5">
+      <ul className="space-y-4">
         {section.items.map((item) => (
-          <li key={item} className="flex items-start gap-6">
+          <li key={item} className="flex items-start gap-4">
             <Bullet highlighted={!!section.highlight} />
-            <span className="font-sans text-xl leading-8 text-dark">{item}</span>
+            <span className="font-sans font-normal text-base md:text-lg leading-relaxed text-light-ash/90">
+              {item}
+            </span>
           </li>
         ))}
       </ul>

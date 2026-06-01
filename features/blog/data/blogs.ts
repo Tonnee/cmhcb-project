@@ -33,7 +33,7 @@ export const BLOG_POSTS: BlogPost[] = [
     content: sampleContent,
     image: "/hero-image/psychotherapy-counseling-session.png",
     publishedAt: "2023-11-20T10:00:00Z",
-    author: "Dr. Sarah Ahmed",
+    author: "Nazme Ara",
     tags: ["Anxiety", "Mental Health", "Coping"],
     isFeatured: true,
   },
@@ -45,7 +45,7 @@ export const BLOG_POSTS: BlogPost[] = [
     content: sampleContent,
     image: "/hero-image/group-therapy-support-circle.png",
     publishedAt: "2023-10-05T08:30:00Z",
-    author: "Dr. Rahman Khan",
+    author: "Zohra Parveen",
     tags: ["Group Therapy", "Support", "Community"],
   },
   {
@@ -56,7 +56,7 @@ export const BLOG_POSTS: BlogPost[] = [
     content: sampleContent,
     image: "/hero-image/family-therapy-psychologist-office.png",
     publishedAt: "2023-09-15T14:15:00Z",
-    author: "Ayesha Hossain",
+    author: "Nazma Khatun",
     tags: ["Family Therapy", "Relationships"],
   },
   {
@@ -67,7 +67,7 @@ export const BLOG_POSTS: BlogPost[] = [
     content: sampleContent,
     image: "/compassionate-mental-health-professional.png",
     publishedAt: "2023-12-02T09:00:00Z",
-    author: "Dr. Sarah Ahmed",
+    author: "Nazme Ara",
     tags: ["Child Therapy", "Parenting"],
   },
   {
@@ -78,7 +78,7 @@ export const BLOG_POSTS: BlogPost[] = [
     content: sampleContent,
     image: "/hero-image/psychotherapy-counseling-session.png",
     publishedAt: "2024-01-10T11:45:00Z",
-    author: "Tariq Hasan",
+    author: "Zohra Parveen",
     tags: ["Burnout", "Workplace", "Stress"],
   },
   ...Array.from({ length: 15 }).map((_, i) => ({

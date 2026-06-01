@@ -26,33 +26,39 @@ export function SplitContentBlock({
   const { heading, items, cta, image } = content;
 
   return (
-    <div className="grid lg:grid-cols-2 gap-6 items-center">
+    <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center py-6">
       <div className={`flex flex-col ${reverse ? "lg:order-2" : ""}`}>
-        <h2 className="font-marcellus text-4xl text-dark mb-10">{heading}</h2>
+        {/* Title */}
+        <h2 className="font-marcellus text-3xl md:text-4xl text-dark mb-8 tracking-wide leading-snug">
+          {heading}
+        </h2>
 
-        <ul className="space-y-5 mb-10">
+        {/* Minimalist List */}
+        <ul className="space-y-4 mb-8">
           {items.map((item) => (
-            <li key={item} className="flex items-center gap-6">
+            <li key={item} className="flex items-start gap-4">
               <span
-                className="w-3 h-3 rounded-full shrink-0 bg-light-ash/80"
+                className="w-1.5 h-1.5 rounded-full shrink-0 bg-accent mt-[10px]"
                 aria-hidden="true"
               />
-              <span className="font-sans font-normal text-xl leading-8 text-black">
+              <span className="font-sans font-normal text-base md:text-lg leading-relaxed text-light-ash/90">
                 {item}
               </span>
             </li>
           ))}
         </ul>
 
-        <Button href={cta.href} variant="primary-dark" className="self-start">
+        {/* Action Button */}
+        <Button href={cta.href} variant="primary-dark" className="self-start mt-2">
           {cta.label}
         </Button>
       </div>
 
+      {/* Premium Minimalist Image Frame */}
       <div
-        className={`relative hidden lg:block h-[575px] ${reverse ? "lg:order-1" : ""}`}
+        className={`relative hidden lg:block h-[500px] ${reverse ? "lg:order-1" : ""}`}
       >
-        <div className="relative w-full h-full rounded-3xl overflow-hidden">
+        <div className="relative w-full h-full rounded-[32px] overflow-hidden bg-muted">
           <Image
             src={image.src}
             alt={image.alt}
