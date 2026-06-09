@@ -11,7 +11,7 @@ interface ServiceCardProps {
 
 export function ServiceCard({ item, className = "" }: ServiceCardProps): React.JSX.Element {
   return (
-    <Link 
+    <Link
       href={`/services/${item.slug}`}
       className={`group flex flex-col bg-white rounded-3xl overflow-hidden border border-gray-100 transition-all hover:shadow-md ${className}`}
     >
@@ -39,7 +39,7 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
           <span className="font-sans text-xs text-light-ash font-medium">
             {item.duration} / {item.fees}
           </span>
-          <LinkButton variant="primary-dark">Learn More</LinkButton>
+          <LinkButton variant="accent">Learn More</LinkButton>
         </div>
       </div>
     </Link>

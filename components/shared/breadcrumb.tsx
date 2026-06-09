@@ -22,6 +22,11 @@ export function Breadcrumb({
   className = "",
   theme = "light",
 }: BreadcrumbProps): React.JSX.Element {
+  const hasHome =
+    items.length > 0 &&
+    (items[0].href === "/" || items[0].label.toLowerCase() === "home");
+  const finalItems = hasHome ? items : [{ label: "Home", href: "/" }, ...items];
+
   const ancestorClass =
     theme === "dark"
       ? "text-accent transition-colors hover:text-white"
@@ -39,8 +44,8 @@ export function Breadcrumb({
       className={`font-sans font-normal text-sm ${className}`}
     >
       <ol className="flex items-center flex-wrap gap-x-1">
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1;
+        {finalItems.map((item, index) => {
+          const isLast = index === finalItems.length - 1;
 
           return (
             <li key={item.label} className="flex items-center gap-x-1">

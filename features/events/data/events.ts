@@ -109,6 +109,13 @@ export const EVENTS_DATA: Event[] = [
     location: "Online via Zoom",
     author: "Dr. Nadia",
     tags: ["Couples", "Relationships", "Workshop"],
+    content: "<p>The Couples Communication & Connection Workshop was designed for partners to acquire core communication techniques based on clinical frameworks. Under the guidance of Dr. Nadia, couples practiced constructive dialogue, empathy loops, and conflict de-escalation strategies.</p><h3>Key Highlights & Discussions</h3><ul><li>Active listening and the 'speaker-listener' technique</li><li>De-escalating emotional flooding during arguments</li><li>Fostering emotional safety and deep-level intimacy</li><li>Developing shared household values and boundaries</li></ul>",
+    gallery: [
+      "/hero-image/family-therapy-psychologist-office.png",
+      "/hero-image/psychotherapy-counseling-session.png",
+      "/hero-image/group-therapy-support-circle.png",
+      "/cmhcb-mental-health-care-bw.png",
+    ]
   },
   {
     id: "e7",
@@ -145,5 +152,12 @@ export const EVENTS_DATA: Event[] = [
     location: "CMHCB Seminar Hall",
     author: "Ruma Khondaker",
     tags: ["New Year", "Mindset", "Workshop"],
+    content: "<p>The New Year Mindset Reset session offered participants a practical, science-backed framework to set emotional and cognitive goals for the coming year. Facilitated by Ruma Khondaker, the workshop utilized mindfulness and cognitive exercises to help attendees clarify their core values.</p><h3>Workshop Focus Areas</h3><ul><li>Reflecting on past habits with self-compassion</li><li>The science of habit formation and behavioral triggers</li><li>Setting values-based, realistic personal boundaries</li><li>Daily emotional grounding and reset routines</li></ul>",
+    gallery: [
+      "/hero-image/group-therapy-support-circle.png",
+      "/compassionate-mental-health-professional.png",
+      "/hero-image/psychotherapy-counseling-session.png",
+      "/cmhcb-mental-health-care.png",
+    ]
   },
 ];

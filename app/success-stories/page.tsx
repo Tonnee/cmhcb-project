@@ -12,7 +12,10 @@ export default function SuccessStoriesPage(): React.JSX.Element {
   return (
     <main>
       <PageFeatureHero
-        breadcrumbs={[{ label: "Success Stories", href: "/success-stories" }]}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Success Stories", href: "/success-stories" },
+        ]}
         title="Real experiences, real impact"
         description="Our clients share their journeys of transformation — honest reflections on the care, empathy, and support they received at CMHCB. Read how mental health care has empowered them to reclaim their lives."
         image={{

@@ -68,7 +68,7 @@ export default function WellBeing(): React.JSX.Element {
             </h2>
             <p className="font-sans text-base lg:text-lg text-white/80 leading-relaxed max-w-lg mt-2">
               At CMHC,B, we are committed to delivering compassionate and
-              effective mental health care. Explore how we've supported
+              effective mental health care. Explore how we&apos;ve supported
               individuals on their path to emotional well-being and resilience.
             </p>
           </div>

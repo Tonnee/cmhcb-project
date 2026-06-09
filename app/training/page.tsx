@@ -7,7 +7,10 @@ export default function TrainingPage(): React.JSX.Element {
   return (
     <main>
       <PageFeatureHero
-        breadcrumbs={[{ label: "Training", href: "/training" }]}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Training", href: "/training" },
+        ]}
         title="Building future mental health professionals and advocates"
         description="CMHCB offers a range of professional training programs designed to equip individuals with practical mental health knowledge and skills — from psychological first aid to advanced counselling techniques."
         image={{

@@ -43,7 +43,10 @@ export default async function TrainingDetailPage({
   return (
     <main>
       <PageHero
-        breadcrumbs={[{ label: "Training", href: "/training" }]}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Training", href: "/training" },
+        ]}
         currentPage={training.heroTitle}
         title={training.heroTitle}
         description={training.heroDescription}

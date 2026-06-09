@@ -61,7 +61,10 @@ export default async function BlogPostPage({
   return (
     <main>
       <PageHero
-        breadcrumbs={[{ label: "Blog", href: "/blog" }]}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Blog", href: "/blog" },
+        ]}
         currentPage={post.title}
         title={post.title}
         description={post.excerpt}

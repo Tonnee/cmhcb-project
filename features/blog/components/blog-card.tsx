@@ -12,8 +12,8 @@ interface BlogCardProps {
 
 export function BlogCard({ post, className = "" }: BlogCardProps): React.JSX.Element {
   return (
-    <Link 
-      href={`/blog/${post.slug}`} 
+    <Link
+      href={`/blog/${post.slug}`}
       className={`group flex flex-col bg-white rounded-3xl overflow-hidden border border-gray-100 ${className}`}
     >
       <div className="relative w-full h-[240px] overflow-hidden shrink-0">
@@ -31,7 +31,7 @@ export function BlogCard({ post, className = "" }: BlogCardProps): React.JSX.Ele
             <Tag key={tag}>{tag}</Tag>
           ))}
         </div>
-        <h3 className="font-marcellus text-xl text-dark mb-3 leading-snug group-hover:text-primary transition-colors">
+        <h3 className="font-marcellus text-xl text-primary-dark mb-3 leading-snug group-hover:text-accent transition-colors">
           {post.title}
         </h3>
         <p className="font-sans text-sm text-light-ash leading-relaxed mb-6 flex-1 line-clamp-3">

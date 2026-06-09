@@ -52,7 +52,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 export const LEGAL_LINKS: FooterLink[] = [
   { label: "Terms & Conditions", href: "/terms" },
   { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Community Service", href: "/community-service" },
+  { label: "Community Service", href: "/legal/community-service" },
 ];
 
 export const CONTACT_INFO = {

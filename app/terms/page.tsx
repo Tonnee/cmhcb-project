@@ -35,7 +35,7 @@ export default function TermsOfServicePage(): React.JSX.Element {
                 <strong>Not a Substitute for Emergency Services:</strong> The content on this website and our digital platforms is for informational purposes only and is not intended to substitute for professional medical advice, diagnosis, or treatment.
               </p>
               <p>
-                If you are experiencing a medical emergency, acute psychological crisis, or having suicidal thoughts, please call emergency services immediately or visit the nearest hospital. CMHCB's online platforms do not provide crisis intervention services.
+                If you are experiencing a medical emergency, acute psychological crisis, or having suicidal thoughts, please call emergency services immediately or visit the nearest hospital. CMHCB&apos;s online platforms do not provide crisis intervention services.
               </p>
             </div>
 
@@ -56,7 +56,7 @@ export default function TermsOfServicePage(): React.JSX.Element {
               </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>Appointments must be canceled or rescheduled at least 24 hours in advance.</li>
-                <li>Late cancellations or missed appointments ("no-shows") may be subject to a cancellation fee.</li>
+                <li>Late cancellations or missed appointments (&quot;no-shows&quot;) may be subject to a cancellation fee.</li>
                 <li>Consistent no-shows may result in the inability to book future appointments.</li>
               </ul>
             </div>

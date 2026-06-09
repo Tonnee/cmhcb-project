@@ -39,7 +39,7 @@ export function FaqTabsSection(): React.JSX.Element {
 
         <div className="mb-12">
           <p className="font-sans text-center text-light-ash max-w-2xl mx-auto mb-8 text-lg">
-            Find answers to common questions about our therapy services, billing, appointments, and privacy policies. Can't find what you're looking for? Reach out to us directly.
+            Find answers to common questions about our therapy services, billing, appointments, and privacy policies. Can&apos;t find what you&apos;re looking for? Reach out to us directly.
           </p>
 
           <div className="relative max-w-xl mx-auto mb-10">

@@ -12,7 +12,10 @@ export default function FaqsPage(): React.JSX.Element {
   return (
     <main>
       <PageFeatureHero
-        breadcrumbs={[{ label: "FAQs", href: "/faqs" }]}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "FAQs", href: "/faqs" },
+        ]}
         title="We are here to answer your questions"
         description="Whether you're new to therapy or an existing client, we've compiled a list of common questions to help you understand our services, payment methods, and privacy policies."
         image={{
