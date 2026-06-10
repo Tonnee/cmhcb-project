@@ -26,7 +26,6 @@ export default function FeatureCard({
   duration,
   fees,
   href,
-  variant = "primary",
 }: FeatureCardProps): React.JSX.Element {
   return (
     <article className="group relative w-full bg-white rounded-3xl p-8 md:p-10 border border-muted/30 hover:border-primary-dark/60 transition-all duration-300 flex flex-col justify-between min-h-[320px] hover:shadow-[0_8px_30px_rgb(0,0,0,0.02)]">

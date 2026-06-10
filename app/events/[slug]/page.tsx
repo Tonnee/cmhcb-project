@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { PageHero } from "@/components/shared/page-hero";
 import { EventCard } from "@/features/events/components/event-card";
-import Link from "next/link";
 import { Tag } from "@/components/ui/tag";
 
 // Shared icons for the page

@@ -8,7 +8,6 @@ import Therapists from "@/features/home/components/therapists";
 import { UpcomingEvents } from "@/features/home/components/upcoming-events";
 import { ScheduleAppointment } from "@/features/home/components/schedule-appointment";
 import { Review } from "@/features/home/components/review";
-import { Footer } from "@/components/layout/footer";
 
 export default function Page() {
   return (

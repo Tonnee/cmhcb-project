@@ -2,7 +2,6 @@ import * as React from "react";
 import { HiCalendarDays, HiClock, HiMapPin } from "react-icons/hi2";
 import { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import { EVENTS_DATA } from "@/features/events/data/events";

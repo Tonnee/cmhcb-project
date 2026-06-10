@@ -7,7 +7,7 @@ interface IconBadgeProps {
   bgClass: string;
 }
 
-function IconBadge({ children, bgClass }: IconBadgeProps): React.JSX.Element {
+function IconBadge({ children }: IconBadgeProps): React.JSX.Element {
   return (
     <span
       className={`inline-flex items-center justify-center w-11 h-11 rounded-full align-middle mx-1 bg-primary/10 text-primary`}

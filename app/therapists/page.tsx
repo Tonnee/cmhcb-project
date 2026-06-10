@@ -73,7 +73,7 @@ export default function TherapistsPage() {
 
           {/* Right: Image */}
           <div className="shrink-0 w-full lg:w-[470px] flex">
-            <div className="relative rounded-[32px] overflow-hidden aspect-[3/4] lg:aspect-auto w-full lg:h-full min-h-[350px] lg:min-h-0 bg-gray-50 flex-1">
+            <div className="relative rounded-[32px] overflow-hidden aspect-3/4 lg:aspect-auto w-full lg:h-full min-h-[350px] lg:min-h-0 bg-gray-50 flex-1">
               <Image
                 src="/compassionate-mental-health-professional.png"
                 alt="Our therapists team"

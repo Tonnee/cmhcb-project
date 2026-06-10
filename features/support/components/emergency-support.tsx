@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
-import { HiPhone, HiExclamationTriangle, HiHeart, HiShieldCheck } from "react-icons/hi2";
+import { HiPhone, HiExclamationTriangle, HiShieldCheck } from "react-icons/hi2";
 
 interface EmergencyContact {
   title: string;

@@ -1,16 +1,11 @@
 import * as React from "react";
 import {
   HiAcademicCap,
-  HiArrowSmallRight,
   HiBriefcase,
-  HiCheckBadge,
-  HiCurrencyDollar,
   HiSparkles,
-  HiStar,
 } from "react-icons/hi2";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";

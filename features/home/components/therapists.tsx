@@ -2,7 +2,6 @@ import * as React from "react";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { TherapistCarousel } from "@/features/home/components/therapist-carousel";
-import { type Therapist } from "@/components/shared/therapist-card";
 
 import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 
