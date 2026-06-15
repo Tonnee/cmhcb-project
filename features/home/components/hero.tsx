@@ -50,7 +50,7 @@ export function Hero(): React.JSX.Element {
         {/* Bottom Section - Three Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
           {/* Left Card - Group Therapy Image */}
-          <div className="relative rounded-3xl overflow-hidden h-60 group">
+          <div className="relative rounded-3xl overflow-hidden h-60 md:h-full group">
             <Image
               src="/hero-image/group-therapy-support-circle.png"
               alt="Group therapy support circle with participants seated together"
@@ -72,7 +72,7 @@ export function Hero(): React.JSX.Element {
           </div>
 
           {/* Right Card - Family Therapy Image */}
-          <div className="relative rounded-3xl overflow-hidden h-60 group">
+          <div className="relative rounded-3xl overflow-hidden h-60 md:h-full group">
             <Image
               src="/hero-image/family-therapy-psychologist-office.png"
               alt="Family attending a therapy session in a psychologist office"

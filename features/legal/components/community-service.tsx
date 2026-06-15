@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Container } from "@/components/layout/container";
 import { SimplePageHeader } from "@/components/shared/simple-page-header";
-import { SectionHeading } from "@/components/shared/section-heading";
 import { Button } from "@/components/ui/button";
+import { Tag } from "@/components/ui/tag";
 import {
   HiGlobeAlt,
   HiUserGroup,
@@ -24,25 +24,25 @@ interface PillarItem {
 
 const OUTREACH_PILLARS: PillarItem[] = [
   {
-    icon: <HiUserGroup className="w-6 h-6" />,
+    icon: <HiUserGroup className="w-6 h-6 text-accent" />,
     title: "Pro-Bono Clinic Services",
     description: "Providing free individual psychological counseling and assessment sessions to marginalized or low-income communities who lack access to mental health facilities.",
     badge: "Clinical Care",
   },
   {
-    icon: <HiAcademicCap className="w-6 h-6" />,
+    icon: <HiAcademicCap className="w-6 h-6 text-accent" />,
     title: "School Mental Health Programs",
     description: "Partnering with schools and educational institutions to offer free teacher workshops on identifying student distress and classroom emotional support.",
     badge: "Education",
   },
   {
-    icon: <HiGlobeAlt className="w-6 h-6" />,
+    icon: <HiGlobeAlt className="w-6 h-6 text-accent" />,
     title: "Community Open Circles",
     description: "Hosting free public workshops, mental health awareness seminars, and support circles in both urban and rural areas of Bangladesh to combat social stigma.",
     badge: "Awareness",
   },
   {
-    icon: <HiShieldCheck className="w-6 h-6" />,
+    icon: <HiShieldCheck className="w-6 h-6 text-accent" />,
     title: "Frontline & Crisis Training",
     description: "Equipping disaster relief groups, community leaders, and volunteer healthcare workers with basic Psychological First Aid (PFA) and coping toolkits.",
     badge: "Crisis Support",
@@ -79,27 +79,27 @@ export function CommunityService(): React.JSX.Element {
                 Our practitioners actively volunteer to implement community support initiatives, adhering to the same high ethical standards, confidentiality, and professional competence required in our standard clinical practices.
               </p>
             </div>
-            
-            <div className="bg-primary text-white rounded-3xl p-8 flex flex-col justify-center gap-6 shadow-md border border-primary-dark/10">
-              <div className="flex items-center gap-4 border-b border-white/20 pb-4">
-                <span className="text-3xl font-marcellus text-accent font-bold">15%</span>
+
+            <div className="bg-white border border-gray-100 rounded-3xl p-8 flex flex-col justify-center gap-6 shadow-sm shadow-gray-200/50">
+              <div className="flex items-center gap-4 border-b border-gray-50 pb-4">
+                <span className="text-3xl font-marcellus text-primary font-bold">15%</span>
                 <div>
-                  <h4 className="font-bold text-white text-sm">Clinical Hours Allocation</h4>
-                  <p className="text-xs text-white/80">Dedicated to free community and pro-bono care</p>
+                  <h4 className="font-bold text-dark text-sm">Clinical Hours Allocation</h4>
+                  <p className="text-xs text-light-ash">Dedicated to free community and pro-bono care</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 border-b border-white/20 pb-4">
-                <span className="text-3xl font-marcellus text-accent font-bold">2,500+</span>
+              <div className="flex items-center gap-4 border-b border-gray-50 pb-4">
+                <span className="text-3xl font-marcellus text-primary font-bold">2,500+</span>
                 <div>
-                  <h4 className="font-bold text-white text-sm">Beneficiaries Reached</h4>
-                  <p className="text-xs text-white/80">Through awareness campaigns and workshops</p>
+                  <h4 className="font-bold text-dark text-sm">Beneficiaries Reached</h4>
+                  <p className="text-xs text-light-ash">Through awareness campaigns and workshops</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <span className="text-3xl font-marcellus text-accent font-bold">40+</span>
+                <span className="text-3xl font-marcellus text-primary font-bold">40+</span>
                 <div>
-                  <h4 className="font-bold text-white text-sm">Institutional Partners</h4>
-                  <p className="text-xs text-white/80">Schools, NGOs, and voluntary local networks</p>
+                  <h4 className="font-bold text-dark text-sm">Institutional Partners</h4>
+                  <p className="text-xs text-light-ash">Schools, NGOs, and voluntary local networks</p>
                 </div>
               </div>
             </div>
@@ -110,24 +110,25 @@ export function CommunityService(): React.JSX.Element {
       {/* Grid of Outreach Pillars */}
       <section className="py-16 md:py-24 bg-white border-y border-black/5">
         <Container>
-          <SectionHeading
-            subtitle="Outreach Programs"
-            title={<>Pillars of Our <span className="text-primary-dark">Social Impact</span></>}
-            className="mb-16"
-          />
-          <p className="font-sans text-base text-light-ash text-center max-w-2xl mx-auto mb-16 -mt-8">
-            We operate across multiple domains to integrate therapeutic interventions directly into the daily lives of the public.
-          </p>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <Tag variant="primary" className="mb-4">Outreach Programs</Tag>
+            <h2 className="font-marcellus text-3xl md:text-4xl text-dark mb-4">
+              Pillars of Our Social Impact
+            </h2>
+            <p className="font-sans text-base text-light-ash">
+              We operate across multiple domains to integrate therapeutic interventions directly into the daily lives of the public.
+            </p>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {OUTREACH_PILLARS.map((pillar, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className="group p-8 rounded-3xl border border-gray-100 bg-page-bg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-200/50 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary text-primary">
                       {pillar.icon}
                     </span>
                     <span className="text-xs font-semibold text-primary-dark font-sans uppercase tracking-wider bg-primary/5 px-3 py-1 rounded-full">
@@ -164,7 +165,7 @@ export function CommunityService(): React.JSX.Element {
               <p className="font-sans text-base text-light-ash mb-8 leading-relaxed">
                 To ensure that our community and pro-bono services reach the individuals who need them most, we maintain a clear verification framework. Services are allocated based on these parameters:
               </p>
-              
+
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary shrink-0 mt-1">
@@ -252,7 +253,7 @@ export function CommunityService(): React.JSX.Element {
         {/* Glow gradients */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full bg-secondary/5 blur-[80px] pointer-events-none" />
-        
+
         <Container className="relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7 flex flex-col gap-6">
@@ -286,16 +287,16 @@ export function CommunityService(): React.JSX.Element {
                   Email our clinical community program coordinators directly with details of your target group, location, and requested services.
                 </p>
                 <div className="flex flex-col gap-3">
-                  <Button 
-                    href="mailto:outreach@cmhcb.org" 
-                    variant="accent" 
+                  <Button
+                    href="mailto:outreach@cmhcb.org"
+                    variant="accent"
                     className="w-full justify-center h-12"
                   >
                     outreach@cmhcb.org
                   </Button>
-                  <Button 
-                    href="/contact" 
-                    variant="outline" 
+                  <Button
+                    href="/contact"
+                    variant="outline"
                     className="w-full justify-center h-12 text-white border-white/20 hover:bg-white/10"
                   >
                     Contact Support

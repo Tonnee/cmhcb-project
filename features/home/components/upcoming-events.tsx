@@ -27,7 +27,7 @@ function EventCard({ title, date, time, colorMode, description, isInfoCard = fal
   const textClass = colorMode === "accent" ? "text-dark" : "text-white";
 
   return (
-    <div className={`h-[280px] rounded-[24px] p-6 flex flex-col justify-between ${bgClass}`}>
+    <div className={`min-h-[280px] h-full rounded-[24px] p-6 flex flex-col justify-between ${bgClass}`}>
       {isInfoCard ? (
         <>
           <h3 className={`font-marcellus text-3xl leading-8 ${textClass}`}>

@@ -13,7 +13,7 @@ export function ScheduleAppointment(): React.JSX.Element {
           </h2>
 
           {/* Subtitle */}
-            <p className="font-sans text-lg leading-relaxed text-center text-white">
+            <p className="font-sans text-lg leading-relaxed text-center text-white max-w-3xl mx-auto">
               Your path to healing, growth, and inner peace starts with a single step. Whether you are navigating life&apos;s transitions, seeking emotional support, or striving for balance, our compassionate professionals are here to walk with you in a safe, supportive space.
             </p>
 
