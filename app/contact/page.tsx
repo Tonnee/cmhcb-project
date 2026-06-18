@@ -52,8 +52,8 @@ export default function ContactPage(): React.JSX.Element {
                 </div>
                 <div className="pt-1">
                   <h3 className="font-bold text-dark text-lg mb-1">Phone</h3>
-                  <a href="tel:+1234567890" className="font-sans text-light-ash hover:text-primary transition-colors">
-                    +1 234 567 890
+                  <a href="tel:+8801974349569" className="font-sans text-light-ash hover:text-primary transition-colors">
+                    +880 1974-349569
                   </a>
                 </div>
               </div>
@@ -65,8 +65,8 @@ export default function ContactPage(): React.JSX.Element {
                 </div>
                 <div className="pt-1">
                   <h3 className="font-bold text-dark text-lg mb-1">Email</h3>
-                  <a href="mailto:info@cmhcb.com" className="font-sans text-light-ash hover:text-primary transition-colors">
-                    info@cmhcb.com
+                  <a href="mailto:info@cmhcbd.com" className="font-sans text-light-ash hover:text-primary transition-colors">
+                    info@cmhcbd.com
                   </a>
                 </div>
               </div>
@@ -79,9 +79,9 @@ export default function ContactPage(): React.JSX.Element {
                 <div className="pt-1">
                   <h3 className="font-bold text-dark text-lg mb-1">Address</h3>
                   <p className="font-sans text-light-ash leading-relaxed">
-                    123 Wellness Avenue<br />
-                    Mental Health Center<br />
-                    Cityville, State 12345
+                    CMHC Office Room, 78/2 (2nd Floor)<br />
+                    New Airport Road, Tejkunipara<br />
+                    Tejgoan, Dhaka-1212
                   </p>
                 </div>
               </div>
@@ -108,16 +108,16 @@ export default function ContactPage(): React.JSX.Element {
           </div>
 
           {/* Right Column: Google Map */}
-          <div className="h-[400px] lg:h-auto min-h-[500px] rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-muted/30">
+          <div className="h-[400px] lg:h-auto min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-muted/30">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019112484218!2d-122.39997268468233!3d37.79379097975661!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808580647a4ba7bd%3A0x1d211cc5bb679b!2sFerry%20Building!5e0!3m2!1sen!2sus!4v1689201944123!5m2!1sen!2sus"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.810573934375!2d90.3907579!3d23.7541819!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7793b5847e7%3A0xa64aa8a96677f40d!2sTejgaon%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1689200000000!5m2!1sen!2sbd"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen={false}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Google Map Location"
+              title="CMHCB Clinic Location"
               className="w-full h-full"
             />
           </div>

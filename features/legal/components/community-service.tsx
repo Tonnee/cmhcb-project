@@ -288,11 +288,11 @@ export function CommunityService(): React.JSX.Element {
                 </p>
                 <div className="flex flex-col gap-3">
                   <Button
-                    href="mailto:outreach@cmhcb.org"
+                    href="mailto:outreach@cmhcbd.com"
                     variant="accent"
                     className="w-full justify-center h-12"
                   >
-                    outreach@cmhcb.org
+                    outreach@cmhcbd.com
                   </Button>
                   <Button
                     href="/contact"

@@ -78,7 +78,7 @@ export default function PrivacyPolicyPage(): React.JSX.Element {
             <div>
               <h2 className="font-marcellus text-2xl text-primary-dark mb-4 mt-8">6. Contact Us</h2>
               <p>
-                If you have any questions or concerns regarding this Privacy Policy or the handling of your data, please contact our administrative team at privacy@cmhcb.org or call our support line.
+                If you have any questions or concerns regarding this Privacy Policy or the handling of your data, please contact our administrative team at privacy@cmhcbd.com or call our support line.
               </p>
             </div>
           </div>

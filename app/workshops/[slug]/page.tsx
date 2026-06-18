@@ -1,5 +1,6 @@
 import * as React from "react";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { EVENTS_DATA } from "@/features/events/data/events";
 import WorkshopDetail from "@/features/workshops/components/workshop-detail";
 
@@ -10,6 +11,22 @@ export async function generateStaticParams() {
   return workshops.map((workshop) => ({
     slug: workshop.slug,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const workshop = EVENTS_DATA.find(
+    (e) => e.slug === slug && e.tags.some((tag) => tag.toLowerCase() === "workshop")
+  );
+  if (!workshop) return {};
+  return {
+    title: `${workshop.title} | Workshop | CMHCB`,
+    description: workshop.description,
+  };
 }
 
 export default async function WorkshopRegistrationPage({

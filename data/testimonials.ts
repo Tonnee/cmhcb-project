@@ -9,7 +9,7 @@ export interface Testimonial {
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: "testimonial-1",
-    name: "Jhon Doe",
+    name: "John Doe",
     role: "HR Manager",
     avatar: "/home-review/mental-health-therapy-client-woman.png",
     quote:

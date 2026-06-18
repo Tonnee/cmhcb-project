@@ -23,6 +23,8 @@ export function AnimatedCounter({
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
+    let frameId: number;
+
     // If a start trigger is explicitly provided, we use parent control
     if (start !== undefined) {
       if (start && !hasAnimated.current) {
@@ -37,15 +39,17 @@ export function AnimatedCounter({
           setCount(Math.floor(easeProgress * end));
           
           if (progress < 1) {
-            window.requestAnimationFrame(step);
+            frameId = window.requestAnimationFrame(step);
           } else {
             setCount(end);
           }
         };
         
-        window.requestAnimationFrame(step);
+        frameId = window.requestAnimationFrame(step);
       }
-      return;
+      return () => {
+        if (frameId) window.cancelAnimationFrame(frameId);
+      };
     }
 
     // Default: Internal IntersectionObserver
@@ -69,13 +73,13 @@ export function AnimatedCounter({
             setCount(Math.floor(easeProgress * end));
             
             if (progress < 1) {
-              window.requestAnimationFrame(step);
+              frameId = window.requestAnimationFrame(step);
             } else {
               setCount(end);
             }
           };
           
-          window.requestAnimationFrame(step);
+          frameId = window.requestAnimationFrame(step);
         }
       },
       { threshold: 0.5, rootMargin: "0px 0px -100px 0px" } // Prevent triggering from layout shifts
@@ -89,6 +93,7 @@ export function AnimatedCounter({
     return () => {
       clearTimeout(timeoutId);
       observer.disconnect();
+      if (frameId) window.cancelAnimationFrame(frameId);
     };
   }, [end, duration, start]);
 

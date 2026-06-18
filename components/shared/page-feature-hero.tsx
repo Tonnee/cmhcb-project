@@ -44,7 +44,7 @@ export function PageFeatureHero({
       <Container className="relative h-full">
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-6 items-center h-full">
           {/* Content Column */}
-          <div className="relative z-10 flex flex-col justify-center mr-20">
+          <div className="relative z-10 flex flex-col justify-center lg:mr-20 mr-0">
             <Breadcrumb className="mb-6" items={breadcrumbs} />
 
             <h1 className="font-marcellus text-3xl md:text-4xl leading-tight text-footer-bg mb-6 max-w-lg">
@@ -55,13 +55,13 @@ export function PageFeatureHero({
               {description}
             </p>
 
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
               {ctas.map((cta) => (
                 <Button
                   key={cta.label}
                   variant={cta.variant}
                   href={cta.href}
-                  className={cta.className}
+                  className={`w-full sm:w-auto ${cta.className || ""}`}
                 >
                   {cta.label}
                 </Button>

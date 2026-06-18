@@ -89,16 +89,16 @@ export default function EventsPage(): React.JSX.Element {
                 {new Date(featuredEvent.date).getTime() >= now ? "Upcoming Event" : "Past Event"}
               </p>
 
-              <h1 className="font-marcellus text-[40px] leading-tight text-dark mb-6 max-w-[500px]">
+              <h1 className="font-marcellus text-3xl md:text-[40px] leading-tight text-dark mb-6 max-w-[500px]">
                 {featuredEvent.title}
               </h1>
 
-              <p className="font-sans text-base text-light-ash mb-12 max-w-xl leading-relaxed">
+              <p className="font-sans text-base text-light-ash mb-8 md:mb-12 max-w-xl leading-relaxed">
                 {featuredEvent.description}
               </p>
 
               {/* Meta info */}
-              <div className="flex flex-col gap-6 mb-10">
+              <div className="flex flex-col gap-6 mb-8 md:mb-10">
                 <div className="flex items-center gap-6">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                     <CalendarIcon className="w-6 h-6" />

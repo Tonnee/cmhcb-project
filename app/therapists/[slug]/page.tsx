@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Metadata } from "next";
 import {
   HiAcademicCap,
   HiBriefcase,
@@ -57,24 +58,7 @@ function BulletList({ items }: { items: string[] }) {
   );
 }
 
-function ExperienceStat({ label }: { label: string }) {
-  // Try to extract a number/metric from the beginning of the label
-  const match = label.match(/^(\d[\d+,]*\+?)\s*(.*)/);
-  if (match) {
-    return (
-      <div className="flex flex-col items-start">
-        <span className="font-marcellus text-4xl text-primary-dark mb-1">{match[1]}</span>
-        <span className="font-sans text-xs font-semibold tracking-wider text-light-ash/60 uppercase">{match[2]}</span>
-      </div>
-    );
-  }
-  return (
-    <div className="flex items-start gap-3">
-      <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0 mt-[10px]" aria-hidden="true" />
-      <span className="font-sans text-sm font-semibold tracking-wider text-dark/80 uppercase">{label}</span>
-    </div>
-  );
-}
+
 
 /* ------------------------------------------------------------------ */
 /* Page                                                                 */
@@ -82,6 +66,20 @@ function ExperienceStat({ label }: { label: string }) {
 
 export function generateStaticParams() {
   return THERAPISTS_DATA.map((t) => ({ slug: t.id }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const therapist = THERAPISTS_DATA.find((t) => t.id === slug);
+  if (!therapist) return {};
+  return {
+    title: `${therapist.name} | ${therapist.role} | CMHCB`,
+    description: therapist.bio || `Consult with ${therapist.name}, clinical psychologist at CMHCB.`,
+  };
 }
 
 export default async function TherapistProfilePage({
@@ -254,14 +252,14 @@ export default async function TherapistProfilePage({
       {/* ── Therapist Blogs Section ──────────────────────────────────── */}
       {therapistBlogs.length > 0 && (
         <Container className="mb-24">
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-10">
             <SectionHeading
               subtitle="Insights & Articles"
               title={<>Latest Articles by <span className="text-primary-dark">{therapist.name}</span></>}
               align="left"
               className="mb-0"
             />
-            <Button href="/blog" variant="primary-dark">
+            <Button href="/blog" variant="primary-dark" className="w-full sm:w-auto">
               View all blogs
             </Button>
           </div>

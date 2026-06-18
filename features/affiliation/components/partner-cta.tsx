@@ -68,10 +68,10 @@ export default function PartnerCta(): React.JSX.Element {
                     Or send a formal proposal directly to:
                   </p>
                   <a
-                    href="mailto:partnership@cmhcb.org"
+                    href="mailto:partnership@cmhcbd.com"
                     className="font-sans text-xs font-semibold text-primary hover:text-primary-dark transition-colors mt-1 inline-block"
                   >
-                    partnership@cmhcb.org
+                    partnership@cmhcbd.com
                   </a>
                 </div>
               </div>

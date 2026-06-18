@@ -1,15 +1,16 @@
 import * as React from "react";
 import { HiCalendarDays, HiClock, HiUser, HiMapPin } from "react-icons/hi2";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import { EVENTS_DATA } from "@/features/events/data/events";
-import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { PageHero } from "@/components/shared/page-hero";
 import { EventCard } from "@/features/events/components/event-card";
 import { Tag } from "@/components/ui/tag";
+import EventRegistrationForm from "@/features/events/components/event-registration-form";
 
 // Shared icons for the page
 function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Element {
@@ -32,6 +33,20 @@ export async function generateStaticParams() {
   return EVENTS_DATA.map((event) => ({
     slug: event.slug,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const event = EVENTS_DATA.find((e) => e.slug === slug);
+  if (!event) return {};
+  return {
+    title: `${event.title} | Events | CMHCB`,
+    description: event.description,
+  };
 }
 
 export default async function EventRegistrationPage({
@@ -91,7 +106,7 @@ export default async function EventRegistrationPage({
 
         <Container className="py-20">
           <article 
-            className="font-sans text-dark text-lg leading-relaxed [&>p]:mb-8 [&>h3]:font-marcellus [&>h3]:text-3xl [&>h3]:text-dark [&>h3]:mb-6 [&>h3]:mt-12 [&>h3]:leading-tight"
+            className="max-w-3xl mx-auto font-sans text-dark text-lg leading-relaxed [&>p]:mb-8 [&>h3]:font-marcellus [&>h3]:text-3xl [&>h3]:text-dark [&>h3]:mb-6 [&>h3]:mt-12 [&>h3]:leading-tight"
             dangerouslySetInnerHTML={{ __html: event.content || event.description }}
           />
         </Container>
@@ -157,7 +172,7 @@ export default async function EventRegistrationPage({
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
           {/* Left Side: Essential Event Details */}
           <div className="flex-1">
-            <div className="relative w-full h-[350px] lg:h-[510px] rounded-[32px] overflow-hidden bg-gray-100 mb-10 shadow-sm">
+            <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[510px] rounded-[32px] overflow-hidden bg-gray-100 mb-10 shadow-sm">
               <Image
                 src={event.image}
                 alt={event.title}
@@ -233,54 +248,7 @@ export default async function EventRegistrationPage({
                 </p>
               </div>
 
-              <form className="flex flex-col gap-6">
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="name" className="font-sans text-sm font-semibold text-dark ml-1">Full Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    placeholder="Your Full Name"
-                    className="w-full px-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-sans text-base transition-all bg-gray-50/30"
-                    required
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="contact" className="font-sans text-sm font-semibold text-dark ml-1">Contact Number</label>
-                  <input
-                    type="tel"
-                    id="contact"
-                    placeholder="+880"
-                    className="w-full px-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-sans text-base transition-all bg-gray-50/30"
-                    required
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="email" className="font-sans text-sm font-semibold text-dark ml-1">Email Address</label>
-                  <input
-                    type="email"
-                    id="email"
-                    placeholder="example@email.com"
-                    className="w-full px-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-sans text-base transition-all bg-gray-50/30"
-                    required
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="notes" className="font-sans text-sm font-semibold text-dark ml-1">Notes (Optional)</label>
-                  <textarea
-                    id="notes"
-                    placeholder="Any specific questions or requirements?"
-                    rows={4}
-                    className="w-full px-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-sans text-base transition-all bg-gray-50/30 resize-none"
-                  />
-                </div>
-
-                <Button type="submit" variant="primary" className="mt-4 w-full justify-center h-14 text-lg rounded-2xl">
-                  Confirm Registration
-                </Button>
-              </form>
+              <EventRegistrationForm eventTitle={event.title} />
             </div>
           </div>
         </div>

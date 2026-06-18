@@ -18,7 +18,7 @@ export function MissionVision(): React.JSX.Element {
         {/* Mission - Image Left, Content Right */}
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 mb-20 md:mb-24">
           <div className="w-full lg:w-1/2">
-            <div className="relative w-full h-[350px] lg:h-[450px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm group">
+            <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[450px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm group">
               <Image
                 src="/hero-image/group-therapy-support-circle.png"
                 alt="Therapists engaged in a group therapy session"
@@ -42,7 +42,7 @@ export function MissionVision(): React.JSX.Element {
         {/* Vision - Image Right, Content Left */}
         <div className="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
           <div className="w-full lg:w-1/2">
-            <div className="relative w-full h-[350px] lg:h-[450px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm group">
+            <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[450px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm group">
               <Image
                 src="/home-about-image/mental-health-therapy-client.png"
                 alt="Client in a mental health therapy session"

@@ -5,26 +5,27 @@ import { ServiceDescription } from "@/features/services/components/service-descr
 import { ServiceProfessionals } from "@/features/services/components/service-professionals";
 import { Faq } from "@/components/shared/faq";
 import { TRAININGS } from "@/features/training/data/trainings";
-import { type Therapist } from "@/components/shared/therapist-card";
+import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
+import { Metadata } from "next";
 
-// Shared therapist data — reused from the home page dataset
-const THERAPISTS: Therapist[] = [
-  {
-    id: "t1",
-    image: "/home-therapist/therapist-ruma-khondaker-1.png",
-    name: "Ruma Khondaker",
-    role: "Lead Trainer",
-  },
-  {
-    id: "t2",
-    image: "/home-therapist/therapist-ruma-khondaker-2.png",
-    name: "Ruma Khondaker",
-    role: "Lead Trainer",
-  },
-];
+
 
 export function generateStaticParams(): { slug: string }[] {
   return TRAININGS.map((training) => ({ slug: training.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const training = TRAININGS.find((t) => t.slug === slug);
+  if (!training) return {};
+  return {
+    title: `${training.title} | Training | CMHCB`,
+    description: training.heroDescription,
+  };
 }
 
 export default async function TrainingDetailPage({
@@ -39,6 +40,10 @@ export default async function TrainingDetailPage({
   if (!training) {
     notFound();
   }
+
+  const trainingTrainers = THERAPISTS_DATA.filter((therapist) =>
+    therapist.role.toLowerCase().includes("trainer")
+  );
 
   return (
     <main>
@@ -64,7 +69,7 @@ export default async function TrainingDetailPage({
         }}
       />
       <ServiceProfessionals
-        therapists={THERAPISTS}
+        therapists={trainingTrainers}
         heading="Our Trainers"
         description="All training programmes are facilitated by qualified professionals with both clinical expertise and extensive training delivery experience."
       />

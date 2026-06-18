@@ -22,6 +22,8 @@ const CATEGORIES = [
 export default function GalleryView(): React.JSX.Element {
   const [selectedCategory, setSelectedCategory] = React.useState("all");
   const [activeItemIndex, setActiveItemIndex] = React.useState<number | null>(null);
+  const modalRef = React.useRef<HTMLDivElement | null>(null);
+  const lastFocusedElementRef = React.useRef<HTMLElement | null>(null);
 
   // Filter items based on selected category
   const filteredItems = React.useMemo(() => {
@@ -79,6 +81,66 @@ export default function GalleryView(): React.JSX.Element {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeItemIndex, handlePrev, handleNext]);
 
+  // Focus trapping and restoration
+  React.useEffect(() => {
+    if (activeItemIndex === null) {
+      if (lastFocusedElementRef.current) {
+        lastFocusedElementRef.current.focus();
+        lastFocusedElementRef.current = null;
+      }
+      return;
+    }
+
+    if (typeof document !== "undefined") {
+      lastFocusedElementRef.current = document.activeElement as HTMLElement;
+    }
+
+    if (modalRef.current) {
+      modalRef.current.focus();
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab" || !modalRef.current) return;
+
+      const focusableElements = Array.from(
+        modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, video[controls], [tabindex]:not([tabindex="-1"])'
+        )
+      );
+
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      const activeIndex = focusableElements.indexOf(document.activeElement as HTMLElement);
+
+      if (activeIndex === -1) {
+        if (e.shiftKey) {
+          lastElement.focus();
+        } else {
+          firstElement.focus();
+        }
+        e.preventDefault();
+      } else if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeItemIndex]);
+
   const activeItem = activeItemIndex !== null ? filteredItems[activeItemIndex] : null;
 
   return (
@@ -119,8 +181,18 @@ export default function GalleryView(): React.JSX.Element {
           {filteredItems.map((item) => (
             <div
               key={item.id}
+              id={`gallery-item-${item.id}`}
               onClick={() => handleItemClick(item.id)}
-              className="group relative aspect-[4/3] rounded-[24px] overflow-hidden bg-muted border border-muted/20 cursor-pointer"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleItemClick(item.id);
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              aria-label={`View ${item.caption}`}
+              className="group relative aspect-[4/3] rounded-[24px] overflow-hidden bg-muted border border-muted/20 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               {/* Media Content */}
               {item.type === "image" ? (
@@ -178,8 +250,10 @@ export default function GalleryView(): React.JSX.Element {
       {/* Lightbox Modal Overlay */}
       {activeItem && (
         <div
+          ref={modalRef}
+          tabIndex={-1}
           onClick={handleCloseModal}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm transition-all duration-300 animate-fade-in cursor-zoom-out"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm transition-all duration-300 animate-fade-in cursor-zoom-out focus:outline-none"
         >
           {/* Close Button */}
           <button

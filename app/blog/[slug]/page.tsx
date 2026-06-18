@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BLOG_POSTS } from "@/features/blog/data/blogs";
 import { PageHero } from "@/components/shared/page-hero";
@@ -36,6 +37,20 @@ export async function generateStaticParams() {
   return BLOG_POSTS.map((post) => ({
     slug: post.slug,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = BLOG_POSTS.find((p) => p.slug === slug);
+  if (!post) return {};
+  return {
+    title: `${post.title} | Blog | CMHCB`,
+    description: post.excerpt,
+  };
 }
 
 export default async function BlogPostPage({
@@ -100,7 +115,7 @@ export default async function BlogPostPage({
 
       <Container className="py-20">
         <article 
-          className="font-sans text-dark text-lg leading-relaxed [&>p]:mb-8 [&>h3]:font-marcellus [&>h3]:text-3xl [&>h3]:text-dark [&>h3]:mb-6 [&>h3]:mt-12 [&>h3]:leading-tight"
+          className="max-w-3xl mx-auto font-sans text-dark text-lg leading-relaxed [&>p]:mb-8 [&>h3]:font-marcellus [&>h3]:text-3xl [&>h3]:text-dark [&>h3]:mb-6 [&>h3]:mt-12 [&>h3]:leading-tight"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </Container>
@@ -122,7 +137,7 @@ export default async function BlogPostPage({
               <Button 
                 href={`/therapists/${matchedAuthor.id}`} 
                 variant="primary"
-                className="self-start"
+                className="w-full sm:w-auto sm:self-start"
               >
                 View Therapist Profile
               </Button>

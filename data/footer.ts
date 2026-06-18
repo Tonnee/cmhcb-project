@@ -59,7 +59,6 @@ export const CONTACT_INFO = {
   email: "info@cmhcbd.com",
   phone: "+8801974349569",
   address: [
-    "Target company Inc",
     "CMHC Office Room, 78/2 (2nd Floor)",
     "New Airport Road, Tejkunipara",
     "Tejgoan, Dhaka-1212",
