@@ -31,8 +31,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={`h-full antialiased ${marcellus.variable} ${dmSans.variable}`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans bg-page-bg">
+      <body className="min-h-full flex flex-col font-sans bg-page-bg" suppressHydrationWarning>
         <Header />
         {children}
         <Footer/>

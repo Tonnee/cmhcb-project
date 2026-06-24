@@ -33,7 +33,7 @@ interface ReviewPhotoProps {
 
 function ReviewPhoto({ src, alt }: ReviewPhotoProps): React.JSX.Element {
   return (
-    <div className="relative min-h-[280px] h-full w-full rounded-3xl overflow-hidden shrink-0">
+    <div className="relative h-[280px] sm:h-full w-full rounded-3xl overflow-hidden shrink-0">
       <Image
         src={src}
         alt={alt}
@@ -49,10 +49,10 @@ export function Review(): React.JSX.Element {
   return (
     <section className="py-20">
       <div className="container">
-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-20 items-start">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 xl:gap-20 items-start">
 
           {/* Left side — 2×2 grid */}
-          <div className="shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full lg:w-[568px]">
+          <div className="shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full lg:w-[50%] xl:w-[568px]">
             <ReviewPhoto
               src="/home-review/mental-health-therapy-client-woman.png"
               alt="Happy mental health therapy client sharing her positive experience at CMHCB"

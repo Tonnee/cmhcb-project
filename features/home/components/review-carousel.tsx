@@ -50,7 +50,7 @@ export function ReviewCarousel({
   if (displayTestimonials.length === 0) return <></>;
 
   return (
-    <div className="flex-1 pt-16">
+    <div className="flex-1 min-w-0 w-full lg:pt-0 pt-0">
       <SectionHeading 
         subtitle="Clients Feedback"
         title={<>Our Client Stories of <span className="text-primary">Healing</span> and <span className="text-accent">Growth</span></>}
@@ -94,20 +94,24 @@ export function ReviewCarousel({
       </div>
 
       {/* Pagination dots */}
-      <div className="flex items-center gap-2" role="tablist" aria-label="Testimonial navigation">
+      <div className="flex items-center gap-1" role="tablist" aria-label="Testimonial navigation">
         {scrollSnaps.map((_, idx) => (
           <button
             key={idx}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent ${
-              activeIndex === idx
-                ? "bg-accent opacity-100 scale-110"
-                : "bg-gray-300 opacity-60 hover:bg-gray-400"
-            }`}
+            className="w-8 h-8 flex items-center justify-center rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent group"
             aria-label={`View testimonial ${idx + 1}`}
             aria-selected={activeIndex === idx}
             role="tab"
             onClick={() => scrollTo(idx)}
-          />
+          >
+            <span
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                activeIndex === idx
+                  ? "bg-accent opacity-100 scale-110"
+                  : "bg-gray-400 opacity-80 group-hover:bg-gray-500"
+              }`}
+            />
+          </button>
         ))}
       </div>
     </div>
