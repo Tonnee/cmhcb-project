@@ -1,0 +1,101 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Therapist {
+  id         String   @id
+  image      String
+  name       String
+  role       String
+  bio        String
+  education  String   // JSON string of string[]
+  training   String   // JSON string of string[]
+  expertise  String   // JSON string of string[]
+  experience String   // JSON string of string[]
+  fees       String   // JSON string of fee categories
+  services   String   // JSON string of string[]
+  activities String   // JSON string of string[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Workshop {
+  id          String   @id
+  slug        String   @unique
+  title       String
+  description String
+  image       String
+  date        String
+  time        String
+  location    String
+  author      String
+  tags        String   // JSON string of string[]
+  isFeatured  Boolean  @default(false)
+  content     String?
+  gallery     String?  // JSON string of string[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BlogPost {
+  id          String   @id
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String
+  image       String
+  publishedAt String
+  author      String
+  tags        String   // JSON string of string[]
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Testimonial {
+  id         String   @id
+  name       String
+  role       String
+  avatar     String
+  quote      String
+  isFeatured Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model LandingPageContent {
+  id                  String   @id @default("landing-content")
+  heroHeadline        String
+  heroSubtitle        String
+  heroBgImage         String   @default("/hero-image/hero-bg.png")
+  heroFigureImage     String   @default("/hero-image/hero-figure.png")
+  wellbeingHeadline   String
+  wellbeingSubtitle   String
+  experienceCount     Int      @default(20)
+  happyClientsCount   Int      @default(1500)
+  sessionsCount       Int      @default(2800)
+  satisfactionRate    Int      @default(94)
+  trainingHeadline    String   @default("Want to Make a <span class=\"text-primary-dark\">Difference</span> in <span class=\"text-accent\">Mental Health</span>?")
+  trainingSubtitle    String   @default("Our specialized trainings equip professionals, educators, and caregivers with the tools needed to foster mental well-being in their communities.")
+  trainingImage       String   @default("/mental-health-training-program.png")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Service {
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
+  icon             String
+  shortDescription String
+  longDescription  String
+  approach         String
+  isFeatured       Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}

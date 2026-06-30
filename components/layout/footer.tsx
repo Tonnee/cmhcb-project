@@ -1,6 +1,9 @@
+"use client";
+
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   FOOTER_LINK_COLUMNS,
   SOCIAL_LINKS,
@@ -51,7 +54,13 @@ function LinkColumn({ column }: { column: FooterLinkColumn }): React.JSX.Element
   );
 }
 
-export function Footer(): React.JSX.Element {
+export function Footer(): React.JSX.Element | null {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/admin") || pathname === "/login" || pathname === "/forgot-password") {
+    return null;
+  }
+
   return (
     <footer className="bg-footer-bg mt-auto border-t-4 border-primary">
       <div className="container pt-20 pb-10">

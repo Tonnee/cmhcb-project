@@ -10,38 +10,13 @@ interface StatItem {
   description: string;
 }
 
-const STATS_DATA: StatItem[] = [
-  {
-    id: "experience",
-    value: 20,
-    suffix: "+",
-    title: "Years of Experience",
-    description: "Helping individuals navigate life's",
-  },
-  {
-    id: "clients",
-    value: 1500,
-    suffix: "+",
-    title: "Happy Clients",
-    description: "Empowered through counseling and therapy",
-  },
-  {
-    id: "sessions",
-    value: 2800,
-    suffix: "+",
-    title: "Sessions Conducted",
-    description: "Providing guidance and support every day",
-  },
-  {
-    id: "satisfaction",
-    value: 94,
-    suffix: "%",
-    title: "Satisfaction Positive",
-    description: "outcomes and improved well-being",
-  },
-];
+interface WellBeingProps {
+  headline: string;
+  subtitle: string;
+  stats: StatItem[];
+}
 
-export default function WellBeing(): React.JSX.Element {
+export default function WellBeing({ headline, subtitle, stats }: WellBeingProps): React.JSX.Element {
   return (
     <section className="bg-dark-green py-20 lg:py-28 relative overflow-hidden">
       {/* Abstract Node Network Background Pattern */}
@@ -62,20 +37,18 @@ export default function WellBeing(): React.JSX.Element {
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-center">
           {/* Left Text Block */}
           <div className="xl:col-span-5 flex flex-col gap-6 pr-0 xl:pr-8">
-            <h2 className="font-marcellus text-4xl lg:text-5xl text-white leading-tight">
-              Our Commitment to 
-              Your <span className="text-accent">Well-Being</span>
-            </h2>
+            <h2
+              className="font-marcellus text-4xl lg:text-5xl text-white leading-tight"
+              dangerouslySetInnerHTML={{ __html: headline }}
+            />
             <p className="font-sans text-base lg:text-lg text-white/80 leading-relaxed max-w-lg mt-2">
-              At CMHC,B, we are committed to delivering compassionate and
-              effective mental health care. Explore how we&apos;ve supported
-              individuals on their path to emotional well-being and resilience.
+              {subtitle}
             </p>
           </div>
 
           {/* Right Stats Grid */}
           <div className="xl:col-span-6 xl:col-start-7">
-            <WellBeingStats stats={STATS_DATA} />
+            <WellBeingStats stats={stats} />
           </div>
         </div>
       </Container>

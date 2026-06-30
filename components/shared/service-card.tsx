@@ -1,15 +1,29 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { type ServiceItem } from "@/features/services/data/services";
 import { LinkButton } from "@/components/ui/link-button";
 
 interface ServiceCardProps {
-  item: ServiceItem;
+  item: {
+    title: string;
+    slug: string;
+    shortDescription: string;
+  };
   className?: string;
 }
 
+const SERVICE_IMAGES: Record<string, string> = {
+  "psychometric-assessment": "/home-service-images/psychometric-assessment.png",
+  "individual-therapy": "/home-service-images/individual-therapy.png",
+  "child-therapy": "/home-service-images/child-therapy.png",
+  "family-therapy": "/home-service-images/family-therapy.png",
+  "couple-therapy": "/home-service-images/couple-therapy.png",
+  "iq-test": "/home-service-images/iq-test.png",
+};
+
 export function ServiceCard({ item, className = "" }: ServiceCardProps): React.JSX.Element {
+  const imageSrc = SERVICE_IMAGES[item.slug] || "/home-service-images/individual-therapy.png";
+
   return (
     <Link
       href={`/services/${item.slug}`}
@@ -18,7 +32,7 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
       {/* Image Block */}
       <div className="relative w-full h-[240px] overflow-hidden shrink-0 bg-gray-100">
         <Image
-          src={item.image}
+          src={imageSrc}
           alt={item.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -37,7 +51,7 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
 
         <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
           <span className="font-sans text-xs text-light-ash font-medium">
-            {item.duration} / {item.fees}
+            Evidence-Based Support
           </span>
           <LinkButton variant="accent">Learn More</LinkButton>
         </div>

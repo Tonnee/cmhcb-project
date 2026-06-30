@@ -76,10 +76,38 @@ function NavLink({ href, children, active }: NavLinkProps) {
 // Services Mega Menu
 // ---------------------------------------------------------------------------
 
+import * as HiIcons from "react-icons/hi2";
+import { getActiveServicesListAction } from "@/app/(admin)/admin/actions";
+
+function renderIconByName(name: string): React.ReactNode {
+  const IconComponent = (HiIcons as any)[name];
+  if (!IconComponent) {
+    return <HiIcons.HiPlus className="w-6 h-6" />;
+  }
+  return <IconComponent className="w-6 h-6" />;
+}
+
+interface ServicesDropdownItem {
+  title: string;
+  slug: string;
+  icon: string;
+}
+
 function ServicesMegaMenu({ active }: { active?: boolean }) {
   const [open, setOpen] = React.useState(false);
+  const [services, setServices] = React.useState<ServicesDropdownItem[]>([]);
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
+
+  React.useEffect(() => {
+    async function load() {
+      const res = await getActiveServicesListAction();
+      if (res.success && res.data) {
+        setServices(res.data);
+      }
+    }
+    load();
+  }, []);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -143,7 +171,7 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
               className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
               role="list"
             >
-              {SERVICES.map((service) => (
+              {services.map((service) => (
                 <li key={service.slug} role="none">
                   <Link
                     href={`/services/${service.slug}`}
@@ -156,7 +184,7 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
                   >
                     {/* Icon */}
                     <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-200">
-                      {SERVICE_ICONS[service.slug] ?? <HiPlus className="w-6 h-6" />}
+                      {renderIconByName(service.icon)}
                     </span>
 
                     {/* Title */}
@@ -167,7 +195,7 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
 
                     {/* Meta */}
                     <span className="text-xs font-sans text-light-ash mt-auto">
-                      {service.duration} · {service.fees}
+                      Professional Care
                     </span>
                   </Link>
                 </li>
@@ -315,7 +343,8 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
 // Header
 // ---------------------------------------------------------------------------
 
-export function Header(): React.JSX.Element {
+export function Header(): React.JSX.Element | null {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = React.useState(false);
 
   React.useEffect(() => {
@@ -325,6 +354,10 @@ export function Header(): React.JSX.Element {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (pathname?.startsWith("/admin") || pathname === "/login" || pathname === "/forgot-password") {
+    return null;
+  }
 
   return (
     <header

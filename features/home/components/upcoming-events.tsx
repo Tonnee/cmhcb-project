@@ -72,7 +72,60 @@ function EventCard({ title, date, time, colorMode, description, isInfoCard = fal
   );
 }
 
-export function UpcomingEvents(): React.JSX.Element {
+interface WorkshopDB {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  image: string;
+  date: string;
+  time: string;
+  location: string;
+  author: string;
+  tags: string; // JSON string
+  isFeatured: boolean;
+  content: string | null;
+  gallery: string | null; // JSON string
+}
+
+interface UpcomingEventsProps {
+  featuredWorkshop: WorkshopDB | null;
+  gridWorkshops: WorkshopDB[];
+}
+
+const formatDate = (dateStr: string) => {
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+};
+
+const formatDateShort = (dateStr: string) => {
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+};
+
+export function UpcomingEvents({
+  featuredWorkshop,
+  gridWorkshops,
+}: UpcomingEventsProps): React.JSX.Element {
   const upcomingEvents: EventCardProps[] = [
     {
       title: "Future Events",
@@ -80,25 +133,24 @@ export function UpcomingEvents(): React.JSX.Element {
       colorMode: "accent",
       isInfoCard: true,
     },
-    {
-      title: "\"Building Resilience in Children\"",
-      date: "August 3, 2025",
-      time: "10:00 AM – 1:00 PM",
-      colorMode: "primary",
-    },
-    {
-      title: "\"Basics of Psychological First Aid (PFA)\"",
-      date: "August 3, 2025",
-      time: "10:00 AM – 1:00 PM",
-      colorMode: "primary",
-    },
-    {
-      title: "\"Introduction to Cognitive Behavioral Ther...\"",
-      date: "August 3, 2025",
-      time: "10:00 AM – 1:00 PM",
-      colorMode: "primary",
-    },
+    ...gridWorkshops.map((w) => ({
+      title: `"${w.title}"`,
+      date: formatDateShort(w.date),
+      time: w.time,
+      colorMode: "primary" as const,
+    })),
   ];
+
+  // Fallback featured workshop values
+  const featured = featuredWorkshop || {
+    title: "Understanding Anxiety: Tools for Everyday Coping",
+    description: "Join our interactive workshop to explore the roots of anxiety and learn practical coping strategies for daily life.",
+    date: "2026-07-20T10:00:00Z",
+    time: "10:00 AM – 1:00 PM",
+    location: "Online via Zoom",
+    image: "/understanding-anxiety-workshop-event.png",
+    slug: "understanding-anxiety-workshop",
+  };
 
   return (
     <section className="py-20">
@@ -109,16 +161,14 @@ export function UpcomingEvents(): React.JSX.Element {
           <div className="flex-1 flex flex-col justify-center">
             <SectionHeading 
               subtitle="Upcoming Events"
-              title={<>&quot;Understanding <span className="text-primary">Anxiety</span>: <br className="hidden lg:block" /> <span className="text-accent">Tools</span> for Everyday Coping&quot;</>}
+              title={<>&quot;{featured.title}&quot;</>}
               align="left"
               size="md"
               className="mb-6"
             />
 
             <p className="font-sans text-base text-light-ash mb-12 max-w-xl leading-relaxed">
-              Join our interactive workshop to explore the roots of anxiety and learn practical coping
-              strategies for daily life. Ideal for individuals, caregivers, and professionals seeking to
-              better understand emotional regulation and stress.
+              {featured.description}
             </p>
 
             {/* Event meta info */}
@@ -129,7 +179,7 @@ export function UpcomingEvents(): React.JSX.Element {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-marcellus text-lg text-dark leading-tight">
-                    Saturday, July 20, 2025
+                    {formatDate(featured.date)}
                   </span>
                   <span className="font-sans text-sm text-light-ash">Date of Event</span>
                 </div>
@@ -141,7 +191,7 @@ export function UpcomingEvents(): React.JSX.Element {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-marcellus text-lg text-dark leading-tight">
-                    10:00 AM – 1:00 PM
+                    {featured.time}
                   </span>
                   <span className="font-sans text-sm text-light-ash">Time of Session</span>
                 </div>
@@ -153,16 +203,16 @@ export function UpcomingEvents(): React.JSX.Element {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-marcellus text-lg text-dark leading-tight">
-                    Trauma-Informed Care
+                    {featured.location}
                   </span>
-                  <span className="font-sans text-sm text-light-ash">Category / Type</span>
+                  <span className="font-sans text-sm text-light-ash">Location</span>
                 </div>
               </div>
             </div>
 
             {/* CTA Button */}
             <div>
-              <Button href="#register" variant="primary">
+              <Button href={`/workshops/${featured.slug}`} variant="primary">
                 Register Now
               </Button>
             </div>
@@ -172,8 +222,8 @@ export function UpcomingEvents(): React.JSX.Element {
           <div className="shrink-0 w-full lg:w-[474px]">
             <div className="relative w-full h-[350px] lg:h-full rounded-[24px] overflow-hidden bg-gray-100">
               <Image
-                src="/understanding-anxiety-workshop-event.png"
-                alt="Understanding Anxiety Workshop"
+                src={featured.image || "/understanding-anxiety-workshop-event.png"}
+                alt={featured.title}
                 fill
                 sizes="(max-width: 1024px) 100vw, 474px"
                 className="object-cover"
@@ -196,8 +246,8 @@ export function UpcomingEvents(): React.JSX.Element {
             annual event calendar highlights key training sessions, mental health awareness days, and community
             initiatives designed to educate, support, and empower individuals across all age groups.
           </p>
-          <Button href="/events" variant="primary">
-            Explore yearly Event Calendar
+          <Button href="/workshops" variant="primary">
+            Explore all Workshops
           </Button>
         </div>
       </div>

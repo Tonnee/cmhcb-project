@@ -1,26 +1,29 @@
 import * as React from "react";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import prisma from "@/lib/prisma";
 import { PageHero } from "@/components/shared/page-hero";
-import { ServiceDescription } from "@/features/services/components/service-description";
+import { Container } from "@/components/layout/container";
 import { ServiceProfessionals } from "@/features/services/components/service-professionals";
-import { Faq } from "@/components/shared/faq";
-import { SERVICES } from "@/features/services/data/services";
-import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
-import { Metadata } from "next";
 
+interface ServiceDetailPageProps {
+  params: Promise<{ slug: string }>;
+}
 
-
-export function generateStaticParams() {
-  return SERVICES.map((service) => ({ slug: service.slug }));
+export async function generateStaticParams() {
+  const services = await prisma.service.findMany({
+    select: { slug: true }
+  });
+  return services.map((service) => ({ slug: service.slug }));
 }
 
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+}: ServiceDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const service = SERVICES.find((s) => s.slug === slug);
+  const service = await prisma.service.findUnique({
+    where: { slug },
+  });
   if (!service) return {};
   return {
     title: `${service.title} | Services | CMHCB`,
@@ -30,20 +33,58 @@ export async function generateMetadata({
 
 export default async function ServiceDetailPage({
   params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<React.JSX.Element> {
+}: ServiceDetailPageProps): Promise<React.JSX.Element> {
   const { slug } = await params;
 
-  const service = SERVICES.find((s) => s.slug === slug);
+  // Retrieve service details from database
+  const service = await prisma.service.findUnique({
+    where: { slug },
+  });
 
   if (!service) {
     notFound();
   }
 
-  const serviceTherapists = THERAPISTS_DATA.filter((therapist) =>
-    therapist.services?.includes(slug)
-  );
+  // Retrieve and filter dynamic therapists specializing in this service slug
+  const dbTherapists = await prisma.therapist.findMany({
+    orderBy: { name: "asc" },
+  });
+
+  const serviceTherapists = dbTherapists.map((t) => {
+    // Parse complex JSON arrays to make them compatible with components props
+    let parsedEducation: string[] = [];
+    let parsedTraining: string[] = [];
+    let parsedExpertise: string[] = [];
+    let parsedExperience: string[] = [];
+    let parsedServices: string[] = [];
+    let parsedActivities: string[] = [];
+    let parsedFees: any = null;
+
+    try { parsedEducation = JSON.parse(t.education || "[]"); } catch {}
+    try { parsedTraining = JSON.parse(t.training || "[]"); } catch {}
+    try { parsedExpertise = JSON.parse(t.expertise || "[]"); } catch {}
+    try { parsedExperience = JSON.parse(t.experience || "[]"); } catch {}
+    try { parsedServices = JSON.parse(t.services || "[]"); } catch {}
+    try { parsedActivities = JSON.parse(t.activities || "[]"); } catch {}
+    try { parsedFees = JSON.parse(t.fees || "null"); } catch {}
+
+    return {
+      id: t.id,
+      image: t.image,
+      name: t.name,
+      role: t.role,
+      bio: t.bio,
+      education: parsedEducation,
+      training: parsedTraining,
+      expertise: parsedExpertise,
+      experience: parsedExperience,
+      fees: parsedFees,
+      services: parsedServices,
+      activities: parsedActivities,
+    };
+  }).filter((therapist) => {
+    return therapist.services?.includes(slug);
+  });
 
   return (
     <main>
@@ -52,27 +93,46 @@ export default async function ServiceDetailPage({
           { label: "Home", href: "/" },
           { label: "Services", href: "/services" },
         ]}
-        currentPage={service.heroTitle}
-        title={service.heroTitle}
-        description={service.heroDescription}
+        currentPage={service.title}
+        title={service.title}
+        description={service.shortDescription}
         imageSrc="/pages-hero-background/1.png"
         imageAlt="Professional psychotherapy in Dhaka - CMHCB"
         ctaLabel="Book an Appointment"
         ctaHref={`/appointment?service=${slug}`}
       />
-      <ServiceDescription
-        introduction={service.description.introduction}
-        sections={service.description.sections}
-        sessionDetails={{
-          duration: service.duration,
-          fees: service.fees,
-        }}
-      />
+
+      {/* Dynamic details & approach content blocks */}
+      <section className="py-20 bg-white">
+        <Container>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            {/* Left Column: Detailed Service Outline */}
+            <div className="lg:col-span-7 flex flex-col gap-6">
+              <h2 className="font-marcellus text-3xl font-bold text-dark-green leading-snug">
+                About the Service
+              </h2>
+              <div 
+                className="font-sans text-base text-light-ash leading-relaxed whitespace-pre-wrap flex flex-col gap-4"
+                dangerouslySetInnerHTML={{ __html: service.longDescription }}
+              />
+            </div>
+            
+            {/* Right Column: Therapeutic Approach */}
+            <div className="lg:col-span-5 bg-light/10 border border-muted p-8 rounded-3xl flex flex-col gap-6 self-start">
+              <h3 className="font-marcellus text-2xl font-bold text-primary-dark leading-snug">
+                Our Therapeutic Approach
+              </h3>
+              <div 
+                className="font-sans text-sm text-light-ash leading-relaxed whitespace-pre-wrap flex flex-col gap-4"
+                dangerouslySetInnerHTML={{ __html: service.approach }}
+              />
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Related Therapists */}
       <ServiceProfessionals therapists={serviceTherapists} />
-      <Faq
-        heading={`Frequently Asked Questions \u2013 ${service.title}`}
-        items={service.faq}
-      />
     </main>
   );
 }

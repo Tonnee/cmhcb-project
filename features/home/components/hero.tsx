@@ -3,13 +3,25 @@ import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 
-export function Hero(): React.JSX.Element {
+interface HeroProps {
+  headline: string;
+  subtitle: string;
+  heroBgImage: string;
+  heroFigureImage: string;
+}
+
+export function Hero({
+  headline,
+  subtitle,
+  heroBgImage,
+  heroFigureImage,
+}: HeroProps): React.JSX.Element {
   return (
     <div className="flex flex-col">
       {/* Hero Banner Section */}
       <section
         className="relative overflow-hidden min-h-[600px] bg-center bg-cover bg-no-repeat flex flex-col"
-        style={{ backgroundImage: "url('/hero-image/hero-bg.png')" }}
+        style={{ backgroundImage: `url('${heroBgImage}')` }}
       >
         <Container className="relative z-10 flex-1 flex flex-col">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1">
@@ -18,17 +30,12 @@ export function Hero(): React.JSX.Element {
               <p className="font-sans text-xs font-semibold tracking-wider text-light-ash/80 mb-4 uppercase">
                 Center for Mental Health and Care, Bangladesh
               </p>
-              <h1 className="font-marcellus font-bold text-4xl lg:text-hero-heading leading-tight mb-6">
-                <span className="text-dark">Empowering Your</span>
-                <br />
-                <span className="text-accent">Mind</span>
-                <span className="text-dark">, Transforming <br /> Your</span>
-                <span className="text-primary"> Life</span>
-              </h1>
+              <h1
+                className="font-marcellus font-bold text-4xl lg:text-hero-heading leading-tight mb-6 text-dark"
+                dangerouslySetInnerHTML={{ __html: headline }}
+              />
               <p className="font-sans text-sm text-light-ash/80 mb-8 leading-relaxed max-w-xl mr-30">
-                At CMHC,B, we believe every individual deserves a supportive
-                space to heal, grow, and thrive. Connect with the right
-                therapist, right when you need it.
+                {subtitle}
               </p>
               <div>
                 <Button
@@ -45,7 +52,7 @@ export function Hero(): React.JSX.Element {
             <div className="lg:absolute lg:right-0 lg:bottom-0 lg:top-0 lg:w-1/2 xl:w-[48%] h-[320px] sm:h-[400px] md:h-[450px] lg:h-full flex justify-center lg:justify-end order-last mb-10 lg:mb-0 z-20 items-end">
               <div className="relative w-full h-full">
                 <Image
-                  src="/hero-image/hero-figure.png"
+                  src={heroFigureImage}
                   alt="A person engaged in a therapy session, representing mental health support"
                   fill
                   priority

@@ -47,7 +47,17 @@ function TrainingItem({ title, description }: TrainingItemProps): React.JSX.Elem
   );
 }
 
-export default function Training(): React.JSX.Element {
+interface TrainingProps {
+  headline: string;
+  subtitle: string;
+  image: string;
+}
+
+export default function Training({
+  headline,
+  subtitle,
+  image,
+}: TrainingProps): React.JSX.Element {
   return (
     <section className="py-16 lg:py-24">
       <Container>
@@ -56,16 +66,14 @@ export default function Training(): React.JSX.Element {
           <div className="flex flex-col flex-1 w-full lg:pr-10 xl:pr-16">
             <SectionHeading 
               subtitle="Our Training Programs"
-              title={<>Want to Make a <span className="text-primary-dark">Difference</span> in <span className="text-accent">Mental Health</span>?</>}
+              title={<span dangerouslySetInnerHTML={{ __html: headline }} />}
               align="left"
               size="md"
               className="mb-8"
             />
 
             <p className="font-sans text-base text-light-ash leading-relaxed max-w-[568px] mb-10">
-              Our specialized trainings equip professionals, educators, and
-              caregivers with the tools needed to foster mental well-being in
-              their communities.
+              {subtitle}
             </p>
 
             <div className="flex flex-col gap-6 mb-12">
@@ -87,7 +95,7 @@ export default function Training(): React.JSX.Element {
           <div className="shrink-0 w-full lg:w-[470px]">
             <div className="relative rounded-3xl overflow-hidden aspect-3/4 lg:h-[664px] lg:w-[470px]">
               <Image
-                src="/mental-health-training-program.png"
+                src={image}
                 alt="Mental health professional"
                 fill
                 sizes="(max-width: 1024px) 100vw, 470px"

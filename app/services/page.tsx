@@ -1,9 +1,23 @@
 import * as React from "react";
+import type { Metadata } from "next";
+import prisma from "@/lib/prisma";
 import { PageFeatureHero } from "@/components/shared/page-feature-hero";
 import { AllServices } from "@/features/services/components/all-services";
 import { ServiceInfoSection } from "@/features/services/components/service-info-section";
 
-export default function ServicesPage(): React.JSX.Element {
+export const metadata: Metadata = {
+  title: "Our Psychotherapeutic Services | CMHCB",
+  description: "Explore our professional, ethical, and evidence-based mental health services in Bangladesh.",
+};
+
+export const dynamic = "force-dynamic";
+
+export default async function ServicesPage(): Promise<React.JSX.Element> {
+  // Fetch services dynamically from database
+  const services = await prisma.service.findMany({
+    orderBy: { title: "asc" },
+  });
+
   return (
     <main className="bg-page-bg">
       <PageFeatureHero
@@ -31,7 +45,7 @@ export default function ServicesPage(): React.JSX.Element {
           },
         ]}
       />
-      <AllServices />
+      <AllServices services={services} />
       <ServiceInfoSection />
     </main>
   );

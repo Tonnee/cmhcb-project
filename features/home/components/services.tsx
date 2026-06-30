@@ -1,11 +1,19 @@
 import * as React from "react";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
-
-import { SERVICES } from "@/features/services/data/services";
 import { ServiceCard } from "@/components/shared/service-card";
 
-export default function Services(): React.JSX.Element {
+interface ServiceItem {
+  title: string;
+  slug: string;
+  shortDescription: string;
+}
+
+interface ServicesProps {
+  services: ServiceItem[];
+}
+
+export default function Services({ services }: ServicesProps): React.JSX.Element {
   return (
     <section className="py-16 lg:py-24">
       <Container>
@@ -18,7 +26,7 @@ export default function Services(): React.JSX.Element {
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
-          {SERVICES.map((service) => (
+          {services.map((service) => (
             <ServiceCard key={service.slug} item={service} />
           ))}
         </div>

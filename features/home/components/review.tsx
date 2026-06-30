@@ -1,7 +1,18 @@
 import * as React from "react";
 import Image from "next/image";
-import { TESTIMONIALS } from "@/data/testimonials";
 import { ReviewCarousel } from "./review-carousel";
+
+interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+  quote: string;
+}
+
+interface ReviewProps {
+  testimonials: Testimonial[];
+}
 
 interface InfoCardProps {
   title: string;
@@ -45,7 +56,7 @@ function ReviewPhoto({ src, alt }: ReviewPhotoProps): React.JSX.Element {
   );
 }
 
-export function Review(): React.JSX.Element {
+export function Review({ testimonials }: ReviewProps): React.JSX.Element {
   return (
     <section className="py-20">
       <div className="container">
@@ -77,7 +88,7 @@ export function Review(): React.JSX.Element {
           </div>
 
           {/* Right side — Testimonial carousel (client boundary) */}
-          <ReviewCarousel testimonials={TESTIMONIALS} />
+          <ReviewCarousel testimonials={testimonials} />
 
         </div>
       </div>
