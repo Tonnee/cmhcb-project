@@ -14,9 +14,14 @@ export const dynamic = "force-dynamic";
 
 export default async function ServicesPage(): Promise<React.JSX.Element> {
   // Fetch services dynamically from database
-  const services = await prisma.service.findMany({
-    orderBy: { title: "asc" },
-  });
+  const [services, infoBlocks] = await Promise.all([
+    prisma.service.findMany({
+      orderBy: { title: "asc" },
+    }),
+    prisma.serviceInfoBlock.findMany({
+      orderBy: { order: "asc" },
+    }),
+  ]);
 
   return (
     <main className="bg-page-bg">
@@ -46,7 +51,7 @@ export default async function ServicesPage(): Promise<React.JSX.Element> {
         ]}
       />
       <AllServices services={services} />
-      <ServiceInfoSection />
+      <ServiceInfoSection infoBlocks={infoBlocks} />
     </main>
   );
 }

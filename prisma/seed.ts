@@ -15,6 +15,8 @@ const SERVICES_SEED_DATA = [
     longDescription: "A psychometric assessment is a structured, standardized evaluation that measures cognitive ability, personality traits, emotional functioning, and behavioural patterns. At CMHCB, our assessments are conducted by qualified mental health professionals using internationally validated instruments, providing an objective picture of your psychological profile to guide effective intervention.",
     approach: "Internationally validated psychometric instruments\nAdministered by trained and certified psychologists\nConfidential scoring and professional interpretation\nWritten report with clear findings and recommendations\nDebrief session to discuss results and next steps",
     isFeatured: true,
+    image: "/home-service-images/psychometric-assessment.png",
+    bgImage: "/pages-hero-background/1.png",
   },
   {
     title: "Individual Therapy",
@@ -24,6 +26,8 @@ const SERVICES_SEED_DATA = [
     longDescription: "Individual therapy is a collaborative process where a therapist works closely with an individual to understand thoughts, emotions, and behaviors, helping them manage difficulties and improve overall psychological well-being. Our one-on-one therapy sessions provide a safe, confidential space where you can explore your thoughts and feelings, build resilience, and develop personalized strategies.",
     approach: "Evidence-based methods\nClient-centered care\nEthical & confidential practice\nCulturally sensitive support",
     isFeatured: true,
+    image: "/home-service-images/individual-therapy.png",
+    bgImage: "/pages-hero-background/1.png",
   },
   {
     title: "Child Therapy",
@@ -33,6 +37,8 @@ const SERVICES_SEED_DATA = [
     longDescription: "Child therapy at CMHCB is a developmentally sensitive approach to supporting children's emotional health and psychological well-being. Our therapists work with children aged 4–17, using age-appropriate techniques such as play therapy and CBT for children, to help them express and process emotional difficulties in a safe, nurturing environment.",
     approach: "Play, art, and narrative therapy techniques\nStrength-based, culturally sensitive interventions\nRegular parent consultations to reinforce progress\nCollaboration with schools and educators when needed\nWarm, child-friendly therapeutic environment",
     isFeatured: true,
+    image: "/home-service-images/child-therapy.png",
+    bgImage: "/pages-hero-background/1.png",
   },
   {
     title: "Family Therapy",
@@ -42,6 +48,8 @@ const SERVICES_SEED_DATA = [
     longDescription: "Family therapy is a form of psychotherapy that works with families as a whole to nurture change and development. At CMHCB, our therapists help family members improve communication, understand each other's perspectives, and resolve conflicts that may be creating tension or disconnection within the household.",
     approach: "Systemic and structural family therapy frameworks\nGuided communication and active listening exercises\nFlexible formats — full family or sub-group sessions\nBetween-session tasks to reinforce new skills at home\nConfidential and culturally informed practice",
     isFeatured: false,
+    image: "/home-service-images/family-therapy.png",
+    bgImage: "/pages-hero-background/1.png",
   },
   {
     title: "Couple Therapy",
@@ -51,6 +59,8 @@ const SERVICES_SEED_DATA = [
     longDescription: "Couple therapy at CMHCB is a professionally guided process that helps partners understand and resolve interpersonal difficulties. Using evidence-based methods such as the Gottman Method and Emotionally Focused Therapy (EFT), our therapists support couples in breaking negative cycles, rebuilding trust, and cultivating a secure, fulfilling relationship.",
     approach: "Gottman Method and Emotionally Focused Therapy (EFT)\nStructured de-escalation and communication tools\nBoth joint and individual sessions when needed\nRegular review of relationship goals and satisfaction\nConfidential, non-judgmental, and respectful practice",
     isFeatured: false,
+    image: "/home-service-images/couple-therapy.png",
+    bgImage: "/pages-hero-background/1.png",
   },
   {
     title: "IQ Test",
@@ -60,6 +70,8 @@ const SERVICES_SEED_DATA = [
     longDescription: "An IQ and cognitive assessment is a comprehensive evaluation of intellectual functioning — measuring abilities such as reasoning, problem-solving, verbal comprehension, processing speed, and working memory. At CMHCB, we use internationally standardized instruments to produce a detailed, professionally interpreted report for individuals, parents, educators, and clinicians.",
     approach: "Internationally validated IQ and cognitive instruments\nAdministered by trained and certified psychologists\nFull-scale IQ score with detailed subscale breakdowns\nWritten report with professional interpretation\nDebrief session to discuss results and recommendations",
     isFeatured: false,
+    image: "/home-service-images/iq-test.png",
+    bgImage: "/pages-hero-background/1.png",
   },
 ];
 
@@ -71,6 +83,7 @@ async function main() {
   await prisma.testimonial.deleteMany();
   await prisma.landingPageContent.deleteMany();
   await prisma.service.deleteMany();
+  await prisma.serviceInfoBlock.deleteMany();
 
   console.log("Seeding Therapists...");
   for (const t of THERAPISTS_DATA) {
@@ -185,7 +198,47 @@ async function main() {
         longDescription: s.longDescription,
         approach: s.approach,
         isFeatured: s.isFeatured,
+        image: s.image,
+        bgImage: s.bgImage,
       },
+    });
+  }
+
+  console.log("Seeding Service Info Blocks...");
+  const SERVICE_INFO_BLOCKS_DATA = [
+    {
+      heading: "Who Can Benefit",
+      items: JSON.stringify([
+        "Individuals seeking emotional support",
+        "Families and couples",
+        "Students and working professionals",
+        "Organizations and institutions",
+      ]),
+      ctaLabel: "Book Appointment",
+      ctaHref: "/appointment",
+      image: "/compassionate-mental-health-professional.png",
+      imageAlt: "A professional mental health therapy session",
+      order: 0,
+    },
+    {
+      heading: "Why Choose CMHC,B",
+      items: JSON.stringify([
+        "Qualified and experienced professionals",
+        "Ethical practice and confidentiality",
+        "Personalized care plans",
+        "Trusted mental health center in Bangladesh",
+      ]),
+      ctaLabel: "Schedule a Session",
+      ctaHref: "/appointment",
+      image: "/compassionate-mental-health-professional.png",
+      imageAlt: "A client in a supportive mental health environment",
+      order: 1,
+    },
+  ];
+
+  for (const block of SERVICE_INFO_BLOCKS_DATA) {
+    await prisma.serviceInfoBlock.create({
+      data: block,
     });
   }
 

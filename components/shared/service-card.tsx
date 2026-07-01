@@ -8,11 +8,12 @@ interface ServiceCardProps {
     title: string;
     slug: string;
     shortDescription: string;
+    image?: string | null;
   };
   className?: string;
 }
 
-const SERVICE_IMAGES: Record<string, string> = {
+export const SERVICE_IMAGES: Record<string, string> = {
   "psychometric-assessment": "/home-service-images/psychometric-assessment.png",
   "individual-therapy": "/home-service-images/individual-therapy.png",
   "child-therapy": "/home-service-images/child-therapy.png",
@@ -22,7 +23,7 @@ const SERVICE_IMAGES: Record<string, string> = {
 };
 
 export function ServiceCard({ item, className = "" }: ServiceCardProps): React.JSX.Element {
-  const imageSrc = SERVICE_IMAGES[item.slug] || "/home-service-images/individual-therapy.png";
+  const imageSrc = item.image || SERVICE_IMAGES[item.slug] || "/home-service-images/individual-therapy.png";
 
   return (
     <Link

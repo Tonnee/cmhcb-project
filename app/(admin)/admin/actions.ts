@@ -110,6 +110,7 @@ export async function upsertTherapistAction(
     });
 
     // Revalidate paths
+    revalidatePath("/");
     revalidatePath("/therapists");
     revalidatePath(`/therapists/${id}`);
     revalidatePath("/admin/therapists");
@@ -132,6 +133,7 @@ export async function deleteTherapistAction(
       where: { id },
     });
 
+    revalidatePath("/");
     revalidatePath("/therapists");
     revalidatePath(`/therapists/${id}`);
     revalidatePath("/admin/therapists");
@@ -181,6 +183,7 @@ export async function upsertWorkshopAction(
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/workshops");
     revalidatePath(`/workshops/${titleSlug}`);
     revalidatePath("/admin/workshops");
@@ -204,6 +207,7 @@ export async function deleteWorkshopAction(
       where: { id },
     });
 
+    revalidatePath("/");
     revalidatePath("/workshops");
     if (slug) {
       revalidatePath(`/workshops/${slug}`);
@@ -348,6 +352,9 @@ export async function getActiveServicesListAction(): Promise<{
 }> {
   try {
     const services = await prisma.service.findMany({
+      where: {
+        showInNavbar: true,
+      },
       select: {
         title: true,
         slug: true,
@@ -371,6 +378,9 @@ const ServiceInputSchema = z.object({
   longDescription: z.string().min(1, "Long description is required"),
   approach: z.string().min(1, "Approach is required"),
   isFeatured: z.boolean().default(false),
+  showInNavbar: z.boolean().default(true),
+  image: z.string().optional().nullable(),
+  bgImage: z.string().optional().nullable(),
 });
 
 export async function upsertServiceAction(
@@ -390,6 +400,9 @@ export async function upsertServiceAction(
       longDescription: validated.longDescription,
       approach: validated.approach,
       isFeatured: validated.isFeatured,
+      showInNavbar: validated.showInNavbar,
+      image: validated.image,
+      bgImage: validated.bgImage,
     };
 
     const service = await prisma.service.upsert({
@@ -401,6 +414,7 @@ export async function upsertServiceAction(
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/services");
     revalidatePath(`/services/${validated.slug}`);
     revalidatePath("/admin/services");
@@ -424,6 +438,7 @@ export async function deleteServiceAction(
       where: { id },
     });
 
+    revalidatePath("/");
     revalidatePath("/services");
     if (slug) {
       revalidatePath(`/services/${slug}`);
@@ -434,6 +449,80 @@ export async function deleteServiceAction(
   } catch (error: any) {
     console.error("Error in deleteServiceAction:", error);
     return { success: false, error: error.message || "Failed to delete service record" };
+  }
+}
+
+// ============================================================================
+// Server Actions - Service Info Blocks
+// ============================================================================
+
+const ServiceInfoBlockInputSchema = z.object({
+  id: z.string().optional(),
+  heading: z.string().min(1, "Heading is required"),
+  items: z.array(z.string()).default([]),
+  ctaLabel: z.string().min(1, "CTA Label is required"),
+  ctaHref: z.string().min(1, "CTA Link is required"),
+  image: z.string().min(1, "Image URL is required"),
+  imageAlt: z.string().min(1, "Image Alt text is required"),
+  order: z.number().int().default(0),
+});
+
+export async function upsertServiceInfoBlockAction(
+  rawData: z.infer<typeof ServiceInfoBlockInputSchema>
+): Promise<{ success: boolean; error?: string; data?: any }> {
+  try {
+    const validated = ServiceInfoBlockInputSchema.parse(rawData);
+    
+    // Generate id if new
+    const id = validated.id || `sib-${slugify(validated.heading)}`;
+
+    const dataPayload = {
+      heading: validated.heading,
+      items: JSON.stringify(validated.items),
+      ctaLabel: validated.ctaLabel,
+      ctaHref: validated.ctaHref,
+      image: validated.image,
+      imageAlt: validated.imageAlt,
+      order: validated.order,
+    };
+
+    const block = await prisma.serviceInfoBlock.upsert({
+      where: { id },
+      update: dataPayload,
+      create: {
+        id,
+        ...dataPayload,
+      },
+    });
+
+    revalidatePath("/services");
+    revalidatePath("/admin/services");
+
+    return { success: true, data: block };
+  } catch (error: any) {
+    console.error("Error in upsertServiceInfoBlockAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "An unexpected database error occurred" };
+  }
+}
+
+export async function deleteServiceInfoBlockAction(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await prisma.serviceInfoBlock.delete({
+      where: { id },
+    });
+
+    revalidatePath("/services");
+    revalidatePath("/admin/services");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in deleteServiceInfoBlockAction:", error);
+    return { success: false, error: error.message || "Failed to delete info block" };
   }
 }
 

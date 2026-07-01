@@ -96,7 +96,7 @@ export default async function ServiceDetailPage({
         currentPage={service.title}
         title={service.title}
         description={service.shortDescription}
-        imageSrc="/pages-hero-background/1.png"
+        imageSrc={service.bgImage || "/pages-hero-background/1.png"}
         imageAlt="Professional psychotherapy in Dhaka - CMHCB"
         ctaLabel="Book an Appointment"
         ctaHref={`/appointment?service=${slug}`}
@@ -118,12 +118,12 @@ export default async function ServiceDetailPage({
             </div>
             
             {/* Right Column: Therapeutic Approach */}
-            <div className="lg:col-span-5 bg-light/10 border border-muted p-8 rounded-3xl flex flex-col gap-6 self-start">
-              <h3 className="font-marcellus text-2xl font-bold text-primary-dark leading-snug">
+            <div className="lg:col-span-5 bg-dark-green text-white p-8 rounded-3xl flex flex-col gap-6 self-start">
+              <h3 className="font-marcellus text-2xl font-bold text-white leading-snug">
                 Our Therapeutic Approach
               </h3>
               <div 
-                className="font-sans text-sm text-light-ash leading-relaxed whitespace-pre-wrap flex flex-col gap-4"
+                className="font-sans text-sm text-white/90 leading-relaxed whitespace-pre-wrap flex flex-col gap-4"
                 dangerouslySetInnerHTML={{ __html: service.approach }}
               />
             </div>

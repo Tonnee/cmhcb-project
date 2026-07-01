@@ -12,13 +12,18 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminServicesPage(): Promise<React.JSX.Element> {
   // Fetch services dynamically on server
-  const services = await prisma.service.findMany({
-    orderBy: { title: "asc" },
-  });
+  const [services, infoBlocks] = await Promise.all([
+    prisma.service.findMany({
+      orderBy: { title: "asc" },
+    }),
+    prisma.serviceInfoBlock.findMany({
+      orderBy: { order: "asc" },
+    }),
+  ]);
 
   return (
     <div className="flex flex-col gap-8">
-      <ServicesClientWrapper initialServices={services} />
+      <ServicesClientWrapper initialServices={services} initialInfoBlocks={infoBlocks} />
     </div>
   );
 }

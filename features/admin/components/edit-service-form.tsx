@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { HiBriefcase, HiGlobeAlt, HiInboxStack, HiPlus } from "react-icons/hi2";
+import { HiBriefcase, HiGlobeAlt, HiInboxStack, HiPlus, HiPhoto } from "react-icons/hi2";
 import { upsertServiceAction } from "@/app/(admin)/admin/actions";
+import { uploadImageToSupabase } from "@/lib/supabase";
 
 interface ServiceDB {
   id?: string;
@@ -13,6 +14,9 @@ interface ServiceDB {
   longDescription: string;
   approach: string;
   isFeatured: boolean;
+  showInNavbar?: boolean;
+  image?: string | null;
+  bgImage?: string | null;
 }
 
 interface EditServiceFormProps {
@@ -45,9 +49,48 @@ export function EditServiceForm({
   const [longDescription, setLongDescription] = React.useState(initialService?.longDescription || "");
   const [approach, setApproach] = React.useState(initialService?.approach || "");
   const [isFeatured, setIsFeatured] = React.useState(initialService?.isFeatured || false);
+  const [showInNavbar, setShowInNavbar] = React.useState(initialService?.showInNavbar ?? true);
+  const [imageUrl, setImageUrl] = React.useState(initialService?.image || "");
+  const [bgImageUrl, setBgImageUrl] = React.useState(initialService?.bgImage || "");
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isUploading, setIsUploading] = React.useState(false);
+  const [isUploadingBg, setIsUploadingBg] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+
+  // Handle Hero Background Image upload
+  const handleBgImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingBg(true);
+    setError(null);
+    try {
+      const publicUrl = await uploadImageToSupabase(file);
+      setBgImageUrl(publicUrl);
+    } catch (err: any) {
+      setError(err.message || "Failed to upload background image. Ensure Supabase credentials are configured.");
+    } finally {
+      setIsUploadingBg(false);
+    }
+  };
+
+  // Handle Image upload
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setError(null);
+    try {
+      const publicUrl = await uploadImageToSupabase(file);
+      setImageUrl(publicUrl);
+    } catch (err: any) {
+      setError(err.message || "Failed to upload image. Ensure Supabase credentials are configured.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   // Auto-generate slug from Title
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +120,9 @@ export function EditServiceForm({
         longDescription,
         approach,
         isFeatured,
+        showInNavbar,
+        image: imageUrl || null,
+        bgImage: bgImageUrl || null,
       };
 
       const res = await upsertServiceAction(payload);
@@ -166,19 +212,84 @@ export function EditServiceForm({
           </select>
         </div>
 
-        {/* Featured Flag */}
-        <div className="flex items-center gap-3 md:mt-7 border border-muted/40 p-4 rounded-xl bg-light-ash/5">
-          <input
-            type="checkbox"
-            id="isFeatured"
-            checked={isFeatured}
-            onChange={(e) => setIsFeatured(e.target.checked)}
-            className="w-4 h-4 text-primary border-muted rounded focus:ring-primary cursor-pointer"
-          />
-          <label htmlFor="isFeatured" className="font-sans text-sm text-dark font-medium cursor-pointer select-none">
-            Flag as Featured on Landing Page
-          </label>
+        {/* Settings Flags */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-3 border border-muted/40 p-3.5 rounded-xl bg-light-ash/5">
+            <input
+              type="checkbox"
+              id="isFeatured"
+              checked={isFeatured}
+              onChange={(e) => setIsFeatured(e.target.checked)}
+              className="w-4 h-4 text-primary border-muted rounded focus:ring-primary cursor-pointer"
+            />
+            <label htmlFor="isFeatured" className="font-sans text-sm text-dark font-medium cursor-pointer select-none">
+              Flag as Featured on Landing Page
+            </label>
+          </div>
+
+          <div className="flex items-center gap-3 border border-muted/40 p-3.5 rounded-xl bg-light-ash/5">
+            <input
+              type="checkbox"
+              id="showInNavbar"
+              checked={showInNavbar}
+              onChange={(e) => setShowInNavbar(e.target.checked)}
+              className="w-4 h-4 text-primary border-muted rounded focus:ring-primary cursor-pointer"
+            />
+            <label htmlFor="showInNavbar" className="font-sans text-sm text-dark font-medium cursor-pointer select-none">
+              Show in Navbar Dropdown Menu
+            </label>
+          </div>
         </div>
+      </div>
+
+      {/* Image File upload */}
+      <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt="Preview"
+            className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0"
+          />
+        )}
+        <div className="flex-1 flex flex-col gap-1">
+          <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
+            <HiPhoto className="w-4 h-4 text-primary" />
+            Service Card Image (Optional fallback uses default page background)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash font-sans cursor-pointer"
+            disabled={isUploading || isSubmitting}
+          />
+        </div>
+        {isUploading && <span className="text-xs text-primary font-medium font-sans animate-pulse">Uploading image...</span>}
+      </div>
+
+      {/* Hero Background Image File upload */}
+      <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
+        {bgImageUrl && (
+          <img
+            src={bgImageUrl}
+            alt="Preview"
+            className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0"
+          />
+        )}
+        <div className="flex-1 flex flex-col gap-1">
+          <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
+            <HiPhoto className="w-4 h-4 text-primary" />
+            Hero Background Image (Used on service details page hero section)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleBgImageChange}
+            className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash font-sans cursor-pointer"
+            disabled={isUploadingBg || isSubmitting}
+          />
+        </div>
+        {isUploadingBg && <span className="text-xs text-primary font-medium font-sans animate-pulse">Uploading background image...</span>}
       </div>
 
       {/* Short Description */}

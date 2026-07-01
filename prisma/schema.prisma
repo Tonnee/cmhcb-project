@@ -96,6 +96,22 @@ model Service {
   longDescription  String
   approach         String
   isFeatured       Boolean  @default(false)
+  showInNavbar     Boolean  @default(true)
+  image            String?
+  bgImage          String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+}
+
+model ServiceInfoBlock {
+  id        String   @id @default(cuid())
+  heading   String
+  items     String   // JSON string of string[] (bullet items)
+  ctaLabel  String
+  ctaHref   String
+  image     String
+  imageAlt  String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
