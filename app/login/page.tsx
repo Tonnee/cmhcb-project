@@ -6,8 +6,20 @@ import Image from "next/image";
 import { useActionState } from "react";
 import { signInAction } from "@/app/auth/actions";
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const resolvedParams = React.use(searchParams);
+  const errorParam = resolvedParams.error;
   const [state, formAction, isPending] = useActionState(signInAction, null);
+
+  const displayedError =
+    state?.error ||
+    (errorParam === "blocked"
+      ? "Your administrator account has been blocked. Please contact a super admin."
+      : null);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-page-bg py-12 px-4 sm:px-6 lg:px-8">
@@ -34,12 +46,12 @@ export default function LoginPage() {
         </div>
 
         {/* Action Error Alert */}
-        {state?.error && (
+        {displayedError && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-sans flex items-start gap-2 shadow-sm animate-pulse">
             <svg className="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
             </svg>
-            <span>{state.error}</span>
+            <span>{displayedError}</span>
           </div>
         )}
 

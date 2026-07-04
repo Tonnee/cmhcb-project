@@ -26,7 +26,7 @@ interface ServiceProfessionalsProps {
 
 export function ServiceProfessionals({
   therapists,
-  heading = "Our Professionals",
+  heading = "Our Top Professionals",
   description = "Sessions are conducted by qualified and experienced mental health professionals who follow ethical guidelines and ensure a safe, non-judgmental environment.",
   className = "",
 }: ServiceProfessionalsProps): React.JSX.Element {

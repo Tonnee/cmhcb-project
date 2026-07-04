@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { PageHero } from "@/components/shared/page-hero";
 import { Container } from "@/components/layout/container";
 import { ServiceProfessionals } from "@/features/services/components/service-professionals";
+import { Faq, type FaqItem } from "@/components/shared/faq";
 
 interface ServiceDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -51,7 +52,6 @@ export default async function ServiceDetailPage({
   });
 
   const serviceTherapists = dbTherapists.map((t) => {
-    // Parse complex JSON arrays to make them compatible with components props
     let parsedEducation: string[] = [];
     let parsedTraining: string[] = [];
     let parsedExpertise: string[] = [];
@@ -60,13 +60,13 @@ export default async function ServiceDetailPage({
     let parsedActivities: string[] = [];
     let parsedFees: any = null;
 
-    try { parsedEducation = JSON.parse(t.education || "[]"); } catch {}
-    try { parsedTraining = JSON.parse(t.training || "[]"); } catch {}
-    try { parsedExpertise = JSON.parse(t.expertise || "[]"); } catch {}
-    try { parsedExperience = JSON.parse(t.experience || "[]"); } catch {}
-    try { parsedServices = JSON.parse(t.services || "[]"); } catch {}
-    try { parsedActivities = JSON.parse(t.activities || "[]"); } catch {}
-    try { parsedFees = JSON.parse(t.fees || "null"); } catch {}
+    try { parsedEducation = JSON.parse(t.education || "[]"); } catch { }
+    try { parsedTraining = JSON.parse(t.training || "[]"); } catch { }
+    try { parsedExpertise = JSON.parse(t.expertise || "[]"); } catch { }
+    try { parsedExperience = JSON.parse(t.experience || "[]"); } catch { }
+    try { parsedServices = JSON.parse(t.services || "[]"); } catch { }
+    try { parsedActivities = JSON.parse(t.activities || "[]"); } catch { }
+    try { parsedFees = JSON.parse(t.fees || "null"); } catch { }
 
     return {
       id: t.id,
@@ -84,55 +84,154 @@ export default async function ServiceDetailPage({
     };
   }).filter((therapist) => {
     return therapist.services?.includes(slug);
-  });
+  }).slice(0, 2);
+
+  // Split newline fields into bullet point lists
+  const whoIsItForPoints: string[] = service.whoIsItFor
+    ? service.whoIsItFor.split(/\r?\n/).map((p: string) => p.trim()).filter(Boolean)
+    : [];
+  const approachPoints: string[] = service.approach
+    ? service.approach.split(/\r?\n/).map((p: string) => p.trim()).filter(Boolean)
+    : [];
+  let faqItems: FaqItem[] = [];
+  if (service.faqs) {
+    try {
+      faqItems = JSON.parse(service.faqs);
+    } catch (e) {
+      console.error("Failed to parse service FAQs:", e);
+    }
+  }
 
   return (
-    <main>
+    <main className="bg-[#FAFDF9]">
       <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Services", href: "/services" },
         ]}
         currentPage={service.title}
-        title={service.title}
-        description={service.shortDescription}
+        title={service.title === "Individual Therapy" ? "Personalized, confidential support for your mental well-being" : service.title}
+        description={service.title === "Individual Therapy" ? "Individual therapy offers a safe, one-on-one space to navigate emotional challenges, develop coping strategies, and work toward personal growth with the guidance of a trained mental health professional." : service.shortDescription}
         imageSrc={service.bgImage || "/pages-hero-background/1.png"}
-        imageAlt="Professional psychotherapy in Dhaka - CMHCB"
+        imageAlt={`${service.title} - CMHCB`}
         ctaLabel="Book an Appointment"
         ctaHref={`/appointment?service=${slug}`}
       />
 
-      {/* Dynamic details & approach content blocks */}
-      <section className="py-20 bg-white">
-        <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            {/* Left Column: Detailed Service Outline */}
-            <div className="lg:col-span-7 flex flex-col gap-6">
-              <h2 className="font-marcellus text-3xl font-bold text-dark-green leading-snug">
-                About the Service
+      {/* Main Content Sections - Clean single-column layout */}
+      <section className="py-20">
+        <Container className="max-w-4xl mx-auto px-6">
+          <div className="flex flex-col gap-12">
+            {/* 1. What Is [Service]? */}
+            <div className="flex flex-col gap-4">
+              <h2 className="font-marcellus text-3xl font-bold text-dark leading-snug">
+                What Is {service.title}?
               </h2>
-              <div 
-                className="font-sans text-base text-light-ash leading-relaxed whitespace-pre-wrap flex flex-col gap-4"
+              <div
+                className="font-sans text-[17px] text-light-ash/90 leading-relaxed whitespace-pre-wrap flex flex-col gap-6"
                 dangerouslySetInnerHTML={{ __html: service.longDescription }}
               />
             </div>
-            
-            {/* Right Column: Therapeutic Approach */}
-            <div className="lg:col-span-5 bg-dark-green text-white p-8 rounded-3xl flex flex-col gap-6 self-start">
-              <h3 className="font-marcellus text-2xl font-bold text-white leading-snug">
-                Our Therapeutic Approach
-              </h3>
-              <div 
-                className="font-sans text-sm text-white/90 leading-relaxed whitespace-pre-wrap flex flex-col gap-4"
-                dangerouslySetInnerHTML={{ __html: service.approach }}
-              />
+
+            {/* 2. Who Is It For? */}
+            {whoIsItForPoints.length > 0 && (
+              <div className="flex flex-col gap-4">
+                <h2 className="font-marcellus text-3xl font-bold text-dark leading-snug">
+                  Who Is It For?
+                </h2>
+                <ul className="flex flex-col gap-3 pl-1">
+                  {whoIsItForPoints.map((point: string, index: number) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-light-ash/60 shrink-0" />
+                      <span className="font-sans text-[17px] text-light-ash/90 leading-relaxed">
+                        {point}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* 3. Our Therapeutic Approach */}
+            {approachPoints.length > 0 && (
+              <div className="flex flex-col gap-4">
+                <h2 className="font-marcellus text-3xl font-bold text-dark leading-snug">
+                  Our Therapeutic Approach
+                </h2>
+                <ul className="flex flex-col gap-3 pl-1">
+                  {approachPoints.map((point: string, index: number) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-light-ash/60 shrink-0" />
+                      <span className="font-sans text-[17px] text-light-ash/90 leading-relaxed">
+                        {point}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* 4. Session Details (Orange bullets) */}
+            <div className="flex flex-col gap-4">
+              <h2 className="font-marcellus text-3xl font-bold text-accent leading-snug">
+                Session Details
+              </h2>
+              <ul className="flex flex-col gap-3 pl-1">
+                {service.duration && (
+                  <li className="flex items-start gap-3">
+                    <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                    <span className="font-sans text-[17px] text-light-ash/95 leading-relaxed">
+                      <strong className="font-semibold text-dark">Duration:</strong> {service.duration}
+                    </span>
+                  </li>
+                )}
+                {service.fees && (
+                  <li className="flex items-start gap-3">
+                    <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                    <span className="font-sans text-[17px] text-light-ash/95 leading-relaxed">
+                      <strong className="font-semibold text-dark">Fee:</strong> {service.fees}
+                    </span>
+                  </li>
+                )}
+                {service.format && (
+                  <li className="flex items-start gap-3">
+                    <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                    <span className="font-sans text-[17px] text-light-ash/95 leading-relaxed">
+                      <strong className="font-semibold text-dark">Format:</strong> {service.format}
+                    </span>
+                  </li>
+                )}
+                {service.language && (
+                  <li className="flex items-start gap-3">
+                    <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                    <span className="font-sans text-[17px] text-light-ash/95 leading-relaxed">
+                      <strong className="font-semibold text-dark">Language:</strong> {service.language}
+                    </span>
+                  </li>
+                )}
+              </ul>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* Related Therapists */}
-      <ServiceProfessionals therapists={serviceTherapists} />
+      {/* 5. Our Professionals */}
+      {serviceTherapists.length > 0 && (
+        <div className="bg-white py-16 border-t border-muted/20">
+          <ServiceProfessionals therapists={serviceTherapists} />
+        </div>
+      )}
+
+      {/* 6. FAQ Accordion Section */}
+      {faqItems.length > 0 && (
+        <div className="bg-[#FAFDF9] border-t border-muted/20">
+          <Faq
+            label="FAQ"
+            heading={`Frequently Asked Questions – ${service.title}`}
+            items={faqItems}
+          />
+        </div>
+      )}
     </main>
   );
 }

@@ -8,6 +8,8 @@ interface ServiceItem {
   title: string;
   slug: string;
   shortDescription: string;
+  duration?: string | null;
+  fees?: string | null;
 }
 
 interface AllServicesProps {
@@ -46,7 +48,9 @@ export function AllServices({ services }: AllServicesProps): React.JSX.Element {
               {/* Footer Info & CTA */}
               <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-muted/20 mt-auto">
                 <p className="font-sans font-semibold text-xs tracking-wider text-light-ash/60 uppercase">
-                  Evidence-Based Support
+                  {service.duration && service.fees
+                    ? `${service.duration} / ${service.fees}`
+                    : service.duration || service.fees || "Evidence-Based Support"}
                 </p>
                 <LinkButton href={`/services/${service.slug}`} label={`Learn more about ${service.title}`} variant="marcellus">
                   Learn More

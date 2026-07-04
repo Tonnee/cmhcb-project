@@ -7,6 +7,9 @@ interface ServiceItem {
   title: string;
   slug: string;
   shortDescription: string;
+  image?: string | null;
+  duration?: string | null;
+  fees?: string | null;
 }
 
 interface ServicesProps {

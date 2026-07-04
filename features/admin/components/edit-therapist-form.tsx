@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { uploadImageToSupabase } from "@/lib/supabase";
-import { upsertTherapistAction } from "@/app/(admin)/admin/actions";
+import { upsertTherapistAction, getAllServicesForFormAction } from "@/app/(admin)/admin/actions";
 import { HiPlus, HiTrash, HiXMark } from "react-icons/hi2";
 
 interface FeeItem {
@@ -30,19 +30,13 @@ interface TherapistFormProps {
     fees: string; // JSON string
     services: string; // JSON string
     activities: string; // JSON string
+    lastUpdatedBy?: string | null;
+    updatedAt?: string | Date;
   } | null;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-const AVAILABLE_SERVICES = [
-  { id: "individual-therapy", label: "Individual Therapy" },
-  { id: "family-therapy", label: "Family Therapy" },
-  { id: "couple-therapy", label: "Couple Therapy" },
-  { id: "child-therapy", label: "Child Therapy" },
-  { id: "psychometric-assessment", label: "Psychometric Assessment" },
-  { id: "iq-test", label: "IQ Test" },
-];
 
 export default function EditTherapistForm({
   therapist,
@@ -79,6 +73,17 @@ export default function EditTherapistForm({
   const [isUploading, setIsUploading] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState("");
+
+  // Dynamic services list loaded from DB
+  const [availableServices, setAvailableServices] = React.useState<{ id: string; label: string }[]>([]);
+
+  React.useEffect(() => {
+    getAllServicesForFormAction().then((res) => {
+      if (res.success) {
+        setAvailableServices(res.data.map((s) => ({ id: s.slug, label: s.title })));
+      }
+    });
+  }, []);
 
   // Array item state helpers
   const [newEdu, setNewEdu] = React.useState("");
@@ -214,11 +219,18 @@ export default function EditTherapistForm({
   };
 
   return (
-    <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
+    <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2 font-sans">
       <div className="flex items-center justify-between border-b border-muted pb-4">
-        <h2 className="font-marcellus text-xl font-bold text-dark-green">
-          {therapist ? "Edit Therapist Record" : "Add New Therapist"}
-        </h2>
+        <div className="flex flex-col">
+          <h2 className="font-marcellus text-xl font-bold text-dark-green">
+            {therapist ? "Edit Therapist Record" : "Add New Therapist"}
+          </h2>
+          {therapist?.lastUpdatedBy && (
+            <span className="text-[11px] text-light-ash/70 mt-0.5">
+              Last updated by <span className="font-semibold text-primary">{therapist.lastUpdatedBy}</span> on {therapist.updatedAt ? new Date(therapist.updatedAt).toLocaleString() : ""}
+            </span>
+          )}
+        </div>
         <button
           type="button"
           onClick={onClose}
@@ -299,7 +311,7 @@ export default function EditTherapistForm({
         <div className="flex flex-col gap-2">
           <span className="font-semibold text-dark">Services offered</span>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {AVAILABLE_SERVICES.map((s) => (
+            {availableServices.map((s) => (
               <label key={s.id} className="flex items-center gap-2 cursor-pointer text-light-ash">
                 <input
                   type="checkbox"

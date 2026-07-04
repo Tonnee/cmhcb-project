@@ -1,11 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { SERVICES } from "@/features/services/data/services";
-import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useSearchParams } from "next/navigation";
+import { getAllServicesForFormAction, getAllTherapistsForFormAction } from "@/app/(admin)/admin/actions";
 
 export function AppointmentForm() {
   return (
@@ -15,10 +14,25 @@ export function AppointmentForm() {
   );
 }
 
+interface ServiceOption {
+  slug: string;
+  title: string;
+}
+
+interface TherapistOption {
+  id: string;
+  name: string;
+  role: string;
+}
+
 function AppointmentFormContent() {
   const searchParams = useSearchParams();
   const therapistId = searchParams.get("therapist");
   const serviceSlug = searchParams.get("service");
+
+  const [services, setServices] = React.useState<ServiceOption[]>([]);
+  const [therapists, setTherapists] = React.useState<TherapistOption[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const [formData, setFormData] = React.useState({
     name: "",
@@ -33,20 +47,47 @@ function AppointmentFormContent() {
     preference: "in-person",
   });
 
-  // Pre-fill from URL
+  // Load services and therapists from the database
   React.useEffect(() => {
+    async function loadFormData() {
+      setIsLoading(true);
+      try {
+        // Fetch services dynamically from DB
+        const servicesRes = await getAllServicesForFormAction();
+        if (servicesRes.success) {
+          setServices(servicesRes.data);
+        }
+
+        // Fetch therapists dynamically from DB
+        const therapistsRes = await getAllTherapistsForFormAction();
+        if (therapistsRes.success) {
+          setTherapists(therapistsRes.data);
+        }
+      } catch (err) {
+        console.error("Failed to load form data:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadFormData();
+  }, []);
+
+  // Pre-fill from URL once data is loaded
+  React.useEffect(() => {
+    if (isLoading) return;
+
     if (therapistId) {
-      const therapist = THERAPISTS_DATA.find((t) => t.id === therapistId);
+      const therapist = therapists.find((t) => t.id === therapistId);
       if (therapist) {
         setFormData((prev) => ({
           ...prev,
           therapist: therapist.id,
-          // Pre-select the service from query parameter, or therapist's first service, or previous service
-          service: serviceSlug || therapist.services?.[0] || prev.service,
+          service: serviceSlug || prev.service,
         }));
       }
     } else if (serviceSlug) {
-      const serviceExists = SERVICES.some((s) => s.slug === serviceSlug);
+      // Validate the service slug exists in DB data
+      const serviceExists = services.some((s) => s.slug === serviceSlug);
       if (serviceExists) {
         setFormData((prev) => ({
           ...prev,
@@ -54,7 +95,7 @@ function AppointmentFormContent() {
         }));
       }
     }
-  }, [therapistId, serviceSlug]);
+  }, [therapistId, serviceSlug, therapists, services, isLoading]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -153,7 +194,7 @@ function AppointmentFormContent() {
           />
         </div>
 
-        {/* Choose Service */}
+        {/* Choose Service — now dynamically loaded from DB */}
         <div>
           <label htmlFor="service" className={labelClasses}>
             Choose Service
@@ -164,11 +205,12 @@ function AppointmentFormContent() {
             required
             value={formData.service}
             onChange={handleChange}
+            disabled={isLoading}
           >
             <option value="" disabled>
-              Select Service
+              {isLoading ? "Loading services..." : "Select Service"}
             </option>
-            {SERVICES.map((service) => (
+            {services.map((service) => (
               <option key={service.slug} value={service.slug}>
                 {service.title}
               </option>
@@ -176,7 +218,7 @@ function AppointmentFormContent() {
           </Select>
         </div>
 
-        {/* Select Therapist */}
+        {/* Select Therapist — now dynamically loaded from DB */}
         <div>
           <label htmlFor="therapist" className={labelClasses}>
             Select Therapist
@@ -187,11 +229,12 @@ function AppointmentFormContent() {
             required
             value={formData.therapist}
             onChange={handleChange}
+            disabled={isLoading}
           >
             <option value="" disabled>
-              Choose a Therapist
+              {isLoading ? "Loading therapists..." : "Choose a Therapist"}
             </option>
-            {THERAPISTS_DATA.map((therapist) => (
+            {therapists.map((therapist) => (
               <option key={therapist.id} value={therapist.id}>
                 {therapist.name} - {therapist.role}
               </option>

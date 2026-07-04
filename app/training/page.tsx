@@ -2,8 +2,21 @@ import * as React from "react";
 import { PageFeatureHero } from "@/components/shared/page-feature-hero";
 import { AllTrainings } from "@/features/training/components/all-trainings";
 import { TrainingInfoSection } from "@/features/training/components/training-info-section";
+import prisma from "@/lib/prisma";
 
-export default function TrainingPage(): React.JSX.Element {
+export const dynamic = "force-dynamic";
+
+export default async function TrainingPage(): Promise<React.JSX.Element> {
+  // Query all training programs and dynamic info blocks from the database
+  const [trainings, infoBlocks] = await Promise.all([
+    prisma.training.findMany({
+      orderBy: { title: "asc" },
+    }),
+    prisma.trainingInfoBlock.findMany({
+      orderBy: { order: "asc" },
+    }),
+  ]);
+
   return (
     <main>
       <PageFeatureHero
@@ -32,8 +45,8 @@ export default function TrainingPage(): React.JSX.Element {
           },
         ]}
       />
-      <AllTrainings />
-      <TrainingInfoSection />
+      <AllTrainings trainings={trainings} />
+      <TrainingInfoSection infoBlocks={infoBlocks} />
     </main>
   );
 }

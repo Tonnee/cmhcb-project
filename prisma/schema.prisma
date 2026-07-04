@@ -22,6 +22,7 @@ model Therapist {
   activities String   // JSON string of string[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  lastUpdatedBy String?
 }
 
 model Workshop {
@@ -40,6 +41,7 @@ model Workshop {
   gallery     String?  // JSON string of string[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  lastUpdatedBy String?
 }
 
 model BlogPost {
@@ -55,6 +57,7 @@ model BlogPost {
   isFeatured  Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  lastUpdatedBy String?
 }
 
 model Testimonial {
@@ -85,6 +88,7 @@ model LandingPageContent {
   trainingImage       String   @default("/mental-health-training-program.png")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+  lastUpdatedBy String?
 }
 
 model Service {
@@ -99,8 +103,15 @@ model Service {
   showInNavbar     Boolean  @default(true)
   image            String?
   bgImage          String?
+  duration         String?
+  fees             String?
+  whoIsItFor       String?
+  format           String?
+  language         String?
+  faqs             String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+  lastUpdatedBy String?
 }
 
 model ServiceInfoBlock {
@@ -114,4 +125,65 @@ model ServiceInfoBlock {
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  lastUpdatedBy String?
+}
+
+model TrainingInfoBlock {
+  id            String   @id @default(cuid())
+  heading       String
+  items         String   // JSON string of string[] (bullet items)
+  ctaLabel      String
+  ctaHref       String
+  image         String
+  imageAlt      String
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastUpdatedBy String?
+}
+
+model AdminProfile {
+  id           String        @id
+  email        String        @unique
+  name         String
+  role         String        @default("admin") // "admin" or "super_admin"
+  isBlocked    Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  activityLogs ActivityLog[]
+}
+
+model ActivityLog {
+  id          String       @id @default(cuid())
+  adminId     String
+  adminEmail  String
+  adminName   String
+  action      String       // "CREATE", "UPDATE", "DELETE", "BLOCK", "UNBLOCK", "UPDATE_PASSWORD", "CREATE_ADMIN", etc.
+  targetType  String       // "BlogPost", "Service", "Therapist", "Workshop", "LandingPageContent", "AdminProfile"
+  targetId    String
+  targetName  String
+  details     String?      // JSON string of change details or comments
+  createdAt   DateTime     @default(now())
+  admin       AdminProfile @relation(fields: [adminId], references: [id], onDelete: Cascade)
+}
+
+model Training {
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
+  heroTitle        String
+  heroDescription  String
+  introTitle       String
+  introDescription String
+  sections         String   // JSON string of { title: string, items: string[] }[]
+  faq              String   // JSON string of { question: string, answer: string }[]
+  features         String   // JSON string of string[]
+  duration         String
+  fees             String
+  variant          String   @default("primary")
+  image            String?
+  bgImage          String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  lastUpdatedBy    String?
 }

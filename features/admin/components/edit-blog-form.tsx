@@ -17,6 +17,8 @@ interface BlogFormProps {
     author: string;
     tags: string; // JSON string
     isFeatured: boolean;
+    lastUpdatedBy?: string | null;
+    updatedAt?: string | Date;
   } | null;
   onClose: () => void;
   onSuccess: () => void;
@@ -111,11 +113,18 @@ export default function EditBlogForm({
   };
 
   return (
-    <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
+    <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2 font-sans">
       <div className="flex items-center justify-between border-b border-muted pb-4">
-        <h2 className="font-marcellus text-xl font-bold text-dark-green">
-          {post ? "Edit Blog Post" : "Compose Blog Post"}
-        </h2>
+        <div className="flex flex-col">
+          <h2 className="font-marcellus text-xl font-bold text-dark-green">
+            {post ? "Edit Blog Post" : "Compose Blog Post"}
+          </h2>
+          {post?.lastUpdatedBy && (
+            <span className="text-[11px] text-light-ash/70 mt-0.5">
+              Last updated by <span className="font-semibold text-primary">{post.lastUpdatedBy}</span> on {post.updatedAt ? new Date(post.updatedAt).toLocaleString() : ""}
+            </span>
+          )}
+        </div>
         <button
           type="button"
           onClick={onClose}

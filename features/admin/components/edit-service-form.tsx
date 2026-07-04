@@ -17,6 +17,10 @@ interface ServiceDB {
   showInNavbar?: boolean;
   image?: string | null;
   bgImage?: string | null;
+  duration?: string | null;
+  fees?: string | null;
+  lastUpdatedBy?: string | null;
+  updatedAt?: string | Date;
 }
 
 interface EditServiceFormProps {
@@ -52,6 +56,8 @@ export function EditServiceForm({
   const [showInNavbar, setShowInNavbar] = React.useState(initialService?.showInNavbar ?? true);
   const [imageUrl, setImageUrl] = React.useState(initialService?.image || "");
   const [bgImageUrl, setBgImageUrl] = React.useState(initialService?.bgImage || "");
+  const [duration, setDuration] = React.useState(initialService?.duration || "");
+  const [fees, setFees] = React.useState(initialService?.fees || "");
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isUploading, setIsUploading] = React.useState(false);
@@ -123,6 +129,8 @@ export function EditServiceForm({
         showInNavbar,
         image: imageUrl || null,
         bgImage: bgImageUrl || null,
+        duration: duration || null,
+        fees: fees || null,
       };
 
       const res = await upsertServiceAction(payload);
@@ -142,10 +150,17 @@ export function EditServiceForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto px-1 py-2">
       <div className="flex items-center justify-between border-b border-muted pb-4">
-        <h3 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
-          <HiBriefcase className="w-5 h-5 text-primary" />
-          {initialService ? "Edit Psychotherapeutic Service" : "Add New Psychotherapeutic Service"}
-        </h3>
+        <div className="flex flex-col">
+          <h3 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+            <HiBriefcase className="w-5 h-5 text-primary" />
+            {initialService ? "Edit Psychotherapeutic Service" : "Add New Psychotherapeutic Service"}
+          </h3>
+          {initialService?.lastUpdatedBy && (
+            <span className="text-[11px] text-light-ash/70 mt-0.5 ml-7">
+              Last updated by <span className="font-semibold text-primary">{initialService.lastUpdatedBy}</span> on {initialService.updatedAt ? new Date(initialService.updatedAt).toLocaleString() : ""}
+            </span>
+          )}
+        </div>
         <button
           type="button"
           onClick={onClose}
@@ -189,6 +204,34 @@ export function EditServiceForm({
             placeholder="e.g. individual-therapy"
             className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
             required
+          />
+        </div>
+      </div>
+
+      {/* Duration & Fees */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="flex flex-col gap-1.5">
+          <label className="font-sans text-xs font-semibold text-dark">
+            Session Duration (e.g. 60 mins)
+          </label>
+          <input
+            type="text"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+            placeholder="e.g. 60 mins"
+            className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="font-sans text-xs font-semibold text-dark">
+            Session Fee (e.g. 1,000 BDT)
+          </label>
+          <input
+            type="text"
+            value={fees}
+            onChange={(e) => setFees(e.target.value)}
+            placeholder="e.g. 1,000 BDT"
+            className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
           />
         </div>
       </div>

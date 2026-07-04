@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { getRequiredAdminSession, logActivity } from "./admin-management";
 
 // Helper to slugify strings if slug is not provided or modified
 function slugify(text: string): string {
@@ -81,10 +82,12 @@ export async function upsertTherapistAction(
   rawData: z.infer<typeof TherapistInputSchema>
 ): Promise<{ success: boolean; error?: string; data?: any }> {
   try {
+    const admin = await getRequiredAdminSession();
     const validated = TherapistInputSchema.parse(rawData);
     
     // Generate id/slug if new
     const id = validated.id || slugify(validated.name);
+    const existing = await prisma.therapist.findUnique({ where: { id } });
 
     const dataPayload = {
       image: validated.image,
@@ -98,6 +101,7 @@ export async function upsertTherapistAction(
       fees: JSON.stringify(validated.fees),
       services: JSON.stringify(validated.services),
       activities: JSON.stringify(validated.activities),
+      lastUpdatedBy: admin.email,
     };
 
     const therapist = await prisma.therapist.upsert({
@@ -108,6 +112,17 @@ export async function upsertTherapistAction(
         ...dataPayload,
       },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "Therapist",
+      id,
+      validated.name,
+      existing ? `Updated therapist details for "${validated.name}"` : `Created therapist profile for "${validated.name}"`
+    );
 
     // Revalidate paths
     revalidatePath("/");
@@ -129,9 +144,26 @@ export async function deleteTherapistAction(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const admin = await getRequiredAdminSession();
+    const existing = await prisma.therapist.findUnique({ where: { id } });
+    if (!existing) {
+      throw new Error("Therapist record not found");
+    }
+
     await prisma.therapist.delete({
       where: { id },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "DELETE",
+      "Therapist",
+      id,
+      existing.name,
+      `Deleted therapist profile for "${existing.name}"`
+    );
 
     revalidatePath("/");
     revalidatePath("/therapists");
@@ -153,11 +185,13 @@ export async function upsertWorkshopAction(
   rawData: z.infer<typeof WorkshopInputSchema>
 ): Promise<{ success: boolean; error?: string; data?: any }> {
   try {
+    const admin = await getRequiredAdminSession();
     const validated = WorkshopInputSchema.parse(rawData);
     
     // Generate id/slug if new
     const titleSlug = validated.slug || slugify(validated.title);
     const id = validated.id || `ws-${titleSlug}`;
+    const existing = await prisma.workshop.findUnique({ where: { id } });
 
     const dataPayload = {
       slug: titleSlug,
@@ -172,6 +206,7 @@ export async function upsertWorkshopAction(
       isFeatured: validated.isFeatured,
       content: validated.content || "",
       gallery: JSON.stringify(validated.gallery),
+      lastUpdatedBy: admin.email,
     };
 
     const workshop = await prisma.workshop.upsert({
@@ -182,6 +217,17 @@ export async function upsertWorkshopAction(
         ...dataPayload,
       },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "Workshop",
+      id,
+      validated.title,
+      existing ? `Updated workshop details for "${validated.title}"` : `Created workshop "${validated.title}"`
+    );
 
     revalidatePath("/");
     revalidatePath("/workshops");
@@ -203,9 +249,26 @@ export async function deleteWorkshopAction(
   slug?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const admin = await getRequiredAdminSession();
+    const existing = await prisma.workshop.findUnique({ where: { id } });
+    if (!existing) {
+      throw new Error("Workshop record not found");
+    }
+
     await prisma.workshop.delete({
       where: { id },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "DELETE",
+      "Workshop",
+      id,
+      existing.title,
+      `Deleted workshop "${existing.title}"`
+    );
 
     revalidatePath("/");
     revalidatePath("/workshops");
@@ -229,12 +292,14 @@ export async function upsertBlogPostAction(
   rawData: z.infer<typeof BlogPostInputSchema>
 ): Promise<{ success: boolean; error?: string; data?: any }> {
   try {
+    const admin = await getRequiredAdminSession();
     const validated = BlogPostInputSchema.parse(rawData);
     
     // Generate id/slug if new
     const postSlug = validated.slug || slugify(validated.title);
     const id = validated.id || `post-${postSlug}`;
     const publishedAt = validated.publishedAt || new Date().toISOString();
+    const existing = await prisma.blogPost.findUnique({ where: { id } });
 
     const dataPayload = {
       slug: postSlug,
@@ -246,6 +311,7 @@ export async function upsertBlogPostAction(
       author: validated.author,
       tags: JSON.stringify(validated.tags),
       isFeatured: validated.isFeatured,
+      lastUpdatedBy: admin.email,
     };
 
     const blogPost = await prisma.blogPost.upsert({
@@ -256,6 +322,17 @@ export async function upsertBlogPostAction(
         ...dataPayload,
       },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "BlogPost",
+      id,
+      validated.title,
+      existing ? `Updated blog post "${validated.title}"` : `Created blog post "${validated.title}"`
+    );
 
     revalidatePath("/blog");
     revalidatePath(`/blog/${postSlug}`);
@@ -276,9 +353,26 @@ export async function deleteBlogPostAction(
   slug?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const admin = await getRequiredAdminSession();
+    const existing = await prisma.blogPost.findUnique({ where: { id } });
+    if (!existing) {
+      throw new Error("Blog post not found");
+    }
+
     await prisma.blogPost.delete({
       where: { id },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "DELETE",
+      "BlogPost",
+      id,
+      existing.title,
+      `Deleted blog post "${existing.title}"`
+    );
 
     revalidatePath("/blog");
     if (slug) {
@@ -317,16 +411,32 @@ export async function updateLandingPageContentAction(
   rawData: z.infer<typeof LandingPageContentInputSchema>
 ): Promise<{ success: boolean; error?: string; data?: any }> {
   try {
+    const admin = await getRequiredAdminSession();
     const validated = LandingPageContentInputSchema.parse(rawData);
 
     const landingContent = await prisma.landingPageContent.upsert({
       where: { id: "landing-content" },
-      update: validated,
+      update: {
+        ...validated,
+        lastUpdatedBy: admin.email,
+      },
       create: {
         id: "landing-content",
         ...validated,
+        lastUpdatedBy: admin.email,
       },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "LandingPageContent",
+      "landing-content",
+      "Landing Page Content",
+      "Updated landing page display settings and statistics."
+    );
 
     revalidatePath("/");
     revalidatePath("/admin");
@@ -348,7 +458,7 @@ export async function updateLandingPageContentAction(
 
 export async function getActiveServicesListAction(): Promise<{
   success: boolean;
-  data: { title: string; slug: string; icon: string }[];
+  data: { title: string; slug: string; icon: string; duration: string | null; fees: string | null }[];
 }> {
   try {
     const services = await prisma.service.findMany({
@@ -359,12 +469,53 @@ export async function getActiveServicesListAction(): Promise<{
         title: true,
         slug: true,
         icon: true,
+        duration: true,
+        fees: true,
       },
       orderBy: { title: "asc" },
     });
     return { success: true, data: services };
   } catch (error) {
     console.error("Error in getActiveServicesListAction:", error);
+    return { success: false, data: [] };
+  }
+}
+
+export async function getAllServicesForFormAction(): Promise<{
+  success: boolean;
+  data: { title: string; slug: string }[];
+}> {
+  try {
+    const services = await prisma.service.findMany({
+      select: {
+        title: true,
+        slug: true,
+      },
+      orderBy: { title: "asc" },
+    });
+    return { success: true, data: services };
+  } catch (error) {
+    console.error("Error in getAllServicesForFormAction:", error);
+    return { success: false, data: [] };
+  }
+}
+
+export async function getAllTherapistsForFormAction(): Promise<{
+  success: boolean;
+  data: { id: string; name: string; role: string }[];
+}> {
+  try {
+    const therapists = await prisma.therapist.findMany({
+      select: {
+        id: true,
+        name: true,
+        role: true,
+      },
+      orderBy: { name: "asc" },
+    });
+    return { success: true, data: therapists };
+  } catch (error) {
+    console.error("Error in getAllTherapistsForFormAction:", error);
     return { success: false, data: [] };
   }
 }
@@ -381,16 +532,24 @@ const ServiceInputSchema = z.object({
   showInNavbar: z.boolean().default(true),
   image: z.string().optional().nullable(),
   bgImage: z.string().optional().nullable(),
+  duration: z.string().optional().nullable(),
+  fees: z.string().optional().nullable(),
+  whoIsItFor: z.string().optional().nullable(),
+  format: z.string().optional().nullable(),
+  language: z.string().optional().nullable(),
+  faqs: z.string().optional().nullable(),
 });
 
 export async function upsertServiceAction(
   rawData: z.infer<typeof ServiceInputSchema>
 ): Promise<{ success: boolean; error?: string; data?: any }> {
   try {
+    const admin = await getRequiredAdminSession();
     const validated = ServiceInputSchema.parse(rawData);
     
     // Generate id if new
     const id = validated.id || `srv-${validated.slug}`;
+    const existing = await prisma.service.findUnique({ where: { id } });
 
     const dataPayload = {
       title: validated.title,
@@ -403,6 +562,13 @@ export async function upsertServiceAction(
       showInNavbar: validated.showInNavbar,
       image: validated.image,
       bgImage: validated.bgImage,
+      duration: validated.duration,
+      fees: validated.fees,
+      whoIsItFor: validated.whoIsItFor,
+      format: validated.format,
+      language: validated.language,
+      faqs: validated.faqs,
+      lastUpdatedBy: admin.email,
     };
 
     const service = await prisma.service.upsert({
@@ -413,6 +579,17 @@ export async function upsertServiceAction(
         ...dataPayload,
       },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "Service",
+      id,
+      validated.title,
+      existing ? `Updated service "${validated.title}"` : `Created service "${validated.title}"`
+    );
 
     revalidatePath("/");
     revalidatePath("/services");
@@ -434,9 +611,26 @@ export async function deleteServiceAction(
   slug?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const admin = await getRequiredAdminSession();
+    const existing = await prisma.service.findUnique({ where: { id } });
+    if (!existing) {
+      throw new Error("Service not found");
+    }
+
     await prisma.service.delete({
       where: { id },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "DELETE",
+      "Service",
+      id,
+      existing.title,
+      `Deleted service "${existing.title}"`
+    );
 
     revalidatePath("/");
     revalidatePath("/services");
@@ -471,10 +665,12 @@ export async function upsertServiceInfoBlockAction(
   rawData: z.infer<typeof ServiceInfoBlockInputSchema>
 ): Promise<{ success: boolean; error?: string; data?: any }> {
   try {
+    const admin = await getRequiredAdminSession();
     const validated = ServiceInfoBlockInputSchema.parse(rawData);
     
     // Generate id if new
     const id = validated.id || `sib-${slugify(validated.heading)}`;
+    const existing = await prisma.serviceInfoBlock.findUnique({ where: { id } });
 
     const dataPayload = {
       heading: validated.heading,
@@ -484,6 +680,7 @@ export async function upsertServiceInfoBlockAction(
       image: validated.image,
       imageAlt: validated.imageAlt,
       order: validated.order,
+      lastUpdatedBy: admin.email,
     };
 
     const block = await prisma.serviceInfoBlock.upsert({
@@ -494,6 +691,17 @@ export async function upsertServiceInfoBlockAction(
         ...dataPayload,
       },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "ServiceInfoBlock",
+      id,
+      validated.heading,
+      existing ? `Updated service info block "${validated.heading}"` : `Created service info block "${validated.heading}"`
+    );
 
     revalidatePath("/services");
     revalidatePath("/admin/services");
@@ -512,9 +720,26 @@ export async function deleteServiceInfoBlockAction(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const admin = await getRequiredAdminSession();
+    const existing = await prisma.serviceInfoBlock.findUnique({ where: { id } });
+    if (!existing) {
+      throw new Error("Service info block not found");
+    }
+
     await prisma.serviceInfoBlock.delete({
       where: { id },
     });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "DELETE",
+      "ServiceInfoBlock",
+      id,
+      existing.heading,
+      `Deleted service info block "${existing.heading}"`
+    );
 
     revalidatePath("/services");
     revalidatePath("/admin/services");
@@ -525,5 +750,245 @@ export async function deleteServiceInfoBlockAction(
     return { success: false, error: error.message || "Failed to delete info block" };
   }
 }
+
+// ============================================================================
+// Server Actions - Trainings
+// ============================================================================
+
+const TrainingInputSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1, "Title is required"),
+  slug: z.string().min(1, "Slug is required"),
+  heroTitle: z.string().min(1, "Hero Title is required"),
+  heroDescription: z.string().min(1, "Hero Description is required"),
+  introTitle: z.string().min(1, "Introduction Title is required"),
+  introDescription: z.string().min(1, "Introduction Description is required"),
+  sections: z.array(
+    z.object({
+      title: z.string(),
+      items: z.array(z.string()),
+    })
+  ).default([]),
+  faq: z.array(
+    z.object({
+      question: z.string(),
+      answer: z.string(),
+    })
+  ).default([]),
+  features: z.array(z.string()).default([]),
+  duration: z.string().min(1, "Duration is required"),
+  fees: z.string().min(1, "Fees are required"),
+  variant: z.string().default("primary"),
+  image: z.string().optional().nullable(),
+  bgImage: z.string().optional().nullable(),
+});
+
+export async function upsertTrainingAction(
+  rawData: z.infer<typeof TrainingInputSchema>
+): Promise<{ success: boolean; error?: string; data?: any }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = TrainingInputSchema.parse(rawData);
+    
+    // Generate id if new
+    const id = validated.id || `trn-${validated.slug}`;
+    const existing = await prisma.training.findUnique({ where: { id } });
+
+    const dataPayload = {
+      title: validated.title,
+      slug: validated.slug,
+      heroTitle: validated.heroTitle,
+      heroDescription: validated.heroDescription,
+      introTitle: validated.introTitle,
+      introDescription: validated.introDescription,
+      sections: JSON.stringify(validated.sections),
+      faq: JSON.stringify(validated.faq),
+      features: JSON.stringify(validated.features),
+      duration: validated.duration,
+      fees: validated.fees,
+      variant: validated.variant,
+      image: validated.image,
+      bgImage: validated.bgImage,
+      lastUpdatedBy: admin.email,
+    };
+
+    const training = await prisma.training.upsert({
+      where: { id },
+      update: dataPayload,
+      create: {
+        id,
+        ...dataPayload,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "Training",
+      id,
+      validated.title,
+      existing ? `Updated training details for "${validated.title}"` : `Created training program "${validated.title}"`
+    );
+
+    revalidatePath("/training");
+    revalidatePath(`/training/${validated.slug}`);
+    revalidatePath("/admin/trainings");
+
+    return { success: true, data: training };
+  } catch (error: any) {
+    console.error("Error in upsertTrainingAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "An unexpected database error occurred" };
+  }
+}
+
+export async function deleteTrainingAction(
+  id: string,
+  slug?: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const existing = await prisma.training.findUnique({ where: { id } });
+    if (!existing) {
+      throw new Error("Training program not found");
+    }
+
+    await prisma.training.delete({
+      where: { id },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "DELETE",
+      "Training",
+      id,
+      existing.title,
+      `Deleted training program "${existing.title}"`
+    );
+
+    revalidatePath("/training");
+    if (slug) {
+      revalidatePath(`/training/${slug}`);
+    }
+    revalidatePath("/admin/trainings");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in deleteTrainingAction:", error);
+    return { success: false, error: error.message || "Failed to delete training program record" };
+  }
+}
+
+// ============================================================================
+// Server Actions - Training Info Blocks
+// ============================================================================
+
+const TrainingInfoBlockInputSchema = z.object({
+  id: z.string().optional(),
+  heading: z.string().min(1, "Heading is required"),
+  items: z.array(z.string()).default([]),
+  ctaLabel: z.string().min(1, "CTA Label is required"),
+  ctaHref: z.string().min(1, "CTA Link is required"),
+  image: z.string().min(1, "Image URL is required"),
+  imageAlt: z.string().min(1, "Image Alt text is required"),
+  order: z.number().int().default(0),
+});
+
+export async function upsertTrainingInfoBlockAction(
+  rawData: z.infer<typeof TrainingInfoBlockInputSchema>
+): Promise<{ success: boolean; error?: string; data?: any }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = TrainingInfoBlockInputSchema.parse(rawData);
+    
+    // Generate id if new
+    const id = validated.id || `tib-${slugify(validated.heading)}`;
+    const existing = await prisma.trainingInfoBlock.findUnique({ where: { id } });
+
+    const dataPayload = {
+      heading: validated.heading,
+      items: JSON.stringify(validated.items),
+      ctaLabel: validated.ctaLabel,
+      ctaHref: validated.ctaHref,
+      image: validated.image,
+      imageAlt: validated.imageAlt,
+      order: validated.order,
+      lastUpdatedBy: admin.email,
+    };
+
+    const block = await prisma.trainingInfoBlock.upsert({
+      where: { id },
+      update: dataPayload,
+      create: {
+        id,
+        ...dataPayload,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "TrainingInfoBlock",
+      id,
+      validated.heading,
+      existing ? `Updated training info block "${validated.heading}"` : `Created training info block "${validated.heading}"`
+    );
+
+    revalidatePath("/training");
+    revalidatePath("/admin/trainings");
+
+    return { success: true, data: block };
+  } catch (error: any) {
+    console.error("Error in upsertTrainingInfoBlockAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "An unexpected database error occurred" };
+  }
+}
+
+export async function deleteTrainingInfoBlockAction(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const existing = await prisma.trainingInfoBlock.findUnique({ where: { id } });
+    if (!existing) {
+      throw new Error("Training info block not found");
+    }
+
+    await prisma.trainingInfoBlock.delete({
+      where: { id },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "DELETE",
+      "TrainingInfoBlock",
+      id,
+      existing.heading,
+      `Deleted training info block "${existing.heading}"`
+    );
+
+    revalidatePath("/training");
+    revalidatePath("/admin/trainings");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in deleteTrainingInfoBlockAction:", error);
+    return { success: false, error: error.message || "Failed to delete info block" };
+  }
+}
+
 
 

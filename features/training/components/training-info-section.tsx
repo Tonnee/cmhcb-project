@@ -3,11 +3,44 @@ import { Container } from "@/components/layout/container";
 import { SplitContentBlock } from "@/components/shared/split-content-block";
 import { TRAINING_INFO_BLOCKS } from "@/features/training/data/training-info-blocks";
 
-export function TrainingInfoSection(): React.JSX.Element {
+interface TrainingInfoBlockDB {
+  id: string;
+  heading: string;
+  items: string; // JSON string of string[]
+  ctaLabel: string;
+  ctaHref: string;
+  image: string;
+  imageAlt: string;
+  order: number;
+}
+
+interface TrainingInfoSectionProps {
+  infoBlocks?: TrainingInfoBlockDB[];
+}
+
+export function TrainingInfoSection({ infoBlocks }: TrainingInfoSectionProps): React.JSX.Element {
+  // Map database blocks to SplitBlockContent format if provided, otherwise use static default blocks
+  const blocks = infoBlocks && infoBlocks.length > 0
+    ? infoBlocks.map((b) => {
+        let itemsArray: string[] = [];
+        try {
+          itemsArray = JSON.parse(b.items);
+        } catch {
+          itemsArray = [];
+        }
+        return {
+          heading: b.heading,
+          items: itemsArray,
+          cta: { label: b.ctaLabel, href: b.ctaHref },
+          image: { src: b.image, alt: b.imageAlt },
+        };
+      })
+    : TRAINING_INFO_BLOCKS;
+
   return (
     <section className="py-16 md:py-24">
       <Container className="flex flex-col gap-16 md:gap-24">
-        {TRAINING_INFO_BLOCKS.map((block, i) => (
+        {blocks.map((block, i) => (
           <SplitContentBlock
             key={block.heading}
             content={block}

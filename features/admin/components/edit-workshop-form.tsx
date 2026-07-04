@@ -20,6 +20,8 @@ interface WorkshopFormProps {
     isFeatured: boolean;
     content: string | null;
     gallery: string | null; // JSON string
+    lastUpdatedBy?: string | null;
+    updatedAt?: string | Date;
   } | null;
   onClose: () => void;
   onSuccess: () => void;
@@ -120,11 +122,18 @@ export default function EditWorkshopForm({
   };
 
   return (
-    <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
+    <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2 font-sans">
       <div className="flex items-center justify-between border-b border-muted pb-4">
-        <h2 className="font-marcellus text-xl font-bold text-dark-green">
-          {workshop ? "Edit Workshop Details" : "Create New Workshop"}
-        </h2>
+        <div className="flex flex-col">
+          <h2 className="font-marcellus text-xl font-bold text-dark-green">
+            {workshop ? "Edit Workshop Details" : "Create New Workshop"}
+          </h2>
+          {workshop?.lastUpdatedBy && (
+            <span className="text-[11px] text-light-ash/70 mt-0.5">
+              Last updated by <span className="font-semibold text-primary">{workshop.lastUpdatedBy}</span> on {workshop.updatedAt ? new Date(workshop.updatedAt).toLocaleString() : ""}
+            </span>
+          )}
+        </div>
         <button
           type="button"
           onClick={onClose}

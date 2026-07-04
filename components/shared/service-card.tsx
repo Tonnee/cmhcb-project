@@ -9,6 +9,8 @@ interface ServiceCardProps {
     slug: string;
     shortDescription: string;
     image?: string | null;
+    duration?: string | null;
+    fees?: string | null;
   };
   className?: string;
 }
@@ -52,7 +54,9 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
 
         <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
           <span className="font-sans text-xs text-light-ash font-medium">
-            Evidence-Based Support
+            {item.duration && item.fees
+              ? `${item.duration} / ${item.fees}`
+              : item.duration || item.fees || "Evidence-Based Support"}
           </span>
           <LinkButton variant="accent">Learn More</LinkButton>
         </div>

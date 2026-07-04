@@ -14,7 +14,9 @@ import {
   HiGlobeAlt,
   HiBriefcase,
   HiArrowRightOnRectangle,
-  HiUserCircle
+  HiUserCircle,
+  HiShieldCheck,
+  HiBookmark
 } from "react-icons/hi2";
 import { signOutAction } from "@/app/auth/actions";
 
@@ -41,6 +43,11 @@ const NAV_ITEMS: NavItem[] = [
     icon: HiBriefcase,
   },
   {
+    label: "Trainings",
+    href: "/admin/trainings",
+    icon: HiBookmark,
+  },
+  {
     label: "Therapists",
     href: "/admin/therapists",
     icon: HiUsers,
@@ -59,6 +66,11 @@ const NAV_ITEMS: NavItem[] = [
     label: "Blogs",
     href: "/admin/blogs",
     icon: HiBookOpen,
+  },
+  {
+    label: "Admins",
+    href: "/admin/admins",
+    icon: HiShieldCheck,
   },
 ];
 

@@ -19,6 +19,8 @@ interface ServiceDB {
   showInNavbar: boolean;
   image?: string | null;
   bgImage?: string | null;
+  duration?: string | null;
+  fees?: string | null;
 }
 
 interface ServiceInfoBlockDB {

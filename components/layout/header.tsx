@@ -9,12 +9,12 @@ import { MobileNav } from "./mobile-nav";
 import { Container } from "@/components/layout/container";
 import { SERVICES } from "@/features/services/data/services";
 import { TRAININGS } from "@/features/training/data/trainings";
-import { 
-  HiClipboardDocumentCheck, 
-  HiUser, 
-  HiSparkles, 
-  HiUsers, 
-  HiHeart, 
+import {
+  HiClipboardDocumentCheck,
+  HiUser,
+  HiSparkles,
+  HiUsers,
+  HiHeart,
   HiPuzzlePiece,
   HiPlusCircle,
   HiFaceFrown,
@@ -91,6 +91,8 @@ interface ServicesDropdownItem {
   title: string;
   slug: string;
   icon: string;
+  duration: string | null;
+  fees: string | null;
 }
 
 function ServicesMegaMenu({ active }: { active?: boolean }) {
@@ -195,7 +197,9 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
 
                     {/* Meta */}
                     <span className="text-xs font-sans text-light-ash mt-auto">
-                      Professional Care
+                      {service.duration && service.fees
+                        ? `${service.duration} / ${service.fees}`
+                        : service.duration || service.fees || "Professional Care"}
                     </span>
                   </Link>
                 </li>
@@ -211,7 +215,7 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
                 </Link>
               </p>
               <div onClick={() => setOpen(false)}>
-                <BookAppointmentButton variant="primary"/>
+                <BookAppointmentButton variant="primary" />
               </div>
             </div>
           </Container>
