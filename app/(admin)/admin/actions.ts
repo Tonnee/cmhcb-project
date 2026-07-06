@@ -74,6 +74,78 @@ const BlogPostInputSchema = z.object({
   isFeatured: z.boolean().default(false),
 });
 
+const AboutPageInputSchema = z.object({
+  heroTitle: z.string().min(1, "Hero Title is required"),
+  heroDescription: z.string().min(1, "Hero Description is required"),
+  heroImage: z.string().min(1, "Hero Image is required"),
+  missionTitle: z.string().min(1, "Mission Title is required"),
+  missionText: z.string().min(1, "Mission Text is required"),
+  visionTitle: z.string().min(1, "Vision Title is required"),
+  visionText: z.string().min(1, "Vision Text is required"),
+  coreValues: z.array(
+    z.object({
+      title: z.string().min(1, "Value Title is required"),
+      description: z.string().min(1, "Value Description is required"),
+      icon: z.string().min(1, "Value Icon is required"),
+    })
+  ).default([]),
+});
+
+const ContactPageInputSchema = z.object({
+  phone: z.string().min(1, "Phone is required"),
+  email: z.string().min(1, "Email is required"),
+  addressLine1: z.string().min(1, "Address Line 1 is required"),
+  addressLine2: z.string().min(1, "Address Line 2 is required"),
+  addressLine3: z.string().min(1, "Address Line 3 is required"),
+  facebookUrl: z.string().default("#"),
+  instagramUrl: z.string().default("#"),
+  twitterUrl: z.string().default("#"),
+  linkedinUrl: z.string().default("#"),
+  mapEmbedUrl: z.string().min(1, "Map Embed URL is required"),
+});
+
+const FaqPageInputSchema = z.object({
+  heroTitle: z.string().min(1, "Hero Title is required"),
+  heroDescription: z.string().min(1, "Hero Description is required"),
+  heroImage: z.string().min(1, "Hero Image is required"),
+  items: z.array(
+    z.object({
+      category: z.string().min(1, "Category is required"),
+      question: z.string().min(1, "Question is required"),
+      answer: z.string().min(1, "Answer is required"),
+    })
+  ).default([]),
+});
+
+const PolicyPageInputSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  subtitle: z.string().min(1, "Subtitle is required"),
+  content: z.string().min(1, "Content is required"),
+});
+
+const AffiliationPageInputSchema = z.object({
+  heroTitle: z.string().min(1, "Hero Title is required"),
+  heroDescription: z.string().min(1, "Hero Description is required"),
+  heroImage: z.string().min(1, "Hero Image is required"),
+  partners: z.array(
+    z.object({
+      name: z.string().min(1, "Partner Name is required"),
+      type: z.string().min(1, "Partner Type is required"),
+      abbr: z.string().min(1, "Partner Abbreviation is required"),
+    })
+  ).default([]),
+  benefits: z.array(
+    z.object({
+      title: z.string().min(1, "Benefit Title is required"),
+      description: z.string().min(1, "Benefit Description is required"),
+      icon: z.string().min(1, "Benefit Icon is required"),
+    })
+  ).default([]),
+  ctaTitle: z.string().min(1, "CTA Title is required"),
+  ctaDescription: z.string().min(1, "CTA Description is required"),
+  promises: z.array(z.string()).default([]),
+});
+
 // ============================================================================
 // Server Actions - Therapists
 // ============================================================================
@@ -987,6 +1059,339 @@ export async function deleteTrainingInfoBlockAction(
   } catch (error: any) {
     console.error("Error in deleteTrainingInfoBlockAction:", error);
     return { success: false, error: error.message || "Failed to delete info block" };
+  }
+}
+
+// ============================================================================
+// Server Actions - Custom Pages Content Management
+// ============================================================================
+
+export async function getAboutPageContentAction(): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await prisma.aboutPageContent.findFirst();
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getAboutPageContentAction:", error);
+    return { success: false, error: error.message || "Failed to fetch about page content" };
+  }
+}
+
+export async function upsertAboutPageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = AboutPageInputSchema.parse(data);
+
+    const existing = await prisma.aboutPageContent.findFirst();
+
+    const record = await prisma.aboutPageContent.upsert({
+      where: { id: existing?.id || "about-content" },
+      create: {
+        id: "about-content",
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        missionTitle: validated.missionTitle,
+        missionText: validated.missionText,
+        visionTitle: validated.visionTitle,
+        visionText: validated.visionText,
+        coreValues: JSON.stringify(validated.coreValues),
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        missionTitle: validated.missionTitle,
+        missionText: validated.missionText,
+        visionTitle: validated.visionTitle,
+        visionText: validated.visionText,
+        coreValues: JSON.stringify(validated.coreValues),
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "AboutPageContent",
+      record.id,
+      "About Us Page",
+      `Updated About Us page content`
+    );
+
+    revalidatePath("/about");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertAboutPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save about page content" };
+  }
+}
+
+export async function getContactPageContentAction(): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await prisma.contactPageContent.findFirst();
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getContactPageContentAction:", error);
+    return { success: false, error: error.message || "Failed to fetch contact page content" };
+  }
+}
+
+export async function upsertContactPageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = ContactPageInputSchema.parse(data);
+
+    const existing = await prisma.contactPageContent.findFirst();
+
+    const record = await prisma.contactPageContent.upsert({
+      where: { id: existing?.id || "contact-content" },
+      create: {
+        id: "contact-content",
+        phone: validated.phone,
+        email: validated.email,
+        addressLine1: validated.addressLine1,
+        addressLine2: validated.addressLine2,
+        addressLine3: validated.addressLine3,
+        facebookUrl: validated.facebookUrl,
+        instagramUrl: validated.instagramUrl,
+        twitterUrl: validated.twitterUrl,
+        linkedinUrl: validated.linkedinUrl,
+        mapEmbedUrl: validated.mapEmbedUrl,
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        phone: validated.phone,
+        email: validated.email,
+        addressLine1: validated.addressLine1,
+        addressLine2: validated.addressLine2,
+        addressLine3: validated.addressLine3,
+        facebookUrl: validated.facebookUrl,
+        instagramUrl: validated.instagramUrl,
+        twitterUrl: validated.twitterUrl,
+        linkedinUrl: validated.linkedinUrl,
+        mapEmbedUrl: validated.mapEmbedUrl,
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "ContactPageContent",
+      record.id,
+      "Contact Page",
+      `Updated Contact page content`
+    );
+
+    revalidatePath("/contact");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertContactPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save contact page content" };
+  }
+}
+
+export async function getFaqPageContentAction(): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await prisma.faqPageContent.findFirst();
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getFaqPageContentAction:", error);
+    return { success: false, error: error.message || "Failed to fetch faq page content" };
+  }
+}
+
+export async function upsertFaqPageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = FaqPageInputSchema.parse(data);
+
+    const existing = await prisma.faqPageContent.findFirst();
+
+    const record = await prisma.faqPageContent.upsert({
+      where: { id: existing?.id || "faq-content" },
+      create: {
+        id: "faq-content",
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        items: JSON.stringify(validated.items),
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        items: JSON.stringify(validated.items),
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "FaqPageContent",
+      record.id,
+      "FAQ Page",
+      `Updated FAQ page content`
+    );
+
+    revalidatePath("/faqs");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertFaqPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save faq page content" };
+  }
+}
+
+export async function getPolicyPageContentAction(
+  id: string
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await prisma.policyPageContent.findUnique({
+      where: { id },
+    });
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getPolicyPageContentAction:", error);
+    return { success: false, error: error.message || `Failed to fetch ${id} policy content` };
+  }
+}
+
+export async function upsertPolicyPageContentAction(
+  id: string,
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = PolicyPageInputSchema.parse(data);
+
+    const record = await prisma.policyPageContent.upsert({
+      where: { id },
+      create: {
+        id,
+        title: validated.title,
+        subtitle: validated.subtitle,
+        content: validated.content,
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        title: validated.title,
+        subtitle: validated.subtitle,
+        content: validated.content,
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "PolicyPageContent",
+      record.id,
+      `${id === "privacy-policy" ? "Privacy Policy" : "Terms"} Page`,
+      `Updated ${id === "privacy-policy" ? "Privacy Policy" : "Terms & Conditions"} page content`
+    );
+
+    revalidatePath(`/${id}`);
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertPolicyPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save policy page content" };
+  }
+}
+
+export async function getAffiliationPageContentAction(): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await prisma.affiliationPageContent.findFirst();
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getAffiliationPageContentAction:", error);
+    return { success: false, error: error.message || "Failed to fetch affiliation page content" };
+  }
+}
+
+export async function upsertAffiliationPageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = AffiliationPageInputSchema.parse(data);
+
+    const existing = await prisma.affiliationPageContent.findFirst();
+
+    const record = await prisma.affiliationPageContent.upsert({
+      where: { id: existing?.id || "affiliation-content" },
+      create: {
+        id: "affiliation-content",
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        partners: JSON.stringify(validated.partners),
+        benefits: JSON.stringify(validated.benefits),
+        ctaTitle: validated.ctaTitle,
+        ctaDescription: validated.ctaDescription,
+        promises: JSON.stringify(validated.promises),
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        partners: JSON.stringify(validated.partners),
+        benefits: JSON.stringify(validated.benefits),
+        ctaTitle: validated.ctaTitle,
+        ctaDescription: validated.ctaDescription,
+        promises: JSON.stringify(validated.promises),
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "AffiliationPageContent",
+      record.id,
+      "Affiliation Program Page",
+      `Updated Affiliation Program page content`
+    );
+
+    revalidatePath("/affiliation");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertAffiliationPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save affiliation page content" };
   }
 }
 

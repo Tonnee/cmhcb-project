@@ -14,6 +14,7 @@ interface FeeItem {
 interface FeeCategory {
   category: string;
   items: FeeItem[];
+  serviceId?: string; // set on auto-generated categories so they can be removed when unchecked
 }
 
 interface TherapistFormProps {
@@ -134,12 +135,27 @@ export default function EditTherapistForm({
     }
   };
 
-  // Handle service checkbox toggles
+  // Handle service checkbox toggles — auto-add/remove matching fee category
   const handleServiceToggle = (serviceId: string) => {
     if (services.includes(serviceId)) {
+      // Uncheck: remove service and delete its linked fee category
       setServices(services.filter((s) => s !== serviceId));
+      setFees((prev) => prev.filter((cat) => cat.serviceId !== serviceId));
     } else {
+      // Check: add service and auto-create a locked fee category named after it
       setServices([...services, serviceId]);
+      const serviceLabel = availableServices.find((s) => s.id === serviceId)?.label ?? serviceId;
+      const alreadyExists = fees.some((cat) => cat.serviceId === serviceId);
+      if (!alreadyExists) {
+        setFees((prev) => [
+          ...prev,
+          {
+            serviceId,
+            category: serviceLabel,
+            items: [{ label: "50-minute session", amount: "BDT 2,000" }],
+          },
+        ]);
+      }
     }
   };
 
@@ -199,7 +215,8 @@ export default function EditTherapistForm({
         training,
         expertise,
         experience,
-        fees,
+        // Strip internal serviceId markers before persisting
+        fees: fees.map(({ serviceId: _sid, ...rest }) => rest),
         services,
         activities: therapist ? JSON.parse(therapist.activities) : [],
       };
@@ -325,6 +342,93 @@ export default function EditTherapistForm({
           </div>
         </div>
 
+        {/* Fees Editor — shown directly below services, driven by checkbox selection */}
+        {fees.length > 0 && (
+          <div className="flex flex-col gap-3 p-4 bg-light/10 rounded-2xl border border-muted/50">
+            <div className="flex justify-between items-center border-b border-muted pb-2">
+              <div className="flex flex-col gap-0.5">
+                <span className="font-semibold text-dark">Fees Categories & Rates</span>
+                <span className="text-[11px] text-light-ash">Fee categories are tied to the services checked above.</span>
+              </div>
+              <button
+                type="button"
+                onClick={addFeeCategory}
+                className="text-xs text-primary font-semibold hover:text-primary-dark flex items-center gap-1"
+              >
+                <HiPlus className="w-3.5 h-3.5" /> Add Category
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              {fees.map((cat, catIdx) => (
+                <div key={catIdx} className="bg-white p-3 rounded-xl border border-muted flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    {cat.serviceId ? (
+                      // Service-linked category: name is fixed and read-only
+                      <span className="flex-1 font-semibold text-dark text-xs py-1 border-b border-muted/40">
+                        {cat.category}
+                      </span>
+                    ) : (
+                      // Manually-added category: name is editable
+                      <input
+                        type="text"
+                        value={cat.category}
+                        onChange={(e) => updateCategoryName(catIdx, e.target.value)}
+                        className="flex-1 font-semibold text-dark border-b border-muted focus:outline-none focus:border-primary text-xs py-1"
+                        placeholder="Category Name"
+                      />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => addFeeItem(catIdx)}
+                      className="text-[10px] text-primary hover:underline"
+                    >
+                      + Add Item
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    {cat.items.map((item, itemIdx) => (
+                      <div key={itemIdx} className="grid grid-cols-1 sm:grid-cols-3 gap-2 items-center">
+                        <input
+                          type="text"
+                          value={item.label}
+                          onChange={(e) => updateFeeItem(catIdx, itemIdx, "label", e.target.value)}
+                          placeholder="Session (e.g. 50-minute)"
+                          className="px-2 py-1 border border-muted rounded text-xs focus:outline-none focus:border-primary"
+                        />
+                        <input
+                          type="text"
+                          value={item.amount}
+                          onChange={(e) => updateFeeItem(catIdx, itemIdx, "amount", e.target.value)}
+                          placeholder="Amount (e.g. BDT 2,000)"
+                          className="px-2 py-1 border border-muted rounded text-xs focus:outline-none focus:border-primary"
+                        />
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={item.note || ""}
+                            onChange={(e) => updateFeeItem(catIdx, itemIdx, "note", e.target.value)}
+                            placeholder="Note (optional)"
+                            className="flex-1 px-2 py-1 border border-muted rounded text-xs focus:outline-none focus:border-primary"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => deleteFeeItem(catIdx, itemIdx)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <HiTrash className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Arrays section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Education */}
@@ -436,79 +540,6 @@ export default function EditTherapistForm({
           </div>
         </div>
 
-        {/* Fees Editor */}
-        <div className="flex flex-col gap-3 p-4 bg-light/10 rounded-2xl border border-muted/50">
-          <div className="flex justify-between items-center border-b border-muted pb-2">
-            <span className="font-semibold text-dark">Fees Categories & Rates</span>
-            <button
-              type="button"
-              onClick={addFeeCategory}
-              className="text-xs text-primary font-semibold hover:text-primary-dark flex items-center gap-1"
-            >
-              <HiPlus className="w-3.5 h-3.5" /> Add Category
-            </button>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            {fees.map((cat, catIdx) => (
-              <div key={catIdx} className="bg-white p-3 rounded-xl border border-muted flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={cat.category}
-                    onChange={(e) => updateCategoryName(catIdx, e.target.value)}
-                    className="flex-1 font-semibold text-dark border-b border-muted focus:outline-none focus:border-primary text-xs py-1"
-                    placeholder="Category Name"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => addFeeItem(catIdx)}
-                    className="text-[10px] text-primary hover:underline"
-                  >
-                    + Add Item
-                  </button>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  {cat.items.map((item, itemIdx) => (
-                    <div key={itemIdx} className="grid grid-cols-1 sm:grid-cols-3 gap-2 items-center">
-                      <input
-                        type="text"
-                        value={item.label}
-                        onChange={(e) => updateFeeItem(catIdx, itemIdx, "label", e.target.value)}
-                        placeholder="Session (e.g. 50-minute)"
-                        className="px-2 py-1 border border-muted rounded text-xs focus:outline-none focus:border-primary"
-                      />
-                      <input
-                        type="text"
-                        value={item.amount}
-                        onChange={(e) => updateFeeItem(catIdx, itemIdx, "amount", e.target.value)}
-                        placeholder="Amount (e.g. BDT 2,000)"
-                        className="px-2 py-1 border border-muted rounded text-xs focus:outline-none focus:border-primary"
-                      />
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={item.note || ""}
-                          onChange={(e) => updateFeeItem(catIdx, itemIdx, "note", e.target.value)}
-                          placeholder="Note (optional)"
-                          className="flex-1 px-2 py-1 border border-muted rounded text-xs focus:outline-none focus:border-primary"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => deleteFeeItem(catIdx, itemIdx)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <HiTrash className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Action buttons */}
         <div className="flex items-center justify-end gap-3 border-t border-muted pt-4">

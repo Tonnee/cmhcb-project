@@ -4,7 +4,19 @@ import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 
-export function MissionVision(): React.JSX.Element {
+interface MissionVisionProps {
+  missionTitle?: string;
+  missionText?: string;
+  visionTitle?: string;
+  visionText?: string;
+}
+
+export function MissionVision({
+  missionTitle = "Our Mission",
+  missionText = "To empower individuals to overcome mental health challenges through compassionate, evidence-based therapy. We strive to create a safe, inclusive environment where healing begins, resilience is built, and lasting emotional well-being is achieved.",
+  visionTitle = "Our Vision",
+  visionText = "To be the leading center for psychological care and advocacy in Bangladesh, fostering a society where mental health is prioritized, stigma is eradicated, and everyone has access to the support they need to thrive."
+}: MissionVisionProps): React.JSX.Element {
   return (
     <section className="py-16 md:py-24 bg-white">
       <Container>
@@ -32,9 +44,9 @@ export function MissionVision(): React.JSX.Element {
             <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
               <HiShieldCheck className="w-8 h-8 text-primary" />
             </div>
-            <h3 className="font-marcellus text-3xl md:text-4xl text-dark mb-6">Our Mission</h3>
+            <h3 className="font-marcellus text-3xl md:text-4xl text-dark mb-6">{missionTitle}</h3>
             <p className="font-sans text-light-ash text-lg leading-relaxed">
-              To empower individuals to overcome mental health challenges through compassionate, evidence-based therapy. We strive to create a safe, inclusive environment where healing begins, resilience is built, and lasting emotional well-being is achieved.
+              {missionText}
             </p>
           </div>
         </div>
@@ -56,9 +68,9 @@ export function MissionVision(): React.JSX.Element {
             <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
               <HiGlobeAlt className="w-8 h-8 text-primary" />
             </div>
-            <h3 className="font-marcellus text-3xl md:text-4xl text-dark mb-6">Our Vision</h3>
+            <h3 className="font-marcellus text-3xl md:text-4xl text-dark mb-6">{visionTitle}</h3>
             <p className="font-sans text-light-ash text-lg leading-relaxed">
-              To be the leading center for psychological care and advocacy in Bangladesh, fostering a society where mental health is prioritized, stigma is eradicated, and everyone has access to the support they need to thrive.
+              {visionText}
             </p>
           </div>
         </div>

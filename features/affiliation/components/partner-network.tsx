@@ -19,7 +19,13 @@ const PARTNERS: Partner[] = [
   { name: "Moner Bandhu", type: "Mental Health Support Partner", abbr: "MB" },
 ];
 
-export default function PartnerNetwork(): React.JSX.Element {
+interface PartnerNetworkProps {
+  partners?: Partner[];
+}
+
+export default function PartnerNetwork({ partners }: PartnerNetworkProps): React.JSX.Element {
+  const displayPartners = partners && partners.length > 0 ? partners : PARTNERS;
+
   return (
     <section className="py-20 md:py-24 bg-white">
       <Container>
@@ -30,7 +36,7 @@ export default function PartnerNetwork(): React.JSX.Element {
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {PARTNERS.map((partner) => (
+          {displayPartners.map((partner) => (
             <div
               key={partner.name}
               className="relative flex items-center gap-4 bg-white rounded-3xl p-5 border border-muted/30 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:border-primary-dark/40 hover:-translate-y-1 group overflow-hidden"

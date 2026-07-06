@@ -3,7 +3,26 @@ import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { HiCheck } from "react-icons/hi2";
 
-export default function PartnerCta(): React.JSX.Element {
+interface PartnerCtaProps {
+  ctaTitle?: string;
+  ctaDescription?: string;
+  promises?: string[];
+}
+
+const DEFAULT_PROMISES = [
+  "Standardized clinical referral protocols",
+  "Shared mental health resources & research",
+  "Joint training programs & events",
+  "Co-branded advocacy & campaign visibility",
+];
+
+export default function PartnerCta({
+  ctaTitle = "Let's shape the future of mental health together",
+  ctaDescription = "Join hands with CMHCB to foster clinical excellence, expand counseling accessibility, and build a stronger mental health support ecosystem across Bangladesh.",
+  promises = DEFAULT_PROMISES,
+}: PartnerCtaProps): React.JSX.Element {
+  const displayPromises = promises && promises.length > 0 ? promises : DEFAULT_PROMISES;
+
   return (
     <section id="partner-cta" className="py-12 md:py-16 bg-white relative overflow-hidden">
       <Container>
@@ -19,20 +38,15 @@ export default function PartnerCta(): React.JSX.Element {
                 Collaborative Impact
               </span>
               <h2 className="font-marcellus text-3xl md:text-4xl lg:text-5xl leading-tight text-white mb-6">
-                {"Let's shape the future of mental health together"}
+                {ctaTitle}
               </h2>
               <p className="font-sans text-base md:text-lg text-white/80 leading-relaxed mb-8">
-                Join hands with CMHCB to foster clinical excellence, expand counseling accessibility, and build a stronger mental health support ecosystem across Bangladesh.
+                {ctaDescription}
               </p>
 
               {/* Key Promises */}
               <div className="grid sm:grid-cols-2 gap-4">
-                {[
-                  "Standardized clinical referral protocols",
-                  "Shared mental health resources & research",
-                  "Joint training programs & events",
-                  "Co-branded advocacy & campaign visibility",
-                ].map((promise, idx) => (
+                {displayPromises.map((promise, idx) => (
                   <div key={idx} className="flex items-start gap-3">
                     <div className="w-5 h-5 rounded-full bg-accent/25 border border-accent/40 flex items-center justify-center shrink-0 mt-0.5">
                       <HiCheck className="w-3.5 h-3.5 text-accent" />

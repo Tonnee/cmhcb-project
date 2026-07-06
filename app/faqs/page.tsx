@@ -3,12 +3,29 @@ import { type Metadata } from "next";
 import { PageFeatureHero } from "@/components/shared/page-feature-hero";
 import { FaqTabsSection } from "@/features/faqs/components/faq-tabs-section";
 
+import prisma from "@/lib/prisma";
+
 export const metadata: Metadata = {
   title: "Frequently Asked Questions | CMHCB",
   description: "Find answers to your questions about our therapy services, appointments, billing, and privacy policies at CMHCB.",
 };
 
-export default function FaqsPage(): React.JSX.Element {
+export default async function FaqsPage(): Promise<React.JSX.Element> {
+  const dbContent = await prisma.faqPageContent.findFirst();
+
+  const title = dbContent?.heroTitle || "We are here to answer your questions";
+  const description = dbContent?.heroDescription || "Whether you're new to therapy or an existing client, we've compiled a list of common questions to help you understand our services, payment methods, and privacy policies.";
+  const imageSrc = dbContent?.heroImage || "/understanding-anxiety-workshop-event.png";
+
+  let faqItems = [];
+  if (dbContent?.items) {
+    try {
+      faqItems = JSON.parse(dbContent.items);
+    } catch (e) {
+      console.error("Failed to parse FAQ items:", e);
+    }
+  }
+
   return (
     <main>
       <PageFeatureHero
@@ -16,10 +33,10 @@ export default function FaqsPage(): React.JSX.Element {
           { label: "Home", href: "/" },
           { label: "FAQs", href: "/faqs" },
         ]}
-        title="We are here to answer your questions"
-        description="Whether you're new to therapy or an existing client, we've compiled a list of common questions to help you understand our services, payment methods, and privacy policies."
+        title={title}
+        description={description}
         image={{
-          src: "/understanding-anxiety-workshop-event.png",
+          src: imageSrc,
           alt: "CMHCB support team and licensed therapist ready to answer your questions",
         }}
         ctas={[
@@ -38,7 +55,7 @@ export default function FaqsPage(): React.JSX.Element {
         ]}
       />
       <div id="faq-section">
-        <FaqTabsSection />
+        <FaqTabsSection initialItems={faqItems} />
       </div>
     </main>
   );

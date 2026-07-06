@@ -187,3 +187,72 @@ model Training {
   updatedAt        DateTime @updatedAt
   lastUpdatedBy    String?
 }
+
+model AboutPageContent {
+  id              String   @id @default("about-content")
+  heroTitle       String   @default("Dedicated to Your Mental Well-being")
+  heroDescription String   @default("The Center for Mental Health and Care Bangladesh (CMHCB) is a leading institution committed to providing accessible, compassionate, and high-quality psychological support to individuals and families across the nation.")
+  heroImage       String   @default("/hero-image/psychotherapy-counseling-session.png")
+  missionTitle    String   @default("Our Mission")
+  missionText     String   @default("To provide accessible, compassionate, and evidence-based mental health care to individuals and communities across Bangladesh.")
+  visionTitle     String   @default("Our Vision")
+  visionText      String   @default("A Bangladesh where mental health is understood, valued, and prioritized as an essential component of overall well-being.")
+  coreValues      String   @default("[]") // JSON: { title, description, icon }[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUpdatedBy   String?
+}
+
+model ContactPageContent {
+  id            String   @id @default("contact-content")
+  phone         String   @default("+880 1974-349569")
+  email         String   @default("info@cmhcbd.com")
+  addressLine1  String   @default("CMHC Office Room, 78/2 (2nd Floor)")
+  addressLine2  String   @default("New Airport Road, Tejkunipara")
+  addressLine3  String   @default("Tejgoan, Dhaka-1212")
+  facebookUrl   String   @default("#")
+  instagramUrl  String   @default("#")
+  twitterUrl    String   @default("#")
+  linkedinUrl   String   @default("#")
+  mapEmbedUrl   String   @default("https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.810573934375!2d90.3907579!3d23.7541819!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7793b5847e7%3A0xa64aa8a96677f40d!2sTejgaon%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1689200000000!5m2!1sen!2sbd")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastUpdatedBy String?
+}
+
+model FaqPageContent {
+  id          String   @id @default("faq-content")
+  heroTitle   String   @default("We are here to answer your questions")
+  heroDescription String @default("Whether you're new to therapy or an existing client, we've compiled a list of common questions to help you understand our services, payment methods, and privacy policies.")
+  heroImage   String   @default("/understanding-anxiety-workshop-event.png")
+  items       String   @default("[]") // JSON: { category, question, answer }[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lastUpdatedBy String?
+}
+
+model PolicyPageContent {
+  id            String   @id // "privacy-policy" | "terms"
+  title         String
+  subtitle      String   @default("Last Updated: May 2026")
+  content       String   // plain text / HTML
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastUpdatedBy String?
+}
+
+model AffiliationPageContent {
+  id              String   @id @default("affiliation-content")
+  heroTitle       String   @default("Partner with CMHCB")
+  heroDescription String   @default("Join our network of professionals and organizations dedicated to advancing mental health care in Bangladesh. Together, we can make a greater impact by expanding access to quality psychological support.")
+  heroImage       String   @default("/hero-image/psychotherapy-counseling-session.png")
+  partners        String   @default("[]") // JSON: { name, type, abbr }[]
+  benefits        String   @default("[]") // JSON: { title, description, icon }[]
+  ctaTitle        String   @default("Let's shape the future of mental health together")
+  ctaDescription  String   @default("Join hands with CMHCB to foster clinical excellence, expand counseling accessibility, and build a stronger mental health support ecosystem across Bangladesh.")
+  promises        String   @default("[]") // JSON string of string[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUpdatedBy   String?
+}
+

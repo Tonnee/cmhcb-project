@@ -16,7 +16,10 @@ import {
   HiArrowRightOnRectangle,
   HiUserCircle,
   HiShieldCheck,
-  HiBookmark
+  HiBookmark,
+  HiDocumentText,
+  HiChevronDown,
+  HiChevronUp
 } from "react-icons/hi2";
 import { signOutAction } from "@/app/auth/actions";
 
@@ -74,15 +77,29 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
+const OTHER_PAGES = [
+  { label: "About Us", href: "/admin/pages/about" },
+  { label: "Contact Us", href: "/admin/pages/contact" },
+  { label: "FAQ", href: "/admin/pages/faq" },
+  { label: "Affiliation Program", href: "/admin/pages/affiliation" },
+  { label: "Privacy Policy", href: "/admin/pages/privacy-policy" },
+  { label: "Terms & Conditions", href: "/admin/pages/terms" },
+];
+
 interface AdminSidebarProps {
   adminEmail: string;
 }
 
 export default function AdminSidebar({ adminEmail }: AdminSidebarProps): React.JSX.Element {
   const pathname = usePathname();
+  const [isPagesOpen, setIsPagesOpen] = React.useState(() =>
+    pathname?.startsWith("/admin/pages") || false
+  );
+
+  const isAnyPageActive = pathname?.startsWith("/admin/pages");
 
   return (
-    <aside className="w-64 md:w-72 bg-white border-r border-muted h-screen sticky top-0 flex flex-col justify-between shrink-0">
+    <aside className="w-64 md:w-72 bg-white border-r border-muted h-screen sticky top-0 flex flex-col justify-between shrink-0 overflow-y-auto">
       <div className="flex flex-col gap-8 p-6">
         {/* Brand Header */}
         <div className="flex items-center gap-3 pb-6 border-b border-muted">
@@ -113,7 +130,7 @@ export default function AdminSidebar({ adminEmail }: AdminSidebarProps): React.J
             const isActive =
               item.href === "/admin"
                 ? pathname === "/admin"
-                : pathname?.startsWith(item.href);
+                : pathname?.startsWith(item.href) && !pathname?.startsWith("/admin/pages");
 
             return (
               <Link
@@ -130,6 +147,50 @@ export default function AdminSidebar({ adminEmail }: AdminSidebarProps): React.J
               </Link>
             );
           })}
+
+          {/* Collapsible Dropdown for Other Pages */}
+          <div className="flex flex-col">
+            <button
+              type="button"
+              onClick={() => setIsPagesOpen(!isPagesOpen)}
+              className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 text-sm font-sans w-full text-left cursor-pointer ${
+                isAnyPageActive
+                  ? "bg-primary/5 text-primary-dark font-medium"
+                  : "text-light-ash hover:bg-light/30 hover:text-dark"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <HiDocumentText className={`w-5 h-5 ${isAnyPageActive ? "text-primary" : "text-light-ash/80"}`} />
+                <span>Other Pages</span>
+              </div>
+              {isPagesOpen ? (
+                <HiChevronUp className="w-4 h-4 text-light-ash/80" />
+              ) : (
+                <HiChevronDown className="w-4 h-4 text-light-ash/80" />
+              )}
+            </button>
+
+            {isPagesOpen && (
+              <div className="flex flex-col gap-1.5 pl-9 mt-1 border-l border-muted ml-6">
+                {OTHER_PAGES.map((page) => {
+                  const isActivePage = pathname === page.href;
+                  return (
+                    <Link
+                      key={page.label}
+                      href={page.href}
+                      className={`px-3 py-2 rounded-lg text-xs font-sans transition-all duration-150 ${
+                        isActivePage
+                          ? "text-primary-dark font-semibold bg-primary/5"
+                          : "text-light-ash hover:text-dark hover:bg-light/20"
+                      }`}
+                    >
+                      {page.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </nav>
       </div>
 

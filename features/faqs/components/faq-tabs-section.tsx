@@ -7,14 +7,44 @@ import { SectionHeading } from "@/components/shared/section-heading";
 import { FaqAccordionItem } from "@/components/shared/faq";
 import { CATEGORIZED_FAQS, FAQ_CATEGORIES, type FaqCategory } from "@/data/faqs";
 
-export function FaqTabsSection(): React.JSX.Element {
+interface FaqItem {
+  category: string;
+  question: string;
+  answer: string;
+}
+
+interface FaqTabsSectionProps {
+  initialItems?: FaqItem[];
+}
+
+export function FaqTabsSection({ initialItems }: FaqTabsSectionProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [activeTab, setActiveTab] = React.useState<FaqCategory | "All">("All");
+  const [activeTab, setActiveTab] = React.useState<string>("All");
   const [openIndex, setOpenIndex] = React.useState<number | null>(0);
+
+  const parsedItems = React.useMemo(() => {
+    if (initialItems && initialItems.length > 0) {
+      return initialItems.map((item, idx) => ({
+        id: `${item.category}-${idx}`,
+        category: item.category,
+        question: item.question,
+        answer: item.answer
+      }));
+    }
+    return CATEGORIZED_FAQS;
+  }, [initialItems]);
+
+  const categories = React.useMemo(() => {
+    if (initialItems && initialItems.length > 0) {
+      const cats = Array.from(new Set(initialItems.map((item) => item.category)));
+      return cats;
+    }
+    return FAQ_CATEGORIES;
+  }, [initialItems]);
 
   // Filter logic
   const filteredFaqs = React.useMemo(() => {
-    return CATEGORIZED_FAQS.filter((faq) => {
+    return parsedItems.filter((faq) => {
       const matchesCategory = activeTab === "All" || faq.category === activeTab;
       const query = searchQuery.toLowerCase();
       const matchesSearch =
@@ -22,7 +52,7 @@ export function FaqTabsSection(): React.JSX.Element {
         faq.answer.toLowerCase().includes(query);
       return matchesCategory && matchesSearch;
     });
-  }, [searchQuery, activeTab]);
+  }, [searchQuery, activeTab, parsedItems]);
 
   const toggle = (index: number) => {
     setOpenIndex((prev) => (prev === index ? null : index));
@@ -77,7 +107,7 @@ export function FaqTabsSection(): React.JSX.Element {
             >
               All
             </button>
-            {FAQ_CATEGORIES.map((category) => (
+            {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => {
