@@ -70,7 +70,7 @@ export async function logActivity(
   adminEmail: string,
   adminName: string,
   action: "CREATE" | "UPDATE" | "DELETE" | "BLOCK" | "UNBLOCK" | "UPDATE_CREDENTIALS" | "CREATE_ADMIN",
-  targetType: "BlogPost" | "Service" | "Therapist" | "Workshop" | "LandingPageContent" | "AdminProfile" | "ServiceInfoBlock" | "Training" | "TrainingInfoBlock" | "AboutPageContent" | "ContactPageContent" | "FaqPageContent" | "PolicyPageContent" | "AffiliationPageContent",
+  targetType: "BlogPost" | "Service" | "Therapist" | "Workshop" | "LandingPageContent" | "AdminProfile" | "ServiceInfoBlock" | "Training" | "TrainingInfoBlock" | "AboutPageContent" | "ContactPageContent" | "FaqPageContent" | "PolicyPageContent" | "AffiliationPageContent" | "Testimonial" | "SupportPageContent",
   targetId: string,
   targetName: string,
   details?: string

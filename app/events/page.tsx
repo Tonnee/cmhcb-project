@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { RightArrowIcon } from "@/components/ui/icons";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { Tag } from "@/components/ui/tag";
+import prisma from "@/lib/prisma";
 
-// Simple icon components for the meta details
 function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Element {
   return <HiCalendarDays className={className} />;
 }
@@ -29,11 +29,50 @@ export const metadata: Metadata = {
   description: "Join our upcoming workshops, seminars, and events focused on mental well-being and psychological support.",
 };
 
-export default function EventsPage(): React.JSX.Element {
+export const dynamic = "force-dynamic";
+
+export default async function EventsPage(): Promise<React.JSX.Element> {
   const now = new Date().getTime();
 
+  // Fetch from database
+  const dbEvents = await prisma.workshop.findMany({
+    orderBy: { date: "asc" },
+  });
+
+  const parsedEvents = dbEvents.map((e) => ({
+    id: e.id,
+    slug: e.slug,
+    title: e.title,
+    description: e.description,
+    image: e.image,
+    date: e.date,
+    time: e.time,
+    location: e.location,
+    author: e.author,
+    tags: (() => {
+      try {
+        const parsed = JSON.parse(e.tags);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    })(),
+    isFeatured: e.isFeatured,
+    content: e.content || "",
+    gallery: (() => {
+      try {
+        const parsed = JSON.parse(e.gallery || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    })(),
+  }));
+
+  const events = parsedEvents.length > 0 ? parsedEvents : EVENTS_DATA;
+
   // Sort events by date: nearest future event first, then latest past event
-  const sortedEvents = [...EVENTS_DATA].sort((a, b) => {
+  const sortedEvents = [...events].sort((a, b) => {
     const timeA = new Date(a.date).getTime();
     const timeB = new Date(b.date).getTime();
 
@@ -60,7 +99,7 @@ export default function EventsPage(): React.JSX.Element {
               { label: "Events", href: "/events" },
             ]}
           />
-          
+
           <div className="flex flex-col lg:flex-row gap-16 lg:gap-[86px]">
             {/* Left side - Featured Image */}
             <div className="shrink-0 w-full lg:w-[474px] flex flex-col">
@@ -86,7 +125,7 @@ export default function EventsPage(): React.JSX.Element {
             {/* Right side - Featured Content */}
             <div className="flex-1 flex flex-col justify-center">
               <p className="font-sans font-medium text-base text-accent mb-6 uppercase tracking-wider">
-                {new Date(featuredEvent.date).getTime() >= now ? "Upcoming Event" : "Past Event"}
+                {new Date(featuredEvent.date).getTime() >= now ? "Upcoming Event" : "Latest Event"}
               </p>
 
               <h1 className="font-marcellus text-3xl md:text-[40px] leading-tight text-dark mb-6 max-w-[500px]">
@@ -153,11 +192,11 @@ export default function EventsPage(): React.JSX.Element {
       <section>
         <Container>
           <SectionHeading
-            subtitle="Upcoming Events"            
+            subtitle="All Events"
             title={<>Our Latest <span className="text-primary-dark">Workshops</span> & Seminars</>}
             className="mt-20 mb-10"
           />
-          
+
           <EventList events={remainingEvents} />
         </Container>
       </section>

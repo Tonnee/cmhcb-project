@@ -31,7 +31,7 @@ export default async function Page(): Promise<React.JSX.Element> {
         },
       },
       orderBy: { date: "asc" },
-      take: 4,
+      take: 5,
     }),
     prisma.service.findMany({
       where: { isFeatured: true },
@@ -112,7 +112,7 @@ export default async function Page(): Promise<React.JSX.Element> {
     // If no future workshops exist, pull past ones to avoid empty grid
     workshops = await prisma.workshop.findMany({
       orderBy: { date: "desc" },
-      take: 4,
+      take: 5,
     });
   }
 

@@ -1,10 +1,16 @@
 import * as React from "react";
-import { TESTIMONIALS } from "@/data/testimonials";
+import { TESTIMONIALS, type Testimonial } from "@/data/testimonials";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { PaginatedStories } from "./paginated-stories";
 
-export function AllSuccessStories(): React.JSX.Element {
+interface AllSuccessStoriesProps {
+  testimonials: Testimonial[];
+}
+
+export function AllSuccessStories({ testimonials }: AllSuccessStoriesProps): React.JSX.Element {
+  const displayTestimonials = testimonials.length > 0 ? testimonials : TESTIMONIALS;
+
   return (
     <section className="py-20 bg-page-bg" id="stories">
       <Container>
@@ -15,7 +21,7 @@ export function AllSuccessStories(): React.JSX.Element {
           className="mb-14"
         />
 
-        <PaginatedStories testimonials={TESTIMONIALS} />
+        <PaginatedStories testimonials={displayTestimonials} />
       </Container>
     </section>
   );

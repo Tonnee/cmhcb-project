@@ -2,13 +2,22 @@ import * as React from "react";
 import { type Metadata } from "next";
 import { PageFeatureHero } from "@/components/shared/page-feature-hero";
 import { EmergencySupport } from "@/features/support/components/emergency-support";
+import prisma from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Support & Emergency Contacts | CMHCB",
   description: "Get immediate help and support for mental health crises. Reach out to our emergency contacts or trained professionals for assistance.",
 };
 
-export default function SupportPage(): React.JSX.Element {
+export const dynamic = "force-dynamic";
+
+export default async function SupportPage(): Promise<React.JSX.Element> {
+  const dbContent = await prisma.supportPageContent.findFirst();
+
+  const title = dbContent?.heroTitle || "We are here to support you in times of need";
+  const description = dbContent?.heroDescription || "Whether you are facing a mental health crisis or seeking guidance for a loved one, CMHCB is here to help. Reach out to our emergency contacts or trained professionals for immediate assistance.";
+  const imageSrc = dbContent?.heroImage || "/hero-image/group-therapy-support-circle.png";
+
   return (
     <main>
       <PageFeatureHero
@@ -16,10 +25,10 @@ export default function SupportPage(): React.JSX.Element {
           { label: "Home", href: "/" },
           { label: "Support", href: "/support" },
         ]}
-        title="We are here to support you in times of need"
-        description="Whether you are facing a mental health crisis or seeking guidance for a loved one, CMHCB is here to help. Reach out to our emergency contacts or trained professionals for immediate assistance."
+        title={title}
+        description={description}
         image={{
-          src: "/hero-image/group-therapy-support-circle.png",
+          src: imageSrc,
           alt: "Supportive atmosphere at CMHCB",
         }}
         ctas={[
@@ -38,7 +47,10 @@ export default function SupportPage(): React.JSX.Element {
       />
       
       <div id="emergency-contacts">
-        <EmergencySupport />
+        <EmergencySupport
+          initialContacts={dbContent?.contacts}
+          initialAdvisoryText={dbContent?.advisoryText}
+        />
       </div>
     </main>
   );

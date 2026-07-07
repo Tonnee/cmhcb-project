@@ -2,13 +2,20 @@ import * as React from "react";
 import { type Metadata } from "next";
 import { PageFeatureHero } from "@/components/shared/page-feature-hero";
 import { AllSuccessStories } from "@/features/success-stories/components/all-success-stories";
+import prisma from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Success Stories & Client Feedback | CMHCB",
   description: "Read inspiring stories from our clients. Discover how therapy, training, and mental health support at CMHCB have changed lives.",
 };
 
-export default function SuccessStoriesPage(): React.JSX.Element {
+export const dynamic = "force-dynamic";
+
+export default async function SuccessStoriesPage(): Promise<React.JSX.Element> {
+  const testimonials = await prisma.testimonial.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+
   return (
     <main>
       <PageFeatureHero
@@ -37,7 +44,7 @@ export default function SuccessStoriesPage(): React.JSX.Element {
           },
         ]}
       />
-      <AllSuccessStories />
+      <AllSuccessStories testimonials={testimonials} />
     </main>
   );
 }

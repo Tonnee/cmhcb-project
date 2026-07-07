@@ -31,12 +31,11 @@ export const FOOTER_LINK_COLUMNS: FooterLinkColumn[] = [
     title: "Resources & Support",
     links: [
       { label: "Support", href: "/support" },
-      { label: "Events", href: "/events" },
-      { label: "Workshops", href: "/workshops" },
+      { label: "Events & Workshops", href: "/events" },
       { label: "Blog", href: "/blog" },
       { label: "FAQs", href: "/faqs" },
       { label: "Contact Us", href: "/contact" },
-      { label: "Privacy Policy", href: "/privacy-policy" },
+      { label: "Community Service", href: "/legal/community-service" },
     ],
   },
 ];
@@ -52,7 +51,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 export const LEGAL_LINKS: FooterLink[] = [
   { label: "Terms & Conditions", href: "/terms" },
   { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Community Service", href: "/legal/community-service" },
+
 ];
 
 export const CONTACT_INFO = {

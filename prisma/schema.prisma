@@ -1,6 +1,6 @@
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -251,6 +251,18 @@ model AffiliationPageContent {
   ctaTitle        String   @default("Let's shape the future of mental health together")
   ctaDescription  String   @default("Join hands with CMHCB to foster clinical excellence, expand counseling accessibility, and build a stronger mental health support ecosystem across Bangladesh.")
   promises        String   @default("[]") // JSON string of string[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUpdatedBy   String?
+}
+
+model SupportPageContent {
+  id              String   @id @default("support-content")
+  heroTitle       String   @default("We are here to support you in times of need")
+  heroDescription String   @default("Whether you are facing a mental health crisis or seeking guidance for a loved one, CMHCB is here to help. Reach out to our emergency contacts or trained professionals for immediate assistance.")
+  heroImage       String   @default("/hero-image/group-therapy-support-circle.png")
+  contacts        String   @default("[]") // JSON: { title, description, phone, hours, iconName, isPrimary }[]
+  advisoryText    String   @default("Important Advisory: CMHCB and associated emotional helper helplines provide psychological support, mental health counseling, and crisis triage. If you or someone you know is in immediate physical danger, experiencing a severe drug/medical emergency, or threatened by active self-harm, please dial the National Emergency Hotline (999) or proceed immediately to the nearest hospital emergency department.")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   lastUpdatedBy   String?

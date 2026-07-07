@@ -60,7 +60,7 @@ export function Review({ testimonials }: ReviewProps): React.JSX.Element {
   return (
     <section className="py-20">
       <div className="container">
-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 xl:gap-20 items-start">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 xl:gap-20 items-center justify-center">
 
           {/* Left side — 2×2 grid */}
           <div className="shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full lg:w-[50%] xl:w-[568px]">

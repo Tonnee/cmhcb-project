@@ -42,30 +42,30 @@ function EventCard({ title, date, time, colorMode, description, isInfoCard = fal
           <h3 className={`font-marcellus text-xl leading-8 ${textClass}`}>
             {title}
           </h3>
-        <div className="flex flex-col gap-6">
-          {date && (
-            <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${ colorMode === "accent" ? "bg-dark/10" : "bg-white/10"
-              }`}>
-                <CalendarIcon className={`w-6 h-6 ${textClass}`} />
+          <div className="flex flex-col gap-6">
+            {date && (
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${colorMode === "accent" ? "bg-dark/10" : "bg-white/10"
+                  }`}>
+                  <CalendarIcon className={`w-6 h-6 ${textClass}`} />
+                </div>
+                <span className={`font-sans text-base leading-normal ${textClass}`}>
+                  {date}
+                </span>
               </div>
-              <span className={`font-sans text-base leading-normal ${textClass}`}>
-                {date}
-              </span>
-            </div>
-          )}
-          {time && (
-            <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${ colorMode === "accent" ? "bg-dark/10" : "bg-white/10"
-              }`}>
-                <ClockIcon className={`w-6 h-6 ${textClass}`} />
+            )}
+            {time && (
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${colorMode === "accent" ? "bg-dark/10" : "bg-white/10"
+                  }`}>
+                  <ClockIcon className={`w-6 h-6 ${textClass}`} />
+                </div>
+                <span className={`font-sans text-base leading-normal ${textClass}`}>
+                  {time}
+                </span>
               </div>
-              <span className={`font-sans text-base leading-normal ${textClass}`}>
-                {time}
-              </span>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
         </>
       )}
     </div>
@@ -126,20 +126,43 @@ export function UpcomingEvents({
   featuredWorkshop,
   gridWorkshops,
 }: UpcomingEventsProps): React.JSX.Element {
-  const upcomingEvents: EventCardProps[] = [
-    {
-      title: "Future Events",
-      description: "Join us in our upcoming events to learn, connect, and grow together in a supportive environment. Your journey to mental wellness and awareness starts here.",
-      colorMode: "accent",
-      isInfoCard: true,
-    },
-    ...gridWorkshops.map((w) => ({
-      title: `"${w.title}"`,
+  const displayGrid = React.useMemo(() => {
+    const list = [...gridWorkshops];
+    const needed = 4 - list.length;
+
+    const fallbackImages = [
+      "/hero-image/psychotherapy-counseling-session.png",
+      "/hero-image/group-therapy-support-circle.png",
+      "/understanding-anxiety-workshop-event.png",
+      "/home-review/mental-health-therapy-client-woman.png",
+    ];
+
+    const result = list.map((w, idx) => ({
+      id: w.id,
+      slug: w.slug,
+      title: w.title,
       date: formatDateShort(w.date),
       time: w.time,
-      colorMode: "primary" as const,
-    })),
-  ];
+      image: w.image,
+      colorMode: idx % 2 === 0 ? "accent" as const : "primary" as const,
+      isImageCard: false,
+    }));
+
+    for (let i = 0; i < needed; i++) {
+      result.push({
+        id: `placeholder-${i}`,
+        slug: "",
+        title: "",
+        date: "",
+        time: "",
+        image: fallbackImages[i % fallbackImages.length],
+        colorMode: "primary" as const,
+        isImageCard: true,
+      });
+    }
+
+    return result;
+  }, [gridWorkshops]);
 
   // Fallback featured workshop values
   const featured = featuredWorkshop || {
@@ -159,7 +182,7 @@ export function UpcomingEvents({
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-[86px] mb-20">
           {/* Left side - Event details */}
           <div className="flex-1 flex flex-col justify-center">
-            <SectionHeading 
+            <SectionHeading
               subtitle="Upcoming Events"
               title={<>&quot;{featured.title}&quot;</>}
               align="left"
@@ -212,7 +235,7 @@ export function UpcomingEvents({
 
             {/* CTA Button */}
             <div>
-              <Button href={`/workshops/${featured.slug}`} variant="primary">
+              <Button href={`/events/${featured.slug}`} variant="primary">
                 Register Now
               </Button>
             </div>
@@ -234,9 +257,32 @@ export function UpcomingEvents({
 
         {/* Event Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {upcomingEvents.map((event) => (
-            <EventCard key={event.title} {...event} />
-          ))}
+          {displayGrid.map((event) => {
+            if (event.isImageCard) {
+              return (
+                <div key={event.id} className="relative min-h-[280px] h-full rounded-[24px] overflow-hidden bg-gray-100 border border-muted/30 hover:shadow-xs transition-shadow duration-300">
+                  <Image
+                    src={event.image}
+                    alt="CMHCB Event"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 250px"
+                    className="object-cover"
+                  />
+                </div>
+              );
+            }
+
+            return (
+              <a href={`/events/${event.slug}`} key={event.id} className="block group h-full">
+                <EventCard
+                  title={`"${event.title}"`}
+                  date={event.date}
+                  time={event.time}
+                  colorMode={event.colorMode}
+                />
+              </a>
+            );
+          })}
         </div>
 
         {/* Bottom CTA section */}
@@ -246,8 +292,8 @@ export function UpcomingEvents({
             annual event calendar highlights key training sessions, mental health awareness days, and community
             initiatives designed to educate, support, and empower individuals across all age groups.
           </p>
-          <Button href="/workshops" variant="primary">
-            Explore all Workshops
+          <Button href="/events" variant="primary">
+            Explore all Events & Workshops
           </Button>
         </div>
       </div>

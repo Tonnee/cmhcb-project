@@ -61,7 +61,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: HiCalendarDays,
   },
   {
-    label: "Workshops",
+    label: "Events & Workshops",
     href: "/admin/workshops",
     icon: HiAcademicCap,
   },
@@ -81,6 +81,8 @@ const OTHER_PAGES = [
   { label: "About Us", href: "/admin/pages/about" },
   { label: "Contact Us", href: "/admin/pages/contact" },
   { label: "FAQ", href: "/admin/pages/faq" },
+  { label: "Success Stories", href: "/admin/pages/success-stories" },
+  { label: "Support", href: "/admin/pages/support" },
   { label: "Affiliation Program", href: "/admin/pages/affiliation" },
   { label: "Privacy Policy", href: "/admin/pages/privacy-policy" },
   { label: "Terms & Conditions", href: "/admin/pages/terms" },

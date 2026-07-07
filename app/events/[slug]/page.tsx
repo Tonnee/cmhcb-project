@@ -5,12 +5,13 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
-import { EVENTS_DATA } from "@/features/events/data/events";
+import { EVENTS_DATA, type Event } from "@/features/events/data/events";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { PageHero } from "@/components/shared/page-hero";
 import { EventCard } from "@/features/events/components/event-card";
 import { Tag } from "@/components/ui/tag";
 import EventRegistrationForm from "@/features/events/components/event-registration-form";
+import prisma from "@/lib/prisma";
 
 // Shared icons for the page
 function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Element {
@@ -21,6 +22,7 @@ function ClockIcon({ className = "" }: { className?: string }): React.JSX.Elemen
   return <HiClock className={className} />;
 }
 
+/*************  65b4c10a-3197-40ad-be1b-80dfccfb2380  *************/
 function UserIcon({ className = "" }: { className?: string }): React.JSX.Element {
   return <HiUser className={className} />;
 }
@@ -29,11 +31,7 @@ function LocationPinIcon({ className = "" }: { className?: string }): React.JSX.
   return <HiMapPin className={className} />;
 }
 
-export async function generateStaticParams() {
-  return EVENTS_DATA.map((event) => ({
-    slug: event.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -41,7 +39,26 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const event = EVENTS_DATA.find((e) => e.slug === slug);
+  
+  let event = EVENTS_DATA.find((e) => e.slug === slug);
+  if (!event) {
+    const dbEvent = await prisma.workshop.findUnique({ where: { slug } });
+    if (dbEvent) {
+      event = {
+        id: dbEvent.id,
+        slug: dbEvent.slug,
+        title: dbEvent.title,
+        description: dbEvent.description,
+        image: dbEvent.image,
+        date: dbEvent.date,
+        time: dbEvent.time,
+        location: dbEvent.location,
+        author: dbEvent.author,
+        tags: [],
+      };
+    }
+  }
+
   if (!event) return {};
   return {
     title: `${event.title} | Events | CMHCB`,
@@ -55,14 +72,78 @@ export default async function EventRegistrationPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const event = EVENTS_DATA.find((e) => e.slug === slug);
+
+  let event: Event | undefined;
+
+  // 1. Try fetching from database first
+  const dbEvent = await prisma.workshop.findUnique({ where: { slug } });
+  if (dbEvent) {
+    event = {
+      id: dbEvent.id,
+      slug: dbEvent.slug,
+      title: dbEvent.title,
+      description: dbEvent.description,
+      image: dbEvent.image,
+      date: dbEvent.date,
+      time: dbEvent.time,
+      location: dbEvent.location,
+      author: dbEvent.author,
+      tags: (() => {
+        try {
+          const parsed = JSON.parse(dbEvent.tags);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      })(),
+      content: dbEvent.content || undefined,
+      gallery: (() => {
+        try {
+          const parsed = JSON.parse(dbEvent.gallery || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      })(),
+    };
+  } else {
+    // 2. Fallback to static data
+    event = EVENTS_DATA.find((e) => e.slug === slug);
+  }
 
   if (!event) {
     notFound();
   }
 
   const isPast = new Date(event.date).getTime() < new Date().getTime();
-  const otherEvents = EVENTS_DATA.filter((e) => e.slug !== slug).slice(0, 3);
+
+  // Load other events
+  const dbOthers = await prisma.workshop.findMany({
+    where: { slug: { not: slug } },
+    take: 3,
+  });
+
+  const parsedOthers = dbOthers.map((e) => ({
+    id: e.id,
+    slug: e.slug,
+    title: e.title,
+    description: e.description,
+    image: e.image,
+    date: e.date,
+    time: e.time,
+    location: e.location,
+    author: e.author,
+    tags: (() => {
+      try {
+        const parsed = JSON.parse(e.tags);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    })(),
+  }));
+
+  const otherEvents = parsedOthers.length > 0 ? parsedOthers : EVENTS_DATA.filter((e) => e.slug !== slug).slice(0, 3);
 
   if (isPast) {
     return (

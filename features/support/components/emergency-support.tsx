@@ -3,6 +3,12 @@ import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { HiPhone, HiExclamationTriangle, HiShieldCheck } from "react-icons/hi2";
 
+const iconMap: Record<string, React.ElementType> = {
+  phone: HiPhone,
+  warning: HiExclamationTriangle,
+  shield: HiShieldCheck,
+};
+
 interface EmergencyContact {
   title: string;
   description: string;
@@ -37,7 +43,37 @@ const EMERGENCY_CONTACTS: EmergencyContact[] = [
   },
 ];
 
-export function EmergencySupport(): React.JSX.Element {
+interface EmergencySupportProps {
+  initialContacts?: string;
+  initialAdvisoryText?: string;
+}
+
+export function EmergencySupport({
+  initialContacts,
+  initialAdvisoryText,
+}: EmergencySupportProps): React.JSX.Element {
+  const contactsList = React.useMemo(() => {
+    if (initialContacts) {
+      try {
+        const parsed = JSON.parse(initialContacts);
+        if (Array.isArray(parsed)) {
+          return parsed.map((c: any) => ({
+            title: c.title,
+            description: c.description,
+            phone: c.phone,
+            hours: c.hours,
+            icon: iconMap[c.iconName] || HiPhone,
+            isPrimary: !!c.isPrimary,
+          }));
+        }
+      } catch (e) {
+        console.error("Failed to parse initialContacts:", e);
+      }
+    }
+    return EMERGENCY_CONTACTS;
+  }, [initialContacts]);
+
+  const advisory = initialAdvisoryText || "Important Advisory: CMHCB and associated emotional helper helplines provide psychological support, mental health counseling, and crisis triage. If you or someone you know is in immediate physical danger, experiencing a severe drug/medical emergency, or threatened by active self-harm, please dial the National Emergency Hotline (999) or proceed immediately to the nearest hospital emergency department.";
   return (
     <section className="py-20 md:py-28 bg-page-bg">
       <Container>
@@ -49,7 +85,7 @@ export function EmergencySupport(): React.JSX.Element {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch max-w-6xl mx-auto">
-          {EMERGENCY_CONTACTS.map((contact) => {
+          {contactsList.map((contact) => {
             const Icon = contact.icon;
             if (contact.isPrimary) {
               return (
@@ -120,7 +156,7 @@ export function EmergencySupport(): React.JSX.Element {
         {/* Advisory Disclaimer */}
         <div className="mt-20 text-center max-w-3xl mx-auto px-4">
           <p className="font-sans text-sm text-light-ash/80 leading-relaxed border-t border-muted/20 pt-10">
-            <span className="font-semibold text-dark">Important Advisory:</span> CMHCB and associated emotional helper helplines provide psychological support, mental health counseling, and crisis triage. If you or someone you know is in immediate physical danger, experiencing a severe drug/medical emergency, or threatened by active self-harm, please dial the National Emergency Hotline (<span className="font-semibold text-primary-dark">999</span>) or proceed immediately to the nearest hospital emergency department.
+            {advisory}
           </p>
         </div>
       </Container>

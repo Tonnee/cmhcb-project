@@ -126,7 +126,7 @@ export default function EditWorkshopForm({
       <div className="flex items-center justify-between border-b border-muted pb-4">
         <div className="flex flex-col">
           <h2 className="font-marcellus text-xl font-bold text-dark-green">
-            {workshop ? "Edit Workshop Details" : "Create New Workshop"}
+            {workshop ? "Edit Event & Workshop Details" : "Create New Event & Workshop"}
           </h2>
           {workshop?.lastUpdatedBy && (
             <span className="text-[11px] text-light-ash/70 mt-0.5">
@@ -153,7 +153,7 @@ export default function EditWorkshopForm({
         {/* Core Text fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
-            <label className="font-semibold text-dark">Workshop Title</label>
+            <label className="font-semibold text-dark">Title</label>
             <input
               type="text"
               value={title}
@@ -261,7 +261,7 @@ export default function EditWorkshopForm({
             />
           )}
           <div className="flex-1 flex flex-col gap-1">
-            <span className="font-semibold text-dark">Workshop Cover Image</span>
+            <span className="font-semibold text-dark">Cover Image</span>
             <input
               type="file"
               accept="image/*"
@@ -281,12 +281,12 @@ export default function EditWorkshopForm({
             onChange={(e) => setIsFeatured(e.target.checked)}
             className="rounded border-muted text-primary focus:ring-primary w-4 h-4"
           />
-          <span className="font-semibold text-dark">Feature this workshop on the landing page hero</span>
+          <span className="font-semibold text-dark">Feature this event on the landing page hero</span>
         </label>
 
         {/* Content text area */}
         <div className="flex flex-col gap-1.5">
-          <label className="font-semibold text-dark">Full Workshop Content (HTML format supported)</label>
+          <label className="font-semibold text-dark">Full Event / Workshop Content (HTML format supported)</label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
@@ -310,7 +310,7 @@ export default function EditWorkshopForm({
             className="px-4 py-2 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-xl flex items-center gap-2 cursor-pointer disabled:opacity-50"
             disabled={isSaving || isUploading}
           >
-            {isSaving ? "Saving..." : "Save Workshop"}
+            {isSaving ? "Saving..." : "Save Event / Workshop"}
           </button>
         </div>
       </form>

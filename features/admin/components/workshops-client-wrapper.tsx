@@ -75,10 +75,10 @@ export default function WorkshopsClientWrapper({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="font-marcellus text-3xl font-bold text-dark-green">
-            Manage Workshops
+            Manage Events & Workshops
           </h1>
           <p className="font-sans text-sm text-light-ash">
-            Monitor registration counts, edit workshops details, and schedule new interactive sessions.
+            Create, edit, delete, and feature events and workshops dynamically.
           </p>
         </div>
         <button
@@ -87,7 +87,7 @@ export default function WorkshopsClientWrapper({
           className="bg-primary hover:bg-primary-dark text-white font-sans text-sm font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2 transition-colors duration-200 self-start sm:self-auto cursor-pointer"
         >
           <HiPlus className="w-5 h-5" />
-          Create Workshop
+          Create Event
         </button>
       </div>
 

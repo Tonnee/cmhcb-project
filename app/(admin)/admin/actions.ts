@@ -146,6 +146,32 @@ const AffiliationPageInputSchema = z.object({
   promises: z.array(z.string()).default([]),
 });
 
+const TestimonialInputSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, "Name is required"),
+  role: z.string().min(1, "Role/Designation is required"),
+  avatar: z.string().min(1, "Avatar image is required"),
+  quote: z.string().min(1, "Success story quote is required"),
+  isFeatured: z.boolean().default(false),
+});
+
+const SupportPageInputSchema = z.object({
+  heroTitle: z.string().min(1, "Hero Title is required"),
+  heroDescription: z.string().min(1, "Hero Description is required"),
+  heroImage: z.string().min(1, "Hero Image is required"),
+  contacts: z.array(
+    z.object({
+      title: z.string().min(1, "Title is required"),
+      description: z.string().min(1, "Description is required"),
+      phone: z.string().min(1, "Phone number is required"),
+      hours: z.string().min(1, "Hours details are required"),
+      iconName: z.string().min(1, "Icon name is required"),
+      isPrimary: z.boolean().default(false),
+    })
+  ).default([]),
+  advisoryText: z.string().min(1, "Advisory Text is required"),
+});
+
 // ============================================================================
 // Server Actions - Therapists
 // ============================================================================
@@ -1392,6 +1418,152 @@ export async function upsertAffiliationPageContentAction(
       return { success: false, error: error.issues.map(e => e.message).join(", ") };
     }
     return { success: false, error: error.message || "Failed to save affiliation page content" };
+  }
+}
+
+// ============================================================================
+// Server Actions - Testimonials / Success Stories
+// ============================================================================
+
+export async function upsertTestimonialAction(
+  rawData: z.infer<typeof TestimonialInputSchema>
+): Promise<{ success: boolean; error?: string; data?: any }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = TestimonialInputSchema.parse(rawData);
+    
+    const id = validated.id || `test-${slugify(validated.name)}-${Date.now()}`;
+    const existing = await prisma.testimonial.findUnique({ where: { id } });
+
+    const dataPayload = {
+      name: validated.name,
+      role: validated.role,
+      avatar: validated.avatar,
+      quote: validated.quote,
+      isFeatured: validated.isFeatured,
+    };
+
+    const testimonial = await prisma.testimonial.upsert({
+      where: { id },
+      update: dataPayload,
+      create: {
+        id,
+        ...dataPayload,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "Testimonial",
+      id,
+      validated.name,
+      existing ? `Updated success story for "${validated.name}"` : `Created success story for "${validated.name}"`
+    );
+
+    revalidatePath("/");
+    revalidatePath("/success-stories");
+    revalidatePath("/admin/pages/success-stories");
+
+    return { success: true, data: testimonial };
+  } catch (error: any) {
+    console.error("Error in upsertTestimonialAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "An unexpected database error occurred" };
+  }
+}
+
+export async function deleteTestimonialAction(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const existing = await prisma.testimonial.findUnique({ where: { id } });
+    if (!existing) {
+      throw new Error("Success story not found");
+    }
+
+    await prisma.testimonial.delete({
+      where: { id },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "DELETE",
+      "Testimonial",
+      id,
+      existing.name,
+      `Deleted success story for "${existing.name}"`
+    );
+
+    revalidatePath("/");
+    revalidatePath("/success-stories");
+    revalidatePath("/admin/pages/success-stories");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in deleteTestimonialAction:", error);
+    return { success: false, error: error.message || "Failed to delete success story" };
+  }
+}
+
+export async function upsertSupportPageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = SupportPageInputSchema.parse(data);
+
+    const existing = await prisma.supportPageContent.findFirst();
+
+    const record = await prisma.supportPageContent.upsert({
+      where: { id: existing?.id || "support-content" },
+      create: {
+        id: "support-content",
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        contacts: JSON.stringify(validated.contacts),
+        advisoryText: validated.advisoryText,
+        lastUpdatedBy: admin.name,
+      },
+      update: {
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        contacts: JSON.stringify(validated.contacts),
+        advisoryText: validated.advisoryText,
+        lastUpdatedBy: admin.name,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "SupportPageContent",
+      record.id,
+      "support-content",
+      "Updated Support Page content details"
+    );
+
+    revalidatePath("/support");
+    revalidatePath("/admin/pages/support");
+
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertSupportPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save support page content" };
   }
 }
 

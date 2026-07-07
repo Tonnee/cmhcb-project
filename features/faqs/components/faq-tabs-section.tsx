@@ -37,7 +37,15 @@ export function FaqTabsSection({ initialItems }: FaqTabsSectionProps): React.JSX
   const categories = React.useMemo(() => {
     if (initialItems && initialItems.length > 0) {
       const cats = Array.from(new Set(initialItems.map((item) => item.category)));
-      return cats;
+      const order = ["Services", "Trainings", "Others"];
+      return cats.sort((a, b) => {
+        const idxA = order.indexOf(a);
+        const idxB = order.indexOf(b);
+        if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+        if (idxA === -1) return 1;
+        if (idxB === -1) return -1;
+        return idxA - idxB;
+      });
     }
     return FAQ_CATEGORIES;
   }, [initialItems]);

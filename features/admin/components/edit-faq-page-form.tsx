@@ -41,7 +41,7 @@ export default function EditFaqPageForm({
     }
   });
 
-  const [newCategory, setNewCategory] = React.useState("General");
+  const [newCategory, setNewCategory] = React.useState("Others");
   const [newQuestion, setNewQuestion] = React.useState("");
   const [newAnswer, setNewAnswer] = React.useState("");
 
@@ -220,11 +220,9 @@ export default function EditFaqPageForm({
                 onChange={(e) => setNewCategory(e.target.value)}
                 className="px-3 py-1.5 border border-muted rounded-lg text-xs bg-white focus:outline-none"
               >
-                <option value="General">General</option>
-                <option value="Therapy">Therapy</option>
-                <option value="Fees & Billing">Fees & Billing</option>
-                <option value="Appointments">Appointments</option>
-                <option value="Privacy & Policy">Privacy & Policy</option>
+                <option value="Services">Services</option>
+                <option value="Trainings">Trainings</option>
+                <option value="Others">Others</option>
               </select>
             </div>
 

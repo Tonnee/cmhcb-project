@@ -15,7 +15,7 @@ interface ReviewCarouselProps {
 export function ReviewCarousel({
   testimonials,
 }: ReviewCarouselProps): React.JSX.Element {
-  const displayTestimonials = testimonials.slice(0, 3);
+  const displayTestimonials = testimonials;
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: true,
@@ -51,7 +51,7 @@ export function ReviewCarousel({
 
   return (
     <div className="flex-1 min-w-0 w-full lg:pt-0 pt-0">
-      <SectionHeading 
+      <SectionHeading
         subtitle="Clients Feedback"
         title={<>Our Client Stories of <span className="text-primary">Healing</span> and <span className="text-accent">Growth</span></>}
         align="left"
@@ -98,18 +98,17 @@ export function ReviewCarousel({
         {scrollSnaps.map((_, idx) => (
           <button
             key={idx}
-            className="w-8 h-8 flex items-center justify-center rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent group"
+            className="w-5 h-5 flex items-center justify-center rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent group"
             aria-label={`View testimonial ${idx + 1}`}
             aria-selected={activeIndex === idx}
             role="tab"
             onClick={() => scrollTo(idx)}
           >
             <span
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                activeIndex === idx
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${activeIndex === idx
                   ? "bg-accent opacity-100 scale-110"
                   : "bg-gray-400 opacity-80 group-hover:bg-gray-500"
-              }`}
+                }`}
             />
           </button>
         ))}
