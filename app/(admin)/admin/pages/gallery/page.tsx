@@ -16,7 +16,7 @@ export default async function AdminGalleryPage(): Promise<React.JSX.Element> {
   });
 
   // Map database categories string to exact type categories
-  const mappedItems = items.map((item) => ({
+  const mappedItems = items.map((item: any) => ({
     id: item.id,
     type: item.type as "image" | "video",
     src: item.src,

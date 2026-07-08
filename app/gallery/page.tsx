@@ -109,7 +109,7 @@ export default async function GalleryPage(): Promise<React.JSX.Element> {
     }
   }
 
-  const mappedItems = dbItems.map((item) => ({
+  const mappedItems = dbItems.map((item: any) => ({
     id: item.id,
     type: item.type as "image" | "video",
     src: item.src,
