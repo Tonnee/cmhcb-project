@@ -39,7 +39,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  
+
   let event = EVENTS_DATA.find((e) => e.slug === slug);
   if (!event) {
     const dbEvent = await prisma.workshop.findUnique({ where: { slug } });
@@ -161,20 +161,20 @@ export default async function EventRegistrationPage({
         >
           <div className="flex flex-col items-center gap-6 mt-8">
             <div className="flex flex-wrap items-center justify-center gap-6 text-white/90 font-sans text-base">
-               <div className="flex items-center gap-2">
-                 <UserIcon className="w-5 h-5 shrink-0 text-accent" />
-                 <span className="font-medium">Hosted by {event.author}</span>
-               </div>
-               <div className="flex items-center gap-2">
-                 <CalendarIcon className="w-5 h-5 shrink-0 text-accent" />
-                 <span>{new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-               </div>
-               <div className="flex items-center gap-2">
-                 <LocationPinIcon />
-                 <span>{event.location}</span>
-               </div>
+              <div className="flex items-center gap-2">
+                <UserIcon className="w-5 h-5 shrink-0 text-accent" />
+                <span className="font-medium">Hosted by {event.author}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CalendarIcon className="w-5 h-5 shrink-0 text-accent" />
+                <span>{new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <LocationPinIcon />
+                <span>{event.location}</span>
+              </div>
             </div>
-            
+
             <div className="flex flex-wrap justify-center gap-3">
               {event.tags.map(tag => (
                 <Tag key={tag} variant="glass">
@@ -186,8 +186,8 @@ export default async function EventRegistrationPage({
         </PageHero>
 
         <Container className="py-20">
-          <article 
-            className="max-w-3xl mx-auto font-sans text-dark text-lg leading-relaxed [&>p]:mb-8 [&>h3]:font-marcellus [&>h3]:text-3xl [&>h3]:text-dark [&>h3]:mb-6 [&>h3]:mt-12 [&>h3]:leading-tight"
+          <article
+            className="mx-auto font-sans text-dark text-lg leading-relaxed [&>p]:mb-8 [&>h3]:font-marcellus [&>h3]:text-3xl [&>h3]:text-dark [&>h3]:mb-6 [&>h3]:mt-12 [&>h3]:leading-tight [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-8 [&_li]:mb-2"
             dangerouslySetInnerHTML={{ __html: event.content || event.description }}
           />
         </Container>
@@ -196,7 +196,7 @@ export default async function EventRegistrationPage({
         {event.gallery && event.gallery.length > 0 && (
           <section className="py-20">
             <Container>
-              <SectionHeading 
+              <SectionHeading
                 subtitle="Event Highlights"
                 title={<>Captured <span className="text-primary-dark">Moments</span></>}
                 className="mb-16"
@@ -204,10 +204,10 @@ export default async function EventRegistrationPage({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {event.gallery.slice(0, 4).map((img, idx) => (
                   <div key={idx} className="relative aspect-square rounded-[24px] overflow-hidden group">
-                    <Image 
-                      src={img} 
-                      alt={`Gallery image ${idx + 1}`} 
-                      fill 
+                    <Image
+                      src={img}
+                      alt={`Gallery image ${idx + 1}`}
+                      fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
@@ -221,7 +221,7 @@ export default async function EventRegistrationPage({
         {/* Other Events Section */}
         <section className="py-24 bg-white">
           <Container>
-            <SectionHeading 
+            <SectionHeading
               subtitle="More Opportunities"
               title={<>Explore Other <span className="text-primary-dark">Events</span></>}
               className="mb-16"

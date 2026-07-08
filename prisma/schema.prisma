@@ -268,3 +268,40 @@ model SupportPageContent {
   lastUpdatedBy   String?
 }
 
+model CommunityServicePageContent {
+  id                     String   @id @default("community-service-content")
+  heroTitle              String   @default("Community Service Policy & Outreach")
+  heroSubtitle           String   @default("Last Updated: May 2026")
+  heroDescription        String   @default("At the Center for Mental Health and Care Bangladesh (CMHCB), we believe mental health support is a human right. Explore our structured community-oriented programs and the ethical guidelines that define our outreach initiatives.")
+  introTitle             String   @default("Our Commitment to Bangladesh's Communities")
+  introDescription1      String   @default("CMHCB dedicates a portion of its resources and clinical hours to pro-bono work, local community workshops, and disaster response. Through structured partnerships, we aim to bridge the mental health service gap in Bangladesh.")
+  introDescription2      String   @default("Our practitioners actively volunteer to implement community support initiatives, adhering to the same high ethical standards, confidentiality, and professional competence required in our standard clinical practices.")
+  stats                  String   @default("[]") // JSON: { value, title, description }[]
+  pillars                String   @default("[]") // JSON: { badge, title, description, iconName }[]
+  eligibilityTitle       String   @default("Eligibility & Verification")
+  eligibilityDescription String   @default("To ensure that our community and pro-bono services reach the individuals who need them most, we maintain a clear verification framework. Services are allocated based on these parameters:")
+  eligibilityItems       String   @default("[]") // JSON: { title, description }[]
+  guidelinesTitle        String   @default("Operational Guidelines")
+  guidelinesDescription  String   @default("CMHCB maintains strong professional boundaries in its volunteer and outreach services to guarantee safety, quality, and clinical ethics.")
+  guidelinesItems        String   @default("[]") // JSON: { title, description }[]
+  ctaTitle               String   @default("Request a Community Outreach Session")
+  ctaDescription         String   @default("Are you an NGO, school, university, or local community leader looking to partner with CMHCB for mental health awareness training or counseling camps? Write to our coordinator today.")
+  ctaEmail               String   @default("outreach@cmhcbd.com")
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  lastUpdatedBy          String?
+}
+
+model GalleryItem {
+  id           String   @id @default(cuid())
+  type         String   @default("image") // "image" | "video"
+  src          String
+  thumbnailSrc String?
+  alt          String
+  caption      String
+  category     String   // "event" | "workshop" | "activity" | "occasion"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  lastUpdatedBy String?
+}
+

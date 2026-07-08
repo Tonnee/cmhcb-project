@@ -123,6 +123,59 @@ const PolicyPageInputSchema = z.object({
   content: z.string().min(1, "Content is required"),
 });
 
+const CommunityServicePageInputSchema = z.object({
+  heroTitle: z.string().min(1, "Hero Title is required"),
+  heroSubtitle: z.string().min(1, "Hero Subtitle is required"),
+  heroDescription: z.string().min(1, "Hero Description is required"),
+  introTitle: z.string().min(1, "Intro Title is required"),
+  introDescription1: z.string().min(1, "Intro Description 1 is required"),
+  introDescription2: z.string().min(1, "Intro Description 2 is required"),
+  stats: z.array(
+    z.object({
+      value: z.string().min(1, "Value is required"),
+      title: z.string().min(1, "Title is required"),
+      description: z.string().min(1, "Description is required"),
+    })
+  ).default([]),
+  pillars: z.array(
+    z.object({
+      badge: z.string().min(1, "Badge is required"),
+      title: z.string().min(1, "Title is required"),
+      description: z.string().min(1, "Description is required"),
+      iconName: z.string().min(1, "Icon Name is required"),
+    })
+  ).default([]),
+  eligibilityTitle: z.string().min(1, "Eligibility Title is required"),
+  eligibilityDescription: z.string().min(1, "Eligibility Description is required"),
+  eligibilityItems: z.array(
+    z.object({
+      title: z.string().min(1, "Title is required"),
+      description: z.string().min(1, "Description is required"),
+    })
+  ).default([]),
+  guidelinesTitle: z.string().min(1, "Guidelines Title is required"),
+  guidelinesDescription: z.string().min(1, "Guidelines Description is required"),
+  guidelinesItems: z.array(
+    z.object({
+      title: z.string().min(1, "Title is required"),
+      description: z.string().min(1, "Description is required"),
+    })
+  ).default([]),
+  ctaTitle: z.string().min(1, "CTA Title is required"),
+  ctaDescription: z.string().min(1, "CTA Description is required"),
+  ctaEmail: z.string().email("Invalid email address"),
+});
+
+const GalleryItemInputSchema = z.object({
+  id: z.string().optional(),
+  type: z.enum(["image", "video"]),
+  src: z.string().min(1, "Media Source URL is required"),
+  thumbnailSrc: z.string().optional().nullable(),
+  alt: z.string().min(1, "Alt text is required"),
+  caption: z.string().min(1, "Caption is required"),
+  category: z.enum(["event", "workshop", "activity", "occasion"]),
+});
+
 const AffiliationPageInputSchema = z.object({
   heroTitle: z.string().min(1, "Hero Title is required"),
   heroDescription: z.string().min(1, "Hero Description is required"),
@@ -1564,6 +1617,173 @@ export async function upsertSupportPageContentAction(
       return { success: false, error: error.issues.map(e => e.message).join(", ") };
     }
     return { success: false, error: error.message || "Failed to save support page content" };
+  }
+}
+
+export async function upsertCommunityServicePageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = CommunityServicePageInputSchema.parse(data);
+
+    const existing = await prisma.communityServicePageContent.findFirst();
+
+    const record = await prisma.communityServicePageContent.upsert({
+      where: { id: existing?.id || "community-service-content" },
+      create: {
+        id: "community-service-content",
+        heroTitle: validated.heroTitle,
+        heroSubtitle: validated.heroSubtitle,
+        heroDescription: validated.heroDescription,
+        introTitle: validated.introTitle,
+        introDescription1: validated.introDescription1,
+        introDescription2: validated.introDescription2,
+        stats: JSON.stringify(validated.stats),
+        pillars: JSON.stringify(validated.pillars),
+        eligibilityTitle: validated.eligibilityTitle,
+        eligibilityDescription: validated.eligibilityDescription,
+        eligibilityItems: JSON.stringify(validated.eligibilityItems),
+        guidelinesTitle: validated.guidelinesTitle,
+        guidelinesDescription: validated.guidelinesDescription,
+        guidelinesItems: JSON.stringify(validated.guidelinesItems),
+        ctaTitle: validated.ctaTitle,
+        ctaDescription: validated.ctaDescription,
+        ctaEmail: validated.ctaEmail,
+        lastUpdatedBy: admin.name,
+      },
+      update: {
+        heroTitle: validated.heroTitle,
+        heroSubtitle: validated.heroSubtitle,
+        heroDescription: validated.heroDescription,
+        introTitle: validated.introTitle,
+        introDescription1: validated.introDescription1,
+        introDescription2: validated.introDescription2,
+        stats: JSON.stringify(validated.stats),
+        pillars: JSON.stringify(validated.pillars),
+        eligibilityTitle: validated.eligibilityTitle,
+        eligibilityDescription: validated.eligibilityDescription,
+        eligibilityItems: JSON.stringify(validated.eligibilityItems),
+        guidelinesTitle: validated.guidelinesTitle,
+        guidelinesDescription: validated.guidelinesDescription,
+        guidelinesItems: JSON.stringify(validated.guidelinesItems),
+        ctaTitle: validated.ctaTitle,
+        ctaDescription: validated.ctaDescription,
+        ctaEmail: validated.ctaEmail,
+        lastUpdatedBy: admin.name,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "CommunityServicePageContent",
+      record.id,
+      "community-service-content",
+      "Updated Community Service Page content details"
+    );
+
+    revalidatePath("/legal/community-service");
+    revalidatePath("/admin/pages/community-service");
+
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertCommunityServicePageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save community service page content" };
+  }
+}
+
+export async function upsertGalleryItemAction(
+  rawData: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = GalleryItemInputSchema.parse(rawData);
+
+    const id = validated.id || `gal-${Date.now()}`;
+    const existing = await prisma.galleryItem.findUnique({ where: { id } });
+
+    const dataPayload = {
+      type: validated.type,
+      src: validated.src,
+      thumbnailSrc: validated.thumbnailSrc || null,
+      alt: validated.alt,
+      caption: validated.caption,
+      category: validated.category,
+      lastUpdatedBy: admin.name,
+    };
+
+    const record = await prisma.galleryItem.upsert({
+      where: { id },
+      update: dataPayload,
+      create: {
+        id,
+        ...dataPayload,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      existing ? "UPDATE" : "CREATE",
+      "GalleryItem",
+      record.id,
+      record.caption,
+      `${existing ? "Updated" : "Created"} gallery media item: ${record.caption}`
+    );
+
+    revalidatePath("/gallery");
+    revalidatePath("/admin/pages/gallery");
+
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertGalleryItemAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save gallery media item" };
+  }
+}
+
+export async function deleteGalleryItemAction(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const existing = await prisma.galleryItem.findUnique({ where: { id } });
+
+    if (!existing) {
+      return { success: false, error: "Gallery item not found." };
+    }
+
+    await prisma.galleryItem.delete({
+      where: { id },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "DELETE",
+      "GalleryItem",
+      id,
+      existing.caption,
+      `Deleted gallery media item: ${existing.caption}`
+    );
+
+    revalidatePath("/gallery");
+    revalidatePath("/admin/pages/gallery");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in deleteGalleryItemAction:", error);
+    return { success: false, error: error.message || "Failed to delete gallery item." };
   }
 }
 

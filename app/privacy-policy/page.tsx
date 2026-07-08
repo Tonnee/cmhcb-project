@@ -2,6 +2,7 @@ import * as React from "react";
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/container";
 import { SimplePageHeader } from "@/components/shared/simple-page-header";
+import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 
 import prisma from "@/lib/prisma";
 
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
   title: "Privacy Policy | CMHCB",
   description: "Privacy Policy for the Center for Mental Health and Care Bangladesh.",
 };
+
+export const dynamic = "force-dynamic";
 
 const defaultContent = `
 <p>
@@ -70,6 +73,14 @@ const defaultContent = `
 `;
 
 export default async function PrivacyPolicyPage(): Promise<React.JSX.Element> {
+  let isAdmin = false;
+  try {
+    await getRequiredAdminSession();
+    isAdmin = true;
+  } catch {
+    isAdmin = false;
+  }
+
   const dbContent = await prisma.policyPageContent.findUnique({
     where: { id: "privacy-policy" },
   });
@@ -80,6 +91,21 @@ export default async function PrivacyPolicyPage(): Promise<React.JSX.Element> {
 
   return (
     <main>
+      {isAdmin && (
+        <div className="bg-primary/10 border-b border-primary/20 py-3 text-center text-sm">
+          <Container className="flex items-center justify-between">
+            <span className="font-medium text-primary-dark font-sans">
+              You are logged in as an Administrator.
+            </span>
+            <a
+              href="/admin/pages/privacy-policy"
+              className="px-4 py-1.5 bg-primary-dark hover:bg-primary-dark/90 text-white rounded-lg font-semibold transition-all text-xs font-sans"
+            >
+              Edit Page Content
+            </a>
+          </Container>
+        </div>
+      )}
       {/* Simple Header without Image */}
       <SimplePageHeader
         breadcrumbs={[

@@ -10,11 +10,21 @@ import Therapists from "@/features/home/components/therapists";
 import { UpcomingEvents } from "@/features/home/components/upcoming-events";
 import { ScheduleAppointment } from "@/features/home/components/schedule-appointment";
 import { Review } from "@/features/home/components/review";
+import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
+import { Container } from "@/components/layout/container";
 
 // Force dynamic page rendering so queries run on every request
 export const dynamic = "force-dynamic";
 
 export default async function Page(): Promise<React.JSX.Element> {
+  let isAdmin = false;
+  try {
+    await getRequiredAdminSession();
+    isAdmin = true;
+  } catch {
+    isAdmin = false;
+  }
+
   const now = new Date().toISOString();
 
   // Parallel database fetch for dynamic content
@@ -141,6 +151,21 @@ export default async function Page(): Promise<React.JSX.Element> {
 
   return (
     <main>
+      {isAdmin && (
+        <div className="bg-primary/10 border-b border-primary/20 py-3 text-center text-sm">
+          <Container className="flex items-center justify-between">
+            <span className="font-medium text-primary-dark font-sans">
+              You are logged in as an Administrator.
+            </span>
+            <a
+              href="/admin/landing-page"
+              className="px-4 py-1.5 bg-primary-dark hover:bg-primary-dark/90 text-white rounded-lg font-semibold transition-all text-xs font-sans"
+            >
+              Edit Page Content
+            </a>
+          </Container>
+        </div>
+      )}
       {/* 1. Dynamic Hero text and images */}
       <Hero
         headline={content.heroHeadline}

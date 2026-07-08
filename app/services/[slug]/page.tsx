@@ -120,7 +120,7 @@ export default async function ServiceDetailPage({
 
       {/* Main Content Sections - Clean single-column layout */}
       <section className="py-20">
-        <Container className="max-w-4xl mx-auto px-6">
+        <Container>
           <div className="flex flex-col gap-12">
             {/* 1. What Is [Service]? */}
             <div className="flex flex-col gap-4">

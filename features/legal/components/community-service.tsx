@@ -49,7 +49,132 @@ const OUTREACH_PILLARS: PillarItem[] = [
   },
 ];
 
-export function CommunityService(): React.JSX.Element {
+export interface CommunityServicePageContent {
+  id: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  heroDescription: string;
+  introTitle: string;
+  introDescription1: string;
+  introDescription2: string;
+  stats: string;
+  pillars: string;
+  eligibilityTitle: string;
+  eligibilityDescription: string;
+  eligibilityItems: string;
+  guidelinesTitle: string;
+  guidelinesDescription: string;
+  guidelinesItems: string;
+  ctaTitle: string;
+  ctaDescription: string;
+  ctaEmail: string;
+}
+
+interface CommunityServiceProps {
+  data?: CommunityServicePageContent;
+}
+
+function getIconComponent(iconName: string): React.ReactNode {
+  switch (iconName) {
+    case "userGroup":
+      return <HiUserGroup className="w-6 h-6 text-accent" />;
+    case "academicCap":
+      return <HiAcademicCap className="w-6 h-6 text-accent" />;
+    case "globe":
+      return <HiGlobeAlt className="w-6 h-6 text-accent" />;
+    case "shield":
+      return <HiShieldCheck className="w-6 h-6 text-accent" />;
+    default:
+      return <HiGlobeAlt className="w-6 h-6 text-accent" />;
+  }
+}
+
+export function CommunityService({ data }: CommunityServiceProps): React.JSX.Element {
+  const heroTitle = data?.heroTitle || "Community Service Policy & Outreach";
+  const heroSubtitle = data?.heroSubtitle || "Last Updated: May 2026";
+  const heroDescription = data?.heroDescription || "At the Center for Mental Health and Care Bangladesh (CMHCB), we believe mental health support is a human right. Explore our structured community-oriented programs and the ethical guidelines that define our outreach initiatives.";
+  
+  const introTitle = data?.introTitle || "Our Commitment to Bangladesh's Communities";
+  const introDescription1 = data?.introDescription1 || "CMHCB dedicates a portion of its resources and clinical hours to pro-bono work, local community workshops, and disaster response. Through structured partnerships, we aim to bridge the mental health service gap in Bangladesh.";
+  const introDescription2 = data?.introDescription2 || "Our practitioners actively volunteer to implement community support initiatives, adhering to the same high ethical standards, confidentiality, and professional competence required in our standard clinical practices.";
+
+  const statsList = React.useMemo(() => {
+    if (!data?.stats) {
+      return [
+        { value: "15%", title: "Clinical Hours Allocation", description: "Dedicated to free community and pro-bono care" },
+        { value: "2,500+", title: "Beneficiaries Reached", description: "Through awareness campaigns and workshops" },
+        { value: "40+", title: "Institutional Partners", description: "Schools, NGOs, and voluntary local networks" }
+      ];
+    }
+    try {
+      return JSON.parse(data.stats);
+    } catch {
+      return [];
+    }
+  }, [data?.stats]);
+
+  const pillarsList = React.useMemo(() => {
+    if (!data?.pillars) {
+      return OUTREACH_PILLARS.map((p) => ({
+        badge: p.badge,
+        title: p.title,
+        description: p.description,
+        iconComponent: p.icon
+      }));
+    }
+    try {
+      const parsed = JSON.parse(data.pillars) as Array<{ badge: string; title: string; description: string; iconName: string }>;
+      return parsed.map(p => ({
+        badge: p.badge,
+        title: p.title,
+        description: p.description,
+        iconComponent: getIconComponent(p.iconName)
+      }));
+    } catch {
+      return [];
+    }
+  }, [data?.pillars]);
+
+  const eligibilityTitle = data?.eligibilityTitle || "Eligibility & Verification";
+  const eligibilityDescription = data?.eligibilityDescription || "To ensure that our community and pro-bono services reach the individuals who need them most, we maintain a clear verification framework. Services are allocated based on these parameters:";
+  
+  const eligibilityList = React.useMemo(() => {
+    if (!data?.eligibilityItems) {
+      return [
+        { title: "Economic Assessment", description: "Priority is given to clients verified by local council representatives or recognized NGOs as financially disadvantaged." },
+        { title: "Referrals from Public Facilities", description: "Cases referred directly from government hospitals, community clinics, or educational boards." },
+        { title: "Emergency Outreach Triage", description: "Immediate temporary counseling access for groups impacted by localized environmental disasters or sudden trauma." }
+      ];
+    }
+    try {
+      return JSON.parse(data.eligibilityItems);
+    } catch {
+      return [];
+    }
+  }, [data?.eligibilityItems]);
+
+  const guidelinesTitle = data?.guidelinesTitle || "Operational Guidelines";
+  const guidelinesDescription = data?.guidelinesDescription || "CMHCB maintains strong professional boundaries in its volunteer and outreach services to guarantee safety, quality, and clinical ethics.";
+  
+  const guidelinesList = React.useMemo(() => {
+    if (!data?.guidelinesItems) {
+      return [
+        { title: "1. Scope of Care Limitations", description: "Our community programs do not replace specialized medical procedures or full-scale emergency crisis lines. Severe clinical conditions requiring hospitalization are referred to government psychiatric departments." },
+        { title: "2. Supervision and Accountability", description: "All volunteer psychologists and counseling facilitators operate under the clinical supervision of senior licensed clinical psychologists to monitor session quality." },
+        { title: "3. Strict Consent and Privacy", description: "No clinical information or media captured during outreach operations will be published or shared without prior written consent from participants." }
+      ];
+    }
+    try {
+      return JSON.parse(data.guidelinesItems);
+    } catch {
+      return [];
+    }
+  }, [data?.guidelinesItems]);
+
+  const ctaTitle = data?.ctaTitle || "Request a Community Outreach Session";
+  const ctaDescription = data?.ctaDescription || "Are you an NGO, school, university, or local community leader looking to partner with CMHCB for mental health awareness training or counseling camps? Write to our coordinator today.";
+  const ctaEmail = data?.ctaEmail || "outreach@cmhcbd.com";
+
   return (
     <main className="bg-page-bg">
       {/* Page Header */}
@@ -59,9 +184,9 @@ export function CommunityService(): React.JSX.Element {
           { label: "Legal", href: "/legal/community-service" },
           { label: "Community Service", href: "/legal/community-service" },
         ]}
-        title="Community Service Policy & Outreach"
-        subtitle="Last Updated: May 2026"
-        description="At the Center for Mental Health and Care Bangladesh (CMHCB), we believe mental health support is a human right. Explore our structured community-oriented programs and the ethical guidelines that define our outreach initiatives."
+        title={heroTitle}
+        subtitle={heroSubtitle}
+        description={heroDescription}
       />
 
       {/* Intro Stats section */}
@@ -70,38 +195,29 @@ export function CommunityService(): React.JSX.Element {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 flex flex-col justify-center">
               <h2 className="font-marcellus text-3xl text-dark mb-6">
-                Our Commitment to {"Bangladesh's"} Communities
+                {introTitle}
               </h2>
               <p className="font-sans text-base leading-relaxed text-light-ash mb-4">
-                CMHCB dedicates a portion of its resources and clinical hours to pro-bono work, local community workshops, and disaster response. Through structured partnerships, we aim to bridge the mental health service gap in Bangladesh.
+                {introDescription1}
               </p>
               <p className="font-sans text-base leading-relaxed text-light-ash">
-                Our practitioners actively volunteer to implement community support initiatives, adhering to the same high ethical standards, confidentiality, and professional competence required in our standard clinical practices.
+                {introDescription2}
               </p>
             </div>
 
             <div className="bg-white border border-gray-100 rounded-3xl p-8 flex flex-col justify-center gap-6 shadow-sm shadow-gray-200/50">
-              <div className="flex items-center gap-4 border-b border-gray-50 pb-4">
-                <span className="text-3xl font-marcellus text-primary font-bold">15%</span>
-                <div>
-                  <h4 className="font-bold text-dark text-sm">Clinical Hours Allocation</h4>
-                  <p className="text-xs text-light-ash">Dedicated to free community and pro-bono care</p>
+              {statsList.map((stat: any, idx: number) => (
+                <div
+                  key={idx}
+                  className={`flex items-center gap-4 ${idx < statsList.length - 1 ? "border-b border-gray-50 pb-4" : ""}`}
+                >
+                  <span className="text-3xl font-marcellus text-primary font-bold shrink-0">{stat.value}</span>
+                  <div>
+                    <h4 className="font-bold text-dark text-sm">{stat.title}</h4>
+                    <p className="text-xs text-light-ash">{stat.description}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-4 border-b border-gray-50 pb-4">
-                <span className="text-3xl font-marcellus text-primary font-bold">2,500+</span>
-                <div>
-                  <h4 className="font-bold text-dark text-sm">Beneficiaries Reached</h4>
-                  <p className="text-xs text-light-ash">Through awareness campaigns and workshops</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-3xl font-marcellus text-primary font-bold">40+</span>
-                <div>
-                  <h4 className="font-bold text-dark text-sm">Institutional Partners</h4>
-                  <p className="text-xs text-light-ash">Schools, NGOs, and voluntary local networks</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </Container>
@@ -121,7 +237,7 @@ export function CommunityService(): React.JSX.Element {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {OUTREACH_PILLARS.map((pillar, idx) => (
+            {pillarsList.map((pillar: any, idx: number) => (
               <div
                 key={idx}
                 className="group p-8 rounded-3xl border border-gray-100 bg-page-bg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-200/50 flex flex-col justify-between"
@@ -129,7 +245,7 @@ export function CommunityService(): React.JSX.Element {
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary text-primary">
-                      {pillar.icon}
+                      {pillar.iconComponent}
                     </span>
                     <span className="text-xs font-semibold text-primary-dark font-sans uppercase tracking-wider bg-primary/5 px-3 py-1 rounded-full">
                       {pillar.badge}
@@ -159,47 +275,27 @@ export function CommunityService(): React.JSX.Element {
                   <HiSparkles className="w-6 h-6" />
                 </span>
                 <h2 className="font-marcellus text-2xl md:text-3xl text-dark">
-                  Eligibility & Verification
+                  {eligibilityTitle}
                 </h2>
               </div>
               <p className="font-sans text-base text-light-ash mb-8 leading-relaxed">
-                To ensure that our community and pro-bono services reach the individuals who need them most, we maintain a clear verification framework. Services are allocated based on these parameters:
+                {eligibilityDescription}
               </p>
 
               <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary shrink-0 mt-1">
-                    <HiCheck className="w-3.5 h-3.5" />
-                  </span>
-                  <div>
-                    <h4 className="font-sans font-semibold text-dark text-base">Economic Assessment</h4>
-                    <p className="font-sans text-sm text-light-ash leading-relaxed mt-0.5">
-                      Priority is given to clients verified by local council representatives or recognized NGOs as financially disadvantaged.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary shrink-0 mt-1">
-                    <HiCheck className="w-3.5 h-3.5" />
-                  </span>
-                  <div>
-                    <h4 className="font-sans font-semibold text-dark text-base">Referrals from Public Facilities</h4>
-                    <p className="font-sans text-sm text-light-ash leading-relaxed mt-0.5">
-                      Cases referred directly from government hospitals, community clinics, or educational boards.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary shrink-0 mt-1">
-                    <HiCheck className="w-3.5 h-3.5" />
-                  </span>
-                  <div>
-                    <h4 className="font-sans font-semibold text-dark text-base">Emergency Outreach Triage</h4>
-                    <p className="font-sans text-sm text-light-ash leading-relaxed mt-0.5">
-                      Immediate temporary counseling access for groups impacted by localized environmental disasters or sudden trauma.
-                    </p>
-                  </div>
-                </li>
+                {eligibilityList.map((item: any, idx: number) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary shrink-0 mt-1">
+                      <HiCheck className="w-3.5 h-3.5" />
+                    </span>
+                    <div>
+                      <h4 className="font-sans font-semibold text-dark text-base">{item.title}</h4>
+                      <p className="font-sans text-sm text-light-ash leading-relaxed mt-0.5">
+                        {item.description}
+                      </p>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -210,38 +306,24 @@ export function CommunityService(): React.JSX.Element {
                   <HiScale className="w-6 h-6" />
                 </span>
                 <h2 className="font-marcellus text-2xl md:text-3xl text-dark">
-                  Operational Guidelines
+                  {guidelinesTitle}
                 </h2>
               </div>
               <p className="font-sans text-base text-light-ash mb-8 leading-relaxed">
-                CMHCB maintains strong professional boundaries in its volunteer and outreach services to guarantee safety, quality, and clinical ethics.
+                {guidelinesDescription}
               </p>
 
               <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
-                <div>
-                  <h4 className="font-sans font-semibold text-dark text-base mb-1">
-                    1. Scope of Care Limitations
-                  </h4>
-                  <p className="font-sans text-sm text-light-ash leading-relaxed">
-                    Our community programs do not replace specialized medical procedures or full-scale emergency crisis lines. Severe clinical conditions requiring hospitalization are referred to government psychiatric departments.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-sans font-semibold text-dark text-base mb-1">
-                    2. Supervision and Accountability
-                  </h4>
-                  <p className="font-sans text-sm text-light-ash leading-relaxed">
-                    All volunteer psychologists and counseling facilitators operate under the clinical supervision of senior licensed clinical psychologists to monitor session quality.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-sans font-semibold text-dark text-base mb-1">
-                    3. Strict Consent and Privacy
-                  </h4>
-                  <p className="font-sans text-sm text-light-ash leading-relaxed">
-                    No clinical information or media captured during outreach operations will be published or shared without prior written consent from participants.
-                  </p>
-                </div>
+                {guidelinesList.map((item: any, idx: number) => (
+                  <div key={idx}>
+                    <h4 className="font-sans font-semibold text-dark text-base mb-1 font-sans">
+                      {item.title}
+                    </h4>
+                    <p className="font-sans text-sm text-light-ash leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -249,7 +331,7 @@ export function CommunityService(): React.JSX.Element {
       </section>
 
       {/* Split CTA Block */}
-      <section className="py-20 bg-dark-green text-white border-t border-black/10 relative overflow-hidden rounded-[32px] mx-4 lg:mx-8 mb-20">
+      <section className="py-20 bg-dark-green text-white border-t border-black/10 relative overflow-hidden">
         {/* Glow gradients */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full bg-secondary/5 blur-[80px] pointer-events-none" />
@@ -261,10 +343,14 @@ export function CommunityService(): React.JSX.Element {
                 <HiInboxArrowDown className="w-6 h-6" />
               </span>
               <h2 className="font-marcellus text-[32px] lg:text-[40px] leading-tight text-white">
-                Request a Community <span className="text-secondary">Outreach Session</span>
+                {ctaTitle.split(" ").map((w: string, i: number, arr: string[]) => 
+                  i === arr.length - 2 || i === arr.length - 1 ? (
+                    <span key={i} className="text-secondary">{i === arr.length - 2 ? " " + w : " " + w}</span>
+                  ) : i === 0 ? w : " " + w
+                )}
               </h2>
               <p className="font-sans text-lg text-white/85 leading-relaxed max-w-xl">
-                Are you an NGO, school, university, or local community leader looking to partner with CMHCB for mental health awareness training or counseling camps? Write to our coordinator today.
+                {ctaDescription}
               </p>
               <div className="flex flex-wrap gap-4 items-center text-sm font-sans text-white/80">
                 <span className="flex items-center gap-2">
@@ -288,11 +374,11 @@ export function CommunityService(): React.JSX.Element {
                 </p>
                 <div className="flex flex-col gap-3">
                   <Button
-                    href="mailto:outreach@cmhcbd.com"
+                    href={`mailto:${ctaEmail}`}
                     variant="accent"
                     className="w-full justify-center h-12"
                   >
-                    outreach@cmhcbd.com
+                    {ctaEmail}
                   </Button>
                   <Button
                     href="/contact"

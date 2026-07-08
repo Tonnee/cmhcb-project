@@ -84,6 +84,8 @@ const OTHER_PAGES = [
   { label: "Success Stories", href: "/admin/pages/success-stories" },
   { label: "Support", href: "/admin/pages/support" },
   { label: "Affiliation Program", href: "/admin/pages/affiliation" },
+  { label: "Community Service", href: "/admin/pages/community-service" },
+  { label: "Gallery", href: "/admin/pages/gallery" },
   { label: "Privacy Policy", href: "/admin/pages/privacy-policy" },
   { label: "Terms & Conditions", href: "/admin/pages/terms" },
 ];

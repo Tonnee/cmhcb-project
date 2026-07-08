@@ -11,6 +11,7 @@ import {
   TwitterXIcon,
   LinkedInIcon,
 } from "@/components/layout/footer-icons";
+import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 
 import prisma from "@/lib/prisma";
 
@@ -19,7 +20,17 @@ export const metadata: Metadata = {
   description: "Get in touch with us for any inquiries or support.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ContactPage(): Promise<React.JSX.Element> {
+  let isAdmin = false;
+  try {
+    await getRequiredAdminSession();
+    isAdmin = true;
+  } catch {
+    isAdmin = false;
+  }
+
   const dbContent = await prisma.contactPageContent.findFirst();
 
   const phone = dbContent?.phone || "+880 1974-349569";
@@ -41,6 +52,21 @@ export default async function ContactPage(): Promise<React.JSX.Element> {
 
   return (
     <main className="bg-page-bg">
+      {isAdmin && (
+        <div className="bg-primary/10 border-b border-primary/20 py-3 text-center text-sm">
+          <Container className="flex items-center justify-between">
+            <span className="font-medium text-primary-dark font-sans">
+              You are logged in as an Administrator.
+            </span>
+            <a
+              href="/admin/pages/contact"
+              className="px-4 py-1.5 bg-primary-dark hover:bg-primary-dark/90 text-white rounded-lg font-semibold transition-all text-xs font-sans"
+            >
+              Edit Page Content
+            </a>
+          </Container>
+        </div>
+      )}
       <PageHero
         breadcrumbs={breadcrumbs}
         currentPage="Contact Us"

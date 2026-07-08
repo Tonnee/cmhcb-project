@@ -13,12 +13,24 @@ interface BlogListProps {
 
 export function BlogList({ posts }: BlogListProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [selectedAuthor, setSelectedAuthor] = React.useState("all");
   const [sortOrder, setSortOrder] = React.useState<"newest" | "oldest">("newest");
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 12;
 
+  // Extract unique authors sorted alphabetically
+  const authors = React.useMemo(() => {
+    const list = posts.map((post) => post.author);
+    return Array.from(new Set(list)).sort((a, b) => a.localeCompare(b));
+  }, [posts]);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleAuthorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedAuthor(e.target.value);
     setCurrentPage(1);
   };
 
@@ -41,6 +53,11 @@ export function BlogList({ posts }: BlogListProps): React.JSX.Element {
       );
     }
 
+    // Author filter
+    if (selectedAuthor !== "all") {
+      result = result.filter((post) => post.author === selectedAuthor);
+    }
+
     // Sort
     result.sort((a, b) => {
       const dateA = new Date(a.publishedAt).getTime();
@@ -49,7 +66,7 @@ export function BlogList({ posts }: BlogListProps): React.JSX.Element {
     });
 
     return result;
-  }, [posts, searchQuery, sortOrder]);
+  }, [posts, searchQuery, selectedAuthor, sortOrder]);
 
   const totalPages = Math.ceil(filteredAndSortedPosts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -66,9 +83,9 @@ export function BlogList({ posts }: BlogListProps): React.JSX.Element {
   return (
     <div id="blog-list" className="flex flex-col gap-10">
       {/* Controls Section */}
-      <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
+      <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
         {/* Search */}
-        <div className="relative w-full sm:max-w-md">
+        <div className="relative w-full lg:max-w-md">
           <input
             type="text"
             placeholder="Search by title or tag..."
@@ -81,20 +98,43 @@ export function BlogList({ posts }: BlogListProps): React.JSX.Element {
           </div>
         </div>
 
-        {/* Sort */}
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <label htmlFor="sort-order" className="font-sans text-sm text-dark font-medium whitespace-nowrap">
-            Sort by:
-          </label>
-          <Select
-            id="sort-order"
-            value={sortOrder}
-            onChange={handleSortChange}
-            className="sm:w-auto"
-          >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-          </Select>
+        {/* Filters and Sort */}
+        <div className="flex flex-col sm:flex-row items-center gap-6 w-full lg:w-auto">
+          {/* Author Filter */}
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <label htmlFor="author-filter" className="font-sans text-sm text-dark font-medium whitespace-nowrap">
+              Author:
+            </label>
+            <Select
+              id="author-filter"
+              value={selectedAuthor}
+              onChange={handleAuthorChange}
+              className="sm:w-auto min-w-[180px]"
+            >
+              <option value="all">All Authors</option>
+              {authors.map((author) => (
+                <option key={author} value={author}>
+                  {author}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          {/* Sort */}
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <label htmlFor="sort-order" className="font-sans text-sm text-dark font-medium whitespace-nowrap">
+              Sort by:
+            </label>
+            <Select
+              id="sort-order"
+              value={sortOrder}
+              onChange={handleSortChange}
+              className="sm:w-auto min-w-[150px]"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </Select>
+          </div>
         </div>
       </div>
 

@@ -66,8 +66,8 @@ export default async function BlogPostPage({
   }
 
   // Find the matched author from therapists data
-  const matchedAuthor = THERAPISTS_DATA.find(t => 
-    post.author.toLowerCase().includes(t.name.toLowerCase()) || 
+  const matchedAuthor = THERAPISTS_DATA.find(t =>
+    post.author.toLowerCase().includes(t.name.toLowerCase()) ||
     t.name.toLowerCase().includes(post.author.toLowerCase())
   ) || THERAPISTS_DATA[0];
 
@@ -88,21 +88,21 @@ export default async function BlogPostPage({
       >
         <div className="flex flex-col items-center gap-6 mt-8">
           <div className="flex flex-wrap items-center justify-center gap-6 text-white/90 font-sans text-base">
-             <div className="flex items-center gap-2">
-               <UserIcon className="w-5 h-5 shrink-0 text-accent" />
-               <Link 
-                 href={`/therapists/${matchedAuthor.id}`}
-                 className="font-medium hover:text-accent transition-colors underline underline-offset-4 decoration-accent/30"
-               >
-                 By {post.author}
-               </Link>
-             </div>
-             <div className="flex items-center gap-2">
-               <CalendarIcon className="w-5 h-5 shrink-0 text-accent" />
-               <span>{new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-             </div>
+            <div className="flex items-center gap-2">
+              <UserIcon className="w-5 h-5 shrink-0 text-accent" />
+              <Link
+                href={`/therapists/${matchedAuthor.id}`}
+                className="font-medium hover:text-accent transition-colors underline underline-offset-4 decoration-accent/30"
+              >
+                By {post.author}
+              </Link>
+            </div>
+            <div className="flex items-center gap-2">
+              <CalendarIcon className="w-5 h-5 shrink-0 text-accent" />
+              <span>{new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+            </div>
           </div>
-          
+
           <div className="flex flex-wrap justify-center gap-3">
             {post.tags.map(tag => (
               <Tag key={tag} variant="glass">
@@ -114,8 +114,8 @@ export default async function BlogPostPage({
       </PageHero>
 
       <Container className="py-20">
-        <article 
-          className="max-w-3xl mx-auto font-sans text-dark text-lg leading-relaxed [&>p]:mb-8 [&>h3]:font-marcellus [&>h3]:text-3xl [&>h3]:text-dark [&>h3]:mb-6 [&>h3]:mt-12 [&>h3]:leading-tight"
+        <article
+          className="mx-auto font-sans text-dark text-lg leading-relaxed [&>p]:mb-8 [&>h3]:font-marcellus [&>h3]:text-3xl [&>h3]:text-dark [&>h3]:mb-6 [&>h3]:mt-12 [&>h3]:leading-tight [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-8 [&_li]:mb-2"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </Container>
@@ -134,8 +134,8 @@ export default async function BlogPostPage({
                   {matchedAuthor.bio}
                 </p>
               </div>
-              <Button 
-                href={`/therapists/${matchedAuthor.id}`} 
+              <Button
+                href={`/therapists/${matchedAuthor.id}`}
                 variant="primary"
                 className="w-full sm:w-auto sm:self-start"
               >
@@ -155,7 +155,7 @@ export default async function BlogPostPage({
       {/* Read More Section */}
       <section className="py-24 bg-white border-t border-gray-100">
         <Container>
-          <SectionHeading 
+          <SectionHeading
             subtitle="Related Content"
             title={<>Read More <span className="text-primary-dark">Articles</span></>}
             className="mb-16"

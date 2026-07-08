@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { GALLERY_DATA } from "../data/gallery";
+import { GALLERY_DATA, GalleryItem } from "../data/gallery";
 import {
   HiXMark,
   HiChevronLeft,
@@ -19,7 +19,12 @@ const CATEGORIES = [
   { id: "occasion", label: "Occasions" },
 ];
 
-export default function GalleryView(): React.JSX.Element {
+interface GalleryViewProps {
+  initialItems?: GalleryItem[];
+}
+
+export default function GalleryView({ initialItems }: GalleryViewProps): React.JSX.Element {
+  const itemsList = initialItems && initialItems.length > 0 ? initialItems : GALLERY_DATA;
   const [selectedCategory, setSelectedCategory] = React.useState("all");
   const [activeItemIndex, setActiveItemIndex] = React.useState<number | null>(null);
   const modalRef = React.useRef<HTMLDivElement | null>(null);
@@ -27,9 +32,9 @@ export default function GalleryView(): React.JSX.Element {
 
   // Filter items based on selected category
   const filteredItems = React.useMemo(() => {
-    if (selectedCategory === "all") return GALLERY_DATA;
-    return GALLERY_DATA.filter((item) => item.category === selectedCategory);
-  }, [selectedCategory]);
+    if (selectedCategory === "all") return itemsList;
+    return itemsList.filter((item) => item.category === selectedCategory);
+  }, [selectedCategory, itemsList]);
 
   const handleItemClick = (id: string) => {
     const index = filteredItems.findIndex((item) => item.id === id);
@@ -151,16 +156,16 @@ export default function GalleryView(): React.JSX.Element {
           const isActive = selectedCategory === cat.id;
           const count =
             cat.id === "all"
-              ? GALLERY_DATA.length
-              : GALLERY_DATA.filter((item) => item.category === cat.id).length;
+              ? itemsList.length
+              : itemsList.filter((item) => item.category === cat.id).length;
 
           return (
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
               className={`font-sans font-medium text-sm px-6 py-2.5 rounded-full border transition-all duration-300 flex items-center gap-2 cursor-pointer ${isActive
-                  ? "bg-primary-dark border-primary-dark text-white shadow-md shadow-primary-dark/10"
-                  : "bg-white border-muted/20 text-light-ash hover:border-primary/40 hover:text-primary"
+                ? "bg-primary-dark border-primary-dark text-white shadow-md shadow-primary-dark/10"
+                : "bg-white border-muted/20 text-light-ash hover:border-primary/40 hover:text-primary"
                 }`}
             >
               <span>{cat.label}</span>
@@ -228,7 +233,7 @@ export default function GalleryView(): React.JSX.Element {
 
               {/* Hover Caption Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-dark-green-overlay via-dark-green-overlay/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 z-10 pointer-events-none">
-                <span className="self-start font-sans font-bold text-[10px] uppercase tracking-widest text-accent bg-accent/10 border border-accent/20 px-2.5 py-1 rounded-full mb-3 select-none">
+                <span className="self-start font-sans font-bold text-[10px] uppercase tracking-widest text-accent bg-accent/20 border border-accent/20 px-2.5 py-1 rounded-full mb-3 select-none">
                   {item.category}
                 </span>
                 <p className="font-sans text-sm text-white/95 leading-relaxed translate-y-4 group-hover:translate-y-0 transition-transform duration-300 line-clamp-2">
