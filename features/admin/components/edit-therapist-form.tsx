@@ -4,6 +4,8 @@ import * as React from "react";
 import { uploadImageToSupabase } from "@/lib/supabase";
 import { upsertTherapistAction, getAllServicesForFormAction } from "@/app/(admin)/admin/actions";
 import { HiPlus, HiTrash, HiXMark } from "react-icons/hi2";
+import { safeJsonParse } from "@/lib/json";
+import { z } from "zod";
 
 interface FeeItem {
   label: string;
@@ -52,22 +54,22 @@ export default function EditTherapistForm({
   
   // Lists state
   const [education, setEducation] = React.useState<string[]>(() =>
-    therapist ? JSON.parse(therapist.education) : []
+    therapist ? safeJsonParse<string[]>(therapist.education, []) : []
   );
   const [training, setTraining] = React.useState<string[]>(() =>
-    therapist ? JSON.parse(therapist.training) : []
+    therapist ? safeJsonParse<string[]>(therapist.training, []) : []
   );
   const [expertise, setExpertise] = React.useState<string[]>(() =>
-    therapist ? JSON.parse(therapist.expertise) : []
+    therapist ? safeJsonParse<string[]>(therapist.expertise, []) : []
   );
   const [experience, setExperience] = React.useState<string[]>(() =>
-    therapist ? JSON.parse(therapist.experience) : []
+    therapist ? safeJsonParse<string[]>(therapist.experience, []) : []
   );
   const [services, setServices] = React.useState<string[]>(() =>
-    therapist ? JSON.parse(therapist.services) : []
+    therapist ? safeJsonParse<string[]>(therapist.services, []) : []
   );
   const [fees, setFees] = React.useState<FeeCategory[]>(() =>
-    therapist ? JSON.parse(therapist.fees) : []
+    therapist ? safeJsonParse<FeeCategory[]>(therapist.fees, []) : []
   );
 
   // Loading & error states
@@ -191,15 +193,18 @@ export default function EditTherapistForm({
     setFees(updated);
   };
 
+  // Validation schema
+  const therapistSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    role: z.string().min(1, "Role is required"),
+    bio: z.string().min(1, "Bio is required"),
+    image: z.string().min(1, "Image is required"),
+  });
+
   // Submit form data
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSaving || isUploading) return;
-
-    if (!name || !role || !bio || !imageUrl) {
-      setErrorMsg("Name, Role, Bio, and Image are required.");
-      return;
-    }
 
     setIsSaving(true);
     setErrorMsg("");
@@ -218,8 +223,16 @@ export default function EditTherapistForm({
         // Strip internal serviceId markers before persisting
         fees: fees.map(({ serviceId: _sid, ...rest }) => rest),
         services,
-        activities: therapist ? JSON.parse(therapist.activities) : [],
+        activities: therapist ? safeJsonParse<any[]>(therapist.activities, []) : [],
       };
+
+      // Zod validation on client
+      const validation = therapistSchema.safeParse(payload);
+      if (!validation.success) {
+        setErrorMsg(validation.error.issues.map((issue) => issue.message).join(", "));
+        setIsSaving(false);
+        return;
+      }
 
       const result = await upsertTherapistAction(payload);
 
@@ -228,8 +241,8 @@ export default function EditTherapistForm({
       } else {
         setErrorMsg(result.error || "Failed to save therapist details.");
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "An unexpected error occurred.");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsSaving(false);
     }

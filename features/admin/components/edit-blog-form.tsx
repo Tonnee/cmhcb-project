@@ -4,6 +4,8 @@ import * as React from "react";
 import { uploadImageToSupabase } from "@/lib/supabase";
 import { upsertBlogPostAction } from "@/app/(admin)/admin/actions";
 import { HiXMark } from "react-icons/hi2";
+import { safeJsonParse } from "@/lib/json";
+import { z } from "zod";
 
 interface BlogFormProps {
   post?: {
@@ -24,6 +26,15 @@ interface BlogFormProps {
   onSuccess: () => void;
 }
 
+const blogPostSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  excerpt: z.string().min(1, "Excerpt is required"),
+  content: z.string().min(1, "Content is required"),
+  image: z.string().min(1, "Image URL is required"),
+  author: z.string().min(1, "Author is required"),
+  tags: z.array(z.string()).default([]),
+});
+
 export default function EditBlogForm({
   post,
   onClose,
@@ -38,7 +49,7 @@ export default function EditBlogForm({
   const [author, setAuthor] = React.useState(post?.author || "");
   const [tagsString, setTagsString] = React.useState<string>(() => {
     if (!post) return "Wellness, Mental Health";
-    const parsed = JSON.parse(post.tags);
+    const parsed = safeJsonParse<any[]>(post.tags, []);
     return Array.isArray(parsed) ? parsed.join(", ") : "";
   });
   const [isFeatured, setIsFeatured] = React.useState(post?.isFeatured || false);
@@ -58,8 +69,8 @@ export default function EditBlogForm({
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed to upload image. Ensure Supabase credentials are configured.");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "Failed to upload image. Ensure Supabase credentials are configured.");
     } finally {
       setIsUploading(false);
     }
@@ -69,11 +80,6 @@ export default function EditBlogForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSaving || isUploading) return;
-
-    if (!title || !excerpt || !content || !imageUrl || !author) {
-      setErrorMsg("All core fields (Title, Excerpt, Content, Image, Author) are required.");
-      return;
-    }
 
     setIsSaving(true);
     setErrorMsg("");
@@ -98,6 +104,14 @@ export default function EditBlogForm({
         publishedAt: post?.publishedAt, // preserve initial date if editing
       };
 
+      // Zod validation on client
+      const validation = blogPostSchema.safeParse(payload);
+      if (!validation.success) {
+        setErrorMsg(validation.error.issues.map((issue) => issue.message).join(", "));
+        setIsSaving(false);
+        return;
+      }
+
       const result = await upsertBlogPostAction(payload);
 
       if (result.success) {
@@ -105,8 +119,8 @@ export default function EditBlogForm({
       } else {
         setErrorMsg(result.error || "Failed to save blog post details.");
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "An unexpected error occurred.");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsSaving(false);
     }

@@ -4,6 +4,7 @@ import * as React from "react";
 import { HiPlus as PlusIcon, HiPencilSquare as PencilIcon, HiTrash as TrashIcon, HiCheck as CheckIcon, HiXMark as XIcon } from "react-icons/hi2";
 import { EditTestimonialForm } from "./edit-testimonial-form";
 import { deleteTestimonialAction } from "@/app/(admin)/admin/actions";
+import { useRouter } from "next/navigation";
 
 interface TestimonialDB {
   id: string;
@@ -22,6 +23,7 @@ interface SuccessStoriesClientWrapperProps {
 export function SuccessStoriesClientWrapper({
   initialStories,
 }: SuccessStoriesClientWrapperProps): React.JSX.Element {
+  const router = useRouter();
   const [stories, setStories] = React.useState<TestimonialDB[]>(initialStories);
   const [selectedStory, setSelectedStory] = React.useState<TestimonialDB | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -44,8 +46,8 @@ export function SuccessStoriesClientWrapper({
       } else {
         alert(res.error || "Failed to delete success story.");
       }
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred.");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsDeletingId(null);
     }
@@ -62,7 +64,9 @@ export function SuccessStoriesClientWrapper({
   };
 
   const handleSuccess = () => {
-    window.location.reload();
+    setIsModalOpen(false);
+    setSelectedStory(null);
+    router.refresh();
   };
 
   return (

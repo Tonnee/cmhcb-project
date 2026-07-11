@@ -1,7 +1,6 @@
 import * as React from "react";
 import type { Metadata } from "next";
-import AdminSidebar from "@/features/admin/components/admin-sidebar";
-import InactivityTimeout from "@/features/admin/components/inactivity-timeout";
+import AdminLayoutClient from "@/features/admin/components/admin-layout-client";
 import { getRequiredAdminSession } from "./admin-management";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -36,19 +35,8 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-page-bg">
-      {/* Inactivity timeout handler */}
-      <InactivityTimeout />
-
-      {/* Admin Sidebar Navigation */}
-      <AdminSidebar adminEmail={adminEmail} />
-
-      {/* Main Content Area Wrapper */}
-      <main className="flex-1 flex flex-col h-screen overflow-y-auto">
-        <div className="p-6 md:p-8 max-w-7xl w-full mx-auto">
-          {children}
-        </div>
-      </main>
-    </div>
+    <AdminLayoutClient adminEmail={adminEmail}>
+      {children}
+    </AdminLayoutClient>
   );
 }

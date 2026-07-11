@@ -5,6 +5,23 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useSearchParams } from "next/navigation";
 import { getAllServicesForFormAction, getAllTherapistsForFormAction } from "@/app/(admin)/admin/actions";
+import { z } from "zod";
+
+const appointmentSchema = z.object({
+  name: z.string().min(1, "Full Name is required"),
+  age: z.string().refine((val) => {
+    const num = Number(val);
+    return !isNaN(num) && num > 0;
+  }, "Age must be a positive number"),
+  gender: z.string().min(1, "Gender selection is required"),
+  contact: z.string().min(1, "Contact details (Number / Email) are required"),
+  service: z.string().min(1, "Please choose a service"),
+  therapist: z.string().min(1, "Please select a therapist"),
+  date: z.string().min(1, "Pick a valid date"),
+  time: z.string().min(1, "Pick a valid time"),
+  preference: z.enum(["online", "in-person"]),
+  message: z.string().optional(),
+});
 
 export function AppointmentForm() {
   return (
@@ -33,6 +50,7 @@ function AppointmentFormContent() {
   const [services, setServices] = React.useState<ServiceOption[]>([]);
   const [therapists, setTherapists] = React.useState<TherapistOption[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [errorMsg, setErrorMsg] = React.useState("");
 
   const [formData, setFormData] = React.useState({
     name: "",
@@ -106,7 +124,14 @@ function AppointmentFormContent() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Appointment Form Submitted:", formData);
+    setErrorMsg("");
+
+    const validation = appointmentSchema.safeParse(formData);
+    if (!validation.success) {
+      setErrorMsg(validation.error.issues.map((issue) => issue.message).join(", "));
+      return;
+    }
+
     // Add submission logic here
     alert("Thank you! Your appointment request has been submitted.");
   };
@@ -120,6 +145,11 @@ function AppointmentFormContent() {
       onSubmit={handleSubmit}
       className="bg-white p-6 md:p-10 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-muted/30"
     >
+      {errorMsg && (
+        <div className="mb-6 bg-red-50 text-red-600 p-4 rounded-xl text-sm font-sans font-medium border border-red-100">
+          {errorMsg}
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Name */}
         <div className="md:col-span-2">

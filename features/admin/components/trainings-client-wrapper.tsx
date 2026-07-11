@@ -5,6 +5,7 @@ import { HiPlus, HiPencilSquare, HiTrash, HiMagnifyingGlass, HiDocumentText } fr
 import { EditTrainingForm } from "./edit-training-form";
 import { EditTrainingInfoBlockForm } from "./edit-training-info-block-form";
 import { deleteTrainingAction, deleteTrainingInfoBlockAction } from "@/app/(admin)/admin/actions";
+import { useRouter } from "next/navigation";
 
 interface TrainingDB {
   id: string;
@@ -46,6 +47,7 @@ export default function TrainingsClientWrapper({
   initialTrainings,
   initialInfoBlocks,
 }: TrainingsClientWrapperProps): React.JSX.Element {
+  const router = useRouter();
   const [trainings, setTrainings] = React.useState<TrainingDB[]>(initialTrainings);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedTraining, setSelectedTraining] = React.useState<TrainingDB | null>(null);
@@ -76,8 +78,8 @@ export default function TrainingsClientWrapper({
       } else {
         alert(res.error || "Failed to delete training program.");
       }
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred.");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsDeletingId(null);
     }
@@ -94,7 +96,11 @@ export default function TrainingsClientWrapper({
   };
 
   const handleSuccess = () => {
-    window.location.reload();
+    setIsModalOpen(false);
+    setSelectedTraining(null);
+    setIsBlockModalOpen(false);
+    setSelectedBlock(null);
+    router.refresh();
   };
 
   const handleBlockDelete = async (id: string) => {

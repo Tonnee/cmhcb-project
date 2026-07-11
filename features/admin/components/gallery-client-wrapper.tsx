@@ -4,6 +4,7 @@ import * as React from "react";
 import { HiPlus as PlusIcon, HiPencilSquare as PencilIcon, HiTrash as TrashIcon, HiPhoto, HiVideoCamera } from "react-icons/hi2";
 import { EditGalleryItemForm } from "./edit-gallery-item-form";
 import { deleteGalleryItemAction } from "@/app/(admin)/admin/actions";
+import { useRouter } from "next/navigation";
 
 interface GalleryItemDB {
   id: string;
@@ -22,6 +23,7 @@ interface GalleryClientWrapperProps {
 export function GalleryClientWrapper({
   initialItems,
 }: GalleryClientWrapperProps): React.JSX.Element {
+  const router = useRouter();
   const [items, setItems] = React.useState<GalleryItemDB[]>(initialItems);
   const [selectedItem, setSelectedItem] = React.useState<GalleryItemDB | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -44,8 +46,8 @@ export function GalleryClientWrapper({
       } else {
         alert(res.error || "Failed to delete gallery item.");
       }
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred.");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsDeletingId(null);
     }
@@ -62,7 +64,9 @@ export function GalleryClientWrapper({
   };
 
   const handleSuccess = () => {
-    window.location.reload();
+    setIsModalOpen(false);
+    setSelectedItem(null);
+    router.refresh();
   };
 
   return (

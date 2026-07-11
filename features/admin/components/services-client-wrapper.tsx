@@ -6,6 +6,7 @@ import { EditServiceForm } from "./edit-service-form";
 import { deleteServiceAction, deleteServiceInfoBlockAction } from "@/app/(admin)/admin/actions";
 import { SERVICE_IMAGES } from "@/components/shared/service-card";
 import { EditServiceInfoBlockForm } from "./edit-service-info-block-form";
+import { useRouter } from "next/navigation";
 
 interface ServiceDB {
   id: string;
@@ -43,6 +44,7 @@ export function ServicesClientWrapper({
   initialServices,
   initialInfoBlocks,
 }: ServicesClientWrapperProps): React.JSX.Element {
+  const router = useRouter();
   const [services, setServices] = React.useState<ServiceDB[]>(initialServices);
   const [selectedService, setSelectedService] = React.useState<ServiceDB | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -73,8 +75,8 @@ export function ServicesClientWrapper({
       } else {
         alert(res.error || "Failed to delete service.");
       }
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred.");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsDeletingId(null);
     }
@@ -91,8 +93,12 @@ export function ServicesClientWrapper({
   };
 
   const handleSuccess = () => {
-    // Reload page data to get the updated list from parent server page
-    window.location.reload();
+    // Reset modal states and refresh page data via SPA
+    setIsModalOpen(false);
+    setSelectedService(null);
+    setIsBlockModalOpen(false);
+    setSelectedBlock(null);
+    router.refresh();
   };
 
   const handleBlockDelete = async (id: string) => {

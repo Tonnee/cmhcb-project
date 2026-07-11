@@ -4,6 +4,8 @@ import * as React from "react";
 import { uploadImageToSupabase } from "@/lib/supabase";
 import { upsertWorkshopAction } from "@/app/(admin)/admin/actions";
 import { HiXMark } from "react-icons/hi2";
+import { safeJsonParse } from "@/lib/json";
+import { z } from "zod";
 
 interface WorkshopFormProps {
   workshop?: {
@@ -27,6 +29,20 @@ interface WorkshopFormProps {
   onSuccess: () => void;
 }
 
+const workshopSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  image: z.string().min(1, "Image URL is required"),
+  date: z.string().min(1, "Date is required"),
+  time: z.string().min(1, "Time is required"),
+  location: z.string().min(1, "Location is required"),
+  author: z.string().min(1, "Instructor/Author is required"),
+  tags: z.array(z.string()).default([]),
+  isFeatured: z.boolean().default(false),
+  content: z.string().optional(),
+  gallery: z.array(z.string()).default([]),
+});
+
 export default function EditWorkshopForm({
   workshop,
   onClose,
@@ -43,7 +59,7 @@ export default function EditWorkshopForm({
   const [author, setAuthor] = React.useState(workshop?.author || "");
   const [tagsString, setTagsString] = React.useState<string>(() => {
     if (!workshop) return "Workshop, Mental Health";
-    const parsed = JSON.parse(workshop.tags);
+    const parsed = safeJsonParse<any[]>(workshop.tags, []);
     return Array.isArray(parsed) ? parsed.join(", ") : "";
   });
   const [isFeatured, setIsFeatured] = React.useState(workshop?.isFeatured || false);
@@ -64,8 +80,8 @@ export default function EditWorkshopForm({
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed to upload image. Ensure Supabase credentials are configured.");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "Failed to upload image. Ensure Supabase credentials are configured.");
     } finally {
       setIsUploading(false);
     }
@@ -75,11 +91,6 @@ export default function EditWorkshopForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSaving || isUploading) return;
-
-    if (!title || !description || !imageUrl || !date || !time || !location || !author) {
-      setErrorMsg("All core fields (Title, Description, Image, Date, Time, Location, Instructor) are required.");
-      return;
-    }
 
     setIsSaving(true);
     setErrorMsg("");
@@ -103,9 +114,17 @@ export default function EditWorkshopForm({
         author,
         tags,
         isFeatured,
-        content,
-        gallery: workshop ? JSON.parse(workshop.gallery || "[]") : [],
+        content: content || undefined,
+        gallery: workshop ? safeJsonParse<any[]>(workshop.gallery, []) : [],
       };
+
+      // Zod validation on client
+      const validation = workshopSchema.safeParse(payload);
+      if (!validation.success) {
+        setErrorMsg(validation.error.issues.map((issue) => issue.message).join(", "));
+        setIsSaving(false);
+        return;
+      }
 
       const result = await upsertWorkshopAction(payload);
 
@@ -114,8 +133,8 @@ export default function EditWorkshopForm({
       } else {
         setErrorMsg(result.error || "Failed to save workshop details.");
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "An unexpected error occurred.");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsSaving(false);
     }
