@@ -21,6 +21,8 @@ interface LandingPageContentDB {
   trainingHeadline: string;
   trainingSubtitle: string;
   trainingImage: string;
+  lastUpdatedBy?: string | null;
+  updatedAt?: Date | string | null;
 }
 
 interface EditLandingPageFormProps {
@@ -145,6 +147,12 @@ export default function EditLandingPageForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+      {initialContent.lastUpdatedBy && (
+        <span className="text-[11px] text-light-ash/70 -mb-4">
+          Last updated by <span className="font-semibold text-primary">{initialContent.lastUpdatedBy}</span> on {initialContent.updatedAt ? new Date(initialContent.updatedAt).toLocaleString() : ""}
+        </span>
+      )}
+
       {/* Dynamic feedback messages */}
       {error && (
         <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl font-sans text-sm">

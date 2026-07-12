@@ -14,6 +14,8 @@ interface TrainingInfoBlockDB {
   image: string;
   imageAlt: string;
   order: number;
+  lastUpdatedBy?: string | null;
+  updatedAt?: Date | string | null;
 }
 
 interface EditTrainingInfoBlockFormProps {
@@ -134,10 +136,17 @@ export function EditTrainingInfoBlockForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto px-1 py-2 text-left font-sans">
       <div className="flex items-center justify-between border-b border-muted pb-4">
-        <h3 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
-          <HiDocumentText className="w-5 h-5 text-primary" />
-          {initialBlock ? "Edit Trainings Info Block" : "Add Trainings Info Block"}
-        </h3>
+        <div className="flex flex-col">
+          <h3 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+            <HiDocumentText className="w-5 h-5 text-primary" />
+            {initialBlock ? "Edit Trainings Info Block" : "Add Trainings Info Block"}
+          </h3>
+          {initialBlock?.lastUpdatedBy && (
+            <span className="text-[11px] text-light-ash/70 mt-0.5">
+              Last updated by <span className="font-semibold text-primary">{initialBlock.lastUpdatedBy}</span> on {initialBlock.updatedAt ? new Date(initialBlock.updatedAt).toLocaleString() : ""}
+            </span>
+          )}
+        </div>
         <button
           type="button"
           onClick={onClose}

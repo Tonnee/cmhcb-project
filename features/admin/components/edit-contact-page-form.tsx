@@ -16,6 +16,8 @@ interface ContactPageContent {
   twitterUrl: string;
   linkedinUrl: string;
   mapEmbedUrl: string;
+  lastUpdatedBy?: string | null;
+  updatedAt?: Date | string | null;
 }
 
 interface EditContactPageFormProps {
@@ -81,6 +83,12 @@ export default function EditContactPageForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-w-4xl bg-white border border-muted rounded-2xl p-6 md:p-8 shadow-sm font-sans text-sm">
+      {initialContent.lastUpdatedBy && (
+        <span className="text-[11px] text-light-ash/70 -mb-2">
+          Last updated by <span className="font-semibold text-primary">{initialContent.lastUpdatedBy}</span> on {initialContent.updatedAt ? new Date(initialContent.updatedAt).toLocaleString() : ""}
+        </span>
+      )}
+
       {success && (
         <div className="bg-emerald-50 text-emerald-800 p-4 rounded-xl text-sm font-sans font-medium border border-emerald-100">
           Contact page details updated successfully.

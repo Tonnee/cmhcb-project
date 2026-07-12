@@ -12,6 +12,8 @@ interface TestimonialDB {
   avatar: string;
   quote: string;
   isFeatured: boolean;
+  lastUpdatedBy?: string | null;
+  updatedAt?: Date | string | null;
 }
 
 interface EditTestimonialFormProps {
@@ -85,10 +87,17 @@ export function EditTestimonialForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-sm font-sans">
       <div className="flex items-center justify-between border-b border-muted pb-4">
-        <h3 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
-          <HiChatBubbleLeftRight className="w-5 h-5 text-primary" />
-          {initialTestimonial ? "Edit Success Story" : "Add Success Story"}
-        </h3>
+        <div className="flex flex-col">
+          <h3 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+            <HiChatBubbleLeftRight className="w-5 h-5 text-primary" />
+            {initialTestimonial ? "Edit Success Story" : "Add Success Story"}
+          </h3>
+          {initialTestimonial?.lastUpdatedBy && (
+            <span className="text-[11px] text-light-ash/70 mt-0.5">
+              Last updated by <span className="font-semibold text-primary">{initialTestimonial.lastUpdatedBy}</span> on {initialTestimonial.updatedAt ? new Date(initialTestimonial.updatedAt).toLocaleString() : ""}
+            </span>
+          )}
+        </div>
         <button
           type="button"
           onClick={onClose}

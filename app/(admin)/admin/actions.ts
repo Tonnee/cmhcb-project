@@ -1494,6 +1494,7 @@ export async function upsertTestimonialAction(
       avatar: validated.avatar,
       quote: validated.quote,
       isFeatured: validated.isFeatured,
+      lastUpdatedBy: admin.email,
     };
 
     const testimonial = await prisma.testimonial.upsert({
@@ -1584,7 +1585,7 @@ export async function upsertSupportPageContentAction(
         heroImage: validated.heroImage,
         contacts: JSON.stringify(validated.contacts),
         advisoryText: validated.advisoryText,
-        lastUpdatedBy: admin.name,
+        lastUpdatedBy: admin.email,
       },
       update: {
         heroTitle: validated.heroTitle,
@@ -1592,7 +1593,7 @@ export async function upsertSupportPageContentAction(
         heroImage: validated.heroImage,
         contacts: JSON.stringify(validated.contacts),
         advisoryText: validated.advisoryText,
-        lastUpdatedBy: admin.name,
+        lastUpdatedBy: admin.email,
       },
     });
 
@@ -1650,7 +1651,7 @@ export async function upsertCommunityServicePageContentAction(
         ctaTitle: validated.ctaTitle,
         ctaDescription: validated.ctaDescription,
         ctaEmail: validated.ctaEmail,
-        lastUpdatedBy: admin.name,
+        lastUpdatedBy: admin.email,
       },
       update: {
         heroTitle: validated.heroTitle,
@@ -1670,7 +1671,7 @@ export async function upsertCommunityServicePageContentAction(
         ctaTitle: validated.ctaTitle,
         ctaDescription: validated.ctaDescription,
         ctaEmail: validated.ctaEmail,
-        lastUpdatedBy: admin.name,
+        lastUpdatedBy: admin.email,
       },
     });
 
@@ -1715,7 +1716,7 @@ export async function upsertGalleryItemAction(
       alt: validated.alt,
       caption: validated.caption,
       category: validated.category,
-      lastUpdatedBy: admin.name,
+      lastUpdatedBy: admin.email,
     };
 
     const record = await prisma.galleryItem.upsert({

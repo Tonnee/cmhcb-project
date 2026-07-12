@@ -28,6 +28,8 @@ interface AffiliationPageContent {
   ctaTitle: string;
   ctaDescription: string;
   promises: string; // JSON string of string[]
+  lastUpdatedBy?: string | null;
+  updatedAt?: Date | string | null;
 }
 
 interface EditAffiliationPageFormProps {
@@ -186,6 +188,12 @@ export default function EditAffiliationPageForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-w-4xl bg-white border border-muted rounded-2xl p-6 md:p-8 shadow-sm text-sm font-sans">
+      {initialContent.lastUpdatedBy && (
+        <span className="text-[11px] text-light-ash/70 -mb-2">
+          Last updated by <span className="font-semibold text-primary">{initialContent.lastUpdatedBy}</span> on {initialContent.updatedAt ? new Date(initialContent.updatedAt).toLocaleString() : ""}
+        </span>
+      )}
+
       {success && (
         <div className="bg-emerald-50 text-emerald-800 p-4 rounded-xl text-sm font-sans font-medium border border-emerald-100">
           Affiliation page content updated successfully.

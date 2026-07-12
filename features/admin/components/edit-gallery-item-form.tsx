@@ -13,6 +13,8 @@ interface GalleryItemDB {
   alt: string;
   caption: string;
   category: "event" | "workshop" | "activity" | "occasion";
+  lastUpdatedBy?: string | null;
+  updatedAt?: Date | string | null;
 }
 
 interface EditGalleryItemFormProps {
@@ -96,10 +98,17 @@ export function EditGalleryItemForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-sm font-sans text-dark">
       <div className="flex items-center justify-between border-b border-muted pb-4">
-        <h3 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
-          <HiPhoto className="w-5 h-5 text-primary" />
-          {initialItem ? "Edit Gallery Item" : "Add Gallery Item"}
-        </h3>
+        <div className="flex flex-col">
+          <h3 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+            <HiPhoto className="w-5 h-5 text-primary" />
+            {initialItem ? "Edit Gallery Item" : "Add Gallery Item"}
+          </h3>
+          {initialItem?.lastUpdatedBy && (
+            <span className="text-[11px] text-light-ash/70 mt-0.5">
+              Last updated by <span className="font-semibold text-primary">{initialItem.lastUpdatedBy}</span> on {initialItem.updatedAt ? new Date(initialItem.updatedAt).toLocaleString() : ""}
+            </span>
+          )}
+        </div>
         <button
           type="button"
           onClick={onClose}
