@@ -1,6 +1,6 @@
 import * as React from "react";
 import { type Metadata } from "next";
-import { PageFeatureHero } from "@/components/shared/page-feature-hero";
+import { PageHero } from "@/components/shared/page-hero";
 import { EmergencySupport } from "@/features/support/components/emergency-support";
 import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 import { Container } from "@/components/layout/container";
@@ -45,30 +45,17 @@ export default async function SupportPage(): Promise<React.JSX.Element> {
           </Container>
         </div>
       )}
-      <PageFeatureHero
+      <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },
-          { label: "Support", href: "/support" },
         ]}
+        currentPage="Support"
         title={title}
         description={description}
-        image={{
-          src: imageSrc,
-          alt: "Supportive atmosphere at CMHCB",
-        }}
-        ctas={[
-          {
-            label: "Emergency Contacts",
-            variant: "primary-dark",
-            href: "#emergency-contacts",
-          },
-          {
-            label: "Contact Us",
-            variant: "outline",
-            href: "/contact",
-            className: "text-primary-dark border-primary-dark hover:bg-primary-dark/10",
-          },
-        ]}
+        imageSrc={imageSrc}
+        imageAlt="Supportive atmosphere at CMHCB"
+        ctaLabel="Emergency Contacts"
+        ctaHref="#emergency-contacts"
       />
       
       <div id="emergency-contacts">

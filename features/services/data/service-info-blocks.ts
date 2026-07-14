@@ -11,8 +11,8 @@ export const SERVICE_INFO_BLOCKS: SplitBlockContent[] = [
     ],
     cta: { label: "Book Appointment", href: "/appointment" },
     image: {
-      src: "/compassionate-mental-health-professional.png",
-      alt: "A professional mental health therapy session",
+      src: "/couple-therapy-counselor-session.jpg",
+      alt: "Couple in a therapy session discussing mental health with a counselor at CMHCB",
     },
   },
   {
@@ -25,8 +25,8 @@ export const SERVICE_INFO_BLOCKS: SplitBlockContent[] = [
     ],
     cta: { label: "Schedule a Session", href: "/appointment" },
     image: {
-      src: "/compassionate-mental-health-professional.png",
-      alt: "A client in a supportive mental health environment",
+      src: "/family-psychotherapy-consultation.jpg",
+      alt: "Family participating in a psychotherapy consultation session",
     },
   },
 ];

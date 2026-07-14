@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Metadata } from "next";
-import { PageFeatureHero } from "@/components/shared/page-feature-hero";
+import { PageHero } from "@/components/shared/page-hero";
 import PartnerNetwork from "@/features/affiliation/components/partner-network";
 import AffiliationBenefits from "@/features/affiliation/components/affiliation-benefits";
 import PartnerCta from "@/features/affiliation/components/partner-cta";
@@ -78,25 +78,17 @@ export default async function AffiliationPage(): Promise<React.JSX.Element> {
           </Container>
         </div>
       )}
-      <PageFeatureHero
+      <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },
-          { label: "Affiliation", href: "/affiliation" },
         ]}
+        currentPage="Affiliation"
         title={heroTitle}
         description={heroDescription}
-        image={{
-          src: heroImage,
-          alt: "Partnership and Collaboration",
-        }}
-        ctas={[
-          {
-            label: "Become a Partner",
-            variant: "primary",
-            href: "#partner-cta",
-            className: "bg-primary-dark hover:bg-primary-dark/90 border-primary-dark",
-          },
-        ]}
+        imageSrc={heroImage}
+        imageAlt="Partnership and Collaboration"
+        ctaLabel="Become a Partner"
+        ctaHref="#partner-cta"
       />
 
       {/* 1. Our Network showcase */}

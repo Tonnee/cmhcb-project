@@ -689,6 +689,7 @@ const ServiceInputSchema = z.object({
   format: z.string().optional().nullable(),
   language: z.string().optional().nullable(),
   faqs: z.string().optional().nullable(),
+  order: z.number().default(0),
 });
 
 export async function upsertServiceAction(
@@ -719,6 +720,7 @@ export async function upsertServiceAction(
       format: validated.format,
       language: validated.language,
       faqs: validated.faqs,
+      order: validated.order,
       lastUpdatedBy: admin.email,
     };
 
@@ -932,6 +934,7 @@ const TrainingInputSchema = z.object({
   variant: z.string().default("primary"),
   image: z.string().optional().nullable(),
   bgImage: z.string().optional().nullable(),
+  order: z.number().default(0),
 });
 
 export async function upsertTrainingAction(
@@ -960,6 +963,7 @@ export async function upsertTrainingAction(
       variant: validated.variant,
       image: validated.image,
       bgImage: validated.bgImage,
+      order: validated.order,
       lastUpdatedBy: admin.email,
     };
 

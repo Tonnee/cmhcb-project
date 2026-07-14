@@ -18,6 +18,15 @@ const iconMap: Record<string, string> = {
   "iq-test": "HiAcademicCap",
 };
 
+const bgImageMap: Record<string, string> = {
+  "psychometric-assessment": "/psychometric-assessment-counseling.png",
+  "individual-therapy": "/individual-psychotherapy-counseling.png",
+  "child-therapy": "/child-therapy-counseling-session.png",
+  "family-therapy": "/family-therapy-counseling-center.png",
+  "couple-therapy": "/couple-counseling-relationship-therapy.png",
+  "iq-test": "/iq-cognitive-assessment.png",
+};
+
 async function main() {
   console.log("Cleaning up current database tables...");
   await prisma.therapist.deleteMany();
@@ -132,6 +141,7 @@ async function main() {
   });
 
   console.log("Seeding Services from features/services/data/services...");
+  let sIndex = 0;
   for (const s of SERVICES) {
     const whoIsItFor = s.description.sections.find((sec) =>
       sec.title.toLowerCase().includes("who")
@@ -152,12 +162,13 @@ async function main() {
         whoIsItFor: whoIsItFor,
         isFeatured: s.slug === "psychometric-assessment" || s.slug === "individual-therapy" || s.slug === "child-therapy",
         image: s.image,
-        bgImage: "/pages-hero-background/1.png",
+        bgImage: bgImageMap[s.slug] || "/pages-hero-background/1.png",
         duration: s.duration,
         fees: s.fees,
         format: "In-person / Online",
         language: "Bangla / English",
         faqs: JSON.stringify(s.faq || []),
+        order: sIndex,
       },
       create: {
         id: `srv-${s.slug}`,
@@ -170,14 +181,16 @@ async function main() {
         whoIsItFor: whoIsItFor,
         isFeatured: s.slug === "psychometric-assessment" || s.slug === "individual-therapy" || s.slug === "child-therapy",
         image: s.image,
-        bgImage: "/pages-hero-background/1.png",
+        bgImage: bgImageMap[s.slug] || "/pages-hero-background/1.png",
         duration: s.duration,
         fees: s.fees,
         format: "In-person / Online",
         language: "Bangla / English",
         faqs: JSON.stringify(s.faq || []),
+        order: sIndex,
       },
     });
+    sIndex++;
   }
 
   console.log("Seeding Service Info Blocks...");
@@ -192,8 +205,8 @@ async function main() {
       ]),
       ctaLabel: "Book Appointment",
       ctaHref: "/appointment",
-      image: "/compassionate-mental-health-professional.png",
-      imageAlt: "A professional mental health therapy session",
+      image: "/couple-therapy-counselor-session.jpg",
+      imageAlt: "Couple in a therapy session discussing mental health with a counselor at CMHCB",
       order: 0,
     },
     {
@@ -206,8 +219,8 @@ async function main() {
       ]),
       ctaLabel: "Schedule a Session",
       ctaHref: "/appointment",
-      image: "/compassionate-mental-health-professional.png",
-      imageAlt: "A client in a supportive mental health environment",
+      image: "/family-psychotherapy-consultation.jpg",
+      imageAlt: "Family participating in a psychotherapy consultation session",
       order: 1,
     },
   ];
@@ -236,6 +249,7 @@ async function main() {
   }
 
   console.log("Seeding Trainings...");
+  let tIndex = 0;
   for (const t of TRAININGS) {
     await prisma.training.create({
       data: {
@@ -253,8 +267,10 @@ async function main() {
         fees: t.fees,
         variant: t.variant,
         bgImage: "/pages-hero-background/1.png",
+        order: tIndex,
       },
     });
+    tIndex++;
   }
 
   console.log("Seeding completed successfully.");

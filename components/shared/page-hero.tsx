@@ -2,6 +2,7 @@ import * as React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb, type BreadcrumbItem } from "@/components/shared/breadcrumb";
+import { Container } from "@/components/layout/container";
 
 export interface PageHeroProps {
   /** Array of ancestor breadcrumb items. Each needs a label + href. */
@@ -29,6 +30,10 @@ export interface PageHeroProps {
   className?: string;
   /** Optional extra content to render below description. */
   children?: React.ReactNode;
+  /** Optional duration text to show. */
+  duration?: string;
+  /** Optional fees text to show. */
+  fees?: string;
 }
 
 export function PageHero({
@@ -43,6 +48,8 @@ export function PageHero({
   onCtaClick,
   className = "",
   children,
+  duration,
+  fees,
 }: PageHeroProps): React.JSX.Element {
   const allBreadcrumbs: BreadcrumbItem[] = [
     ...breadcrumbs,
@@ -50,66 +57,71 @@ export function PageHero({
   ];
 
   return (
-    <section
-      className={`relative w-full h-auto min-h-[420px] py-20 overflow-hidden ${className}`}
-    >
-      {/* Background image */}
-      <Image
-        src={imageSrc}
-        alt={imageAlt}
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-center"
-        aria-hidden={imageAlt === ""}
-      />
+    <section className={`relative w-full bg-dark-green min-h-[450px] lg:min-h-[500px] py-16 lg:py-24 flex items-center overflow-hidden ${className}`}>
+      <Container className="relative w-full">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center w-full">
+          {/* Content Column */}
+          <div className="relative z-10 flex flex-col justify-center text-left">
+            <Breadcrumb className="mb-6" items={allBreadcrumbs} theme="dark" />
 
-      {/* Dark overlay — matches Figma: rgba(1, 30, 0, 0.73) */}
-      <div
-        className="absolute inset-0"
-        style={{ backgroundColor: "rgba(1, 30, 0, 0.73)" }}
-        aria-hidden="true"
-      />
+            <h1 className="font-marcellus text-3xl md:text-4xl lg:text-5xl leading-tight text-white mb-6">
+              {title}
+            </h1>
 
-      {/* Content */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
-        {/* Breadcrumb */}
-        <Breadcrumb
-          items={allBreadcrumbs}
-          theme="dark"
-          className="mb-6"
-        />
+            {description && (
+              <p className="font-sans font-normal text-base leading-relaxed text-white/80 mb-6 max-w-xl">
+                {description}
+              </p>
+            )}
 
-        {/* Heading */}
-        <h1 className="font-marcellus text-3xl md:text-[40px] leading-snug text-white max-w-[1156px] mb-6">
-          {title}
-        </h1>
+            {/* Fees & Duration Metadata */}
+            {(duration || fees) && (
+              <div className="flex flex-wrap gap-3 items-center mb-8 text-xs font-semibold text-white">
+                {duration && (
+                  <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
+                    <span className="text-white/60">Duration:</span> {duration}
+                  </span>
+                )}
+                {fees && (
+                  <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
+                    <span className="text-white/60">Fees:</span> {fees}
+                  </span>
+                )}
+              </div>
+            )}
 
-        {/* Description */}
-        {description && (
-          <p className="font-sans text-base leading-5 text-white/90 max-w-[896px] mb-8">
-            {description}
-          </p>
-        )}
+            {children && <div className="mb-8">{children}</div>}
 
-        {/* Extra content */}
-        {children && (
-          <div className="mb-8">
-            {children}
+            {/* CTA */}
+            {ctaLabel && (
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                <Button
+                  variant="white"
+                  href={onCtaClick ? undefined : ctaHref}
+                  onClick={onCtaClick}
+                  className="w-full sm:w-auto"
+                >
+                  {ctaLabel}
+                </Button>
+              </div>
+            )}
           </div>
-        )}
 
-        {/* CTA */}
-        {ctaLabel && (
-          <Button
-            variant="white"
-            href={onCtaClick ? undefined : ctaHref}
-            onClick={onCtaClick}
-          >
-            {ctaLabel}
-          </Button>
-        )}
-      </div>
+          {/* Image Column */}
+          <div className="relative hidden lg:block h-hero-image w-full">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full max-w-[570px] h-hero-image rounded-3xl overflow-hidden bg-muted/20">
+              <Image
+                src={imageSrc}
+                alt={imageAlt}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 570px"
+                className="object-cover object-top"
+              />
+            </div>
+          </div>
+        </div>
+      </Container>
     </section>
   );
 }

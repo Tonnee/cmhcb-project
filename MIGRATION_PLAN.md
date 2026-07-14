@@ -52,3 +52,31 @@ const serviceTherapists = THERAPISTS_DATA.filter((therapist) =>
 
 ### Migrated Architecture
 - Delete `lib/design-tokens.ts` since Tailwind CSS v4 compiles variables from `@theme` in `app/globals.css` into classes automatically. This leaves CSS variables as the single source of truth for UI configurations.
+
+---
+
+## 5. Domain Configuration & Production Deployment Steps
+
+This section details the steps to launch the website under a custom domain.
+
+### Cost Breakdown
+- **Custom Domain Purchase**: ~$10/year (via Porkbun, Cloudflare, or Namecheap).
+- **Vercel Hosting**: $0/month (Hobby Plan supports custom domains & SSL).
+- **Supabase Database & Auth**: $0/month (Free Tier).
+
+### Setup Action Items
+
+1. **Vercel Custom Domain Configuration**:
+   - Go to your Vercel project dashboard -> **Settings** -> **Domains**.
+   - Add your custom domain (e.g., `cmhcb.org`). Add both the root domain and the `www` subdomain.
+
+2. **DNS Record Verification**:
+   - Log into your domain registrar dashboard and configure the DNS records provided by Vercel:
+     - **Apex Domain (`cmhcb.org`)**: Add an `A` record pointing to `76.76.21.21`.
+     - **Subdomain (`www.cmhcb.org`)**: Add a `CNAME` record pointing to `cname.vercel-dns.com`.
+
+3. **Supabase Redirect URL Alignment**:
+   - Log into the Supabase Dashboard, select your project, and navigate to **Settings** -> **Auth**.
+   - Update **Site URL** to `https://www.cmhcb.org` (or your chosen primary URL format).
+   - In **Additional Redirect URLs**, add `https://www.cmhcb.org/**` and `https://cmhcb.org/**` to ensure secure authentication flows work globally.
+

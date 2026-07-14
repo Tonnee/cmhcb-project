@@ -114,6 +114,8 @@ export default async function TrainingDetailPage({
         imageAlt="Professional training at CMHCB"
         ctaLabel="Register Interest"
         ctaHref="/contact"
+        duration={training.duration ?? undefined}
+        fees={training.fees ?? undefined}
       />
       <ServiceDescription
         introduction={{

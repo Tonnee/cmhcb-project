@@ -1,6 +1,6 @@
 import * as React from "react";
 import { type Metadata } from "next";
-import { PageFeatureHero } from "@/components/shared/page-feature-hero";
+import { PageHero } from "@/components/shared/page-hero";
 import { FaqTabsSection } from "@/features/faqs/components/faq-tabs-section";
 import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 import { Container } from "@/components/layout/container";
@@ -147,31 +147,17 @@ export default async function FaqsPage(): Promise<React.JSX.Element> {
           </Container>
         </div>
       )}
-      <PageFeatureHero
+      <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },
-          { label: "FAQs", href: "/faqs" },
         ]}
+        currentPage="FAQs"
         title={title}
         description={description}
-        image={{
-          src: imageSrc,
-          alt: "CMHCB support team and licensed therapist ready to answer your questions",
-        }}
-        ctas={[
-          {
-            label: "Search FAQs",
-            variant: "primary",
-            href: "#faq-section",
-            className: "bg-primary-dark hover:bg-primary-dark/90 border-primary-dark",
-          },
-          {
-            label: "Contact Support",
-            variant: "outline",
-            href: "/contact",
-            className: "text-primary-dark border-primary-dark hover:bg-primary-dark/10",
-          },
-        ]}
+        imageSrc={imageSrc}
+        imageAlt="CMHCB support team and licensed therapist ready to answer your questions"
+        ctaLabel="Search FAQs"
+        ctaHref="#faq-section"
       />
       <div id="faq-section">
         <FaqTabsSection initialItems={compiledFaqs} />

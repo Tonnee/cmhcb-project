@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { HiPhoto, HiOutlineCloudArrowUp } from "react-icons/hi2";
+import { HiPhoto, HiOutlineCloudArrowUp, HiXMark } from "react-icons/hi2";
 import { upsertGalleryItemAction } from "@/app/(admin)/admin/actions";
 import { uploadImageToSupabase } from "@/lib/supabase";
 
@@ -112,9 +112,9 @@ export function EditGalleryItemForm({
         <button
           type="button"
           onClick={onClose}
-          className="text-light-ash hover:text-dark font-semibold text-sm cursor-pointer"
+          className="p-1.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg transition-colors cursor-pointer"
         >
-          Close
+          <HiXMark className="w-5 h-5" />
         </button>
       </div>
 

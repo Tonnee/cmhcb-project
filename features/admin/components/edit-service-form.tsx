@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { HiBriefcase, HiGlobeAlt, HiInboxStack, HiPlus, HiPhoto } from "react-icons/hi2";
+import { HiBriefcase, HiGlobeAlt, HiInboxStack, HiPlus, HiPhoto, HiXMark } from "react-icons/hi2";
 import { upsertServiceAction } from "@/app/(admin)/admin/actions";
 import { uploadImageToSupabase } from "@/lib/supabase";
 
@@ -19,6 +19,7 @@ interface ServiceDB {
   bgImage?: string | null;
   duration?: string | null;
   fees?: string | null;
+  order?: number;
   lastUpdatedBy?: string | null;
   updatedAt?: string | Date;
 }
@@ -58,6 +59,7 @@ export function EditServiceForm({
   const [bgImageUrl, setBgImageUrl] = React.useState(initialService?.bgImage || "");
   const [duration, setDuration] = React.useState(initialService?.duration || "");
   const [fees, setFees] = React.useState(initialService?.fees || "");
+  const [order, setOrder] = React.useState(initialService?.order ?? 0);
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isUploading, setIsUploading] = React.useState(false);
@@ -131,6 +133,7 @@ export function EditServiceForm({
         bgImage: bgImageUrl || null,
         duration: duration || null,
         fees: fees || null,
+        order: Number(order) || 0,
       };
 
       const res = await upsertServiceAction(payload);
@@ -164,9 +167,9 @@ export function EditServiceForm({
         <button
           type="button"
           onClick={onClose}
-          className="text-light-ash hover:text-dark font-semibold text-sm cursor-pointer"
+          className="p-1.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg transition-colors cursor-pointer"
         >
-          Close
+          <HiXMark className="w-5 h-5" />
         </button>
       </div>
 
@@ -208,8 +211,8 @@ export function EditServiceForm({
         </div>
       </div>
 
-      {/* Duration & Fees */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* Duration & Fees & Priority */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div className="flex flex-col gap-1.5">
           <label className="font-sans text-xs font-semibold text-dark">
             Session Duration (e.g. 60 mins)
@@ -231,6 +234,18 @@ export function EditServiceForm({
             value={fees}
             onChange={(e) => setFees(e.target.value)}
             placeholder="e.g. 1,000 BDT"
+            className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="font-sans text-xs font-semibold text-dark">
+            Priority Number (Order)
+          </label>
+          <input
+            type="number"
+            value={order}
+            onChange={(e) => setOrder(Number(e.target.value))}
+            placeholder="e.g. 0"
             className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
           />
         </div>

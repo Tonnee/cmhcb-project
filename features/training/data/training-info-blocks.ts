@@ -11,7 +11,7 @@ export const TRAINING_INFO_BLOCKS: SplitBlockContent[] = [
     ],
     cta: { label: "Enquire Now", href: "/contact" },
     image: {
-      src: "/compassionate-mental-health-professional.png",
+      src: "/training_why_choose.png",
       alt: "Professionals in a CMHCB training session",
     },
   },
@@ -25,7 +25,7 @@ export const TRAINING_INFO_BLOCKS: SplitBlockContent[] = [
     ],
     cta: { label: "Register Interest", href: "/contact" },
     image: {
-      src: "/compassionate-mental-health-professional.png",
+      src: "/training_who_can_apply.png",
       alt: "Diverse participants at a mental health training",
     },
   },
@@ -39,7 +39,7 @@ export const TRAINING_INFO_BLOCKS: SplitBlockContent[] = [
     ],
     cta: { label: "View Calendar", href: "/events" },
     image: {
-      src: "/compassionate-mental-health-professional.png",
+      src: "/training_methodology.png",
       alt: "Interactive workshop activity at CMHCB",
     },
   },
@@ -53,7 +53,7 @@ export const TRAINING_INFO_BLOCKS: SplitBlockContent[] = [
     ],
     cta: { label: "Learn More", href: "/contact" },
     image: {
-      src: "/compassionate-mental-health-professional.png",
+      src: "/training_certification.png",
       alt: "A CMHCB training certificate being awarded",
     },
   },

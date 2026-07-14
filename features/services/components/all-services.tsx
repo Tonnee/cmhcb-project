@@ -25,39 +25,65 @@ export function AllServices({ services }: AllServicesProps): React.JSX.Element {
           title="Our Psychotherapeutic Services"
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {services.map((service) => (
-            <article
-              key={service.slug}
-              className="group relative w-full bg-white rounded-3xl p-8 md:p-10 border border-muted/30 hover:border-primary-dark/60 transition-all duration-300 flex flex-col justify-between min-h-[300px] hover:shadow-[0_8px_30px_rgb(0,0,0,0.02)]"
-            >
-              <div>
-                {/* Top Accent Line */}
-                <div className="w-8 h-1 bg-accent/40 group-hover:w-16 group-hover:bg-primary-dark transition-all duration-300 mb-8 rounded-full" />
-                
-                {/* Heading */}
-                <h3 className="font-marcellus text-2xl md:text-3xl text-dark mb-6 tracking-wide leading-snug group-hover:text-primary-dark transition-colors duration-300">
-                  {service.title}
-                </h3>
+          {services.map((service, index) => {
+            const isAccent = index === 0;
+            return (
+              <article
+                key={service.slug}
+                className={`group relative w-full rounded-3xl p-8 md:p-10 border transition-all duration-300 flex flex-col justify-between min-h-[300px] hover:shadow-[0_8px_30px_rgb(0,0,0,0.02)] ${
+                  isAccent
+                    ? "bg-accent border-accent/20 text-dark-green"
+                    : "bg-white border-muted/30 hover:border-primary-dark/60"
+                }`}
+              >
+                <div>
+                  {/* Top Accent Line */}
+                  <div className={`w-8 h-1 transition-all duration-300 mb-8 rounded-full ${
+                    isAccent
+                      ? "bg-white/40 group-hover:w-16 group-hover:bg-white"
+                      : "bg-accent/40 group-hover:w-16 group-hover:bg-primary-dark"
+                  }`} />
+                  
+                  {/* Heading */}
+                  <h3 className={`font-marcellus text-2xl md:text-3xl mb-6 tracking-wide leading-snug transition-colors duration-300 ${
+                    isAccent
+                      ? "text-dark-green group-hover:text-white"
+                      : "text-dark group-hover:text-primary-dark"
+                  }`}>
+                    {service.title}
+                  </h3>
 
-                {/* Short Description */}
-                <p className="font-sans font-normal text-base text-light-ash/80 leading-relaxed mb-8">
-                  {service.shortDescription}
-                </p>
-              </div>
+                  {/* Short Description */}
+                  <p className={`font-sans font-normal text-base leading-relaxed mb-8 ${
+                    isAccent ? "text-dark-green/80" : "text-light-ash/80"
+                  }`}>
+                    {service.shortDescription}
+                  </p>
+                </div>
 
-              {/* Footer Info & CTA */}
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-muted/20 mt-auto">
-                <p className="font-sans font-semibold text-xs tracking-wider text-light-ash/60 uppercase">
-                  {service.duration && service.fees
-                    ? `${service.duration} / ${service.fees}`
-                    : service.duration || service.fees || "Evidence-Based Support"}
-                </p>
-                <LinkButton href={`/services/${service.slug}`} label={`Learn more about ${service.title}`} variant="marcellus">
-                  Learn More
-                </LinkButton>
-              </div>
-            </article>
-          ))}
+                {/* Footer Info & CTA */}
+                <div className={`flex flex-wrap items-center justify-between gap-4 pt-6 border-t mt-auto ${
+                  isAccent ? "border-white/20" : "border-muted/20"
+                }`}>
+                  <p className={`font-sans font-semibold text-xs tracking-wider uppercase ${
+                    isAccent ? "text-dark-green/60" : "text-light-ash/60"
+                  }`}>
+                    {service.duration && service.fees
+                      ? `${service.duration} / ${service.fees}`
+                      : service.duration || service.fees || "Evidence-Based Support"}
+                  </p>
+                  <LinkButton
+                    href={`/services/${service.slug}`}
+                    label={`Learn more about ${service.title}`}
+                    variant={isAccent ? "text" : "marcellus"}
+                    className={isAccent ? "font-sans font-bold text-dark-green group-hover:text-white hover:text-white" : ""}
+                  >
+                    Learn More
+                  </LinkButton>
+                </div>
+              </article>
+            );
+          })}
           <ServicesApproachBlock />
         </div>
       </Container>

@@ -18,7 +18,7 @@ export default async function AdminTrainingsPage(): Promise<React.JSX.Element> {
   // Retrieve trainings and info blocks from database
   const [trainings, infoBlocks] = await Promise.all([
     prisma.training.findMany({
-      orderBy: { title: "asc" },
+      orderBy: { order: "asc" },
     }),
     prisma.trainingInfoBlock.findMany({
       orderBy: { order: "asc" },

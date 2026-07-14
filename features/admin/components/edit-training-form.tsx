@@ -31,6 +31,7 @@ interface TrainingDB {
   variant: string;
   image?: string | null;
   bgImage?: string | null;
+  order?: number;
   lastUpdatedBy?: string | null;
   updatedAt?: string | Date;
 }
@@ -58,6 +59,7 @@ export function EditTrainingForm({
   const [variant, setVariant] = React.useState(training?.variant || "primary");
   const [imageUrl, setImageUrl] = React.useState(training?.image || "");
   const [bgImageUrl, setBgImageUrl] = React.useState(training?.bgImage || "");
+  const [order, setOrder] = React.useState(training?.order ?? 0);
 
   // Complex list states (parsed from JSON on load)
   const [features, setFeatures] = React.useState<string[]>(() => {
@@ -219,6 +221,7 @@ export function EditTrainingForm({
         variant,
         image: imageUrl || null,
         bgImage: bgImageUrl || null,
+        order: Number(order) || 0,
       };
 
       const res = await upsertTrainingAction(payload);
@@ -249,8 +252,9 @@ export function EditTrainingForm({
           )}
         </div>
         <button
+          type="button"
           onClick={onClose}
-          className="p-1.5 hover:bg-light rounded-lg text-light-ash transition-colors"
+          className="p-1.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg transition-colors cursor-pointer"
         >
           <HiXMark className="w-5 h-5" />
         </button>
@@ -318,16 +322,14 @@ export function EditTrainingForm({
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Card Background Theme</label>
-              <select
-                value={variant}
-                onChange={(e) => setVariant(e.target.value)}
+              <label className="font-semibold text-dark">Priority Number (Order)</label>
+              <input
+                type="number"
+                value={order}
+                onChange={(e) => setOrder(Number(e.target.value))}
+                placeholder="e.g. 0"
                 className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
-              >
-                <option value="primary">Primary (Forest Green outline)</option>
-                <option value="secondary">Secondary (Lime Green outline)</option>
-                <option value="accent">Accent (Orange/Amber outline)</option>
-              </select>
+              />
             </div>
           </div>
         </div>

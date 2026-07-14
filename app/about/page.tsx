@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Metadata } from "next";
-import { PageFeatureHero } from "@/components/shared/page-feature-hero";
+import { PageHero } from "@/components/shared/page-hero";
 import { MissionVision } from "@/features/about/components/mission-vision";
 import { CoreValues } from "@/features/about/components/core-values";
 import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
@@ -62,31 +62,17 @@ export default async function AboutPage(): Promise<React.JSX.Element> {
           </Container>
         </div>
       )}
-      <PageFeatureHero
+      <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },
-          { label: "About Us", href: "/about" },
         ]}
+        currentPage="About Us"
         title={title}
         description={description}
-        image={{
-          src: imageSrc,
-          alt: "CMHCB facility and caring professionals",
-        }}
-        ctas={[
-          {
-            label: "Meet Our Therapists",
-            variant: "primary",
-            href: "/therapists",
-            className: "bg-primary-dark hover:bg-primary-dark/90 border-primary-dark",
-          },
-          {
-            label: "Our Services",
-            variant: "outline",
-            href: "/services",
-            className: "text-primary-dark border-primary-dark hover:bg-primary-dark/10",
-          },
-        ]}
+        imageSrc={imageSrc}
+        imageAlt="CMHCB facility and caring professionals"
+        ctaLabel="Meet Our Therapists"
+        ctaHref="/therapists"
       />
       
       <MissionVision

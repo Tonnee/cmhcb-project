@@ -1,6 +1,6 @@
 import * as React from "react";
 import { type Metadata } from "next";
-import { PageFeatureHero } from "@/components/shared/page-feature-hero";
+import { PageHero } from "@/components/shared/page-hero";
 import { AllSuccessStories } from "@/features/success-stories/components/all-success-stories";
 import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 import { Container } from "@/components/layout/container";
@@ -43,31 +43,17 @@ export default async function SuccessStoriesPage(): Promise<React.JSX.Element> {
           </Container>
         </div>
       )}
-      <PageFeatureHero
+      <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },
-          { label: "Success Stories", href: "/success-stories" },
         ]}
+        currentPage="Success Stories"
         title="Real experiences, real impact"
         description="Our clients share their journeys of transformation — honest reflections on the care, empathy, and support they received at CMHCB. Read how mental health care has empowered them to reclaim their lives."
-        image={{
-          src: "/home-review/mental-health-therapy-client-woman.png",
-          alt: "A happy client sharing their successful journey with CMHCB",
-        }}
-        ctas={[
-          {
-            label: "Read Stories",
-            variant: "primary",
-            href: "#stories",
-            className: "bg-primary-dark hover:bg-primary-dark/90 border-primary-dark",
-          },
-          {
-            label: "Book Appointment",
-            variant: "outline",
-            href: "/appointment",
-            className: "text-primary-dark border-primary-dark hover:bg-primary-dark/10",
-          },
-        ]}
+        imageSrc="/home-review/mental-health-therapy-client-woman.png"
+        imageAlt="A happy client sharing their successful journey with CMHCB"
+        ctaLabel="Read Stories"
+        ctaHref="#stories"
       />
       <AllSuccessStories testimonials={testimonials} />
     </main>

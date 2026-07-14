@@ -253,9 +253,9 @@ export function AppointmentsClientWrapper(): React.JSX.Element {
               <button
                 type="button"
                 onClick={() => setSelectedAppointment(null)}
-                className="text-light-ash hover:text-dark font-semibold text-sm cursor-pointer"
+                className="p-1.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg transition-colors cursor-pointer"
               >
-                Close
+                <HiXMark className="w-5 h-5" />
               </button>
             </div>
 

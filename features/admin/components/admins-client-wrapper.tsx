@@ -397,7 +397,7 @@ export default function AdminsClientWrapper({
               <h3 className="font-marcellus text-lg font-bold text-dark-green">
                 Create Administrator Account
               </h3>
-              <button onClick={() => setShowCreateModal(false)} className="p-1 hover:bg-light rounded-lg text-light-ash">
+              <button onClick={() => setShowCreateModal(false)} className="p-1.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg transition-colors cursor-pointer">
                 <HiXMark className="w-5 h-5" />
               </button>
             </div>
@@ -495,7 +495,7 @@ export default function AdminsClientWrapper({
                 </h3>
                 <p className="text-xs text-light-ash mt-0.5">{selectedAdmin.email}</p>
               </div>
-              <button onClick={() => setShowEditModal(false)} className="p-1 hover:bg-light rounded-lg text-light-ash">
+              <button onClick={() => setShowEditModal(false)} className="p-1.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg transition-colors cursor-pointer">
                 <HiXMark className="w-5 h-5" />
               </button>
             </div>

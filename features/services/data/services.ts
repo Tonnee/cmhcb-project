@@ -26,7 +26,7 @@ export const SERVICES: ServiceItem[] = [
     image: "/home-service-images/psychometric-assessment.png",
     icon: "/home-service-images/psychometric-assessment-icon.png",
     iconVariant: "primary",
-    shortDescription: "understand personality, emotional functioning, and mental health needs",
+    shortDescription: "Comprehensive standardized evaluations to understand personality, cognitive traits, and mental health needs",
     heroTitle: "Psychometric Assessment",
     heroDescription:
       "Using standardized, evidence-based tools, our specialists conduct thorough psychological evaluations to support accurate diagnosis, treatment planning, and a deeper understanding of your mental health.",
@@ -106,7 +106,7 @@ export const SERVICES: ServiceItem[] = [
     image: "/home-service-images/individual-therapy.png",
     icon: "/home-service-images/individual-therapy-icon.png",
     iconVariant: "accent",
-    shortDescription: "understand personality, emotional functioning, and mental health needs",
+    shortDescription: "Personalized one-on-one therapy to manage stress, build resilience, and improve emotional well-being",
     heroTitle: "Individual Therapy",
     heroDescription:
       "Our one-on-one therapy sessions provide a safe, confidential space where you can explore your thoughts and feelings, build resilience, and develop personalized strategies for emotional well-being.",
@@ -199,7 +199,7 @@ export const SERVICES: ServiceItem[] = [
     image: "/home-service-images/child-therapy.png",
     icon: "/home-service-images/child-therapy-icon.png",
     iconVariant: "primary",
-    shortDescription: "understand personality, emotional functioning, and mental health needs",
+    shortDescription: "Developmentally appropriate therapy helping children navigate emotional and behavioral challenges",
     heroTitle: "Child Therapy",
     heroDescription:
       "Specialized, child-centered therapeutic techniques help children navigate emotional challenges, develop healthy coping skills, and thrive — with parent-guided intervention at every step.",
@@ -283,7 +283,7 @@ export const SERVICES: ServiceItem[] = [
     image: "/home-service-images/family-therapy.png",
     icon: "/home-service-images/family-therapy-icon.png",
     iconVariant: "accent",
-    shortDescription: "understand personality, emotional functioning, and mental health needs",
+    shortDescription: "Collaborative counseling to resolve conflicts, improve communication, and strengthen family dynamics",
     heroTitle: "Family Therapy",
     heroDescription:
       "We help families strengthen communication, resolve conflicts, and understand the dynamics that shape their relationships — creating a foundation for healthier, more connected family life.",
@@ -362,7 +362,7 @@ export const SERVICES: ServiceItem[] = [
     image: "/home-service-images/couple-therapy.png",
     icon: "/home-service-images/couple-therapy-icon.png",
     iconVariant: "primary",
-    shortDescription: "understand personality, emotional functioning, and mental health needs",
+    shortDescription: "Guided support for partners to rebuild trust, enhance intimacy, and resolve relationship issues",
     heroTitle: "Couple Therapy",
     heroDescription:
       "Whether navigating conflict or deepening connection, our couple therapy sessions provide a structured environment to improve communication, rebuild trust, and strengthen emotional bonds.",
@@ -446,7 +446,7 @@ export const SERVICES: ServiceItem[] = [
     image: "/home-service-images/iq-test.png",
     icon: "/home-service-images/iq-test-icon.png",
     iconVariant: "accent",
-    shortDescription: "understand personality, emotional functioning, and mental health needs",
+    shortDescription: "Standardized cognitive testing to evaluate reasoning, memory, problem-solving, and general intelligence",
     heroTitle: "IQ & Cognitive Assessment",
     heroDescription:
       "Our standardized intelligence assessments measure cognitive abilities across key domains, providing a professionally interpreted report that informs educational, clinical, and developmental decisions.",

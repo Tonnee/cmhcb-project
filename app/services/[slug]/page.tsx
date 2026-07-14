@@ -110,12 +110,14 @@ export default async function ServiceDetailPage({
           { label: "Services", href: "/services" },
         ]}
         currentPage={service.title}
-        title={service.title === "Individual Therapy" ? "Personalized, confidential support for your mental well-being" : service.title}
+        title={service.title}
         description={service.title === "Individual Therapy" ? "Individual therapy offers a safe, one-on-one space to navigate emotional challenges, develop coping strategies, and work toward personal growth with the guidance of a trained mental health professional." : service.shortDescription}
         imageSrc={service.bgImage || "/pages-hero-background/1.png"}
         imageAlt={`${service.title} - CMHCB`}
         ctaLabel="Book an Appointment"
         ctaHref={`/appointment?service=${slug}`}
+        duration={service.duration ?? undefined}
+        fees={service.fees ?? undefined}
       />
 
       {/* Main Content Sections - Clean single-column layout */}

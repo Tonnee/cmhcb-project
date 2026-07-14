@@ -110,6 +110,7 @@ model Service {
   format           String?
   language         String?
   faqs             String?
+  order            Int      @default(0)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   lastUpdatedBy String?
@@ -184,6 +185,7 @@ model Training {
   variant          String   @default("primary")
   image            String?
   bgImage          String?
+  order            Int      @default(0)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   lastUpdatedBy    String?

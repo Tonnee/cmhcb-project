@@ -156,7 +156,7 @@ export default function EditWorkshopForm({
         <button
           type="button"
           onClick={onClose}
-          className="p-1.5 hover:bg-light rounded-lg text-light-ash transition-colors"
+          className="p-1.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg transition-colors cursor-pointer"
         >
           <HiXMark className="w-5 h-5" />
         </button>

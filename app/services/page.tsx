@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
-import { PageFeatureHero } from "@/components/shared/page-feature-hero";
+import { PageHero } from "@/components/shared/page-hero";
 import { AllServices } from "@/features/services/components/all-services";
 import { ServiceInfoSection } from "@/features/services/components/service-info-section";
 
@@ -16,7 +16,7 @@ export default async function ServicesPage(): Promise<React.JSX.Element> {
   // Fetch services dynamically from database
   const [services, infoBlocks] = await Promise.all([
     prisma.service.findMany({
-      orderBy: { title: "asc" },
+      orderBy: { order: "asc" },
     }),
     prisma.serviceInfoBlock.findMany({
       orderBy: { order: "asc" },
@@ -25,30 +25,17 @@ export default async function ServicesPage(): Promise<React.JSX.Element> {
 
   return (
     <main className="bg-page-bg">
-      <PageFeatureHero
+      <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },
-          { label: "Services", href: "/services" },
         ]}
+        currentPage="Services"
         title="Professional, ethical, and evidence-based mental health care"
         description="At CMHC,B, we provide compassionate and confidential psychotherapeutic services to support individuals, couples, families, and organizations in improving mental well-being and quality of life."
-        image={{
-          src: "/compassionate-mental-health-professional.png",
-          alt: "Professional psychotherapy session",
-        }}
-        ctas={[
-          {
-            label: "Book an Appointment",
-            variant: "primary-dark",
-            href: "/appointment",
-          },
-          {
-            label: "Talk to a Professional",
-            variant: "outline",
-            href: "/support",
-            className: "text-primary-dark border-primary-dark hover:bg-primary-dark/10",
-          },
-        ]}
+        imageSrc="/mental-health-services-bangladesh.jpg"
+        imageAlt="Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh"
+        ctaLabel="Book an Appointment"
+        ctaHref="/appointment"
       />
       <AllServices services={services} />
       <ServiceInfoSection infoBlocks={infoBlocks} />

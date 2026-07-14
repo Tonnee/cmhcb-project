@@ -14,7 +14,7 @@ export default async function AdminServicesPage(): Promise<React.JSX.Element> {
   // Fetch services dynamically on server
   const [services, infoBlocks] = await Promise.all([
     prisma.service.findMany({
-      orderBy: { title: "asc" },
+      orderBy: { order: "asc" },
     }),
     prisma.serviceInfoBlock.findMany({
       orderBy: { order: "asc" },

@@ -8,6 +8,7 @@ interface AllTrainingsProps {
   trainings: {
     slug: string;
     title: string;
+    heroDescription: string;
     duration: string;
     fees: string;
     variant: string;
@@ -23,14 +24,15 @@ export function AllTrainings({ trainings }: AllTrainingsProps): React.JSX.Elemen
           title="Training Programs Offered"
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {trainings.map((training) => (
+          {trainings.map((training, index) => (
             <FeatureCard
               key={training.slug}
               title={training.title}
+              description={training.heroDescription}
               duration={training.duration}
               fees={training.fees}
               href={`/training/${training.slug}`}
-              variant={training.variant as any}
+              variant={index === 0 ? "accent" : (training.variant as any)}
             />
           ))}
           <TrainingApproachBlock />

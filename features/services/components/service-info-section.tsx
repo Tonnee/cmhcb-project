@@ -18,21 +18,21 @@ interface ServiceInfoSectionProps {
 
 export function ServiceInfoSection({ infoBlocks }: ServiceInfoSectionProps): React.JSX.Element {
   // Map database blocks to SplitBlockContent format if provided, otherwise use static default blocks
-  const blocks = infoBlocks && infoBlocks.length > 0 
+  const blocks = infoBlocks && infoBlocks.length > 0
     ? infoBlocks.map(b => {
-        let itemsArray: string[] = [];
-        try {
-          itemsArray = JSON.parse(b.items);
-        } catch {
-          itemsArray = [];
-        }
-        return {
-          heading: b.heading,
-          items: itemsArray,
-          cta: { label: b.ctaLabel, href: b.ctaHref },
-          image: { src: b.image, alt: b.imageAlt },
-        };
-      })
+      let itemsArray: string[] = [];
+      try {
+        itemsArray = JSON.parse(b.items);
+      } catch {
+        itemsArray = [];
+      }
+      return {
+        heading: b.heading,
+        items: itemsArray,
+        cta: { label: b.ctaLabel, href: b.ctaHref },
+        image: { src: b.image, alt: b.imageAlt },
+      };
+    })
     : SERVICE_INFO_BLOCKS;
 
   return (

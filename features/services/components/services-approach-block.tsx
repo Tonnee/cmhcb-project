@@ -7,8 +7,8 @@ export function ServicesApproachBlock(): React.JSX.Element {
     <>
       <div className="relative w-full rounded-3xl overflow-hidden min-h-[420px]">
         <Image
-          src="/compassionate-mental-health-professional.png"
-          alt="A compassionate mental health professional in a therapy session"
+          src="/couple-counseling-relationship-help.jpg"
+          alt="Couple counseling and relationship psychotherapy session at CMHCB"
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 50vw"

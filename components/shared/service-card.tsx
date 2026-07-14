@@ -26,14 +26,17 @@ export const SERVICE_IMAGES: Record<string, string> = {
 
 export function ServiceCard({ item, className = "" }: ServiceCardProps): React.JSX.Element {
   const imageSrc = item.image || SERVICE_IMAGES[item.slug] || "/home-service-images/individual-therapy.png";
+  const linkHref = `/services/${item.slug}`;
 
   return (
-    <Link
-      href={`/services/${item.slug}`}
+    <div
       className={`group flex flex-col bg-white rounded-3xl overflow-hidden border border-gray-100 transition-all hover:shadow-md ${className}`}
     >
       {/* Image Block */}
-      <div className="relative w-full h-[240px] overflow-hidden shrink-0 bg-gray-100">
+      <Link
+        href={linkHref}
+        className="relative w-full h-[240px] overflow-hidden shrink-0 bg-gray-100 block"
+      >
         <Image
           src={imageSrc}
           alt={item.title}
@@ -41,13 +44,15 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-      </div>
+      </Link>
 
       {/* Content Block */}
       <div className="p-6 flex flex-col flex-1">
-        <h3 className="font-marcellus text-xl text-primary-dark mb-3 leading-snug transition-colors group-hover:text-accent">
-          {item.title}
-        </h3>
+        <Link href={linkHref} className="block mb-3">
+          <h3 className="font-marcellus text-xl text-primary-dark leading-snug transition-colors group-hover:text-accent">
+            {item.title}
+          </h3>
+        </Link>
         <p className="font-sans text-sm text-light-ash leading-relaxed mb-6 flex-1 line-clamp-3">
           {item.shortDescription}
         </p>
@@ -58,9 +63,11 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
               ? `${item.duration} / ${item.fees}`
               : item.duration || item.fees || "Evidence-Based Support"}
           </span>
-          <LinkButton variant="accent">Learn More</LinkButton>
+          <LinkButton href={linkHref} variant="accent">
+            Learn More
+          </LinkButton>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
