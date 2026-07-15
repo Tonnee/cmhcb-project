@@ -38,6 +38,7 @@ interface TherapistFormProps {
   } | null;
   onClose: () => void;
   onSuccess: () => void;
+  availableRoles: string[];
 }
 
 
@@ -45,12 +46,43 @@ export default function EditTherapistForm({
   therapist,
   onClose,
   onSuccess,
+  availableRoles,
 }: TherapistFormProps): React.JSX.Element {
   // Input fields state
   const [name, setName] = React.useState(therapist?.name || "");
-  const [role, setRole] = React.useState(therapist?.role || "");
   const [bio, setBio] = React.useState(therapist?.bio || "");
   const [imageUrl, setImageUrl] = React.useState(therapist?.image || "");
+
+  const [primaryRole, setPrimaryRole] = React.useState(() => {
+    if (!therapist?.role) return "";
+    const primary = therapist.role.split("|")[0].trim();
+    if (availableRoles.includes(primary)) {
+      return primary;
+    }
+    return "custom";
+  });
+
+  const [customRoleText, setCustomRoleText] = React.useState(() => {
+    if (!therapist?.role) return "";
+    const primary = therapist.role.split("|")[0].trim();
+    if (availableRoles.includes(primary)) {
+      return "";
+    }
+    return primary;
+  });
+
+  const [isCustomRole, setIsCustomRole] = React.useState(() => {
+    if (!therapist?.role) return false;
+    const primary = therapist.role.split("|")[0].trim();
+    return !availableRoles.includes(primary);
+  });
+
+  const [extraCredentials, setExtraCredentials] = React.useState(() => {
+    if (!therapist?.role) return "";
+    const parts = therapist.role.split("|");
+    if (parts.length <= 1) return "";
+    return parts.slice(1).join("|").trim();
+  });
   
   // Lists state
   const [education, setEducation] = React.useState<string[]>(() =>
@@ -209,11 +241,22 @@ export default function EditTherapistForm({
     setIsSaving(true);
     setErrorMsg("");
 
+    const finalPrimary = isCustomRole ? customRoleText.trim() : primaryRole;
+    const finalRole = extraCredentials.trim()
+      ? `${finalPrimary} | ${extraCredentials.trim()}`
+      : finalPrimary;
+
+    if (!finalPrimary) {
+      setErrorMsg("Role / specialty is required.");
+      setIsSaving(false);
+      return;
+    }
+
     try {
       const payload = {
         id: therapist?.id,
         name,
-        role,
+        role: finalRole,
         bio,
         image: imageUrl,
         education,
@@ -293,14 +336,47 @@ export default function EditTherapistForm({
 
           <div className="flex flex-col gap-1.5">
             <label className="font-semibold text-dark">Role / Credentials</label>
-            <input
-              type="text"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              placeholder="e.g. Clinical Psychologist | Trainer"
-              className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
-              required
-            />
+            <div className="flex flex-col gap-2">
+              <select
+                value={primaryRole}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setPrimaryRole(val);
+                  if (val === "custom") {
+                    setIsCustomRole(true);
+                  } else {
+                    setIsCustomRole(false);
+                  }
+                }}
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm cursor-pointer"
+                required
+              >
+                <option value="" disabled>Select primary role...</option>
+                {availableRoles.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+                <option value="custom">+ Add Custom Role...</option>
+              </select>
+
+              {isCustomRole && (
+                <input
+                  type="text"
+                  value={customRoleText}
+                  onChange={(e) => setCustomRoleText(e.target.value)}
+                  placeholder="Type new role (e.g. Art Therapist)"
+                  className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm"
+                  required
+                />
+              )}
+
+              <input
+                type="text"
+                value={extraCredentials}
+                onChange={(e) => setExtraCredentials(e.target.value)}
+                placeholder="Extra credentials (optional, e.g. Trainer | Assessor)"
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm"
+              />
+            </div>
           </div>
         </div>
 

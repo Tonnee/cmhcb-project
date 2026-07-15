@@ -31,7 +31,7 @@ const TRAINING_DATA: TrainingItemProps[] = [
 
 function TrainingItem({ title, description }: TrainingItemProps): React.JSX.Element {
   return (
-    <div className="flex gap-6 items-center">
+    <div className="flex gap-6">
       <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
         <CheckIcon className="w-6 h-6" />
       </div>
@@ -64,7 +64,7 @@ export default function Training({
         <div className="flex flex-col lg:flex-row items-center gap-y-12 gap-6">
           {/* Left: Content */}
           <div className="flex flex-col flex-1 w-full lg:pr-10 xl:pr-16">
-            <SectionHeading 
+            <SectionHeading
               subtitle="Our Training Programs"
               title={<span dangerouslySetInnerHTML={{ __html: headline }} />}
               align="left"

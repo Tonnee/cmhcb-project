@@ -1,6 +1,7 @@
 import * as React from "react";
+import Image from "next/image";
 import { Container } from "@/components/layout/container";
-import { SimplePageHeader } from "@/components/shared/simple-page-header";
+import { PageHero } from "@/components/shared/page-hero";
 import { Button } from "@/components/ui/button";
 import { Tag } from "@/components/ui/tag";
 import {
@@ -91,9 +92,8 @@ function getIconComponent(iconName: string): React.ReactNode {
 
 export function CommunityService({ data }: CommunityServiceProps): React.JSX.Element {
   const heroTitle = data?.heroTitle || "Community Service Policy & Outreach";
-  const heroSubtitle = data?.heroSubtitle || "Last Updated: May 2026";
   const heroDescription = data?.heroDescription || "At the Center for Mental Health and Care Bangladesh (CMHCB), we believe mental health support is a human right. Explore our structured community-oriented programs and the ethical guidelines that define our outreach initiatives.";
-  
+
   const introTitle = data?.introTitle || "Our Commitment to Bangladesh's Communities";
   const introDescription1 = data?.introDescription1 || "CMHCB dedicates a portion of its resources and clinical hours to pro-bono work, local community workshops, and disaster response. Through structured partnerships, we aim to bridge the mental health service gap in Bangladesh.";
   const introDescription2 = data?.introDescription2 || "Our practitioners actively volunteer to implement community support initiatives, adhering to the same high ethical standards, confidentiality, and professional competence required in our standard clinical practices.";
@@ -137,7 +137,7 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
 
   const eligibilityTitle = data?.eligibilityTitle || "Eligibility & Verification";
   const eligibilityDescription = data?.eligibilityDescription || "To ensure that our community and pro-bono services reach the individuals who need them most, we maintain a clear verification framework. Services are allocated based on these parameters:";
-  
+
   const eligibilityList = React.useMemo(() => {
     if (!data?.eligibilityItems) {
       return [
@@ -155,7 +155,7 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
 
   const guidelinesTitle = data?.guidelinesTitle || "Operational Guidelines";
   const guidelinesDescription = data?.guidelinesDescription || "CMHCB maintains strong professional boundaries in its volunteer and outreach services to guarantee safety, quality, and clinical ethics.";
-  
+
   const guidelinesList = React.useMemo(() => {
     if (!data?.guidelinesItems) {
       return [
@@ -177,54 +177,75 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
 
   return (
     <main className="bg-page-bg">
-      {/* Page Header */}
-      <SimplePageHeader
+      {/* Page Header - Full Hero with Image */}
+      <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Legal", href: "/legal/community-service" },
-          { label: "Community Service", href: "/legal/community-service" },
         ]}
+        currentPage="Community Service"
         title={heroTitle}
-        subtitle={heroSubtitle}
         description={heroDescription}
+        imageSrc="/hero-image/community-service-outreach.png"
+        imageAlt="Community Service Policy and Outreach - CMHCB"
+        ctaLabel="Partner with Us"
+        ctaHref={`mailto:${ctaEmail}`}
       />
 
-      {/* Intro Stats section */}
-      <section className="py-12 md:py-16">
+      {/* Intro Stats section with workshop image */}
+      <section className="py-20 md:py-24">
         <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 flex flex-col justify-center">
-              <h2 className="font-marcellus text-3xl text-dark mb-6">
-                {introTitle}
-              </h2>
-              <p className="font-sans text-base leading-relaxed text-light-ash mb-4">
-                {introDescription1}
-              </p>
-              <p className="font-sans text-base leading-relaxed text-light-ash">
-                {introDescription2}
-              </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
+
+            {/* Left Column: Workshop Image */}
+            <div className="relative w-full h-[350px] sm:h-[450px] lg:h-full rounded-3xl overflow-hidden bg-gray-100 shadow-md border border-muted/20 group">
+              <Image
+                src="/hero-image/community-service-seminar.png"
+                alt="Mental health awareness training camp workshop by CMHCB"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+              />
             </div>
 
-            <div className="bg-white border border-gray-100 rounded-3xl p-8 flex flex-col justify-center gap-6 shadow-sm shadow-gray-200/50">
-              {statsList.map((stat: any, idx: number) => (
-                <div
-                  key={idx}
-                  className={`flex items-center gap-4 ${idx < statsList.length - 1 ? "border-b border-gray-50 pb-4" : ""}`}
-                >
-                  <span className="text-3xl font-marcellus text-primary font-bold shrink-0">{stat.value}</span>
-                  <div>
-                    <h4 className="font-bold text-dark text-sm">{stat.title}</h4>
-                    <p className="text-xs text-light-ash">{stat.description}</p>
+            {/* Right Column: Text & Stats */}
+            <div className="flex flex-col gap-8">
+              <div>
+                <Tag variant="primary" className="mb-4">Our Commitment</Tag>
+                <h2 className="font-marcellus text-3xl md:text-4xl text-dark mb-6">
+                  {introTitle}
+                </h2>
+                <p className="font-sans text-base leading-relaxed text-light-ash mb-4">
+                  {introDescription1}
+                </p>
+                <p className="font-sans text-base leading-relaxed text-light-ash">
+                  {introDescription2}
+                </p>
+              </div>
+
+              {/* Stats card list */}
+              <div className="bg-dark-green text-white rounded-3xl p-6 md:p-8 flex flex-col gap-6 shadow-md shadow-black/10">
+                {statsList.map((stat: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className={`flex items-start gap-4 ${idx < statsList.length - 1 ? "pb-4" : ""}`}
+                  >
+                    <span className="text-3xl font-marcellus text-accent font-bold shrink-0 leading-none pt-0.5">{stat.value}</span>
+                    <div>
+                      <h4 className="font-bold text-white text-sm">{stat.title}</h4>
+                      <p className="text-xs text-white/70 mt-0.5 leading-relaxed">{stat.description}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
+
           </div>
         </Container>
       </section>
 
       {/* Grid of Outreach Pillars */}
-      <section className="py-16 md:py-24 bg-white border-y border-black/5">
+      <section className="py-20 md:py-24 bg-white border-y border-black/5">
         <Container>
           <div className="text-center max-w-2xl mx-auto mb-16">
             <Tag variant="primary" className="mb-4">Outreach Programs</Tag>
@@ -265,9 +286,10 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
       </section>
 
       {/* Guidelines and Eligibility Column Sections */}
-      <section className="py-16 md:py-24">
+      <section className="py-20 md:py-24">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+
             {/* Left Column: Eligibility */}
             <div>
               <div className="flex items-center gap-3 mb-6">
@@ -282,21 +304,22 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
                 {eligibilityDescription}
               </p>
 
-              <ul className="space-y-4">
+              {/* Wrapped in a beautiful matching card container */}
+              <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
                 {eligibilityList.map((item: any, idx: number) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary shrink-0 mt-1">
-                      <HiCheck className="w-3.5 h-3.5" />
+                  <div key={idx} className="flex items-start gap-4">
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary shrink-0 mt-0.5">
+                      <HiCheck className="w-4 h-4" />
                     </span>
                     <div>
                       <h4 className="font-sans font-semibold text-dark text-base">{item.title}</h4>
-                      <p className="font-sans text-sm text-light-ash leading-relaxed mt-0.5">
+                      <p className="font-sans text-sm text-light-ash leading-relaxed mt-1">
                         {item.description}
                       </p>
                     </div>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             {/* Right Column: Policies */}
@@ -315,17 +338,23 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
 
               <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
                 {guidelinesList.map((item: any, idx: number) => (
-                  <div key={idx}>
-                    <h4 className="font-sans font-semibold text-dark text-base mb-1 font-sans">
-                      {item.title}
-                    </h4>
-                    <p className="font-sans text-sm text-light-ash leading-relaxed">
-                      {item.description}
-                    </p>
+                  <div key={idx} className="flex items-start gap-4">
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary shrink-0 mt-0.5 font-sans text-xs font-bold font-mono">
+                      {idx + 1}
+                    </span>
+                    <div>
+                      <h4 className="font-sans font-semibold text-dark text-base mb-1">
+                        {item.title.replace(/^\d+\.\s*/, "")}
+                      </h4>
+                      <p className="font-sans text-sm text-light-ash leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
+
           </div>
         </Container>
       </section>
@@ -343,7 +372,7 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
                 <HiInboxArrowDown className="w-6 h-6" />
               </span>
               <h2 className="font-marcellus text-[32px] lg:text-[40px] leading-tight text-white">
-                {ctaTitle.split(" ").map((w: string, i: number, arr: string[]) => 
+                {ctaTitle.split(" ").map((w: string, i: number, arr: string[]) =>
                   i === arr.length - 2 || i === arr.length - 1 ? (
                     <span key={i} className="text-secondary">{i === arr.length - 2 ? " " + w : " " + w}</span>
                   ) : i === 0 ? w : " " + w

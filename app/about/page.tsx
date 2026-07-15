@@ -28,7 +28,7 @@ export default async function AboutPage(): Promise<React.JSX.Element> {
 
   const title = dbContent?.heroTitle || "Dedicated to Your Mental Well-being";
   const description = dbContent?.heroDescription || "The Center for Mental Health and Care Bangladesh (CMHCB) is a leading institution committed to providing accessible, compassionate, and high-quality psychological support to individuals and families across the nation.";
-  const imageSrc = dbContent?.heroImage || "/hero-image/psychotherapy-counseling-session.png";
+  const imageSrc = dbContent?.heroImage || "/hero-image/about-counseling-professionals.png";
 
   const missionTitle = dbContent?.missionTitle || "Our Mission";
   const missionText = dbContent?.missionText || "To empower individuals to overcome mental health challenges through compassionate, evidence-based therapy. We strive to create a safe, inclusive environment where healing begins, resilience is built, and lasting emotional well-being is achieved.";

@@ -32,7 +32,7 @@ export function MissionVision({
           <div className="w-full lg:w-1/2">
             <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[450px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm group">
               <Image
-                src="/hero-image/group-therapy-support-circle.png"
+                src="/hero-image/group-therapy-support-circle-session.png"
                 alt="Therapists engaged in a group therapy session"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -56,7 +56,7 @@ export function MissionVision({
           <div className="w-full lg:w-1/2">
             <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[450px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm group">
               <Image
-                src="/home-about-image/mental-health-therapy-client.png"
+                src="/home-about-image/mental-health-therapy-client-comfort.png"
                 alt="Client in a mental health therapy session"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"

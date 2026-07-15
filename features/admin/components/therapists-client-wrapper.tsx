@@ -68,6 +68,22 @@ export default function TherapistsClientWrapper({
     router.refresh();
   };
 
+  // Derive unique primary roles from existing therapists
+  const existingRoles = Array.from(
+    new Set(
+      initialTherapists.map((t) => t.role.split("|")[0].trim())
+    )
+  );
+  const defaultRoles = [
+    "Clinical Psychologist",
+    "Counseling Psychologist",
+    "Counselor",
+    "Psychotherapist",
+    "Child Psychologist",
+    "Psychiatrist"
+  ];
+  const allRoles = Array.from(new Set([...defaultRoles, ...existingRoles]));
+
   return (
     <div className="flex flex-col gap-8">
       {/* Header section with add button */}
@@ -190,6 +206,7 @@ export default function TherapistsClientWrapper({
               therapist={editingTherapist}
               onClose={() => setIsModalOpen(false)}
               onSuccess={handleFormSuccess}
+              availableRoles={allRoles}
             />
           </div>
         </div>

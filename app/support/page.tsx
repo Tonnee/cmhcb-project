@@ -28,6 +28,18 @@ export default async function SupportPage(): Promise<React.JSX.Element> {
   const description = dbContent?.heroDescription || "Whether you are facing a mental health crisis or seeking guidance for a loved one, CMHCB is here to help. Reach out to our emergency contacts or trained professionals for immediate assistance.";
   const imageSrc = dbContent?.heroImage || "/hero-image/group-therapy-support-circle.png";
 
+  let primaryPhone = "+8801974349569";
+  if (dbContent?.contacts) {
+    try {
+      const parsed = JSON.parse(dbContent.contacts);
+      const primary = parsed.find((c: any) => c.isPrimary) || parsed[0];
+      if (primary?.phone) {
+        primaryPhone = primary.phone;
+      }
+    } catch {}
+  }
+  const whatsappPhone = primaryPhone.replace(/\D/g, "");
+
   return (
     <main>
       {isAdmin && (
@@ -54,10 +66,10 @@ export default async function SupportPage(): Promise<React.JSX.Element> {
         description={description}
         imageSrc={imageSrc}
         imageAlt="Supportive atmosphere at CMHCB"
-        ctaLabel="Emergency Contacts"
-        ctaHref="#emergency-contacts"
+        ctaLabel="Talk to Us"
+        ctaHref={`https://wa.me/${whatsappPhone}`}
       />
-      
+
       <div id="emergency-contacts">
         <EmergencySupport
           initialContacts={dbContent?.contacts}

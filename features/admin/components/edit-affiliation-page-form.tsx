@@ -10,6 +10,8 @@ interface Partner {
   name: string;
   type: string;
   abbr: string;
+  logo?: string | null;
+  website?: string | null;
 }
 
 interface Benefit {
@@ -76,6 +78,9 @@ export default function EditAffiliationPageForm({
   const [newPartnerName, setNewPartnerName] = React.useState("");
   const [newPartnerType, setNewPartnerType] = React.useState("");
   const [newPartnerAbbr, setNewPartnerAbbr] = React.useState("");
+  const [newPartnerLogo, setNewPartnerLogo] = React.useState("");
+  const [newPartnerWebsite, setNewPartnerWebsite] = React.useState("");
+  const [isLogoUploading, setIsLogoUploading] = React.useState(false);
 
   const addPartner = () => {
     if (!newPartnerName.trim() || !newPartnerType.trim() || !newPartnerAbbr.trim()) return;
@@ -85,11 +90,15 @@ export default function EditAffiliationPageForm({
         name: newPartnerName.trim(),
         type: newPartnerType.trim(),
         abbr: newPartnerAbbr.trim(),
+        logo: newPartnerLogo.trim() || null,
+        website: newPartnerWebsite.trim() || null,
       },
     ]);
     setNewPartnerName("");
     setNewPartnerType("");
     setNewPartnerAbbr("");
+    setNewPartnerLogo("");
+    setNewPartnerWebsite("");
   };
 
   const deletePartner = (idx: number) => {
@@ -155,7 +164,7 @@ export default function EditAffiliationPageForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting || isUploading) return;
+    if (isSubmitting || isUploading || isLogoUploading) return;
 
     setIsSubmitting(true);
     setError(null);
@@ -262,12 +271,30 @@ export default function EditAffiliationPageForm({
           {partners.map((partner, idx) => (
             <div key={idx} className="flex items-center justify-between gap-4 p-3 bg-white border border-muted rounded-xl text-xs">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center font-marcellus font-bold text-primary-dark shrink-0">
-                  {partner.abbr}
+                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center font-marcellus font-bold text-primary-dark shrink-0 overflow-hidden relative">
+                  {partner.logo ? (
+                    <img
+                      src={partner.logo}
+                      alt={partner.abbr}
+                      className="w-full h-full object-contain p-1"
+                    />
+                  ) : (
+                    partner.abbr
+                  )}
                 </div>
                 <div className="flex flex-col">
                   <span className="font-semibold text-dark">{partner.name}</span>
-                  <span className="text-[10px] text-light-ash">{partner.type}</span>
+                  {partner.website && (
+                    <a
+                      href={partner.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] text-primary hover:underline truncate max-w-[150px]"
+                    >
+                      {partner.website}
+                    </a>
+                  )}
+                  <span className="text-[9px] text-light-ash/80">{partner.type}</span>
                 </div>
               </div>
               <button
@@ -313,18 +340,77 @@ export default function EditAffiliationPageForm({
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-[10px] text-light-ash">Collaboration Type</label>
+              <input
+                type="text"
+                value={newPartnerType}
+                onChange={(e) => setNewPartnerType(e.target.value)}
+                placeholder="e.g. Academic Partner"
+                className="px-3 py-1.5 border border-muted rounded-lg text-xs bg-white focus:outline-none"
+              />
+            </div>
+            
+            {/* Logo Image Upload */}
+            <div className="flex flex-col gap-1 sm:col-span-1">
+              <label className="text-[10px] text-light-ash">Partner Logo Image</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setIsLogoUploading(true);
+                    try {
+                      const url = await uploadImageToSupabase(file, "cmhcb-media");
+                      setNewPartnerLogo(url);
+                    } catch (err: any) {
+                      alert(err.message || "Failed to upload partner logo.");
+                    } finally {
+                      setIsLogoUploading(false);
+                    }
+                  }}
+                  className="w-full text-[10px] text-light-ash file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 cursor-pointer"
+                  disabled={isLogoUploading}
+                />
+                {newPartnerLogo && (
+                  <img
+                    src={newPartnerLogo}
+                    alt="Logo preview"
+                    className="w-8 h-8 rounded border border-muted object-contain bg-white shrink-0"
+                  />
+                )}
+              </div>
+              {isLogoUploading && <span className="text-[9px] text-primary animate-pulse">Uploading logo...</span>}
+            </div>
+
+            {/* Logo URL Input */}
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] text-light-ash">Logo Image URL (Or path)</label>
+              <input
+                type="text"
+                value={newPartnerLogo}
+                onChange={(e) => setNewPartnerLogo(e.target.value)}
+                placeholder="e.g. /logos/du.png"
+                className="px-3 py-1.5 border border-muted rounded-lg text-xs bg-white focus:outline-none"
+              />
+            </div>
+
+            {/* Website URL Input */}
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] text-light-ash">Website Link (Optional)</label>
               <div className="flex gap-2">
                 <input
-                  type="text"
-                  value={newPartnerType}
-                  onChange={(e) => setNewPartnerType(e.target.value)}
-                  placeholder="e.g. Academic Partner"
+                  type="url"
+                  value={newPartnerWebsite}
+                  onChange={(e) => setNewPartnerWebsite(e.target.value)}
+                  placeholder="https://du.ac.bd"
                   className="flex-1 px-3 py-1.5 border border-muted rounded-lg text-xs bg-white focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={addPartner}
-                  className="px-3 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-semibold flex items-center shrink-0 cursor-pointer"
+                  className="px-3 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-semibold flex items-center shrink-0 cursor-pointer disabled:opacity-55"
+                  disabled={isLogoUploading}
                 >
                   <HiPlus className="w-3.5 h-3.5" /> Add
                 </button>
@@ -451,7 +537,7 @@ export default function EditAffiliationPageForm({
           <div className="flex flex-col gap-2">
             {promises.map((promise, idx) => (
               <div key={idx} className="flex items-center justify-between gap-4 p-2 bg-white border border-muted rounded-lg text-xs">
-                <span className="text-dark font-sans">{promise}</span>
+                <span className="text-light-ash leading-relaxed font-sans">{promise}</span>
                 <button
                   type="button"
                   onClick={() => deletePromise(idx)}
@@ -461,13 +547,19 @@ export default function EditAffiliationPageForm({
                 </button>
               </div>
             ))}
-
-            <div className="flex gap-2 mt-2">
+            
+            {promises.length === 0 && (
+              <span className="text-xs text-light-ash/80 italic text-center py-2 bg-white border border-muted border-dashed rounded-lg">
+                No promises added yet.
+              </span>
+            )}
+            
+            <div className="flex gap-2 mt-1">
               <input
                 type="text"
                 value={newPromise}
                 onChange={(e) => setNewPromise(e.target.value)}
-                placeholder="e.g. Standardized clinical referral protocols"
+                placeholder="e.g. Shared research and events coordination"
                 className="flex-1 px-3 py-1.5 border border-muted rounded-lg text-xs bg-white focus:outline-none"
               />
               <button
@@ -475,23 +567,20 @@ export default function EditAffiliationPageForm({
                 onClick={addPromise}
                 className="px-3 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-semibold flex items-center shrink-0 cursor-pointer"
               >
-                <HiPlus className="w-3.5 h-3.5" /> Add Promise
+                <HiPlus className="w-3.5 h-3.5" /> Add
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Save Button */}
-      <div className="flex items-center justify-end border-t border-muted pt-6 mt-4">
-        <button
-          type="submit"
-          className="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-xl cursor-pointer"
-          disabled={isSubmitting || isUploading}
-        >
-          {isSubmitting ? "Saving..." : "Save Affiliation Content"}
-        </button>
-      </div>
+      <button
+        type="submit"
+        disabled={isSubmitting || isUploading || isLogoUploading}
+        className="w-full bg-primary hover:bg-primary-dark text-white font-sans text-sm font-semibold py-2.5 rounded-xl transition-colors duration-200 cursor-pointer disabled:opacity-50 mt-4"
+      >
+        {isSubmitting ? "Saving changes..." : "Save Customization Settings"}
+      </button>
     </form>
   );
 }

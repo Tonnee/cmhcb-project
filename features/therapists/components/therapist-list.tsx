@@ -1,27 +1,30 @@
 "use client";
 
 import * as React from "react";
-import { TherapistCard } from "@/components/shared/therapist-card";
-import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
+import { TherapistCard, type Therapist } from "@/components/shared/therapist-card";
+
+interface TherapistListProps {
+  therapists: Therapist[];
+}
 
 /** Returns the primary role (text before the first "|") for filter categorization */
 function getPrimaryRole(role: string): string {
   return role.split("|")[0].trim();
 }
 
-export function TherapistList(): React.JSX.Element {
+export function TherapistList({ therapists }: TherapistListProps): React.JSX.Element {
   const [activeCategory, setActiveCategory] = React.useState("All");
 
-  // Derive unique primary-role categories
+  // Derive unique primary-role categories dynamically from the actual therapists list
   const categories = [
     "All",
-    ...Array.from(new Set(THERAPISTS_DATA.map((t) => getPrimaryRole(t.role)))),
+    ...Array.from(new Set(therapists.map((t) => getPrimaryRole(t.role)))),
   ];
 
   const filteredTherapists =
     activeCategory === "All"
-      ? THERAPISTS_DATA
-      : THERAPISTS_DATA.filter(
+      ? therapists
+      : therapists.filter(
           (t) => getPrimaryRole(t.role) === activeCategory
         );
 
@@ -35,8 +38,8 @@ export function TherapistList(): React.JSX.Element {
             onClick={() => setActiveCategory(category)}
             className={`px-6 py-2.5 rounded-full font-sans text-[15px] font-medium transition-all duration-300 ${
               activeCategory === category
-                ? "bg-primary text-white shadow-sm"
-                : "bg-white text-dark border border-gray-200 hover:border-primary hover:text-primary"
+                ? "bg-primary text-white shadow-sm animate-in fade-in duration-200"
+                : "bg-white text-dark border border-gray-200 hover:border-primary hover:text-primary cursor-pointer"
             }`}
           >
             {category}

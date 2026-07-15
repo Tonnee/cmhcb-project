@@ -185,6 +185,8 @@ const AffiliationPageInputSchema = z.object({
       name: z.string().min(1, "Partner Name is required"),
       type: z.string().min(1, "Partner Type is required"),
       abbr: z.string().min(1, "Partner Abbreviation is required"),
+      logo: z.string().optional().nullable(),
+      website: z.string().optional().nullable(),
     })
   ).default([]),
   benefits: z.array(

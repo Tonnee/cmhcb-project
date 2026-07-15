@@ -72,7 +72,7 @@ export default async function ContactPage(): Promise<React.JSX.Element> {
         currentPage="Contact Us"
         title="Contact Us"
         description="We'd love to hear from you. Please reach out with any questions or inquiries."
-        imageSrc="/pages-hero-background/1.png"
+        imageSrc="/hero-image/contact-us-banner.png"
       />
 
       <Container className="py-16 md:py-24">

@@ -39,7 +39,7 @@ export function Hero({
               </p>
               <div>
                 <Button
-                  href="/appointment"
+                  href="/therapists"
                   variant="primary-dark"
                   className="rounded-full px-8 py-3 h-12 font-sans font-medium text-base transition-transform duration-300 hover:bg-dark-green"
                 >
