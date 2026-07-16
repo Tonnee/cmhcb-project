@@ -41,6 +41,11 @@ function LinkColumn({ column }: { column: FooterLinkColumn }): React.JSX.Element
           <Link
             key={link.label}
             href={link.href}
+            onClick={() => {
+              if (window.location.pathname.replace(/\/$/, "") === link.href.replace(/\/$/, "")) {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
             className={`font-sans text-sm transition-colors duration-200 ${link.isHighlighted
               ? "text-accent hover:text-white"
               : "text-white/60 hover:text-accent"
@@ -164,6 +169,11 @@ export function Footer(): React.JSX.Element | null {
               <Link
                 key={link.label}
                 href={link.href}
+                onClick={() => {
+                  if (window.location.pathname.replace(/\/$/, "") === link.href.replace(/\/$/, "")) {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }
+                }}
                 className="font-sans text-sm text-white/60 hover:text-accent transition-colors duration-200"
               >
                 {link.label}

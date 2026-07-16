@@ -113,7 +113,7 @@ export default async function TrainingDetailPage({
         imageSrc={training.bgImage || "/pages-hero-background/1.png"}
         imageAlt="Professional training at CMHCB"
         ctaLabel="Register Interest"
-        ctaHref="/contact"
+        ctaHref={`/join-training?training=${training.slug}`}
         duration={training.duration ?? undefined}
         fees={training.fees ?? undefined}
       />

@@ -62,6 +62,11 @@ const NAV_ITEMS: NavItem[] = [
     icon: HiCalendarDays,
   },
   {
+    label: "Training Requests",
+    href: "/admin/training-requests",
+    icon: HiDocumentText,
+  },
+  {
     label: "Events & Workshops",
     href: "/admin/workshops",
     icon: HiAcademicCap,

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useActionState } from "react";
 import { signInAction } from "@/app/auth/actions";
+import { HiEye, HiEyeSlash } from "react-icons/hi2";
 
 export default function LoginPage({
   searchParams,
@@ -14,6 +15,7 @@ export default function LoginPage({
   const resolvedParams = React.use(searchParams);
   const errorParam = resolvedParams.error;
   const [state, formAction, isPending] = useActionState(signInAction, null);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const displayedError =
     state?.error ||
@@ -86,16 +88,30 @@ export default function LoginPage({
                   Forgot Password?
                 </Link>
               </div>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                disabled={isPending}
-                className="mt-1 block w-full px-4 py-3 border border-muted rounded-xl text-sm font-sans shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:bg-light/30 transition-all duration-200"
-                placeholder="••••••••"
-              />
+              <div className="relative mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  required
+                  disabled={isPending}
+                  className="block w-full pl-4 pr-12 py-3 border border-muted rounded-xl text-sm font-sans shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:bg-light/30 transition-all duration-200"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-light-ash/70 hover:text-dark focus:outline-none flex items-center justify-center cursor-pointer"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <HiEyeSlash className="w-5 h-5" />
+                  ) : (
+                    <HiEye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 

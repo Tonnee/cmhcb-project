@@ -14,6 +14,7 @@ interface Appointment {
   clientName: string;
   therapistName: string;
   dateTime: string;
+  submittedAt: string;
   sessionType: string;
   status: "scheduled" | "completed" | "cancelled";
   amount: string;
@@ -25,6 +26,7 @@ const MOCK_APPOINTMENTS: Appointment[] = [
     clientName: "Tahmid Rahman",
     therapistName: "Dr. Sabrina Ahmed",
     dateTime: "June 28, 2026 at 10:00 AM",
+    submittedAt: "June 20, 2026 at 09:15 AM",
     sessionType: "Individual Therapy",
     status: "scheduled",
     amount: "BDT 2,500",
@@ -34,6 +36,7 @@ const MOCK_APPOINTMENTS: Appointment[] = [
     clientName: "Sayeeda Islam",
     therapistName: "Nusrat Jahan",
     dateTime: "June 28, 2026 at 03:00 PM",
+    submittedAt: "June 21, 2026 at 11:30 AM",
     sessionType: "Couple Counseling",
     status: "scheduled",
     amount: "BDT 3,000",
@@ -43,6 +46,7 @@ const MOCK_APPOINTMENTS: Appointment[] = [
     clientName: "Ayman Faiz",
     therapistName: "Prof. Kamal Uddin",
     dateTime: "June 27, 2026 at 11:30 AM",
+    submittedAt: "June 19, 2026 at 02:45 PM",
     sessionType: "Child Therapy",
     status: "completed",
     amount: "BDT 3,500",
@@ -52,6 +56,7 @@ const MOCK_APPOINTMENTS: Appointment[] = [
     clientName: "Mehrab Hossain",
     therapistName: "Sajid Hasan",
     dateTime: "June 26, 2026 at 05:00 PM",
+    submittedAt: "June 18, 2026 at 04:00 PM",
     sessionType: "Cognitive Behavioral Therapy",
     status: "cancelled",
     amount: "BDT 2,500",
@@ -165,6 +170,7 @@ export function AppointmentsClientWrapper(): React.JSX.Element {
                 <th className="px-6 py-4">Client</th>
                 <th className="px-6 py-4">Therapist</th>
                 <th className="px-6 py-4">Date & Time</th>
+                <th className="px-6 py-4">Date Submitted</th>
                 <th className="px-6 py-4">Session Type</th>
                 <th className="px-6 py-4">Status</th>
                 <th className="px-6 py-4 text-right">Actions</th>
@@ -177,7 +183,8 @@ export function AppointmentsClientWrapper(): React.JSX.Element {
                     <td className="px-6 py-4 font-semibold text-dark-green">{apt.id}</td>
                     <td className="px-6 py-4 font-semibold text-dark">{apt.clientName}</td>
                     <td className="px-6 py-4 text-light-ash">{apt.therapistName}</td>
-                    <td className="px-6 py-4 text-light-ash">{apt.dateTime}</td>
+                    <td className="px-6 py-4 text-accent font-medium">{apt.dateTime}</td>
+                    <td className="px-6 py-4 text-light-ash">{apt.submittedAt}</td>
                     <td className="px-6 py-4 text-light-ash">{apt.sessionType}</td>
                     <td className="px-6 py-4">
                       {apt.status === "scheduled" && (
@@ -232,7 +239,7 @@ export function AppointmentsClientWrapper(): React.JSX.Element {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-light-ash font-medium">
+                  <td colSpan={8} className="px-6 py-12 text-center text-light-ash font-medium">
                     No appointments found matching your search.
                   </td>
                 </tr>
@@ -275,6 +282,10 @@ export function AppointmentsClientWrapper(): React.JSX.Element {
               <div className="grid grid-cols-3 gap-2">
                 <span className="text-light-ash font-medium">Date & Time:</span>
                 <span className="col-span-2 text-dark">{selectedAppointment.dateTime}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <span className="text-light-ash font-medium">Date Submitted:</span>
+                <span className="col-span-2 text-dark">{selectedAppointment.submittedAt}</span>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <span className="text-light-ash font-medium">Session Type:</span>
