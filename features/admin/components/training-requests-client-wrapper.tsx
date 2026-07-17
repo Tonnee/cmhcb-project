@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { HiMagnifyingGlass, HiEye, HiCheck, HiXMark } from "react-icons/hi2";
+import { updateTrainingRequestStatusAction } from "@/app/(admin)/admin/actions";
 
 interface TrainingRequest {
   id: string;
@@ -16,54 +17,39 @@ interface TrainingRequest {
   dateTime: string;
 }
 
-const MOCK_TRAINING_REQUESTS: TrainingRequest[] = [
-  {
-    id: "TR-901",
-    clientName: "Siddiqur Rahman",
-    age: "26",
-    gender: "Male",
-    contact: "+8801711223344",
-    trainingName: "Psychological First Aid (PFA)",
-    preference: "online",
-    message: "I am a school coordinator looking to integrate mental health training.",
-    status: "pending",
-    dateTime: "July 12, 2026 at 10:00 AM",
-  },
-  {
-    id: "TR-902",
-    clientName: "Naila Yasmin",
-    age: "24",
-    gender: "Female",
-    contact: "naila@gmail.com",
-    trainingName: "Anger Management",
-    preference: "in-person",
-    message: "Interested in the weekend batch options.",
-    status: "approved",
-    dateTime: "July 11, 2026 at 03:00 PM",
-  },
-  {
-    id: "TR-903",
-    clientName: "Jamil Ahmed",
-    age: "29",
-    gender: "Male",
-    contact: "jamil@yahoo.com",
-    trainingName: "Stress Management",
-    preference: "online",
-    status: "rejected",
-    dateTime: "July 10, 2026 at 11:30 AM",
-  },
-];
 
-export function TrainingRequestsClientWrapper(): React.JSX.Element {
-  const [requests, setRequests] = React.useState<TrainingRequest[]>(MOCK_TRAINING_REQUESTS);
+export interface TrainingRequestsClientWrapperProps {
+  initialRequests: TrainingRequest[];
+}
+
+export function TrainingRequestsClientWrapper({ initialRequests }: TrainingRequestsClientWrapperProps): React.JSX.Element {
+  const [requests, setRequests] = React.useState<TrainingRequest[]>(initialRequests);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "pending" | "approved" | "rejected">("all");
   const [selectedRequest, setSelectedRequest] = React.useState<TrainingRequest | null>(null);
 
-  const handleStatusChange = (id: string, nextStatus: "approved" | "rejected"): void => {
+  const handleStatusChange = async (id: string, nextStatus: "approved" | "rejected") => {
+    const dbStatus = nextStatus === "approved" ? "APPROVED" : "REJECTED";
+    
+    // Save original state for rollback
+    const originalRequests = [...requests];
+
+    // Optimistically update
     setRequests((prev) =>
       prev.map((req) => (req.id === id ? { ...req, status: nextStatus } : req))
     );
+
+    try {
+      const res = await updateTrainingRequestStatusAction(id, dbStatus);
+      if (!res.success) {
+        alert(res.error || "Failed to update status on the server.");
+        setRequests(originalRequests);
+      }
+    } catch (err: unknown) {
+      console.error(err);
+      alert("An unexpected error occurred while saving.");
+      setRequests(originalRequests);
+    }
   };
 
   const filteredRequests = requests.filter((req) => {

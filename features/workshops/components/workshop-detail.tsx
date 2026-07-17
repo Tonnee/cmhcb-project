@@ -224,7 +224,7 @@ export default function WorkshopDetail({
                 </p>
               </div>
 
-              <WorkshopRegistrationForm workshopTitle={workshop.title} />
+              <WorkshopRegistrationForm workshopTitle={workshop.title} workshopId={workshop.id} />
             </div>
           </div>
         </div>

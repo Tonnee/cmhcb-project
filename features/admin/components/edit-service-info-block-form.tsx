@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { HiPhoto, HiPlus, HiTrash, HiDocumentText, HiXMark } from "react-icons/hi2";
@@ -83,8 +84,8 @@ export function EditServiceInfoBlockForm({
       if (!imageAlt) {
         setImageAlt(`Illustration for ${heading || "Services Page Content"}`);
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to upload image. Ensure Supabase credentials are configured.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload image. Ensure Supabase credentials are configured.");
     } finally {
       setIsUploading(false);
     }
@@ -126,8 +127,8 @@ export function EditServiceInfoBlockForm({
       } else {
         setError(res.error || "Failed to save block.");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -267,11 +268,7 @@ export function EditServiceInfoBlockForm({
       {/* Image File upload */}
       <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
         {imageUrl && (
-          <img
-            src={imageUrl}
-            alt="Preview"
-            className="w-20 h-20 rounded-xl object-cover border border-primary shrink-0 bg-white"
-          />
+          <Image src={imageUrl} alt="Preview" width={64} height={64} className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
         )}
         <div className="flex-1 flex flex-col gap-2 w-full">
           <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">

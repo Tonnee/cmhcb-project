@@ -1794,5 +1794,80 @@ export async function deleteGalleryItemAction(
   }
 }
 
+export async function updateAppointmentStatusAction(
+  id: string,
+  status: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    
+    const existing = await prisma.appointment.findUnique({ where: { id } });
+    if (!existing) {
+      return { success: false, error: "Appointment not found." };
+    }
+
+    await prisma.appointment.update({
+      where: { id },
+      data: { status },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "Appointment",
+      id,
+      existing.name,
+      `Updated appointment status for client ${existing.name} to ${status}`
+    );
+
+    revalidatePath("/admin/appointments");
+
+    return { success: true };
+  } catch (error: unknown) {
+    console.error("Error in updateAppointmentStatusAction:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Failed to update appointment status." };
+  }
+}
+
+export async function updateTrainingRequestStatusAction(
+  id: string,
+  status: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+
+    const existing = await prisma.trainingRequest.findUnique({ where: { id } });
+    if (!existing) {
+      return { success: false, error: "Training request not found." };
+    }
+
+    await prisma.trainingRequest.update({
+      where: { id },
+      data: { status },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "TrainingRequest",
+      id,
+      existing.name,
+      `Updated training request status for client ${existing.name} to ${status}`
+    );
+
+    revalidatePath("/admin/training-requests");
+
+    return { success: true };
+  } catch (error: unknown) {
+    console.error("Error in updateTrainingRequestStatusAction:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Failed to update training request status." };
+  }
+}
+
+
 
 

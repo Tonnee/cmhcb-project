@@ -1,7 +1,8 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
-import { HiPlus, HiTrash, HiXMark, HiChevronDown, HiChevronUp } from "react-icons/hi2";
+import { HiPlus, HiTrash, HiXMark } from "react-icons/hi2";
 import { upsertTrainingAction } from "@/app/(admin)/admin/actions";
 import { uploadImageToSupabase } from "@/lib/supabase";
 
@@ -56,7 +57,7 @@ export function EditTrainingForm({
   const [introDescription, setIntroDescription] = React.useState(training?.introDescription || "");
   const [duration, setDuration] = React.useState(training?.duration || "");
   const [fees, setFees] = React.useState(training?.fees || "");
-  const [variant, setVariant] = React.useState(training?.variant || "primary");
+  const [variant] = React.useState(training?.variant || "primary");
   const [imageUrl, setImageUrl] = React.useState(training?.image || "");
   const [bgImageUrl, setBgImageUrl] = React.useState(training?.bgImage || "");
   const [order, setOrder] = React.useState(training?.order ?? 0);
@@ -183,8 +184,8 @@ export function EditTrainingForm({
       const publicUrl = await uploadImageToSupabase(file);
       if (isBg) setBgImageUrl(publicUrl);
       else setImageUrl(publicUrl);
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed to upload image.");
+    } catch (err: unknown) {
+      setErrorMsg((err instanceof Error ? err.message : String(err)) || "Failed to upload image.");
     } finally {
       if (isBg) setIsUploadingBg(false);
       else setIsUploading(false);
@@ -230,8 +231,8 @@ export function EditTrainingForm({
       } else {
         setErrorMsg(res.error || "Failed to save training program details.");
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setErrorMsg((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSaving(false);
     }
@@ -517,7 +518,7 @@ export function EditTrainingForm({
             </div>
           ) : (
             <div className="text-center py-6 text-xs text-light-ash border border-dashed border-muted rounded-2xl">
-              No outline sections added yet. Click "Add Outline Section" to outline the syllabus structure.
+              No outline sections added yet. Click &ldquo;Add Outline Section&rdquo; to outline the syllabus structure.
             </div>
           )}
         </div>
@@ -577,7 +578,7 @@ export function EditTrainingForm({
             </div>
           ) : (
             <div className="text-center py-6 text-xs text-light-ash border border-dashed border-muted rounded-2xl">
-              No FAQ items added yet. Click "Add FAQ Item" to resolve common candidate queries.
+              No FAQ items added yet. Click &ldquo;Add FAQ Item&rdquo; to resolve common candidate queries.
             </div>
           )}
         </div>
@@ -591,11 +592,7 @@ export function EditTrainingForm({
             {/* Main Image */}
             <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
               {imageUrl && (
-                <img
-                  src={imageUrl}
-                  alt="Preview"
-                  className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0"
-                />
+                <Image src={imageUrl} alt="Preview" width={64} height={64} className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
               )}
               <div className="flex-1 flex flex-col gap-1">
                 <span className="font-semibold text-dark">Featured Card Image (Optional)</span>
@@ -613,11 +610,7 @@ export function EditTrainingForm({
             {/* Background Hero Image */}
             <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
               {bgImageUrl && (
-                <img
-                  src={bgImageUrl}
-                  alt="Hero Preview"
-                  className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0"
-                />
+                <Image src={bgImageUrl} alt="Background Preview" width={64} height={64} className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
               )}
               <div className="flex-1 flex flex-col gap-1">
                 <span className="font-semibold text-dark">Hero Background Image</span>

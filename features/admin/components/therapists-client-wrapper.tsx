@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
@@ -55,8 +56,8 @@ export default function TherapistsClientWrapper({
       } else {
         alert(res.error || "Failed to delete therapist record.");
       }
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      alert((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsDeleting(null);
     }
@@ -133,11 +134,7 @@ export default function TherapistsClientWrapper({
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full overflow-hidden bg-primary/10 border border-primary/20 shrink-0 relative flex items-center justify-center text-primary-dark">
                           {therapist.image ? (
-                            <img
-                              src={therapist.image}
-                              alt={therapist.name}
-                              className="w-full h-full object-cover"
-                            />
+                            <Image src={therapist.image} alt={therapist.name} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
                           ) : (
                             <HiUser className="w-5 h-5" />
                           )}
@@ -189,7 +186,7 @@ export default function TherapistsClientWrapper({
               {initialTherapists.length === 0 && (
                 <tr>
                   <td colSpan={4} className="px-6 py-12 text-center text-light-ash font-sans">
-                    No therapists registered. Click "Add Therapist" to register a practitioner.
+                    No therapists registered. Click &ldquo;Add Therapist&rdquo; to register a practitioner.
                   </td>
                 </tr>
               )}

@@ -3,11 +3,11 @@
 import * as React from "react";
 import {
   HiMagnifyingGlass,
-  HiFunnel,
   HiEye,
   HiCheck,
   HiXMark
 } from "react-icons/hi2";
+import { updateAppointmentStatusAction } from "@/app/(admin)/admin/actions";
 
 interface Appointment {
   id: string;
@@ -20,59 +20,39 @@ interface Appointment {
   amount: string;
 }
 
-const MOCK_APPOINTMENTS: Appointment[] = [
-  {
-    id: "APT-801",
-    clientName: "Tahmid Rahman",
-    therapistName: "Dr. Sabrina Ahmed",
-    dateTime: "June 28, 2026 at 10:00 AM",
-    submittedAt: "June 20, 2026 at 09:15 AM",
-    sessionType: "Individual Therapy",
-    status: "scheduled",
-    amount: "BDT 2,500",
-  },
-  {
-    id: "APT-802",
-    clientName: "Sayeeda Islam",
-    therapistName: "Nusrat Jahan",
-    dateTime: "June 28, 2026 at 03:00 PM",
-    submittedAt: "June 21, 2026 at 11:30 AM",
-    sessionType: "Couple Counseling",
-    status: "scheduled",
-    amount: "BDT 3,000",
-  },
-  {
-    id: "APT-803",
-    clientName: "Ayman Faiz",
-    therapistName: "Prof. Kamal Uddin",
-    dateTime: "June 27, 2026 at 11:30 AM",
-    submittedAt: "June 19, 2026 at 02:45 PM",
-    sessionType: "Child Therapy",
-    status: "completed",
-    amount: "BDT 3,500",
-  },
-  {
-    id: "APT-804",
-    clientName: "Mehrab Hossain",
-    therapistName: "Sajid Hasan",
-    dateTime: "June 26, 2026 at 05:00 PM",
-    submittedAt: "June 18, 2026 at 04:00 PM",
-    sessionType: "Cognitive Behavioral Therapy",
-    status: "cancelled",
-    amount: "BDT 2,500",
-  },
-];
 
-export function AppointmentsClientWrapper(): React.JSX.Element {
-  const [appointments, setAppointments] = React.useState<Appointment[]>(MOCK_APPOINTMENTS);
+export interface AppointmentsClientWrapperProps {
+  initialAppointments: Appointment[];
+}
+
+export function AppointmentsClientWrapper({ initialAppointments }: AppointmentsClientWrapperProps): React.JSX.Element {
+  const [appointments, setAppointments] = React.useState<Appointment[]>(initialAppointments);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "scheduled" | "completed" | "cancelled">("all");
   const [selectedAppointment, setSelectedAppointment] = React.useState<Appointment | null>(null);
 
-  const handleStatusChange = (id: string, nextStatus: "completed" | "cancelled") => {
+  const handleStatusChange = async (id: string, nextStatus: "completed" | "cancelled") => {
+    const dbStatus = nextStatus === "completed" ? "COMPLETED" : "CANCELLED";
+    
+    // Save original state for rollback
+    const originalAppointments = [...appointments];
+
+    // Optimistically update status
     setAppointments((prev) =>
       prev.map((apt) => (apt.id === id ? { ...apt, status: nextStatus } : apt))
     );
+
+    try {
+      const res = await updateAppointmentStatusAction(id, dbStatus);
+      if (!res.success) {
+        alert(res.error || "Failed to update status on the server.");
+        setAppointments(originalAppointments);
+      }
+    } catch (err: unknown) {
+      console.error(err);
+      alert("An unexpected error occurred while saving.");
+      setAppointments(originalAppointments);
+    }
   };
 
   const filteredAppointments = appointments.filter((apt) => {

@@ -11,8 +11,7 @@ import {
   HiLockOpen, 
   HiClock,
   HiXMark,
-  HiUserMinus,
-  HiUserPlus
+  
 } from "react-icons/hi2";
 import { 
   createAdminAccountAction, 
@@ -120,8 +119,8 @@ export default function AdminsClientWrapper({
       } else {
         setErrorMsg(res.error || "Failed to create administrator account.");
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setErrorMsg((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -163,8 +162,8 @@ export default function AdminsClientWrapper({
       } else {
         setErrorMsg(res.error || "Failed to update credentials.");
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setErrorMsg((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -203,8 +202,8 @@ export default function AdminsClientWrapper({
       } else {
         alert(res.error || "Failed to update block status.");
       }
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      alert((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     }
   };
 

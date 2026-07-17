@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { HiPlus as PlusIcon, HiPencilSquare as PencilIcon, HiTrash as TrashIcon, HiCheck as CheckIcon, HiXMark as XIcon } from "react-icons/hi2";
@@ -47,7 +48,7 @@ export function SuccessStoriesClientWrapper({
         alert(res.error || "Failed to delete success story.");
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : "An unexpected error occurred.");
+      alert(err instanceof Error ? (err instanceof Error ? err.message : String(err)) : "An unexpected error occurred.");
     } finally {
       setIsDeletingId(null);
     }
@@ -128,11 +129,7 @@ export function SuccessStoriesClientWrapper({
                     <td className="px-6 py-4.5">
                       <div className="flex items-center gap-3">
                         <div className="relative w-10 h-10 rounded-full overflow-hidden border border-muted/60 shrink-0 bg-light-ash/5">
-                          <img
-                            src={story.avatar || "/home-review/mental-health-therapy-client-woman.png"}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
+                          <Image src={story.avatar || "/home-review/mental-health-therapy-client-woman.png"} alt={story.name} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
                         </div>
                         <div className="font-semibold text-dark text-sm leading-snug">
                           {story.name}
@@ -143,7 +140,7 @@ export function SuccessStoriesClientWrapper({
                       {story.role}
                     </td>
                     <td className="px-6 py-4.5 text-sm text-light-ash max-w-sm">
-                      <p className="line-clamp-2 italic">"{story.quote}"</p>
+                      <p className="line-clamp-2 italic">&ldquo;{story.quote}&rdquo;</p>
                     </td>
                     <td className="px-6 py-4.5 text-center">
                       {story.isFeatured ? (

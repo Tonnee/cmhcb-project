@@ -22,6 +22,8 @@ function getSupabaseAdmin() {
   });
 }
 
+const WHITELISTED_SUPER_ADMIN_EMAILS = ["admin@cmhcb.org", "satonnee@gmail.com"];
+
 // Helper to authenticate the current admin session, auto-provision if needed, and check block status
 export async function getRequiredAdminSession() {
   const supabase = await createSupabaseServerClient();
@@ -40,9 +42,14 @@ export async function getRequiredAdminSession() {
 
   // Auto-provision if user exists in Supabase Auth but not in our database
   if (!adminProfile) {
-    // Check if email should default to super admin
-    const isSuperAdmin = email === "admin@cmhcb.org" || email === "satonnee@gmail.com";
-    const role = isSuperAdmin ? "super_admin" : "admin";
+    // We only auto-provision whitelisted super-admin accounts on initial login.
+    // Regular admin accounts must be created explicitly via the Super Admin management dashboard.
+    const isSuperAdmin = WHITELISTED_SUPER_ADMIN_EMAILS.includes(email.toLowerCase());
+    if (!isSuperAdmin) {
+      throw new Error("Access Denied: Your administrator account has not been registered. Please contact a super administrator.");
+    }
+
+    const role = "super_admin";
     const name = user.user_metadata?.name || user.user_metadata?.full_name || email.split("@")[0];
 
     adminProfile = await prisma.adminProfile.create({
@@ -70,7 +77,7 @@ export async function logActivity(
   adminEmail: string,
   adminName: string,
   action: "CREATE" | "UPDATE" | "DELETE" | "BLOCK" | "UNBLOCK" | "UPDATE_CREDENTIALS" | "CREATE_ADMIN",
-  targetType: "BlogPost" | "Service" | "Therapist" | "Workshop" | "LandingPageContent" | "AdminProfile" | "ServiceInfoBlock" | "Training" | "TrainingInfoBlock" | "AboutPageContent" | "ContactPageContent" | "FaqPageContent" | "PolicyPageContent" | "AffiliationPageContent" | "Testimonial" | "SupportPageContent" | "CommunityServicePageContent" | "GalleryItem",
+  targetType: "BlogPost" | "Service" | "Therapist" | "Workshop" | "LandingPageContent" | "AdminProfile" | "ServiceInfoBlock" | "Training" | "TrainingInfoBlock" | "AboutPageContent" | "ContactPageContent" | "FaqPageContent" | "PolicyPageContent" | "AffiliationPageContent" | "Testimonial" | "SupportPageContent" | "CommunityServicePageContent" | "GalleryItem" | "Appointment" | "TrainingRequest" | "WorkshopRegistration",
   targetId: string,
   targetName: string,
   details?: string

@@ -3,12 +3,16 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 
+import { createWorkshopRegistrationAction } from "@/features/workshops/actions";
+
 export interface EventRegistrationFormProps {
   eventTitle: string;
+  eventId?: string;
 }
 
 export default function EventRegistrationForm({
   eventTitle,
+  eventId,
 }: EventRegistrationFormProps): React.JSX.Element {
   const [formData, setFormData] = React.useState({
     name: "",
@@ -17,6 +21,7 @@ export default function EventRegistrationForm({
     notes: "",
   });
   const [status, setStatus] = React.useState<"idle" | "submitting" | "success">("idle");
+  const [errorMsg, setErrorMsg] = React.useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -28,9 +33,28 @@ export default function EventRegistrationForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
-    // Simulate server side form registration logic
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setStatus("success");
+    setErrorMsg("");
+
+    try {
+      const res = await createWorkshopRegistrationAction({
+        name: formData.name,
+        contact: formData.contact,
+        email: formData.email,
+        notes: formData.notes,
+        workshopId: eventId || "default-event",
+        workshopTitle: eventTitle,
+      });
+
+      if (res.success) {
+        setStatus("success");
+      } else {
+        setStatus("idle");
+        setErrorMsg(res.error || "Failed to register. Please try again.");
+      }
+    } catch (err: unknown) {
+      setStatus("idle");
+      setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred.");
+    }
   };
 
   if (status === "success") {
@@ -46,6 +70,11 @@ export default function EventRegistrationForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      {errorMsg && (
+        <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-sans font-medium border border-red-100 animate-fade-in">
+          {errorMsg}
+        </div>
+      )}
       <div className="flex flex-col gap-2">
         <label htmlFor="name" className="font-sans text-sm font-semibold text-dark ml-1">
           Full Name

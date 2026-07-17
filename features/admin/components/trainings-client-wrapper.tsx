@@ -1,7 +1,8 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
-import { HiPlus, HiPencilSquare, HiTrash, HiMagnifyingGlass, HiDocumentText } from "react-icons/hi2";
+import { HiPlus, HiPencilSquare, HiTrash, HiMagnifyingGlass } from "react-icons/hi2";
 import { EditTrainingForm } from "./edit-training-form";
 import { EditTrainingInfoBlockForm } from "./edit-training-info-block-form";
 import { deleteTrainingAction, deleteTrainingInfoBlockAction } from "@/app/(admin)/admin/actions";
@@ -79,7 +80,7 @@ export default function TrainingsClientWrapper({
         alert(res.error || "Failed to delete training program.");
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : "An unexpected error occurred.");
+      alert(err instanceof Error ? (err instanceof Error ? err.message : String(err)) : "An unexpected error occurred.");
     } finally {
       setIsDeletingId(null);
     }
@@ -115,8 +116,8 @@ export default function TrainingsClientWrapper({
       } else {
         alert(res.error || "Failed to delete block.");
       }
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      alert((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsDeletingBlockId(null);
     }
@@ -334,11 +335,7 @@ export default function TrainingsClientWrapper({
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-muted/50 shrink-0 bg-light/5">
-                              <img
-                                src={block.image}
-                                alt=""
-                                className="w-full h-full object-cover"
-                              />
+                              <Image src={block.image} alt={block.heading} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
                             </div>
                             <div className="font-semibold text-dark text-base leading-snug">
                               {block.heading}

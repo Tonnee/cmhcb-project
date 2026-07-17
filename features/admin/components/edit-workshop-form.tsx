@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { uploadImageToSupabase } from "@/lib/supabase";
@@ -59,7 +60,7 @@ export default function EditWorkshopForm({
   const [author, setAuthor] = React.useState(workshop?.author || "");
   const [tagsString, setTagsString] = React.useState<string>(() => {
     if (!workshop) return "Workshop, Mental Health";
-    const parsed = safeJsonParse<any[]>(workshop.tags, []);
+    const parsed = safeJsonParse<string[]>(workshop.tags, []);
     return Array.isArray(parsed) ? parsed.join(", ") : "";
   });
   const [isFeatured, setIsFeatured] = React.useState(workshop?.isFeatured || false);
@@ -81,7 +82,7 @@ export default function EditWorkshopForm({
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : "Failed to upload image. Ensure Supabase credentials are configured.");
+      setErrorMsg(err instanceof Error ? (err instanceof Error ? err.message : String(err)) : "Failed to upload image. Ensure Supabase credentials are configured.");
     } finally {
       setIsUploading(false);
     }
@@ -115,7 +116,7 @@ export default function EditWorkshopForm({
         tags,
         isFeatured,
         content: content || undefined,
-        gallery: workshop ? safeJsonParse<any[]>(workshop.gallery, []) : [],
+        gallery: workshop ? safeJsonParse<string[]>(workshop.gallery, []) : [],
       };
 
       // Zod validation on client
@@ -134,7 +135,7 @@ export default function EditWorkshopForm({
         setErrorMsg(result.error || "Failed to save workshop details.");
       }
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred.");
+      setErrorMsg(err instanceof Error ? (err instanceof Error ? err.message : String(err)) : "An unexpected error occurred.");
     } finally {
       setIsSaving(false);
     }
@@ -273,11 +274,7 @@ export default function EditWorkshopForm({
         {/* Image File upload */}
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
           {imageUrl && (
-            <img
-              src={imageUrl}
-              alt="Preview"
-              className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0"
-            />
+            <Image src={imageUrl} alt="Preview" width={64} height={64} className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark">Cover Image</span>

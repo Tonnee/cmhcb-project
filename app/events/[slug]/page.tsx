@@ -329,7 +329,7 @@ export default async function EventRegistrationPage({
                 </p>
               </div>
 
-              <EventRegistrationForm eventTitle={event.title} />
+              <EventRegistrationForm eventTitle={event.title} eventId={event.id} />
             </div>
           </div>
         </div>

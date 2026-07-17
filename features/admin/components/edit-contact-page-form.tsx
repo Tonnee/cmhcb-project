@@ -74,8 +74,8 @@ export default function EditContactPageForm({
       } else {
         setError(res.error || "Failed to update contact page content.");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }

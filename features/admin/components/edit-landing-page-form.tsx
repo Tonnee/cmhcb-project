@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
@@ -69,8 +70,8 @@ export default function EditLandingPageForm({
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setHeroBgImage(publicUrl);
-    } catch (err: any) {
-      setError(err.message || "Failed to upload hero background banner.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload hero background banner.");
     } finally {
       setIsUploadingBg(false);
     }
@@ -84,8 +85,8 @@ export default function EditLandingPageForm({
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setHeroFigureImage(publicUrl);
-    } catch (err: any) {
-      setError(err.message || "Failed to upload hero figure illustration.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload hero figure illustration.");
     } finally {
       setIsUploadingFigure(false);
     }
@@ -99,8 +100,8 @@ export default function EditLandingPageForm({
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setTrainingImage(publicUrl);
-    } catch (err: any) {
-      setError(err.message || "Failed to upload training display image.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload training display image.");
     } finally {
       setIsUploadingTraining(false);
     }
@@ -138,8 +139,8 @@ export default function EditLandingPageForm({
       } else {
         setError(res.error || "Failed to save landing page changes.");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -186,7 +187,7 @@ export default function EditLandingPageForm({
               required
             />
             <p className="font-sans text-[10px] text-light-ash/80 mt-1">
-              Add highlight spans like: <code>&lt;span class="text-accent"&gt;Mind&lt;/span&gt;</code> or <code>&lt;span class="text-primary"&gt;Life&lt;/span&gt;</code>
+              Add highlight spans like: <code>&lt;span class=&ldquo;text-accent&rdquo;&gt;Mind&lt;/span&gt;</code> or <code>&lt;span class=&ldquo;text-primary&rdquo;&gt;Life&lt;/span&gt;</code>
             </p>
           </div>
 
@@ -212,7 +213,7 @@ export default function EditLandingPageForm({
               <div className="flex items-center gap-4">
                 <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                   {heroBgImage ? (
-                    <img src={heroBgImage} alt="Hero BG" className="w-full h-full object-cover" />
+                    <Image src={heroBgImage} alt="Hero BG" width={800} height={400} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                       <HiPhoto className="w-6 h-6" />
@@ -242,7 +243,7 @@ export default function EditLandingPageForm({
               <div className="flex items-center gap-4">
                 <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                   {heroFigureImage ? (
-                    <img src={heroFigureImage} alt="Hero Figure" className="w-full h-full object-cover" />
+                    <Image src={heroFigureImage} alt="Hero Figure" width={800} height={400} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                       <HiPhoto className="w-6 h-6" />
@@ -412,7 +413,7 @@ export default function EditLandingPageForm({
             <div className="flex items-center gap-4">
               <div className="relative w-20 h-24 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                 {trainingImage ? (
-                  <img src={trainingImage} alt="Training Display" className="w-full h-full object-cover" />
+                  <Image src={trainingImage} alt="Training Display" width={800} height={400} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                     <HiPhoto className="w-6 h-6" />

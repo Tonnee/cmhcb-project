@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { uploadImageToSupabase } from "@/lib/supabase";
@@ -136,8 +137,8 @@ export default function EditTherapistForm({
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed to upload image. Ensure Supabase credentials are set.");
+    } catch (err: unknown) {
+      setErrorMsg((err instanceof Error ? err.message : String(err)) || "Failed to upload image. Ensure Supabase credentials are set.");
     } finally {
       setIsUploading(false);
     }
@@ -264,9 +265,13 @@ export default function EditTherapistForm({
         expertise,
         experience,
         // Strip internal serviceId markers before persisting
-        fees: fees.map(({ serviceId: _sid, ...rest }) => rest),
+        fees: fees.map((fee) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { serviceId, ...rest } = fee;
+          return rest;
+        }),
         services,
-        activities: therapist ? safeJsonParse<any[]>(therapist.activities, []) : [],
+        activities: therapist ? safeJsonParse<string[]>(therapist.activities, []) : [],
       };
 
       // Zod validation on client
@@ -285,7 +290,7 @@ export default function EditTherapistForm({
         setErrorMsg(result.error || "Failed to save therapist details.");
       }
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred.");
+      setErrorMsg(err instanceof Error ? (err instanceof Error ? err.message : String(err)) : "An unexpected error occurred.");
     } finally {
       setIsSaving(false);
     }
@@ -394,11 +399,7 @@ export default function EditTherapistForm({
         {/* Image upload */}
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
           {imageUrl && (
-            <img
-              src={imageUrl}
-              alt="Preview"
-              className="w-16 h-16 rounded-full object-cover border border-primary shrink-0"
-            />
+            <Image src={imageUrl} alt="Avatar Preview" width={64} height={64} className="w-16 h-16 rounded-full object-cover border border-primary shrink-0" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark">Profile Image</span>

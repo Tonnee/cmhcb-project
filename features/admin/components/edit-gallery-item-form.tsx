@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { HiPhoto, HiOutlineCloudArrowUp, HiXMark } from "react-icons/hi2";
@@ -52,8 +53,8 @@ export function EditGalleryItemForm({
       if (!alt.trim()) {
         setAlt(file.name.split(".")[0]);
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to upload image file.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload image file.");
     } finally {
       setIsUploading(false);
     }
@@ -88,8 +89,8 @@ export function EditGalleryItemForm({
       } else {
         setError(res.error || "Failed to save gallery item.");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -146,7 +147,7 @@ export function EditGalleryItemForm({
           <label className="font-semibold text-xs text-dark">Category</label>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value as any)}
+            onChange={(e) => setCategory(e.target.value as "event" | "workshop" | "activity" | "occasion")}
             className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
           >
             <option value="event">Event</option>
@@ -197,8 +198,8 @@ export function EditGalleryItemForm({
           )}
           {src && type === "image" && (
             <div className="mt-2 relative w-32 h-20 border border-muted rounded-lg overflow-hidden shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="Preview" className="w-full h-full object-cover" />
+              
+              <Image src={src} alt="Preview" width={400} height={300} className="w-full h-full object-cover" />
             </div>
           )}
         </div>

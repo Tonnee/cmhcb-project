@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
@@ -56,8 +57,8 @@ export default function WorkshopsClientWrapper({
       } else {
         alert(res.error || "Failed to delete workshop record.");
       }
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      alert((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsDeleting(null);
     }
@@ -111,11 +112,7 @@ export default function WorkshopsClientWrapper({
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-primary/10 shrink-0 relative flex items-center justify-center text-primary-dark">
                         {workshop.image ? (
-                          <img
-                            src={workshop.image}
-                            alt={workshop.title}
-                            className="w-full h-full object-cover"
-                          />
+                          <Image src={workshop.image} alt={workshop.title} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
                         ) : (
                           <HiCalendar className="w-5 h-5" />
                         )}
@@ -159,7 +156,7 @@ export default function WorkshopsClientWrapper({
               {initialWorkshops.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center text-light-ash font-sans">
-                    No workshops scheduled. Click "Create Workshop" to set up a new event.
+                    No workshops scheduled. Click &ldquo;Create Workshop&rdquo; to set up a new event.
                   </td>
                 </tr>
               )}

@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
@@ -155,8 +156,8 @@ export default function EditAffiliationPageForm({
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setHeroImage(publicUrl);
-    } catch (err: any) {
-      setError(err.message || "Failed to upload image.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload image.");
     } finally {
       setIsUploading(false);
     }
@@ -188,8 +189,8 @@ export default function EditAffiliationPageForm({
       } else {
         setError(res.error || "Failed to update Affiliation program page content.");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -243,11 +244,7 @@ export default function EditAffiliationPageForm({
 
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50 mt-2">
           {heroImage && (
-            <img
-              src={heroImage}
-              alt="Preview"
-              className="w-24 h-16 rounded-lg object-cover border border-primary shrink-0 bg-white"
-            />
+            <Image src={heroImage} alt="Hero Preview" width={800} height={300} className="w-full max-h-48 object-cover rounded-xl border border-muted" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark text-xs">Hero Background Image</span>
@@ -273,11 +270,7 @@ export default function EditAffiliationPageForm({
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center font-marcellus font-bold text-primary-dark shrink-0 overflow-hidden relative">
                   {partner.logo ? (
-                    <img
-                      src={partner.logo}
-                      alt={partner.abbr}
-                      className="w-full h-full object-contain p-1"
-                    />
+                    <Image src={partner.logo} alt={partner.name} width={40} height={40} className="w-10 h-10 object-contain rounded-lg border border-muted p-1 bg-white shrink-0" />
                   ) : (
                     partner.abbr
                   )}
@@ -363,8 +356,8 @@ export default function EditAffiliationPageForm({
                     try {
                       const url = await uploadImageToSupabase(file, "cmhcb-media");
                       setNewPartnerLogo(url);
-                    } catch (err: any) {
-                      alert(err.message || "Failed to upload partner logo.");
+                    } catch (err: unknown) {
+                      alert((err instanceof Error ? err.message : String(err)) || "Failed to upload partner logo.");
                     } finally {
                       setIsLogoUploading(false);
                     }
@@ -373,11 +366,7 @@ export default function EditAffiliationPageForm({
                   disabled={isLogoUploading}
                 />
                 {newPartnerLogo && (
-                  <img
-                    src={newPartnerLogo}
-                    alt="Logo preview"
-                    className="w-8 h-8 rounded border border-muted object-contain bg-white shrink-0"
-                  />
+                  <Image src={newPartnerLogo} alt="Logo Preview" width={64} height={64} className="w-16 h-16 object-contain rounded-xl border border-primary shrink-0" />
                 )}
               </div>
               {isLogoUploading && <span className="text-[9px] text-primary animate-pulse">Uploading logo...</span>}

@@ -308,3 +308,47 @@ model GalleryItem {
   lastUpdatedBy String?
 }
 
+model Appointment {
+  id         String   @id @default(cuid())
+  name       String
+  age        Int
+  gender     String
+  contact    String
+  service    String   // Service slug or title
+  therapist  String   // Therapist ID or name
+  date       String
+  time       String
+  preference String   // "online" | "in-person"
+  message    String?
+  status     String   @default("PENDING") // "PENDING", "APPROVED", "CANCELLED", "COMPLETED"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model TrainingRequest {
+  id         String   @id @default(cuid())
+  name       String
+  age        Int
+  gender     String
+  contact    String
+  training   String   // Training slug or title
+  preference String   // "online" | "in-person"
+  message    String?
+  status     String   @default("PENDING") // "PENDING", "APPROVED", "REJECTED", "CANCELLED"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model WorkshopRegistration {
+  id            String   @id @default(cuid())
+  name          String
+  contact       String
+  email         String
+  notes         String?
+  workshopId    String   // Workshop ID or slug
+  workshopTitle String
+  status        String   @default("PENDING") // "PENDING", "APPROVED", "REJECTED", "CANCELLED"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+

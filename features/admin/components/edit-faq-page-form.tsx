@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
@@ -61,8 +62,8 @@ export default function EditFaqPageForm({
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setHeroImage(publicUrl);
-    } catch (err: any) {
-      setError(err.message || "Failed to upload image.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload image.");
     } finally {
       setIsUploading(false);
     }
@@ -108,8 +109,8 @@ export default function EditFaqPageForm({
       } else {
         setError(res.error || "Failed to update FAQ page content.");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -163,11 +164,7 @@ export default function EditFaqPageForm({
 
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50 mt-2">
           {heroImage && (
-            <img
-              src={heroImage}
-              alt="Preview"
-              className="w-24 h-16 rounded-lg object-cover border border-primary shrink-0 bg-white"
-            />
+            <Image src={heroImage} alt="Hero Preview" width={800} height={300} className="w-full max-h-48 object-cover rounded-xl border border-muted" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark text-xs">Hero Background Image</span>

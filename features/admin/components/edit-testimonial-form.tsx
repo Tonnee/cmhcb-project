@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { HiChatBubbleLeftRight, HiPhoto, HiXMark } from "react-icons/hi2";
@@ -46,8 +47,8 @@ export function EditTestimonialForm({
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setAvatar(publicUrl);
-    } catch (err: any) {
-      setError(err.message || "Failed to upload avatar image.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload avatar image.");
     } finally {
       setIsUploading(false);
     }
@@ -77,8 +78,8 @@ export function EditTestimonialForm({
       } else {
         setError(res.error || "Failed to save success story.");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -144,11 +145,7 @@ export function EditTestimonialForm({
       {/* Avatar Image */}
       <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
         {avatar && (
-          <img
-            src={avatar}
-            alt="Preview"
-            className="w-16 h-16 rounded-full object-cover border border-primary shrink-0 bg-white"
-          />
+          <Image src={avatar} alt="Avatar Preview" width={64} height={64} className="w-16 h-16 rounded-full object-cover border border-primary shrink-0" />
         )}
         <div className="flex-1 flex flex-col gap-1">
           <label className="font-semibold text-dark flex items-center gap-1.5">

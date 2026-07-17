@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
-import { HiClock, HiExclamationTriangle, HiArrowRightOnRectangle } from "react-icons/hi2";
+import { HiExclamationTriangle, HiArrowRightOnRectangle } from "react-icons/hi2";
 import { signOutAction } from "@/app/auth/actions";
 
 // Default time limits in milliseconds:
@@ -15,7 +14,6 @@ const WARNING_DURATION = 30; // 30 seconds
 const STORAGE_KEY = "admin_last_active";
 
 export default function InactivityTimeout(): React.JSX.Element | null {
-  const router = useRouter();
   const [showWarning, setShowWarning] = React.useState(false);
   const [timeLeft, setTimeLeft] = React.useState(WARNING_DURATION);
   const [isSigningOut, setIsSigningOut] = React.useState(false);
@@ -81,7 +79,6 @@ export default function InactivityTimeout(): React.JSX.Element | null {
         triggerSignOut();
       } else if (elapsed >= DEFAULT_WARNING_THRESHOLD) {
         // Show warning and compute accurate seconds remaining based on elapsed time
-        const elapsedWarningTime = elapsed - DEFAULT_WARNING_THRESHOLD;
         const secondsRemaining = Math.max(
           0,
           Math.ceil((DEFAULT_INACTIVITY_LIMIT - elapsed) / 1000)

@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { uploadImageToSupabase } from "@/lib/supabase";
@@ -49,7 +50,7 @@ export default function EditBlogForm({
   const [author, setAuthor] = React.useState(post?.author || "");
   const [tagsString, setTagsString] = React.useState<string>(() => {
     if (!post) return "Wellness, Mental Health";
-    const parsed = safeJsonParse<any[]>(post.tags, []);
+    const parsed = safeJsonParse<string[]>(post.tags, []);
     return Array.isArray(parsed) ? parsed.join(", ") : "";
   });
   const [isFeatured, setIsFeatured] = React.useState(post?.isFeatured || false);
@@ -70,7 +71,7 @@ export default function EditBlogForm({
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : "Failed to upload image. Ensure Supabase credentials are configured.");
+      setErrorMsg(err instanceof Error ? (err instanceof Error ? err.message : String(err)) : "Failed to upload image. Ensure Supabase credentials are configured.");
     } finally {
       setIsUploading(false);
     }
@@ -120,7 +121,7 @@ export default function EditBlogForm({
         setErrorMsg(result.error || "Failed to save blog post details.");
       }
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred.");
+      setErrorMsg(err instanceof Error ? (err instanceof Error ? err.message : String(err)) : "An unexpected error occurred.");
     } finally {
       setIsSaving(false);
     }
@@ -220,11 +221,7 @@ export default function EditBlogForm({
         {/* Image File upload */}
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
           {imageUrl && (
-            <img
-              src={imageUrl}
-              alt="Preview"
-              className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0"
-            />
+            <Image src={imageUrl} alt="Preview" width={64} height={64} className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark">Featured Image</span>

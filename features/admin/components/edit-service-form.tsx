@@ -1,7 +1,8 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
-import { HiBriefcase, HiGlobeAlt, HiInboxStack, HiPlus, HiPhoto, HiXMark } from "react-icons/hi2";
+import { HiBriefcase, HiPhoto, HiXMark } from "react-icons/hi2";
 import { upsertServiceAction } from "@/app/(admin)/admin/actions";
 import { uploadImageToSupabase } from "@/lib/supabase";
 
@@ -76,8 +77,8 @@ export function EditServiceForm({
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setBgImageUrl(publicUrl);
-    } catch (err: any) {
-      setError(err.message || "Failed to upload background image. Ensure Supabase credentials are configured.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload background image. Ensure Supabase credentials are configured.");
     } finally {
       setIsUploadingBg(false);
     }
@@ -93,8 +94,8 @@ export function EditServiceForm({
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
-    } catch (err: any) {
-      setError(err.message || "Failed to upload image. Ensure Supabase credentials are configured.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload image. Ensure Supabase credentials are configured.");
     } finally {
       setIsUploading(false);
     }
@@ -143,8 +144,8 @@ export function EditServiceForm({
       } else {
         setError(res.error || "Failed to save service records.");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -303,11 +304,7 @@ export function EditServiceForm({
       {/* Image File upload */}
       <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
         {imageUrl && (
-          <img
-            src={imageUrl}
-            alt="Preview"
-            className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0"
-          />
+          <Image src={imageUrl} alt="Preview" width={64} height={64} className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
         )}
         <div className="flex-1 flex flex-col gap-1">
           <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
@@ -328,11 +325,7 @@ export function EditServiceForm({
       {/* Hero Background Image File upload */}
       <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
         {bgImageUrl && (
-          <img
-            src={bgImageUrl}
-            alt="Preview"
-            className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0"
-          />
+          <Image src={bgImageUrl} alt="Background Preview" width={64} height={64} className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
         )}
         <div className="flex-1 flex flex-col gap-1">
           <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">

@@ -211,8 +211,8 @@ export default function EditCommunityServicePageForm({
       } else {
         setError(res.error || "Failed to update page content.");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }

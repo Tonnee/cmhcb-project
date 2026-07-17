@@ -85,9 +85,11 @@ export default async function BlogPostPage({
         description={post.excerpt}
         ctaLabel="" // Remove CTA as requested (or just empty)
         className="bg-dark-green"
+        imageSrc={post.image}
+        imageAlt={post.title}
       >
-        <div className="flex flex-col items-center gap-6 mt-8">
-          <div className="flex flex-wrap items-center justify-center gap-6 text-white/90 font-sans text-base">
+        <div className="flex flex-col gap-6 mt-8">
+          <div className="flex flex-wrap items-center gap-6 text-white/90 font-sans text-base">
             <div className="flex items-center gap-2">
               <UserIcon className="w-5 h-5 shrink-0 text-accent" />
               <Link
@@ -103,7 +105,7 @@ export default async function BlogPostPage({
             </div>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap gap-3">
             {post.tags.map(tag => (
               <Tag key={tag} variant="glass">
                 {tag}

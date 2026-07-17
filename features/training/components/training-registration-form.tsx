@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useSearchParams } from "next/navigation";
 import { z } from "zod";
+import { createTrainingRequestAction } from "@/features/training/actions";
 
 const registrationSchema = z.object({
   name: z.string().min(1, "Full Name is required"),
@@ -60,6 +61,8 @@ function TrainingRegistrationFormContent({
     message: "",
   });
   const [errorMsg, setErrorMsg] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isSuccess, setIsSuccess] = React.useState(false);
 
   React.useEffect(() => {
     const targetSlug = queryTraining || initialTrainingSlug;
@@ -71,6 +74,23 @@ function TrainingRegistrationFormContent({
     }
   }, [queryTraining, initialTrainingSlug, trainings]);
 
+  // Render success message on confirmation
+  if (isSuccess) {
+    return (
+      <div className="bg-white p-8 md:p-12 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-primary/20 text-center animate-fade-in max-w-2xl mx-auto">
+        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <h3 className="font-marcellus text-2xl md:text-3xl text-primary-dark mb-4">Request Received!</h3>
+        <p className="font-sans text-base text-light-ash leading-relaxed">
+          Thank you! Your training program registration request has been securely submitted. Our training coordinator will review it and get in touch with you shortly.
+        </p>
+      </div>
+    );
+  }
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ): void => {
@@ -78,7 +98,7 @@ function TrainingRegistrationFormContent({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent): void => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setErrorMsg("");
 
@@ -88,7 +108,19 @@ function TrainingRegistrationFormContent({
       return;
     }
 
-    alert("Thank you! Your registration request has been submitted.");
+    setIsSubmitting(true);
+    try {
+      const res = await createTrainingRequestAction(formData);
+      if (res.success) {
+        setIsSuccess(true);
+      } else {
+        setErrorMsg(res.error || "Failed to submit request. Please try again.");
+      }
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputClasses =
@@ -245,8 +277,23 @@ function TrainingRegistrationFormContent({
         </div>
       </div>
 
-      <Button type="submit" variant="primary-dark" className="w-full py-4 text-lg cursor-pointer">
-        Submit Registration Request
+      <Button
+        type="submit"
+        variant="primary-dark"
+        className="w-full py-4 text-lg cursor-pointer flex justify-center items-center gap-2"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? (
+          <>
+            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Submitting Request...</span>
+          </>
+        ) : (
+          "Submit Registration Request"
+        )}
       </Button>
     </form>
   );

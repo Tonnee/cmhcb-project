@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
@@ -53,8 +54,8 @@ export default function BlogsClientWrapper({
       } else {
         alert(res.error || "Failed to delete blog post.");
       }
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      alert((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsDeleting(null);
     }
@@ -107,11 +108,7 @@ export default function BlogsClientWrapper({
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-primary/10 shrink-0 relative flex items-center justify-center text-primary-dark">
                         {post.image ? (
-                          <img
-                            src={post.image}
-                            alt={post.title}
-                            className="w-full h-full object-cover"
-                          />
+                          <Image src={post.image} alt={post.title} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
                         ) : (
                           <HiNewspaper className="w-5 h-5" />
                         )}
@@ -157,7 +154,7 @@ export default function BlogsClientWrapper({
               {initialPosts.length === 0 && (
                 <tr>
                   <td colSpan={4} className="px-6 py-12 text-center text-light-ash font-sans">
-                    No articles written yet. Click "Write Post" to compose your first article.
+                    No articles written yet. Click &ldquo;Write Post&rdquo; to compose your first article.
                   </td>
                 </tr>
               )}

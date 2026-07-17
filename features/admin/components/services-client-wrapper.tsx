@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import * as React from "react";
 import { HiPlus, HiPencilSquare, HiTrash, HiCheck, HiXMark } from "react-icons/hi2";
@@ -76,7 +77,7 @@ export function ServicesClientWrapper({
         alert(res.error || "Failed to delete service.");
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : "An unexpected error occurred.");
+      alert(err instanceof Error ? (err instanceof Error ? err.message : String(err)) : "An unexpected error occurred.");
     } finally {
       setIsDeletingId(null);
     }
@@ -113,8 +114,8 @@ export function ServicesClientWrapper({
       } else {
         alert(res.error || "Failed to delete block.");
       }
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      alert((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
     } finally {
       setIsDeletingBlockId(null);
     }
@@ -220,11 +221,7 @@ export function ServicesClientWrapper({
                     <td className="px-6 py-4.5">
                       <div className="flex items-center gap-3">
                         <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-muted/60 shrink-0 bg-light-ash/5">
-                          <img
-                            src={service.image || SERVICE_IMAGES[service.slug] || "/home-service-images/individual-therapy.png"}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
+                          <Image src={service.image || SERVICE_IMAGES[service.slug] || "/home-service-images/individual-therapy.png"} alt={service.title} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
                         </div>
                         <div>
                           <div className="font-semibold text-dark text-sm leading-snug">
@@ -332,11 +329,7 @@ export function ServicesClientWrapper({
                         <td className="px-6 py-4.5">
                           <div className="flex items-center gap-3">
                             <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-muted shrink-0 bg-light-ash/5">
-                              <img
-                                src={block.image}
-                                alt=""
-                                className="w-full h-full object-cover"
-                              />
+                              <Image src={block.image} alt={block.heading} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
                             </div>
                             <div className="font-semibold text-dark text-sm leading-snug">
                               {block.heading}
