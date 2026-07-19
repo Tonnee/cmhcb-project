@@ -23,4 +23,4 @@
 ## Phase 3: Accessibility & Future Work
 - [x] Add keyboard focus trap behavior to the media gallery lightbox modal inside `features/gallery/components/gallery-view.tsx`.
 - [x] Standardize email domains across the application to `cmhcbd.com`.
-- [ ] Implement Zod schema validation for forms.
+- [x] Implement Zod schema validation for forms.

@@ -2,8 +2,16 @@
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
+import { z } from "zod";
 
 import { createWorkshopRegistrationAction } from "@/features/workshops/actions";
+
+export const eventRegistrationSchema = z.object({
+  name: z.string().min(1, "Full Name is required"),
+  contact: z.string().min(1, "Contact details are required"),
+  email: z.string().email("Invalid email address"),
+  notes: z.string().optional(),
+});
 
 export interface EventRegistrationFormProps {
   eventTitle: string;
@@ -32,9 +40,15 @@ export default function EventRegistrationForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("submitting");
     setErrorMsg("");
 
+    const validation = eventRegistrationSchema.safeParse(formData);
+    if (!validation.success) {
+      setErrorMsg(validation.error.issues.map((issue) => issue.message).join(", "));
+      return;
+    }
+
+    setStatus("submitting");
     try {
       const res = await createWorkshopRegistrationAction({
         name: formData.name,

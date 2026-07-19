@@ -8,7 +8,7 @@ import { getAllServicesForFormAction, getAllTherapistsForFormAction } from "@/ap
 import { z } from "zod";
 import { createAppointmentAction } from "@/features/appointment/actions";
 
-const appointmentSchema = z.object({
+export const appointmentSchema = z.object({
   name: z.string().min(1, "Full Name is required"),
   age: z.string().refine((val) => {
     const num = Number(val);

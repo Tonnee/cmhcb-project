@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
-import FeatureCard from "@/components/shared/feature-card";
+import FeatureCard, { type FeatureCardVariant } from "@/components/shared/feature-card";
 import { TrainingApproachBlock } from "@/features/training/components/training-approach-block";
 
 interface AllTrainingsProps {
@@ -11,7 +11,7 @@ interface AllTrainingsProps {
     heroDescription: string;
     duration: string;
     fees: string;
-    variant: string;
+    variant: FeatureCardVariant;
   }[];
 }
 
@@ -32,7 +32,7 @@ export function AllTrainings({ trainings }: AllTrainingsProps): React.JSX.Elemen
               duration={training.duration}
               fees={training.fees}
               href={`/training/${training.slug}`}
-              variant={index === 0 ? "accent" : (training.variant as any)}
+              variant={index === 0 ? "accent" : training.variant}
             />
           ))}
           <TrainingApproachBlock />

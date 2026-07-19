@@ -43,6 +43,15 @@ const EMERGENCY_CONTACTS: EmergencyContact[] = [
   },
 ];
 
+interface ContactInput {
+  title: string;
+  description: string;
+  phone: string;
+  hours: string;
+  iconName: string;
+  isPrimary?: boolean;
+}
+
 interface EmergencySupportProps {
   initialContacts?: string;
   initialAdvisoryText?: string;
@@ -57,7 +66,7 @@ export function EmergencySupport({
       try {
         const parsed = JSON.parse(initialContacts);
         if (Array.isArray(parsed)) {
-          return parsed.map((c: any) => ({
+          return parsed.map((c: ContactInput) => ({
             title: c.title,
             description: c.description,
             phone: c.phone,
