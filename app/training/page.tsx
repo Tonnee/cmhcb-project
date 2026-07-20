@@ -38,8 +38,8 @@ export default async function TrainingPage(): Promise<React.JSX.Element> {
         description="CMHCB offers a range of professional training programs designed to equip individuals with practical mental health knowledge and skills — from psychological first aid to advanced counselling techniques."
         imageSrc="/training_hero.png"
         imageAlt="CMHCB training programme participants"
-        ctaLabel="View Programs"
-        ctaHref="#trainings-heading"
+        ctaLabel="Join Training"
+        ctaHref="/join-training"
       />
       <AllTrainings trainings={mappedTrainings} />
       <TrainingInfoSection infoBlocks={infoBlocks} />

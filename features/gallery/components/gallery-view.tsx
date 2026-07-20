@@ -24,14 +24,18 @@ export default function GalleryView({ initialItems }: GalleryViewProps): React.J
   const modalRef = React.useRef<HTMLDivElement | null>(null);
   const lastFocusedElementRef = React.useRef<HTMLElement | null>(null);
 
-  // Compute dynamic categories based on loaded items
+  // Compute dynamic categories based on standard presets and loaded items
   const dynamicCategories = React.useMemo(() => {
+    const standardCats = ["event", "workshop", "activity", "occasion", "others"];
     const uniqueCats = Array.from(
-      new Set(itemsList.map((item) => item.category.trim().toLowerCase()))
+      new Set([
+        ...standardCats,
+        ...itemsList.map((item) => item.category.trim().toLowerCase())
+      ])
     ).filter(Boolean);
 
     // Predefined order for standard categories, others sorted alphabetically at the end
-    const orderPreset = ["event", "workshop", "activity", "occasion"];
+    const orderPreset = ["event", "workshop", "activity", "occasion", "others"];
     uniqueCats.sort((a, b) => {
       const idxA = orderPreset.indexOf(a);
       const idxB = orderPreset.indexOf(b);
@@ -47,6 +51,7 @@ export default function GalleryView({ initialItems }: GalleryViewProps): React.J
       workshop: "Workshops",
       activity: "Activities",
       occasion: "Occasions",
+      others: "Others",
     };
 
     const formatted = uniqueCats.map((cat) => ({

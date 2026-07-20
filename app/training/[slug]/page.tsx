@@ -7,6 +7,21 @@ import { Faq } from "@/components/shared/faq";
 import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
 
+const TRAINING_SLUG_IMAGE_MAP: Record<string, string> = {
+  "psychological-first-aid": "/pages-hero-background/psychological-first-aid.png",
+  "anger-management": "/pages-hero-background/anger-management.png",
+  "stress-management": "/pages-hero-background/stress-management.png",
+  "relaxation": "/pages-hero-background/relaxation.png",
+  "helping-children-self-confidence": "/pages-hero-background/helping-children-self-confidence.png",
+  "managing-childrens-misbehavior": "/pages-hero-background/managing-childrens-misbehavior.png",
+  "study-skills": "/pages-hero-background/training-default.png",
+  "basic-counseling-skills": "/pages-hero-background/basic-counseling-skills.png",
+  "child-development-parenting": "/pages-hero-background/child-development-parenting.png",
+  "how-to-be-a-good-communicator": "/pages-hero-background/training-default.png",
+  "burnout-management": "/pages-hero-background/burnout-management.png",
+  "creative-therapy": "/pages-hero-background/creative-therapy.png",
+};
+
 interface TrainingDetailPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -110,7 +125,7 @@ export default async function TrainingDetailPage({
         currentPage={training.heroTitle}
         title={training.heroTitle}
         description={training.heroDescription}
-        imageSrc={training.bgImage || "/pages-hero-background/1.png"}
+        imageSrc={TRAINING_SLUG_IMAGE_MAP[training.slug] ?? training.bgImage ?? "/pages-hero-background/training-default.png"}
         imageAlt="Professional training at CMHCB"
         ctaLabel="Register Interest"
         ctaHref={`/join-training?training=${training.slug}`}

@@ -9,55 +9,55 @@ export interface Testimonial {
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: "testimonial-1",
-    name: "John Doe",
-    role: "HR Manager",
+    name: "Nadia Rahman",
+    role: "Corporate HR Manager",
     avatar: "/home-review/mental-health-therapy-client-woman.png",
     quote:
       "CMHC,B gave me a safe space to express myself without judgment. My therapist truly understood what I was going through. I feel stronger and more in control of my life now.",
   },
   {
     id: "testimonial-2",
-    name: "Jane Smith",
-    role: "Teacher",
+    name: "Tariqul Islam",
+    role: "University Student",
     avatar: "/home-review/mental-health-therapy-client-man.png",
     quote:
-      "The training programs at CMHC,B transformed my understanding of mental health. I now support my students with greater empathy and confidence every single day.",
+      "The training programs at CMHC,B transformed my understanding of mental health. I now support my peers with greater empathy and confidence every single day.",
   },
   {
     id: "testimonial-3",
-    name: "Sarah Johnson",
-    role: "Software Engineer",
+    name: "Farhana Akter",
+    role: "School Teacher",
     avatar: "/home-review/mental-health-therapy-client-woman.png",
     quote:
       "I was hesitant at first, but the supportive environment at CMHC,B made all the difference. My therapist helped me develop coping strategies that truly changed my daily life.",
   },
   {
     id: "testimonial-4",
-    name: "Michael Chen",
-    role: "Business Analyst",
+    name: "Sajid Hasan",
+    role: "Software Engineer",
     avatar: "/home-review/mental-health-therapy-client-man.png",
     quote:
       "I struggled with anxiety for years, but CMHCB's structured approach finally gave me the tools I needed. Their team is exceptionally professional and caring.",
   },
   {
     id: "testimonial-5",
-    name: "Emily Rodriguez",
-    role: "Nurse",
+    name: "Rubina Yasmin",
+    role: "Staff Nurse",
     avatar: "/home-review/mental-health-therapy-client-woman.png",
     quote:
       "The compassionate care provided by my therapist was truly life-changing. Highly recommend their services to anyone looking for a safe space to heal.",
   },
   {
     id: "testimonial-6",
-    name: "David Wilson",
-    role: "University Student",
+    name: "Imran Mahmud",
+    role: "Business Analyst",
     avatar: "/home-review/mental-health-therapy-client-man.png",
     quote:
       "The support groups offered by CMHCB made me realize I wasn't alone. Truly a welcoming community that focuses on sustainable growth.",
   },
   {
     id: "testimonial-7",
-    name: "Sophia Lee",
+    name: "Aisha Siddiqua",
     role: "Graphic Designer",
     avatar: "/home-review/mental-health-therapy-client-woman.png",
     quote:
@@ -65,7 +65,7 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "testimonial-8",
-    name: "James Thompson",
+    name: "Tanvir Ahmed",
     role: "Entrepreneur",
     avatar: "/home-review/mental-health-therapy-client-man.png",
     quote:
@@ -73,7 +73,7 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "testimonial-9",
-    name: "Olivia Martinez",
+    name: "Sadia Hossain",
     role: "Social Worker",
     avatar: "/home-review/mental-health-therapy-client-woman.png",
     quote:

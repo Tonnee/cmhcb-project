@@ -34,12 +34,12 @@ export function EditGalleryItemForm({
   const [alt, setAlt] = React.useState(initialItem?.alt || "");
   const [caption, setCaption] = React.useState(initialItem?.caption || "");
   const [categorySelect, setCategorySelect] = React.useState<string>(
-    ["event", "workshop", "activity", "occasion"].includes(initialItem?.category || "event")
+    ["event", "workshop", "activity", "occasion", "others"].includes(initialItem?.category || "event")
       ? (initialItem?.category || "event")
       : "custom"
   );
   const [customCategory, setCustomCategory] = React.useState<string>(
-    ["event", "workshop", "activity", "occasion"].includes(initialItem?.category || "")
+    ["event", "workshop", "activity", "occasion", "others"].includes(initialItem?.category || "")
       ? ""
       : (initialItem?.category || "")
   );
@@ -172,6 +172,7 @@ export function EditGalleryItemForm({
             <option value="workshop">Workshop</option>
             <option value="activity">Activity</option>
             <option value="occasion">Occasion</option>
+            <option value="others">Others</option>
             <option value="custom">+ Add Custom Category...</option>
           </select>
         </div>
