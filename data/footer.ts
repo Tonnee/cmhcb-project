@@ -20,6 +20,7 @@ export const FOOTER_LINK_COLUMNS: FooterLinkColumn[] = [
     links: [
       { label: "Book Appointment", href: "/appointment" },
       { label: "Join Training", href: "/join-training" },
+      { label: "Support", href: "/support" },
       { label: "About Us", href: "/about" },
       { label: "Our Therapists", href: "/therapists" },
       { label: "Affiliation", href: "/affiliation" },
@@ -29,7 +30,6 @@ export const FOOTER_LINK_COLUMNS: FooterLinkColumn[] = [
   {
     title: "Resources & Support",
     links: [
-      { label: "Support", href: "/support" },
       { label: "Events & Workshops", href: "/events" },
       { label: "Blog", href: "/blog" },
       { label: "FAQs", href: "/faqs" },

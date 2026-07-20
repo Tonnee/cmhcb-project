@@ -30,6 +30,18 @@ export default function GalleryView({ initialItems }: GalleryViewProps): React.J
       new Set(itemsList.map((item) => item.category.trim().toLowerCase()))
     ).filter(Boolean);
 
+    // Predefined order for standard categories, others sorted alphabetically at the end
+    const orderPreset = ["event", "workshop", "activity", "occasion"];
+    uniqueCats.sort((a, b) => {
+      const idxA = orderPreset.indexOf(a);
+      const idxB = orderPreset.indexOf(b);
+      
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+
     const labelMap: Record<string, string> = {
       event: "Events",
       workshop: "Workshops",
