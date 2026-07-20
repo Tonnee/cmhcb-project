@@ -35,7 +35,7 @@ export function TrainingRegistrationForm({
   initialTrainingSlug,
 }: TrainingRegistrationFormProps): React.JSX.Element {
   return (
-    <React.Suspense fallback={<div className="p-10 bg-white rounded-[32px] h-[500px] animate-pulse" />}>
+    <React.Suspense fallback={<div className="p-10 bg-white rounded-4xl h-500 animate-pulse" />}>
       <TrainingRegistrationFormContent
         trainings={trainings}
         initialTrainingSlug={initialTrainingSlug}
@@ -77,7 +77,7 @@ function TrainingRegistrationFormContent({
   // Render success message on confirmation
   if (isSuccess) {
     return (
-      <div className="bg-white p-8 md:p-12 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-primary/20 text-center animate-fade-in max-w-2xl mx-auto">
+      <div className="bg-white p-8 md:p-12 rounded-4xl shadow-card-xl border border-primary/20 text-center animate-fade-in max-w-2xl mx-auto">
         <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
           <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
@@ -130,7 +130,7 @@ function TrainingRegistrationFormContent({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-6 md:p-10 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-muted/30"
+      className="bg-white p-6 md:p-10 rounded-4xl shadow-card-xl border border-muted/30"
     >
       {errorMsg && (
         <div className="mb-6 bg-red-50 text-red-600 p-4 rounded-xl text-sm font-sans font-medium border border-red-100">

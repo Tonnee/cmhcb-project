@@ -59,12 +59,36 @@ function LinkColumn({ column }: { column: FooterLinkColumn }): React.JSX.Element
   );
 }
 
-export function Footer(): React.JSX.Element | null {
+export interface FooterContactInfo {
+  phone: string;
+  email: string;
+  address: string[];
+  socials: {
+    Facebook: string;
+    Instagram: string;
+    Twitter: string;
+    LinkedIn: string;
+  };
+}
+
+export function Footer({ contactInfo }: { contactInfo?: FooterContactInfo | null }): React.JSX.Element | null {
   const pathname = usePathname();
 
   if (pathname?.startsWith("/admin") || pathname === "/login" || pathname === "/forgot-password") {
     return null;
   }
+
+  const phone = contactInfo?.phone || CONTACT_INFO.phone;
+  const email = contactInfo?.email || CONTACT_INFO.email;
+  const address = contactInfo?.address || CONTACT_INFO.address;
+
+  const socialLinks: SocialLinkType[] = [
+    { label: "Facebook", href: contactInfo?.socials?.Facebook || "https://facebook.com" },
+    { label: "Instagram", href: contactInfo?.socials?.Instagram || "https://instagram.com" },
+    { label: "Twitter", href: contactInfo?.socials?.Twitter || "https://x.com" },
+    { label: "LinkedIn", href: contactInfo?.socials?.LinkedIn || "https://linkedin.com" },
+    { label: "YouTube", href: "https://youtube.com" },
+  ];
 
   return (
     <footer className="bg-footer-bg mt-auto border-t-4 border-primary">
@@ -95,7 +119,7 @@ export function Footer(): React.JSX.Element | null {
             </p>
 
             <div className="flex items-center gap-6 mt-2">
-              {SOCIAL_LINKS.map((social: SocialLinkType) => (
+              {socialLinks.map((social: SocialLinkType) => (
                 <a
                   key={social.label}
                   href={social.href}
@@ -130,10 +154,10 @@ export function Footer(): React.JSX.Element | null {
                 </div>
                 <div className="pt-1 md:pt-1.5">
                   <p className="font-sans text-sm leading-relaxed text-white/70 transition-colors">
-                    {CONTACT_INFO.address.map((line, idx) => (
+                    {address.map((line, idx) => (
                       <React.Fragment key={idx}>
                         {line}
-                        {idx < CONTACT_INFO.address.length - 1 && <br />}
+                        {idx < address.length - 1 && <br />}
                       </React.Fragment>
                     ))}
                   </p>
@@ -144,8 +168,8 @@ export function Footer(): React.JSX.Element | null {
                 <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
                   <PhoneIcon />
                 </div>
-                <a href={`tel:${CONTACT_INFO.phone}`} className="font-sans text-sm text-white/70 group-hover:text-accent transition-colors">
-                  {CONTACT_INFO.phone}
+                <a href={`tel:${phone.replace(/\s+/g, "")}`} className="font-sans text-sm text-white/70 group-hover:text-accent transition-colors">
+                  {phone}
                 </a>
               </div>
 
@@ -153,8 +177,8 @@ export function Footer(): React.JSX.Element | null {
                 <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-dark transition-colors">
                   <EmailIcon />
                 </div>
-                <a href={`mailto:${CONTACT_INFO.email}`} className="font-sans text-sm text-white/70 group-hover:text-accent transition-colors">
-                  {CONTACT_INFO.email}
+                <a href={`mailto:${email}`} className="font-sans text-sm text-white/70 group-hover:text-accent transition-colors">
+                  {email}
                 </a>
               </div>
             </address>

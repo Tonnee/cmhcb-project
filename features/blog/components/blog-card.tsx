@@ -23,7 +23,7 @@ export function BlogCard({ post, className = "" }: BlogCardProps): React.JSX.Ele
         aria-label={post.title}
       />
 
-      <div className="relative w-full h-[240px] overflow-hidden shrink-0 pointer-events-none">
+      <div className="relative w-full h-60 overflow-hidden shrink-0 pointer-events-none">
         <Image
           src={post.image}
           alt={post.title}

@@ -224,7 +224,7 @@ export default function GalleryView({ initialItems }: GalleryViewProps): React.J
               tabIndex={0}
               role="button"
               aria-label={`View ${item.caption}`}
-              className="group relative aspect-[4/3] rounded-[24px] overflow-hidden bg-muted border border-muted/20 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              className="group relative aspect-4/3 rounded-3xl overflow-hidden bg-muted border border-muted/20 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               {/* Media Content */}
               {item.type === "image" ? (
@@ -259,8 +259,8 @@ export default function GalleryView({ initialItems }: GalleryViewProps): React.J
               </div>
 
               {/* Hover Caption Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-green-overlay via-dark-green-overlay/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 z-10 pointer-events-none">
-                <span className="self-start font-sans font-bold text-[10px] uppercase tracking-widest text-accent bg-accent/20 border border-accent/20 px-2.5 py-1 rounded-full mb-3 select-none">
+              <div className="absolute inset-0 bg-linear-to-t from-dark-green-overlay via-dark-green-overlay/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 z-10 pointer-events-none">
+                <span className="self-start font-sans font-bold text-2xs uppercase tracking-widest text-accent bg-accent/20 border border-accent/20 px-2.5 py-1 rounded-full mb-3 select-none">
                   {item.category}
                 </span>
                 <p className="font-sans text-sm text-white/95 leading-relaxed translate-y-4 group-hover:translate-y-0 transition-transform duration-300 line-clamp-2">
@@ -285,30 +285,30 @@ export default function GalleryView({ initialItems }: GalleryViewProps): React.J
           ref={modalRef}
           tabIndex={-1}
           onClick={handleCloseModal}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm transition-all duration-300 animate-fade-in cursor-zoom-out focus:outline-none"
+          className="fixed inset-0 z-100 flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm transition-all duration-300 animate-fade-in cursor-zoom-out focus:outline-none"
         >
           {/* Close Button */}
           <button
             onClick={handleCloseModal}
-            className="absolute top-6 right-6 z-[110] w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 flex items-center justify-center transition-colors cursor-pointer text-xl"
+            className="absolute top-6 right-6 z-110 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 flex items-center justify-center transition-colors cursor-pointer text-xl"
             aria-label="Close modal"
           >
             <HiXMark className="w-6 h-6" />
           </button>
-
+ 
           {/* Navigation Controls */}
           {filteredItems.length > 1 && (
             <>
               <button
                 onClick={handlePrev}
-                className="absolute left-4 md:left-8 z-[110] w-14 h-14 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/5 flex items-center justify-center transition-colors cursor-pointer text-2xl"
+                className="absolute left-4 md:left-8 z-110 w-14 h-14 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/5 flex items-center justify-center transition-colors cursor-pointer text-2xl"
                 aria-label="Previous media"
               >
                 <HiChevronLeft className="w-7 h-7" />
               </button>
               <button
                 onClick={handleNext}
-                className="absolute right-4 md:right-8 z-[110] w-14 h-14 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/5 flex items-center justify-center transition-colors cursor-pointer text-2xl"
+                className="absolute right-4 md:right-8 z-110 w-14 h-14 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/5 flex items-center justify-center transition-colors cursor-pointer text-2xl"
                 aria-label="Next media"
               >
                 <HiChevronRight className="w-7 h-7" />
@@ -319,7 +319,7 @@ export default function GalleryView({ initialItems }: GalleryViewProps): React.J
           {/* Content Wrapper */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] h-[60vh] md:h-[70vh] flex items-center justify-center cursor-default"
+            className="relative w-full max-w-90vw md:max-w-80vw lg:max-w-70vw h-60vh md:h-70vh flex items-center justify-center cursor-default"
           >
             {activeItem.type === "image" ? (
               <div className="relative w-full h-full transition-transform duration-300 scale-95 md:scale-100">
@@ -344,7 +344,7 @@ export default function GalleryView({ initialItems }: GalleryViewProps): React.J
           {/* Caption Details */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className="mt-6 text-center max-w-[80vw] md:max-w-2xl px-6 pointer-events-none"
+            className="mt-6 text-center max-w-80vw md:max-w-2xl px-6 pointer-events-none"
           >
             <span className="inline-block font-sans font-bold text-xs uppercase tracking-widest text-accent bg-accent/15 border border-accent/20 px-3 py-1 rounded-full mb-3 select-none">
               {activeItem.category}

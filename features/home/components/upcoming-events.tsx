@@ -27,7 +27,7 @@ function EventCard({ title, date, time, colorMode, description, isInfoCard = fal
   const textClass = colorMode === "accent" ? "text-dark" : "text-white";
 
   return (
-    <div className={`min-h-[280px] h-full rounded-[24px] p-6 flex flex-col justify-between ${bgClass}`}>
+    <div className={`min-h-[280px] h-full rounded-3xl p-6 flex flex-col justify-between ${bgClass}`}>
       {isInfoCard ? (
         <>
           <h3 className={`font-marcellus text-3xl leading-8 ${textClass}`}>
@@ -243,7 +243,7 @@ export function UpcomingEvents({
 
           {/* Right side - Event image */}
           <div className="shrink-0 w-full lg:w-[474px]">
-            <div className="relative w-full h-[350px] lg:h-full rounded-[24px] overflow-hidden bg-gray-100">
+            <div className="relative w-full h-[350px] lg:h-full rounded-3xl overflow-hidden bg-gray-100">
               <Image
                 src={featured.image || "/understanding-anxiety-workshop-event.png"}
                 alt={featured.title}
@@ -260,7 +260,7 @@ export function UpcomingEvents({
           {displayGrid.map((event) => {
             if (event.isImageCard) {
               return (
-                <div key={event.id} className="relative min-h-[280px] h-full rounded-[24px] overflow-hidden bg-gray-100 border border-muted/30 hover:shadow-xs transition-shadow duration-300">
+                <div key={event.id} className="relative min-h-[280px] h-full rounded-3xl overflow-hidden bg-gray-100 border border-muted/30 hover:shadow-xs transition-shadow duration-300">
                   <Image
                     src={event.image}
                     alt="CMHCB Event"

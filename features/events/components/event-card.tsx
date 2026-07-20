@@ -17,7 +17,7 @@ export function EventCard({ event, className = "" }: EventCardProps): React.JSX.
       href={`/events/${event.slug}`} 
       className={`group flex flex-col bg-white rounded-3xl overflow-hidden border border-gray-100 ${className}`}
     >
-      <div className="relative w-full h-[240px] overflow-hidden shrink-0">
+      <div className="relative w-full h-60 overflow-hidden shrink-0">
         <Image
           src={event.image}
           alt={event.title}

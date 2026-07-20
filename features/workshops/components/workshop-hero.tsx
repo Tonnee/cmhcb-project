@@ -27,10 +27,10 @@ export default function WorkshopHero({ featuredWorkshop }: WorkshopHeroProps): R
           ]}
         />
 
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-[86px]">
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-86">
           {/* Left side - Featured Image */}
-          <div className="shrink-0 w-full lg:w-[474px] flex flex-col">
-            <div className="relative w-full min-h-[350px] flex-1 rounded-[24px] overflow-hidden bg-gray-100 group">
+          <div className="shrink-0 w-full lg:w-474 flex flex-col">
+            <div className="relative w-full min-h-350 flex-1 rounded-3xl overflow-hidden bg-gray-100 group">
               <Image
                 src={featuredWorkshop.image}
                 alt={featuredWorkshop.title}
@@ -55,7 +55,7 @@ export default function WorkshopHero({ featuredWorkshop }: WorkshopHeroProps): R
               {isUpcoming ? "Upcoming Workshop" : "Past Workshop"}
             </p>
 
-            <h1 className="font-marcellus text-3xl md:text-[40px] leading-tight text-dark mb-6 max-w-[500px]">
+            <h1 className="font-marcellus text-3xl md:text-40px leading-tight text-dark mb-6 max-w-500">
               {featuredWorkshop.title}
             </h1>
 

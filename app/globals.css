@@ -22,6 +22,33 @@
   --text-hero-heading: 54px;
   --text-hero-heading--line-height: 1.1;
   --spacing-hero-image: 380px;
+
+  --aspect-4\/3: 4 / 3;
+  --text-2xs: 0.625rem;
+  --z-100: 100;
+  --z-110: 110;
+
+  /* Custom Spacing Tokens */
+  --spacing-86: 86px;
+  --spacing-350: 350px;
+  --spacing-420: 420px;
+  --spacing-474: 474px;
+  --spacing-500: 500px;
+  --spacing-90vw: 90vw;
+  --spacing-80vw: 80vw;
+  --spacing-70vw: 70vw;
+  --spacing-60vh: 60vh;
+  --spacing-70vh: 70vh;
+
+  /* Custom Font Size Tokens */
+  --text-15px: 15px;
+  --text-40px: 40px;
+
+  /* Custom Box Shadow Tokens */
+  --shadow-card-xl: 0 20px 50px rgba(0, 0, 0, 0.05);
+  --shadow-primary-glow: 0 12px 40px rgba(3, 83, 0, 0.12);
+  --shadow-primary-glow-hover: 0 16px 48px rgba(3, 83, 0, 0.18);
+  --shadow-light-glow-hover: 0 12px 40px rgba(0, 0, 0, 0.04);
 }
 
 @utility container {

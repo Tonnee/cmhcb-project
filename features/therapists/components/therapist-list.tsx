@@ -50,7 +50,7 @@ export function TherapistList({ therapists }: TherapistListProps): React.JSX.Ele
       {/* Grid */}
       <div className="flex flex-wrap justify-center gap-6">
         {filteredTherapists.map((therapist) => (
-          <div key={therapist.id} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] max-w-[320px] sm:max-w-none mx-auto sm:mx-0 mb-10">
+          <div key={therapist.id} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] max-w-xs sm:max-w-none mx-auto sm:mx-0 mb-10">
             <TherapistCard
               therapist={therapist}
               className="w-full"
