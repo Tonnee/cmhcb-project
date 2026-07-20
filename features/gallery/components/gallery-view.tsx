@@ -11,13 +11,7 @@ import {
   HiMagnifyingGlass,
 } from "react-icons/hi2";
 
-const CATEGORIES = [
-  { id: "all", label: "All Media" },
-  { id: "event", label: "Events" },
-  { id: "workshop", label: "Workshops" },
-  { id: "activity", label: "Activities" },
-  { id: "occasion", label: "Occasions" },
-];
+
 
 interface GalleryViewProps {
   initialItems?: GalleryItem[];
@@ -30,10 +24,31 @@ export default function GalleryView({ initialItems }: GalleryViewProps): React.J
   const modalRef = React.useRef<HTMLDivElement | null>(null);
   const lastFocusedElementRef = React.useRef<HTMLElement | null>(null);
 
+  // Compute dynamic categories based on loaded items
+  const dynamicCategories = React.useMemo(() => {
+    const uniqueCats = Array.from(
+      new Set(itemsList.map((item) => item.category.trim().toLowerCase()))
+    ).filter(Boolean);
+
+    const labelMap: Record<string, string> = {
+      event: "Events",
+      workshop: "Workshops",
+      activity: "Activities",
+      occasion: "Occasions",
+    };
+
+    const formatted = uniqueCats.map((cat) => ({
+      id: cat,
+      label: labelMap[cat] || cat.charAt(0).toUpperCase() + cat.slice(1),
+    }));
+
+    return [{ id: "all", label: "All Media" }, ...formatted];
+  }, [itemsList]);
+
   // Filter items based on selected category
   const filteredItems = React.useMemo(() => {
     if (selectedCategory === "all") return itemsList;
-    return itemsList.filter((item) => item.category === selectedCategory);
+    return itemsList.filter((item) => item.category.trim().toLowerCase() === selectedCategory);
   }, [selectedCategory, itemsList]);
 
   const handleItemClick = (id: string) => {
@@ -152,12 +167,12 @@ export default function GalleryView({ initialItems }: GalleryViewProps): React.J
     <div className="flex flex-col gap-12 py-6">
       {/* Category Tabs */}
       <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 mb-4 select-none">
-        {CATEGORIES.map((cat) => {
+        {dynamicCategories.map((cat) => {
           const isActive = selectedCategory === cat.id;
           const count =
             cat.id === "all"
               ? itemsList.length
-              : itemsList.filter((item) => item.category === cat.id).length;
+              : itemsList.filter((item) => item.category.trim().toLowerCase() === cat.id).length;
 
           return (
             <button

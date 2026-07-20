@@ -5,7 +5,7 @@ export interface GalleryItem {
   thumbnailSrc?: string;
   alt: string;
   caption: string;
-  category: "event" | "workshop" | "activity" | "occasion";
+  category: string;
 }
 
 export const GALLERY_DATA: GalleryItem[] = [

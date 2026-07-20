@@ -100,7 +100,7 @@ export function EmergencySupport({
               return (
                 <div
                   key={contact.title}
-                  className="bg-primary-dark text-white rounded-[32px] p-8 md:p-10 flex flex-col justify-between w-full h-full border border-primary-dark shadow-[0_12px_40px_rgba(3,83,0,0.12)] hover:shadow-[0_16px_48px_rgba(3,83,0,0.18)] transition-all duration-300"
+                  className="bg-primary-dark text-white rounded-4xl p-8 md:p-10 flex flex-col justify-between w-full h-full border border-primary-dark shadow-[0_12px_40px_rgba(3,83,0,0.12)] hover:shadow-[0_16px_48px_rgba(3,83,0,0.18)] transition-all duration-300"
                 >
                   <div>
                     <div className="w-14 h-14 rounded-2xl bg-white/10 text-accent flex items-center justify-center mb-8 shrink-0">
@@ -132,7 +132,7 @@ export function EmergencySupport({
             return (
               <div
                 key={contact.title}
-                className="bg-white rounded-[32px] p-8 md:p-10 border border-muted/30 hover:border-primary-dark/30 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.04)] flex flex-col justify-between w-full h-full"
+                className="bg-white rounded-4xl p-8 md:p-10 border border-muted/30 hover:border-primary-dark/30 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.04)] flex flex-col justify-between w-full h-full"
               >
                 <div>
                   <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-8 shrink-0">

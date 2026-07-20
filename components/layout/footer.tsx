@@ -76,7 +76,7 @@ export function Footer(): React.JSX.Element | null {
           {/* Brand & Mission - 3 cols */}
           <div className="lg:col-span-3 flex flex-col gap-10">
             <div className="rounded-2xl flex items-center gap-6 w-fit">
-              <div className="w-[70px] h-[70px] shrink-0 relative">
+              <div className="w-17.5 h-17.5 shrink-0 relative">
                 <Image
                   src="/cmhcb-mental-health-care.png"
                   alt="CMHC,B Logo"
@@ -85,7 +85,7 @@ export function Footer(): React.JSX.Element | null {
                   className="object-contain"
                 />
               </div>
-              <p className="font-marcellus text-lg text-white max-w-[180px] leading-tight">
+              <p className="font-marcellus text-lg text-white max-w-45 leading-tight">
                 Center for Mental Health and Care, Bangladesh
               </p>
             </div>

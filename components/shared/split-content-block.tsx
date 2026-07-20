@@ -38,7 +38,7 @@ export function SplitContentBlock({
           {items.map((item) => (
             <li key={item} className="flex items-start gap-4">
               <span
-                className="w-1.5 h-1.5 rounded-full shrink-0 bg-accent mt-[10px]"
+                className="w-1.5 h-1.5 rounded-full shrink-0 bg-accent mt-2.5"
                 aria-hidden="true"
               />
               <span className="font-sans font-normal text-base md:text-lg leading-relaxed text-light-ash/90">
@@ -56,9 +56,9 @@ export function SplitContentBlock({
 
       {/* Premium Minimalist Image Frame */}
       <div
-        className={`relative hidden lg:block h-[500px] ${reverse ? "lg:order-1" : ""}`}
+        className={`relative hidden lg:block h-125 ${reverse ? "lg:order-1" : ""}`}
       >
-        <div className="relative w-full h-full rounded-[32px] overflow-hidden bg-muted">
+        <div className="relative w-full h-full rounded-4xl overflow-hidden bg-muted">
           <Image
             src={image.src}
             alt={image.alt}

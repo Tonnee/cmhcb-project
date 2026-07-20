@@ -14,7 +14,7 @@ interface GalleryItemDB {
   thumbnailSrc?: string | null;
   alt: string;
   caption: string;
-  category: "event" | "workshop" | "activity" | "occasion";
+  category: string;
 }
 
 interface GalleryClientWrapperProps {

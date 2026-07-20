@@ -13,7 +13,7 @@ interface GalleryItemDB {
   thumbnailSrc?: string | null;
   alt: string;
   caption: string;
-  category: "event" | "workshop" | "activity" | "occasion";
+  category: string;
   lastUpdatedBy?: string | null;
   updatedAt?: Date | string | null;
 }
@@ -33,8 +33,15 @@ export function EditGalleryItemForm({
   const [src, setSrc] = React.useState(initialItem?.src || "");
   const [alt, setAlt] = React.useState(initialItem?.alt || "");
   const [caption, setCaption] = React.useState(initialItem?.caption || "");
-  const [category, setCategory] = React.useState<"event" | "workshop" | "activity" | "occasion">(
-    initialItem?.category || "event"
+  const [categorySelect, setCategorySelect] = React.useState<string>(
+    ["event", "workshop", "activity", "occasion"].includes(initialItem?.category || "event")
+      ? (initialItem?.category || "event")
+      : "custom"
+  );
+  const [customCategory, setCustomCategory] = React.useState<string>(
+    ["event", "workshop", "activity", "occasion"].includes(initialItem?.category || "")
+      ? ""
+      : (initialItem?.category || "")
   );
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -73,13 +80,19 @@ export function EditGalleryItemForm({
     setError(null);
 
     try {
+      const finalCategory = categorySelect === "custom" ? customCategory.trim() : categorySelect;
+      if (!finalCategory) {
+        setError("Category name is required.");
+        return;
+      }
+
       const payload = {
         id: initialItem?.id,
         type,
         src,
         alt,
         caption,
-        category,
+        category: finalCategory,
       };
 
       const res = await upsertGalleryItemAction(payload);
@@ -146,16 +159,37 @@ export function EditGalleryItemForm({
         <div className="flex flex-col gap-1.5">
           <label className="font-semibold text-xs text-dark">Category</label>
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value as "event" | "workshop" | "activity" | "occasion")}
+            value={categorySelect}
+            onChange={(e) => {
+              setCategorySelect(e.target.value);
+              if (e.target.value !== "custom") {
+                setCustomCategory("");
+              }
+            }}
             className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
           >
             <option value="event">Event</option>
             <option value="workshop">Workshop</option>
             <option value="activity">Activity</option>
             <option value="occasion">Occasion</option>
+            <option value="custom">+ Add Custom Category...</option>
           </select>
         </div>
+
+        {/* Custom Category Input */}
+        {categorySelect === "custom" && (
+          <div className="flex flex-col gap-1.5 md:col-span-2">
+            <label className="font-semibold text-xs text-dark">Custom Category Name</label>
+            <input
+              type="text"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+              placeholder="e.g. Seminar, Meeting, Retreat"
+              className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+              required={categorySelect === "custom"}
+            />
+          </div>
+        )}
 
         {/* Media Source Link or File Upload */}
         <div className="flex flex-col gap-1.5 md:col-span-2">

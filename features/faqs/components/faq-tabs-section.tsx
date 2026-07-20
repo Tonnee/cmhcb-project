@@ -136,7 +136,7 @@ export function FaqTabsSection({ initialItems }: FaqTabsSectionProps): React.JSX
         </div>
 
         {/* Results */}
-        <div className="min-h-[400px]">
+        <div className="min-h-100">
           {filteredFaqs.length > 0 ? (
             <div>
               {filteredFaqs.map((faq, index) => (

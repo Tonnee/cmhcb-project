@@ -33,7 +33,7 @@ export default function FeatureCard({
   const isAccent = variant === "accent";
 
   return (
-    <article className={`group relative w-full rounded-3xl p-8 md:p-10 border transition-all duration-300 flex flex-col justify-between min-h-[320px] hover:shadow-[0_8px_30px_rgb(0,0,0,0.02)] ${
+    <article className={`group relative w-full rounded-3xl p-8 md:p-10 border transition-all duration-300 flex flex-col justify-between min-h-80 hover:shadow-[0_8px_30px_rgb(0,0,0,0.02)] ${
       isAccent
         ? "bg-accent border-accent/20 text-dark-green"
         : "bg-white border-muted/30 hover:border-primary-dark/60"
@@ -69,7 +69,7 @@ export default function FeatureCard({
           <ul className="space-y-3.5 mb-8">
             {features.map((feature) => (
               <li key={feature} className="flex items-start gap-3">
-                <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-[10px] ${
+                <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-2.5 ${
                   isAccent ? "bg-white/40" : "bg-primary/40"
                 }`} aria-hidden="true" />
                 <span className={`font-sans font-normal text-base leading-relaxed ${

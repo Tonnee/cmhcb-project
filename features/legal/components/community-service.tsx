@@ -198,7 +198,7 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
 
             {/* Left Column: Workshop Image */}
-            <div className="relative w-full h-[350px] sm:h-[450px] lg:h-full rounded-3xl overflow-hidden bg-gray-100 shadow-md border border-muted/20 group">
+            <div className="relative w-full h-87.5 sm:h-112.5 lg:h-full rounded-3xl overflow-hidden bg-gray-100 shadow-md border border-muted/20 group">
               <Image
                 src="/hero-image/community-service-seminar.png"
                 alt="Mental health awareness training camp workshop by CMHCB"
@@ -339,7 +339,7 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
               <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
                 {guidelinesList.map((item: any, idx: number) => (
                   <div key={idx} className="flex items-start gap-4">
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary shrink-0 mt-0.5 font-sans text-xs font-bold font-mono">
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary shrink-0 mt-0.5 text-xs font-bold font-mono">
                       {idx + 1}
                     </span>
                     <div>
@@ -362,8 +362,8 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
       {/* Split CTA Block */}
       <section className="py-20 bg-dark-green text-white border-t border-black/10 relative overflow-hidden">
         {/* Glow gradients */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full bg-secondary/5 blur-[80px] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-125 h-125 rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-75 h-75 rounded-full bg-secondary/5 blur-[80px] pointer-events-none" />
 
         <Container className="relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">

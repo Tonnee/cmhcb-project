@@ -20,7 +20,7 @@ export function Hero({
     <div className="flex flex-col">
       {/* Hero Banner Section */}
       <section
-        className="relative overflow-hidden min-h-[600px] bg-center bg-cover bg-no-repeat flex flex-col"
+        className="relative overflow-hidden min-h-150 bg-center bg-cover bg-no-repeat flex flex-col"
         style={{ backgroundImage: `url('${heroBgImage}')` }}
       >
         <Container className="relative z-10 flex-1 flex flex-col">
@@ -49,7 +49,7 @@ export function Hero({
             </div>
 
             {/* Right Column - Main Hero Image */}
-            <div className="lg:absolute lg:right-0 lg:bottom-0 lg:top-0 lg:w-1/2 xl:w-[48%] h-[320px] sm:h-[400px] md:h-[450px] lg:h-full flex justify-center lg:justify-end order-last mb-10 lg:mb-0 z-20 items-end">
+            <div className="lg:absolute lg:right-0 lg:bottom-0 lg:top-0 lg:w-1/2 xl:w-[48%] h-80 sm:h-100 md:h-112.5 lg:h-full flex justify-center lg:justify-end order-last mb-10 lg:mb-0 z-20 items-end">
               <div className="relative w-full h-full">
                 <Image
                   src={heroFigureImage}

@@ -18,13 +18,12 @@ export const FOOTER_LINK_COLUMNS: FooterLinkColumn[] = [
   {
     title: "Company & Services",
     links: [
+      { label: "Book Appointment", href: "/appointment" },
+      { label: "Join Training", href: "/join-training" },
       { label: "About Us", href: "/about" },
-      { label: "Services", href: "/services" },
       { label: "Our Therapists", href: "/therapists" },
-      { label: "Training", href: "/training" },
       { label: "Affiliation", href: "/affiliation" },
       { label: "Success Stories", href: "/success-stories" },
-      { label: "Gallery", href: "/gallery" },
     ],
   },
   {
@@ -34,6 +33,7 @@ export const FOOTER_LINK_COLUMNS: FooterLinkColumn[] = [
       { label: "Events & Workshops", href: "/events" },
       { label: "Blog", href: "/blog" },
       { label: "FAQs", href: "/faqs" },
+      { label: "Gallery", href: "/gallery" },
       { label: "Contact Us", href: "/contact" },
       { label: "Community Service", href: "/legal/community-service" },
     ],

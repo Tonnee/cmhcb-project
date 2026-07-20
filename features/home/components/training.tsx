@@ -72,7 +72,7 @@ export default function Training({
               className="mb-8"
             />
 
-            <p className="font-sans text-base text-light-ash leading-relaxed max-w-[568px] mb-10">
+            <p className="font-sans text-base text-light-ash leading-relaxed max-w-142 mb-10">
               {subtitle}
             </p>
 
@@ -92,8 +92,8 @@ export default function Training({
           </div>
 
           {/* Right: Image */}
-          <div className="shrink-0 w-full lg:w-[470px]">
-            <div className="relative rounded-3xl overflow-hidden aspect-3/4 lg:h-[664px] lg:w-[470px]">
+          <div className="shrink-0 w-full lg:w-117.5">
+            <div className="relative rounded-3xl overflow-hidden aspect-3/4 lg:h-166 lg:w-117.5">
               <Image
                 src={image}
                 alt="Mental health professional"

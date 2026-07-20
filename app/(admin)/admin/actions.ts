@@ -173,7 +173,7 @@ const GalleryItemInputSchema = z.object({
   thumbnailSrc: z.string().optional().nullable(),
   alt: z.string().min(1, "Alt text is required"),
   caption: z.string().min(1, "Caption is required"),
-  category: z.enum(["event", "workshop", "activity", "occasion"]),
+  category: z.string().min(1, "Category is required"),
 });
 
 const AffiliationPageInputSchema = z.object({

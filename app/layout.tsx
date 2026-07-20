@@ -3,6 +3,7 @@ import { Marcellus, DM_Sans } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import "./globals.css";
 import { Footer } from "@/components/layout/footer";
+import { ScrollToTop } from "@/components/shared/scroll-to-top";
 
 const marcellus = Marcellus({
   subsets: ["latin"],
@@ -37,7 +38,9 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer/>
+        <ScrollToTop />
       </body>
     </html>
   );
 }
+

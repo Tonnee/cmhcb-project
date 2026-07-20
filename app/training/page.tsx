@@ -3,6 +3,7 @@ import { PageHero } from "@/components/shared/page-hero";
 import { AllTrainings } from "@/features/training/components/all-trainings";
 import { TrainingInfoSection } from "@/features/training/components/training-info-section";
 import prisma from "@/lib/prisma";
+import { type FeatureCardVariant } from "@/components/shared/feature-card";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,15 @@ export default async function TrainingPage(): Promise<React.JSX.Element> {
       orderBy: { order: "asc" },
     }),
   ]);
+
+  const mappedTrainings = trainings.map((t) => ({
+    slug: t.slug,
+    title: t.title,
+    heroDescription: t.heroDescription || "",
+    duration: t.duration,
+    fees: t.fees,
+    variant: t.variant as FeatureCardVariant,
+  }));
 
   return (
     <main>
@@ -31,8 +41,9 @@ export default async function TrainingPage(): Promise<React.JSX.Element> {
         ctaLabel="View Programs"
         ctaHref="#trainings-heading"
       />
-      <AllTrainings trainings={trainings} />
+      <AllTrainings trainings={mappedTrainings} />
       <TrainingInfoSection infoBlocks={infoBlocks} />
     </main>
   );
 }
+

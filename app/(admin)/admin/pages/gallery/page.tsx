@@ -23,7 +23,7 @@ export default async function AdminGalleryPage(): Promise<React.JSX.Element> {
     thumbnailSrc: item.thumbnailSrc || undefined,
     alt: item.alt,
     caption: item.caption,
-    category: item.category as "event" | "workshop" | "activity" | "occasion",
+    category: item.category as string,
   }));
 
   return (
