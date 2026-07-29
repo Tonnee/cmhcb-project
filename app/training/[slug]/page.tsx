@@ -6,6 +6,7 @@ import { ServiceProfessionals } from "@/features/services/components/service-pro
 import { Faq } from "@/components/shared/faq";
 import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
+import { JsonLd } from "@/components/shared/json-ld";
 
 const TRAINING_SLUG_IMAGE_MAP: Record<string, string> = {
   "psychological-first-aid": "/pages-hero-background/psychological-first-aid.png",
@@ -41,9 +42,37 @@ export async function generateMetadata({
     where: { slug },
   });
   if (!training) return {};
+
+  const url = `https://cmhcbd.com/training/${training.slug}`;
+  const image = TRAINING_SLUG_IMAGE_MAP[training.slug] ?? training.bgImage ?? "/pages-hero-background/training-default.png";
+  const imageUrl = image.startsWith("http")
+    ? image
+    : `https://cmhcbd.com${image.startsWith("/") ? "" : "/"}${image}`;
+
   return {
-    title: `${training.title} | Training | CMHCB`,
+    title: `${training.title} | Professional Training`,
     description: training.heroDescription,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      type: "website",
+      title: `${training.title} | Mental Health Training`,
+      description: training.heroDescription,
+      url: url,
+      images: [
+        {
+          url: imageUrl,
+          alt: training.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: training.title,
+      description: training.heroDescription,
+      images: [imageUrl],
+    },
   };
 }
 
@@ -103,7 +132,7 @@ export default async function TrainingDetailPage({
 
   // Parse complex JSON columns
   let parsedSections = [];
-  let parsedFaq = [];
+  let parsedFaq: any[] = [];
   try {
     parsedSections = JSON.parse(training.sections);
   } catch (err) {
@@ -115,8 +144,62 @@ export default async function TrainingDetailPage({
     console.error("Error parsing training faq:", err);
   }
 
+  const courseJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "@id": `https://cmhcbd.com/training/${training.slug}#course`,
+    name: training.title,
+    description: training.heroDescription,
+    provider: {
+      "@id": "https://cmhcbd.com/#organization",
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://cmhcbd.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Training",
+        item: "https://cmhcbd.com/training",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: training.title,
+        item: `https://cmhcbd.com/training/${training.slug}`,
+      },
+    ],
+  };
+
+  const jsonLdSchemas: any[] = [courseJsonLd, breadcrumbJsonLd];
+
+  if (Array.isArray(parsedFaq) && parsedFaq.length > 0) {
+    jsonLdSchemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: parsedFaq.map((item: any) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.answer,
+        },
+      })),
+    });
+  }
+
   return (
     <main>
+      <JsonLd data={jsonLdSchemas} />
       <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },

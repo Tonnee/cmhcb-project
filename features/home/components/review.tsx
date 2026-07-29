@@ -63,10 +63,10 @@ export function Review({ testimonials }: ReviewProps): React.JSX.Element {
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 xl:gap-20 items-center justify-center">
 
           {/* Left side — 2×2 grid */}
-          <div className="shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full lg:w-[50%] xl:w-[568px]">
+          <div className="shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full lg:w-[50%] xl:w-142">
             <ReviewPhoto
-              src="/home-review/mental-health-therapy-client-woman.png"
-              alt="Happy mental health therapy client sharing her positive experience at CMHCB"
+              src="/home-review/bangladeshi-woman-mental-health-therapy-client.png"
+              alt="Happy Bangladeshi woman sharing her positive therapy experience and emotional recovery at CMHCB"
             />
 
             <InfoCard
@@ -82,8 +82,8 @@ export function Review({ testimonials }: ReviewProps): React.JSX.Element {
             />
 
             <ReviewPhoto
-              src="/home-review/mental-health-therapy-client-man.png"
-              alt="Confident male client after successful mental health therapy sessions at CMHCB"
+              src="/home-review/bangladeshi-man-mental-health-therapy-client.png"
+              alt="Confident Bangladeshi male client reflecting on successful mental health counseling sessions at CMHCB"
             />
           </div>
 

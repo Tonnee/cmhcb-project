@@ -5,10 +5,32 @@ import { FaqTabsSection } from "@/features/faqs/components/faq-tabs-section";
 import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 import { Container } from "@/components/layout/container";
 import prisma from "@/lib/prisma";
+import { JsonLd } from "@/components/shared/json-ld";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions | CMHCB",
   description: "Find answers to your questions about our therapy services, appointments, billing, and privacy policies at CMHCB.",
+  alternates: {
+    canonical: "https://cmhcbd.com/faqs",
+  },
+  openGraph: {
+    type: "website",
+    title: "Frequently Asked Questions | CMHCB",
+    description: "Find answers to your questions about our therapy services, appointments, billing, and privacy policies at CMHCB.",
+    url: "https://cmhcbd.com/faqs",
+    images: [
+      {
+        url: "https://cmhcbd.com/understanding-anxiety-workshop-event.png",
+        alt: "Frequently Asked Questions - CMHCB",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Frequently Asked Questions | CMHCB",
+    description: "Find answers to your questions about therapy services, appointments, and billing at CMHCB.",
+    images: ["https://cmhcbd.com/understanding-anxiety-workshop-event.png"],
+  },
 };
 
 export const dynamic = "force-dynamic";
@@ -130,8 +152,41 @@ export default async function FaqsPage(): Promise<React.JSX.Element> {
     );
   }
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: compiledFaqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://cmhcbd.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "FAQs",
+        item: "https://cmhcbd.com/faqs",
+      },
+    ],
+  };
+
   return (
     <main>
+      <JsonLd data={[faqJsonLd, breadcrumbJsonLd]} />
       {isAdmin && (
         <div className="bg-primary/10 border-b border-primary/20 py-3 text-center text-sm">
           <Container className="flex items-center justify-between">

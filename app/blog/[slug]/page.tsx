@@ -11,6 +11,7 @@ import { BlogCard } from "@/features/blog/components/blog-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Tag } from "@/components/ui/tag";
+import { JsonLd } from "@/components/shared/json-ld";
 
 import DOMPurify from "isomorphic-dompurify";
 
@@ -49,9 +50,38 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = BLOG_POSTS.find((p) => p.slug === slug);
   if (!post) return {};
+
+  const url = `https://cmhcbd.com/blog/${post.slug}`;
+  const imageUrl = post.image.startsWith("http")
+    ? post.image
+    : `https://cmhcbd.com${post.image.startsWith("/") ? "" : "/"}${post.image}`;
+
   return {
-    title: `${post.title} | Blog | CMHCB`,
+    title: `${post.title} | Mental Health Article`,
     description: post.excerpt,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt,
+      url: url,
+      publishedTime: post.publishedAt,
+      authors: [post.author],
+      images: [
+        {
+          url: imageUrl,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [imageUrl],
+    },
   };
 }
 
@@ -75,8 +105,62 @@ export default async function BlogPostPage({
 
   const otherPosts = BLOG_POSTS.filter((p) => p.slug !== slug).slice(0, 3);
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `https://cmhcbd.com/blog/${post.slug}#article`,
+    headline: post.title,
+    description: post.excerpt,
+    image: post.image ? [`https://cmhcbd.com${post.image.startsWith("/") ? "" : "/"}${post.image}`] : [],
+    datePublished: post.publishedAt,
+    author: {
+      "@type": "Person",
+      name: post.author,
+      url: `https://cmhcbd.com/therapists/${matchedAuthor.id}`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Center for Mental Health and Care, Bangladesh",
+      url: "https://cmhcbd.com",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://cmhcbd.com/cmhcb-mental-health-care.png",
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://cmhcbd.com/blog/${post.slug}`,
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://cmhcbd.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: "https://cmhcbd.com/blog",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `https://cmhcbd.com/blog/${post.slug}`,
+      },
+    ],
+  };
+
   return (
     <main>
+      <JsonLd data={[articleJsonLd, breadcrumbJsonLd]} />
       <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },
@@ -85,7 +169,7 @@ export default async function BlogPostPage({
         currentPage={post.title}
         title={post.title}
         description={post.excerpt}
-        ctaLabel="" // Remove CTA as requested (or just empty)
+        ctaLabel=""
         className="bg-dark-green"
         imageSrc={post.image}
         imageAlt={post.title}
@@ -124,7 +208,7 @@ export default async function BlogPostPage({
         />
       </Container>
 
-      {/* Meet Author Section - 1 column layout similar to ServiceProfessionals */}
+      {/* Meet Author Section */}
       <section className="bg-gray-50 py-20 lg:py-28">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-11 gap-6 lg:gap-6 items-center">

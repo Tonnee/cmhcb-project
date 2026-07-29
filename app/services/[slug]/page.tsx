@@ -6,6 +6,7 @@ import { PageHero } from "@/components/shared/page-hero";
 import { Container } from "@/components/layout/container";
 import { ServiceProfessionals } from "@/features/services/components/service-professionals";
 import { Faq, type FaqItem } from "@/components/shared/faq";
+import { JsonLd } from "@/components/shared/json-ld";
 
 interface ServiceDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -26,9 +27,37 @@ export async function generateMetadata({
     where: { slug },
   });
   if (!service) return {};
+
+  const url = `https://cmhcbd.com/services/${service.slug}`;
+  const image = service.bgImage || "/pages-hero-background/1.png";
+  const imageUrl = image.startsWith("http")
+    ? image
+    : `https://cmhcbd.com${image.startsWith("/") ? "" : "/"}${image}`;
+
   return {
-    title: `${service.title} | Services | CMHCB`,
+    title: `${service.title} | Mental Health Services`,
     description: service.shortDescription,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      type: "website",
+      title: `${service.title} | Mental Health Care`,
+      description: service.shortDescription,
+      url: url,
+      images: [
+        {
+          url: imageUrl,
+          alt: service.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: service.title,
+      description: service.shortDescription,
+      images: [imageUrl],
+    },
   };
 }
 
@@ -102,8 +131,66 @@ export default async function ServiceDetailPage({
     }
   }
 
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `https://cmhcbd.com/services/${service.slug}#service`,
+    name: service.title,
+    description: service.shortDescription,
+    provider: {
+      "@id": "https://cmhcbd.com/#organization",
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "Bangladesh",
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://cmhcbd.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Services",
+        item: "https://cmhcbd.com/services",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: service.title,
+        item: `https://cmhcbd.com/services/${service.slug}`,
+      },
+    ],
+  };
+
+  const jsonLdSchemas: any[] = [serviceJsonLd, breadcrumbJsonLd];
+
+  if (faqItems.length > 0) {
+    jsonLdSchemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqItems.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.answer,
+        },
+      })),
+    });
+  }
+
   return (
     <main className="bg-[#FAFDF9]">
+      <JsonLd data={jsonLdSchemas} />
       <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },

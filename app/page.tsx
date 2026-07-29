@@ -12,6 +12,7 @@ import { ScheduleAppointment } from "@/features/home/components/schedule-appoint
 import { Review } from "@/features/home/components/review";
 import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 import { Container } from "@/components/layout/container";
+import { JsonLd } from "@/components/shared/json-ld";
 
 // Force dynamic page rendering so queries run on every request
 export const dynamic = "force-dynamic";
@@ -149,8 +150,21 @@ export default async function Page(): Promise<React.JSX.Element> {
   ];
   const featuredServices = dbServices.length > 0 ? dbServices : fallbackServices;
 
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://cmhcbd.com/#website",
+    url: "https://cmhcbd.com",
+    name: "Center for Mental Health and Care, Bangladesh",
+    description: "Leading mental health organization providing therapy, counseling, and training services in Bangladesh.",
+    publisher: {
+      "@id": "https://cmhcbd.com/#organization",
+    },
+  };
+
   return (
     <main>
+      <JsonLd data={websiteJsonLd} />
       {isAdmin && (
         <div className="bg-primary/10 border-b border-primary/20 py-3 text-center text-sm">
           <Container className="flex items-center justify-between">

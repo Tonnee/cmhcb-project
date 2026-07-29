@@ -49,7 +49,7 @@ export function Hero({
             </div>
 
             {/* Right Column - Main Hero Image */}
-            <div className="lg:absolute lg:right-0 lg:bottom-0 lg:top-0 lg:w-1/2 xl:w-[48%] h-80 sm:h-100 md:h-112.5 lg:h-full flex justify-center lg:justify-end order-last mb-10 lg:mb-0 z-20 items-end">
+            <div className="lg:absolute lg:right-0 lg:bottom-0 lg:top-0 lg:w-1/2 xl:w-[48%] h-80 sm:h-100 md:h-112.5 lg:h-full flex justify-center lg:justify-end order-last mb-0 z-20 items-end">
               <div className="relative w-full h-full">
                 <Image
                   src={heroFigureImage}

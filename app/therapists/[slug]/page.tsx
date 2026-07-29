@@ -17,6 +17,7 @@ import { ServiceCard } from "@/components/shared/service-card";
 import { BookAppointmentButton } from "@/components/shared/book-appointment-button";
 import { Tag } from "@/components/ui/tag";
 import { Button } from "@/components/ui/button";
+import { JsonLd } from "@/components/shared/json-ld";
 
 /* ------------------------------------------------------------------ */
 /* Small reusable sub-components                                        */
@@ -58,8 +59,6 @@ function BulletList({ items }: { items: string[] }) {
   );
 }
 
-
-
 /* ------------------------------------------------------------------ */
 /* Page                                                                 */
 /* ------------------------------------------------------------------ */
@@ -76,9 +75,36 @@ export async function generateMetadata({
   const { slug } = await params;
   const therapist = THERAPISTS_DATA.find((t) => t.id === slug);
   if (!therapist) return {};
+
+  const url = `https://cmhcbd.com/therapists/${therapist.id}`;
+  const imageUrl = therapist.image.startsWith("http")
+    ? therapist.image
+    : `https://cmhcbd.com${therapist.image.startsWith("/") ? "" : "/"}${therapist.image}`;
+
   return {
-    title: `${therapist.name} | ${therapist.role} | CMHCB`,
+    title: `${therapist.name} | ${therapist.role}`,
     description: therapist.bio || `Consult with ${therapist.name}, clinical psychologist at CMHCB.`,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      type: "profile",
+      title: `${therapist.name} - ${therapist.role}`,
+      description: therapist.bio || `Clinical psychologist at CMHCB.`,
+      url: url,
+      images: [
+        {
+          url: imageUrl,
+          alt: therapist.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${therapist.name} | ${therapist.role}`,
+      description: therapist.bio || `Consult with ${therapist.name} at CMHCB.`,
+      images: [imageUrl],
+    },
   };
 }
 
@@ -106,8 +132,48 @@ export default async function TherapistProfilePage({
   const hasExperience = therapist.experience && therapist.experience.length > 0;
   const hasFees = therapist.fees && therapist.fees.length > 0;
 
+  const personJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `https://cmhcbd.com/therapists/${therapist.id}#person`,
+    name: therapist.name,
+    jobTitle: therapist.role,
+    description: therapist.bio,
+    image: `https://cmhcbd.com${therapist.image.startsWith("/") ? "" : "/"}${therapist.image}`,
+    worksFor: {
+      "@id": "https://cmhcbd.com/#organization",
+    },
+    knowsAbout: therapist.expertise || ["Psychotherapy", "Counseling", "Mental Health"],
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://cmhcbd.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Therapists",
+        item: "https://cmhcbd.com/therapists",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: therapist.name,
+        item: `https://cmhcbd.com/therapists/${therapist.id}`,
+      },
+    ],
+  };
+
   return (
     <main className="pt-24 pb-24 bg-page-bg">
+      <JsonLd data={[personJsonLd, breadcrumbJsonLd]} />
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-start">
           
@@ -227,7 +293,7 @@ export default async function TherapistProfilePage({
         </div>
       </Container>
 
-      {/* ── Services Section ─────────────────────────────────────────── */}
+      {/* Services Section */}
       {therapist.services && therapist.services.length > 0 && (
         <Container className="mb-24 mt-24">
           <SectionHeading
@@ -249,7 +315,7 @@ export default async function TherapistProfilePage({
         </Container>
       )}
 
-      {/* ── Therapist Blogs Section ──────────────────────────────────── */}
+      {/* Therapist Blogs Section */}
       {therapistBlogs.length > 0 && (
         <Container className="mb-24">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-10">

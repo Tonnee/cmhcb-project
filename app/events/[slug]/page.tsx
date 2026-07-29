@@ -12,6 +12,7 @@ import { EventCard } from "@/features/events/components/event-card";
 import { Tag } from "@/components/ui/tag";
 import EventRegistrationForm from "@/features/events/components/event-registration-form";
 import prisma from "@/lib/prisma";
+import { JsonLd } from "@/components/shared/json-ld";
 
 // Shared icons for the page
 function CalendarIcon({ className = "" }: { className?: string }): React.JSX.Element {
@@ -22,7 +23,6 @@ function ClockIcon({ className = "" }: { className?: string }): React.JSX.Elemen
   return <HiClock className={className} />;
 }
 
-/*************  65b4c10a-3197-40ad-be1b-80dfccfb2380  *************/
 function UserIcon({ className = "" }: { className?: string }): React.JSX.Element {
   return <HiUser className={className} />;
 }
@@ -60,9 +60,36 @@ export async function generateMetadata({
   }
 
   if (!event) return {};
+
+  const url = `https://cmhcbd.com/events/${event.slug}`;
+  const imageUrl = event.image.startsWith("http")
+    ? event.image
+    : `https://cmhcbd.com${event.image.startsWith("/") ? "" : "/"}${event.image}`;
+
   return {
-    title: `${event.title} | Events | CMHCB`,
+    title: `${event.title} | Events & Workshops`,
     description: event.description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      type: "website",
+      title: event.title,
+      description: event.description,
+      url: url,
+      images: [
+        {
+          url: imageUrl,
+          alt: event.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: event.title,
+      description: event.description,
+      images: [imageUrl],
+    },
   };
 }
 
@@ -145,9 +172,66 @@ export default async function EventRegistrationPage({
 
   const otherEvents = parsedOthers.length > 0 ? parsedOthers : EVENTS_DATA.filter((e) => e.slug !== slug).slice(0, 3);
 
+  const eventJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "@id": `https://cmhcbd.com/events/${event.slug}#event`,
+    name: event.title,
+    description: event.description,
+    startDate: event.date,
+    eventAttendanceMode: event.location.toLowerCase().includes("online") || event.location.toLowerCase().includes("zoom")
+      ? "https://schema.org/OnlineEventAttendanceMode"
+      : "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: "https://schema.org/EventScheduled",
+    location: event.location.toLowerCase().includes("online")
+      ? {
+          "@type": "VirtualLocation",
+          url: `https://cmhcbd.com/events/${event.slug}`,
+        }
+      : {
+          "@type": "Place",
+          name: event.location,
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Dhaka",
+            addressCountry: "BD",
+          },
+        },
+    image: [`https://cmhcbd.com${event.image.startsWith("/") ? "" : "/"}${event.image}`],
+    organizer: {
+      "@id": "https://cmhcbd.com/#organization",
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://cmhcbd.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Events",
+        item: "https://cmhcbd.com/events",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: event.title,
+        item: `https://cmhcbd.com/events/${event.slug}`,
+      },
+    ],
+  };
+
   if (isPast) {
     return (
       <main>
+        <JsonLd data={[eventJsonLd, breadcrumbJsonLd]} />
         <PageHero
           breadcrumbs={[
             { label: "Home", href: "/" },
@@ -237,9 +321,10 @@ export default async function EventRegistrationPage({
     );
   }
 
-  // Upcoming Event Layout (Existing)
+  // Upcoming Event Layout
   return (
     <main className="pt-12 pb-24">
+      <JsonLd data={[eventJsonLd, breadcrumbJsonLd]} />
       <Container>
         <Breadcrumb
           className="mb-8"
