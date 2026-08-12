@@ -1,4 +1,4 @@
-import { HiHeart, HiStar, HiShieldCheck, HiUsers, HiSparkles, HiAcademicCap, HiCheck } from "react-icons/hi2";
+import { HiHeart, HiShieldCheck, HiUsers, HiSparkles, HiAcademicCap, HiCheck } from "react-icons/hi2";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 

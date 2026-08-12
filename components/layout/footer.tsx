@@ -6,7 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   FOOTER_LINK_COLUMNS,
-  SOCIAL_LINKS,
   LEGAL_LINKS,
   CONTACT_INFO,
 } from "@/data/footer";

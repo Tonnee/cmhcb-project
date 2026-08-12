@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 import { BookAppointmentButton } from "@/components/shared/book-appointment-button";
 import { MobileNav } from "./mobile-nav";
 import { Container } from "@/components/layout/container";
-import { SERVICES } from "@/features/services/data/services";
 import { TRAININGS } from "@/features/training/data/trainings";
 import {
   HiClipboardDocumentCheck,

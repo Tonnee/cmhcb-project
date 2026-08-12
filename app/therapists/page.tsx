@@ -6,6 +6,7 @@ import { TherapistList } from "@/features/therapists/components/therapist-list";
 import { Faq } from "@/components/shared/faq";
 import { THERAPIST_FAQS } from "@/features/therapists/data/faqs";
 import { AppointmentCta } from "@/features/therapists/components/appointment-cta";
+import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 
 export const metadata: Metadata = {
   title: "Our Therapists | Center for Mental Health and Care, Bangladesh",
@@ -16,43 +17,58 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function TherapistsPage() {
-  // Query all therapists dynamically from the database
-  const dbTherapists = await prisma.therapist.findMany({
-    orderBy: { name: "asc" }
-  });
+  let therapists = THERAPISTS_DATA;
 
-  const therapists = dbTherapists.map((t) => {
-    let parsedEducation: string[] = [];
-    let parsedTraining: string[] = [];
-    let parsedExpertise: string[] = [];
-    let parsedExperience: string[] = [];
-    let parsedServices: string[] = [];
-    let parsedActivities: string[] = [];
-    let parsedFees: any = null;
+  try {
+    const dbTherapists = await prisma.therapist.findMany();
 
-    try { parsedEducation = JSON.parse(t.education || "[]"); } catch { }
-    try { parsedTraining = JSON.parse(t.training || "[]"); } catch { }
-    try { parsedExpertise = JSON.parse(t.expertise || "[]"); } catch { }
-    try { parsedExperience = JSON.parse(t.experience || "[]"); } catch { }
-    try { parsedServices = JSON.parse(t.services || "[]"); } catch { }
-    try { parsedActivities = JSON.parse(t.activities || "[]"); } catch { }
-    try { parsedFees = JSON.parse(t.fees || "null"); } catch { }
+    if (dbTherapists && dbTherapists.length > 0) {
+      // Map DB therapists and maintain consistent roster ordering matching THERAPISTS_DATA
+      const orderMap = new Map(THERAPISTS_DATA.map((t, index) => [t.id, index]));
 
-    return {
-      id: t.id,
-      image: t.image,
-      name: t.name,
-      role: t.role,
-      bio: t.bio,
-      education: parsedEducation,
-      training: parsedTraining,
-      expertise: parsedExpertise,
-      experience: parsedExperience,
-      fees: parsedFees,
-      services: parsedServices,
-      activities: parsedActivities,
-    };
-  });
+      const mapped = dbTherapists.map((t) => {
+        let parsedEducation: string[] = [];
+        let parsedTraining: string[] = [];
+        let parsedExpertise: string[] = [];
+        let parsedExperience: string[] = [];
+        let parsedServices: string[] = [];
+        let parsedActivities: string[] = [];
+        let parsedFees: any = null;
+
+        try { parsedEducation = JSON.parse(t.education || "[]"); } catch { }
+        try { parsedTraining = JSON.parse(t.training || "[]"); } catch { }
+        try { parsedExpertise = JSON.parse(t.expertise || "[]"); } catch { }
+        try { parsedExperience = JSON.parse(t.experience || "[]"); } catch { }
+        try { parsedServices = JSON.parse(t.services || "[]"); } catch { }
+        try { parsedActivities = JSON.parse(t.activities || "[]"); } catch { }
+        try { parsedFees = JSON.parse(t.fees || "null"); } catch { }
+
+        return {
+          id: t.id,
+          image: t.image,
+          name: t.name,
+          role: t.role,
+          bio: t.bio,
+          education: parsedEducation,
+          training: parsedTraining,
+          expertise: parsedExpertise,
+          experience: parsedExperience,
+          fees: parsedFees,
+          services: parsedServices,
+          activities: parsedActivities,
+        };
+      });
+
+      therapists = mapped.sort((a, b) => {
+        const orderA = orderMap.get(a.id) ?? 999;
+        const orderB = orderMap.get(b.id) ?? 999;
+        return orderA - orderB;
+      });
+    }
+  } catch (error) {
+    console.error("Failed to load therapists from DB, falling back to static data:", error);
+    therapists = THERAPISTS_DATA;
+  }
 
   const totalSessions = therapists.reduce((sum, t) => {
     const sessionEntry = t.experience?.find((e) => e.toLowerCase().includes("session"));

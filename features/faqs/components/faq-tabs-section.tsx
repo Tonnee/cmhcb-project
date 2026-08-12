@@ -5,7 +5,7 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { FaqAccordionItem } from "@/components/shared/faq";
-import { CATEGORIZED_FAQS, FAQ_CATEGORIES, type FaqCategory } from "@/data/faqs";
+import { CATEGORIZED_FAQS, FAQ_CATEGORIES } from "@/data/faqs";
 
 interface FaqItem {
   category: string;

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Metadata } from "next";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
