@@ -209,7 +209,7 @@ export const THERAPISTS_DATA: Therapist[] = [
   },
   {
     id: "farhana-khan",
-    image: "/home-therapist/Farhana Khan.png",
+    image: "/home-therapist/Farhana Khan.jpg",
     name: "Farhana Khan",
     role: "Assistant Clinical Psychologist | MPhil Researcher",
     bio: "Farhana Khan is an MPhil researcher at the University of Dhaka, specializing in Clinical Psychology. Trained in CBT, she works with adults experiencing depression, anxiety-related disorders, relationship difficulties, and trauma. She provides personalized, tailored therapy for each client.",
