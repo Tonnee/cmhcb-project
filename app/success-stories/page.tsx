@@ -22,9 +22,14 @@ export default async function SuccessStoriesPage(): Promise<React.JSX.Element> {
     isAdmin = false;
   }
 
-  const testimonials = await prisma.testimonial.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  let testimonials = [];
+  try {
+    testimonials = await prisma.testimonial.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Failed to fetch testimonials from database:", error);
+  }
 
   return (
     <main>
