@@ -6,6 +6,8 @@ import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 import { Container } from "@/components/layout/container";
 import prisma from "@/lib/prisma";
 
+import { TESTIMONIALS, type Testimonial } from "@/data/testimonials";
+
 export const metadata: Metadata = {
   title: "Success Stories & Client Feedback | CMHCB",
   description: "Read inspiring stories from our clients. Discover how therapy, training, and mental health support at CMHCB have changed lives.",
@@ -22,13 +24,17 @@ export default async function SuccessStoriesPage(): Promise<React.JSX.Element> {
     isAdmin = false;
   }
 
-  let testimonials = [];
+  let testimonials: Testimonial[] = [];
   try {
-    testimonials = await prisma.testimonial.findMany({
+    const dbTestimonials = await prisma.testimonial.findMany({
       orderBy: { createdAt: "desc" },
     });
+    if (dbTestimonials && dbTestimonials.length > 0) {
+      testimonials = dbTestimonials as Testimonial[];
+    }
   } catch (error) {
     console.error("Failed to fetch testimonials from database:", error);
+    testimonials = TESTIMONIALS;
   }
 
   return (

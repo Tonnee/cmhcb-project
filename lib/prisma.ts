@@ -5,8 +5,8 @@ import fs from "fs";
 function getDatabaseUrl(): string {
   const envUrl = process.env.DATABASE_URL;
 
-  // Handle Vercel / Production Serverless filesystem read-only restrictions
-  if (process.env.VERCEL || process.env.NODE_ENV === "production") {
+  // Handle Vercel Serverless Linux filesystem read-only restrictions
+  if (process.env.VERCEL) {
     if (!envUrl || envUrl.startsWith("file:")) {
       try {
         const targetTmpPath = path.join("/tmp", "dev.db");
