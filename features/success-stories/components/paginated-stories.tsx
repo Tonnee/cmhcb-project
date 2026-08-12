@@ -37,7 +37,7 @@ export function PaginatedStories({ testimonials, itemsPerPage = 6 }: PaginatedSt
             <div className="flex items-center gap-6 mb-6">
               <div className="relative w-[60px] h-[60px] rounded-full overflow-hidden shrink-0 bg-gray-100">
                 <Image
-                  src={testimonial.avatar}
+                  src={testimonial.avatar && testimonial.avatar.trim().length > 0 ? testimonial.avatar : "/home-review/client-female-1.png"}
                   alt={`${testimonial.name} - ${testimonial.role}`}
                   fill
                   sizes="60px"

@@ -58,7 +58,7 @@ export function TherapistCard({
       <div className={`relative w-full rounded-[32px] overflow-hidden aspect-4/5 md:h-[340px] md:aspect-auto bg-gray-50 ${imageClassName}`}>
         <Link href={`/therapists/${therapist.id}`} className="block w-full h-full relative z-0">
           <Image
-            src={therapist.image}
+            src={therapist.image && therapist.image.trim().length > 0 ? therapist.image : "/home-therapist/Nazme Ara.jpg"}
             alt={therapist.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
