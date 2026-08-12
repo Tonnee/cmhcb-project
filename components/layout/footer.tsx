@@ -19,6 +19,7 @@ import {
   TwitterXIcon,
   LinkedInIcon,
   YouTubeIcon,
+  WhatsAppIcon,
 } from "./footer-icons";
 
 const SOCIAL_ICON_MAP: Record<string, React.JSX.Element> = {
@@ -207,7 +208,19 @@ export function Footer({ contactInfo }: { contactInfo?: FooterContactInfo | null
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-sm text-white/50 font-sans">
             <p>CMHC,B &copy; {new Date().getFullYear()}. All rights reserved.</p>
             <span className="hidden sm:inline text-white/20">|</span>
-            <p>Designed &amp; Developed by <span className="text-accent font-medium">DigitalDive</span></p>
+            <p className="flex items-center gap-1.5">
+              Designed &amp; Developed by{" "}
+              <a
+                href="https://wa.me/8801843760192"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:underline font-medium inline-flex items-center gap-1 transition-colors"
+                title="Chat with DigitalDive on WhatsApp (01843760192)"
+              >
+                DigitalDive
+                <WhatsAppIcon className="w-4 h-4 text-[#25D366] inline-block" />
+              </a>
+            </p>
           </div>
         </div>
 

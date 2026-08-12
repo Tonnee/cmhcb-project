@@ -1,6 +1,6 @@
 import * as React from "react";
 import { HiEnvelope, HiPhone, HiMapPin } from "react-icons/hi2";
-import { FaFacebookF, FaInstagram, FaXTwitter, FaLinkedinIn, FaYoutube } from "react-icons/fa6";
+import { FaFacebookF, FaInstagram, FaXTwitter, FaLinkedinIn, FaYoutube, FaWhatsapp } from "react-icons/fa6";
 
 interface IconProps {
   className?: string;
@@ -36,4 +36,8 @@ export function LinkedInIcon({ className = "" }: IconProps): React.JSX.Element {
 
 export function YouTubeIcon({ className = "" }: IconProps): React.JSX.Element {
   return <FaYoutube className={className} aria-hidden="true" />;
+}
+
+export function WhatsAppIcon({ className = "" }: IconProps): React.JSX.Element {
+  return <FaWhatsapp className={className} aria-hidden="true" />;
 }
