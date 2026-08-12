@@ -22,43 +22,50 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: ServiceDetailPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const service = await prisma.service.findUnique({
-    where: { slug },
-  });
-  if (!service) return {};
+  try {
+    const { slug } = await params;
+    const service = await prisma.service.findUnique({
+      where: { slug },
+    });
+    if (!service) return {};
 
-  const url = `https://cmhcbd.com/services/${service.slug}`;
-  const image = service.bgImage || "/pages-hero-background/1.png";
-  const imageUrl = image.startsWith("http")
-    ? image
-    : `https://cmhcbd.com${image.startsWith("/") ? "" : "/"}${image}`;
+    const url = `https://cmhcbd.com/services/${service.slug}`;
+    const image = service.bgImage || "/pages-hero-background/1.png";
+    const imageUrl = image.startsWith("http")
+      ? image
+      : `https://cmhcbd.com${image.startsWith("/") ? "" : "/"}${image}`;
 
-  return {
-    title: `${service.title} | Mental Health Services`,
-    description: service.shortDescription,
-    alternates: {
-      canonical: url,
-    },
-    openGraph: {
-      type: "website",
-      title: `${service.title} | Mental Health Care`,
+    return {
+      title: `${service.title} | Mental Health Services`,
       description: service.shortDescription,
-      url: url,
-      images: [
-        {
-          url: imageUrl,
-          alt: service.title,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: service.title,
-      description: service.shortDescription,
-      images: [imageUrl],
-    },
-  };
+      alternates: {
+        canonical: url,
+      },
+      openGraph: {
+        type: "website",
+        title: `${service.title} | Mental Health Care`,
+        description: service.shortDescription,
+        url: url,
+        images: [
+          {
+            url: imageUrl,
+            alt: service.title,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: service.title,
+        description: service.shortDescription,
+        images: [imageUrl],
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata for service detail page:", error);
+    return {
+      title: "Services | CMHCB",
+    };
+  }
 }
 
 export default async function ServiceDetailPage({
@@ -67,9 +74,14 @@ export default async function ServiceDetailPage({
   const { slug } = await params;
 
   // Retrieve service details from database
-  const service = await prisma.service.findUnique({
-    where: { slug },
-  });
+  let service = null;
+  try {
+    service = await prisma.service.findUnique({
+      where: { slug },
+    });
+  } catch (error) {
+    console.error("Failed to load service detail from DB:", error);
+  }
 
   if (!service) {
     notFound();

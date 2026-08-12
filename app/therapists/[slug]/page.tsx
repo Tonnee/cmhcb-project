@@ -72,40 +72,47 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const therapist = THERAPISTS_DATA.find((t) => t.id === slug);
-  if (!therapist) return {};
+  try {
+    const { slug } = await params;
+    const therapist = THERAPISTS_DATA.find((t) => t.id === slug);
+    if (!therapist) return {};
 
-  const url = `https://cmhcbd.com/therapists/${therapist.id}`;
-  const imageUrl = therapist.image.startsWith("http")
-    ? therapist.image
-    : `https://cmhcbd.com${therapist.image.startsWith("/") ? "" : "/"}${therapist.image}`;
+    const url = `https://cmhcbd.com/therapists/${therapist.id}`;
+    const imageUrl = therapist.image.startsWith("http")
+      ? therapist.image
+      : `https://cmhcbd.com${therapist.image.startsWith("/") ? "" : "/"}${therapist.image}`;
 
-  return {
-    title: `${therapist.name} | ${therapist.role}`,
-    description: therapist.bio || `Consult with ${therapist.name}, clinical psychologist at CMHCB.`,
-    alternates: {
-      canonical: url,
-    },
-    openGraph: {
-      type: "profile",
-      title: `${therapist.name} - ${therapist.role}`,
-      description: therapist.bio || `Clinical psychologist at CMHCB.`,
-      url: url,
-      images: [
-        {
-          url: imageUrl,
-          alt: therapist.name,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
+    return {
       title: `${therapist.name} | ${therapist.role}`,
-      description: therapist.bio || `Consult with ${therapist.name} at CMHCB.`,
-      images: [imageUrl],
-    },
-  };
+      description: therapist.bio || `Consult with ${therapist.name}, clinical psychologist at CMHCB.`,
+      alternates: {
+        canonical: url,
+      },
+      openGraph: {
+        type: "profile",
+        title: `${therapist.name} - ${therapist.role}`,
+        description: therapist.bio || `Clinical psychologist at CMHCB.`,
+        url: url,
+        images: [
+          {
+            url: imageUrl,
+            alt: therapist.name,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: therapist.name,
+        description: therapist.bio || `Clinical psychologist at CMHCB.`,
+        images: [imageUrl],
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata for therapist detail page:", error);
+    return {
+      title: "Therapist Profile | CMHCB",
+    };
+  }
 }
 
 export default async function TherapistProfilePage({

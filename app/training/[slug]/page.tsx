@@ -37,43 +37,50 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: TrainingDetailPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const training = await prisma.training.findUnique({
-    where: { slug },
-  });
-  if (!training) return {};
+  try {
+    const { slug } = await params;
+    const training = await prisma.training.findUnique({
+      where: { slug },
+    });
+    if (!training) return {};
 
-  const url = `https://cmhcbd.com/training/${training.slug}`;
-  const image = TRAINING_SLUG_IMAGE_MAP[training.slug] ?? training.bgImage ?? "/pages-hero-background/training-default.png";
-  const imageUrl = image.startsWith("http")
-    ? image
-    : `https://cmhcbd.com${image.startsWith("/") ? "" : "/"}${image}`;
+    const url = `https://cmhcbd.com/training/${training.slug}`;
+    const image = TRAINING_SLUG_IMAGE_MAP[training.slug] ?? training.bgImage ?? "/pages-hero-background/training-default.png";
+    const imageUrl = image.startsWith("http")
+      ? image
+      : `https://cmhcbd.com${image.startsWith("/") ? "" : "/"}${image}`;
 
-  return {
-    title: `${training.title} | Professional Training`,
-    description: training.heroDescription,
-    alternates: {
-      canonical: url,
-    },
-    openGraph: {
-      type: "website",
-      title: `${training.title} | Mental Health Training`,
+    return {
+      title: `${training.title} | Professional Training`,
       description: training.heroDescription,
-      url: url,
-      images: [
-        {
-          url: imageUrl,
-          alt: training.title,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: training.title,
-      description: training.heroDescription,
-      images: [imageUrl],
-    },
-  };
+      alternates: {
+        canonical: url,
+      },
+      openGraph: {
+        type: "website",
+        title: `${training.title} | Mental Health Training`,
+        description: training.heroDescription,
+        url: url,
+        images: [
+          {
+            url: imageUrl,
+            alt: training.title,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: training.title,
+        description: training.heroDescription,
+        images: [imageUrl],
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata for training page:", error);
+    return {
+      title: "Training | CMHCB",
+    };
+  }
 }
 
 export default async function TrainingDetailPage({

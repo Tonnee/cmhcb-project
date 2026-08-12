@@ -38,59 +38,70 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  try {
+    const { slug } = await params;
 
-  let event = EVENTS_DATA.find((e) => e.slug === slug);
-  if (!event) {
-    const dbEvent = await prisma.workshop.findUnique({ where: { slug } });
-    if (dbEvent) {
-      event = {
-        id: dbEvent.id,
-        slug: dbEvent.slug,
-        title: dbEvent.title,
-        description: dbEvent.description,
-        image: dbEvent.image,
-        date: dbEvent.date,
-        time: dbEvent.time,
-        location: dbEvent.location,
-        author: dbEvent.author,
-        tags: [],
-      };
+    let event = EVENTS_DATA.find((e) => e.slug === slug);
+    if (!event) {
+      try {
+        const dbEvent = await prisma.workshop.findUnique({ where: { slug } });
+        if (dbEvent) {
+          event = {
+            id: dbEvent.id,
+            slug: dbEvent.slug,
+            title: dbEvent.title,
+            description: dbEvent.description,
+            image: dbEvent.image,
+            date: dbEvent.date,
+            time: dbEvent.time,
+            location: dbEvent.location,
+            author: dbEvent.author,
+            tags: [],
+          };
+        }
+      } catch (err) {
+        console.error("Failed to query workshop for metadata:", err);
+      }
     }
+
+    if (!event) return {};
+
+    const url = `https://cmhcbd.com/events/${event.slug}`;
+    const imageUrl = event.image.startsWith("http")
+      ? event.image
+      : `https://cmhcbd.com${event.image.startsWith("/") ? "" : "/"}${event.image}`;
+
+    return {
+      title: `${event.title} | Events & Workshops`,
+      description: event.description,
+      alternates: {
+        canonical: url,
+      },
+      openGraph: {
+        type: "website",
+        title: `${event.title} | CMHCB Workshop`,
+        description: event.description,
+        url: url,
+        images: [
+          {
+            url: imageUrl,
+            alt: event.title,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: event.title,
+        description: event.description,
+        images: [imageUrl],
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata for event page:", error);
+    return {
+      title: "Events & Workshops | CMHCB",
+    };
   }
-
-  if (!event) return {};
-
-  const url = `https://cmhcbd.com/events/${event.slug}`;
-  const imageUrl = event.image.startsWith("http")
-    ? event.image
-    : `https://cmhcbd.com${event.image.startsWith("/") ? "" : "/"}${event.image}`;
-
-  return {
-    title: `${event.title} | Events & Workshops`,
-    description: event.description,
-    alternates: {
-      canonical: url,
-    },
-    openGraph: {
-      type: "website",
-      title: event.title,
-      description: event.description,
-      url: url,
-      images: [
-        {
-          url: imageUrl,
-          alt: event.title,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: event.title,
-      description: event.description,
-      images: [imageUrl],
-    },
-  };
 }
 
 export default async function EventRegistrationPage({

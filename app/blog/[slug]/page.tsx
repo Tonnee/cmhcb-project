@@ -47,42 +47,49 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const post = BLOG_POSTS.find((p) => p.slug === slug);
-  if (!post) return {};
+  try {
+    const { slug } = await params;
+    const post = BLOG_POSTS.find((p) => p.slug === slug);
+    if (!post) return {};
 
-  const url = `https://cmhcbd.com/blog/${post.slug}`;
-  const imageUrl = post.image.startsWith("http")
-    ? post.image
-    : `https://cmhcbd.com${post.image.startsWith("/") ? "" : "/"}${post.image}`;
+    const url = `https://cmhcbd.com/blog/${post.slug}`;
+    const imageUrl = post.image.startsWith("http")
+      ? post.image
+      : `https://cmhcbd.com${post.image.startsWith("/") ? "" : "/"}${post.image}`;
 
-  return {
-    title: `${post.title} | Mental Health Article`,
-    description: post.excerpt,
-    alternates: {
-      canonical: url,
-    },
-    openGraph: {
-      type: "article",
-      title: post.title,
+    return {
+      title: `${post.title} | Mental Health Article`,
       description: post.excerpt,
-      url: url,
-      publishedTime: post.publishedAt,
-      authors: [post.author],
-      images: [
-        {
-          url: imageUrl,
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
-      images: [imageUrl],
-    },
-  };
+      alternates: {
+        canonical: url,
+      },
+      openGraph: {
+        type: "article",
+        title: post.title,
+        description: post.excerpt,
+        url: url,
+        publishedTime: post.publishedAt,
+        authors: [post.author],
+        images: [
+          {
+            url: imageUrl,
+            alt: post.title,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: post.title,
+        description: post.excerpt,
+        images: [imageUrl],
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata for blog post:", error);
+    return {
+      title: "Blog | CMHCB",
+    };
+  }
 }
 
 export default async function BlogPostPage({
