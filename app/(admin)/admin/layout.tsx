@@ -30,7 +30,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
     if (error.message.includes("blocked")) {
       redirect("/login?error=blocked");
     } else {
-      redirect("/login");
+      redirect(`/login?error=${encodeURIComponent(error.message || "Unauthorized access.")}`);
     }
   }
 

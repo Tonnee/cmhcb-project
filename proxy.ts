@@ -1,26 +1,3 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+import { middleware, config } from "./middleware";
 
-export async function proxy(request: NextRequest) {
-  const isUrlAdmin = request.nextUrl.pathname.startsWith("/admin");
-
-  if (!isUrlAdmin) {
-    return NextResponse.next();
-  }
-
-  const { user, response } = await updateSession(request);
-
-  if (!user || user.app_metadata?.role !== "admin") {
-    const loginUrl = new URL("/login", request.url);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  return response;
-}
-
-export const config = {
-  matcher: [
-    "/admin/:path*",
-    "/admin"
-  ],
-};
+export { middleware as proxy, config };

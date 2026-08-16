@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 
 export async function signInAction(prevState: any, formData: FormData) {
   const email = formData.get("email") as string;
@@ -11,8 +12,9 @@ export async function signInAction(prevState: any, formData: FormData) {
     return { error: "Email and password are required." };
   }
 
+  const supabase = await createClient();
+
   try {
-    const supabase = await createClient();
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -23,12 +25,15 @@ export async function signInAction(prevState: any, formData: FormData) {
     }
 
     const user = data?.user;
-    if (!user || user.app_metadata?.role !== "admin") {
-      // Force sign out immediately if they are not an admin to clear their cookie
-      await supabase.auth.signOut();
-      return { error: "Access denied. You do not have administrator privileges." };
+    if (!user) {
+      return { error: "Invalid email or password." };
     }
+
+    // Verify admin access (auto-provisions whitelisted super admins, checks DB profile & block status)
+    await getRequiredAdminSession();
   } catch (err: any) {
+    // Clear session if unauthorized or blocked
+    await supabase.auth.signOut();
     return { error: err.message || "An unexpected error occurred during sign in." };
   }
 
