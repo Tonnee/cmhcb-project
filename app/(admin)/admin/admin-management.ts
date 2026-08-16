@@ -34,26 +34,41 @@ export async function getRequiredAdminSession() {
   }
 
   const email = user.email || "";
-  const isWhitelistedSuperAdmin = WHITELISTED_SUPER_ADMIN_EMAILS.includes(email.toLowerCase());
+  const cleanEmail = email.toLowerCase().trim();
+  const isWhitelistedSuperAdmin = WHITELISTED_SUPER_ADMIN_EMAILS.includes(cleanEmail);
 
-  // Check if admin profile exists in Prisma
+  // 1. Check if admin profile exists by Supabase User ID
   let adminProfile = await prisma.adminProfile.findUnique({
     where: { id: user.id },
   });
 
-  // Auto-provision if user exists in Supabase Auth but not in our database
+  // Fallback lookup by email if ID mismatch exists
+  if (!adminProfile && cleanEmail) {
+    adminProfile = await prisma.adminProfile.findFirst({
+      where: { email: cleanEmail },
+    });
+
+    if (adminProfile) {
+      adminProfile = await prisma.adminProfile.update({
+        where: { id: adminProfile.id },
+        data: { id: user.id },
+      });
+    }
+  }
+
+  // 2. Auto-provision if user exists in Supabase Auth but not in our database
   if (!adminProfile) {
     if (!isWhitelistedSuperAdmin) {
       throw new Error("Access Denied: Your administrator account has not been registered. Please contact a super administrator.");
     }
 
     const role = "super_admin";
-    const name = user.user_metadata?.name || user.user_metadata?.full_name || email.split("@")[0];
+    const name = user.user_metadata?.name || user.user_metadata?.full_name || cleanEmail.split("@")[0];
 
     adminProfile = await prisma.adminProfile.create({
       data: {
         id: user.id,
-        email,
+        email: cleanEmail,
         name,
         role,
         isBlocked: false,
