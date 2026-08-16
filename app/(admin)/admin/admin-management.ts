@@ -104,15 +104,11 @@ export async function logActivity(
   }
 }
 
-// List all admin profiles (Visible to all admins, auto-cleans orphaned auth records)
+// List all admin profiles (Visible to all admins, bi-directionally synced with Supabase Auth)
 export async function getAdminProfilesAction() {
   try {
     await getRequiredAdminSession(); // Ensure requester is authenticated
-    let admins = await prisma.adminProfile.findMany({
-      orderBy: { email: "asc" },
-    });
 
-    // Auto-clean orphaned profiles if deleted directly from Supabase Auth dashboard
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -121,20 +117,54 @@ export async function getAdminProfilesAction() {
         const supabaseAdmin = getSupabaseAdmin();
         const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
         if (listData?.users) {
-          const supabaseUserIds = new Set(listData.users.map((u) => u.id));
-          const orphanIds = admins.filter((a) => !supabaseUserIds.has(a.id)).map((a) => a.id);
+          const supabaseUsers = listData.users;
+          const supabaseUserIds = new Set(supabaseUsers.map((u) => u.id));
+
+          // Fetch current DB profiles
+          const existingProfiles = await prisma.adminProfile.findMany();
+
+          // 1. Purge DB profiles for users that no longer exist in Supabase Auth
+          const orphanIds = existingProfiles
+            .filter((a) => !supabaseUserIds.has(a.id))
+            .map((a) => a.id);
 
           if (orphanIds.length > 0) {
             await prisma.adminProfile.deleteMany({
               where: { id: { in: orphanIds } },
             });
-            admins = admins.filter((a) => supabaseUserIds.has(a.id));
+          }
+
+          // 2. Auto-provision DB profiles for users in Supabase Auth that lack a DB record
+          for (const sUser of supabaseUsers) {
+            const profileExists = existingProfiles.some((a) => a.id === sUser.id);
+            if (!profileExists && sUser.email) {
+              const cleanEmail = sUser.email.toLowerCase();
+              const isSuper = WHITELISTED_SUPER_ADMIN_EMAILS.includes(cleanEmail);
+              const role = isSuper ? "super_admin" : (sUser.app_metadata?.role || "admin");
+              const name = sUser.user_metadata?.name || sUser.user_metadata?.full_name || cleanEmail.split("@")[0];
+
+              await prisma.adminProfile.upsert({
+                where: { id: sUser.id },
+                update: { email: cleanEmail, role },
+                create: {
+                  id: sUser.id,
+                  email: cleanEmail,
+                  name,
+                  role,
+                  isBlocked: false,
+                },
+              });
+            }
           }
         }
       } catch (syncError) {
-        console.warn("Could not sync orphaned admin profiles with Supabase Auth:", syncError);
+        console.warn("Could not sync admin profiles with Supabase Auth:", syncError);
       }
     }
+
+    const admins = await prisma.adminProfile.findMany({
+      orderBy: { email: "asc" },
+    });
 
     return { success: true, data: admins };
   } catch (error: any) {
