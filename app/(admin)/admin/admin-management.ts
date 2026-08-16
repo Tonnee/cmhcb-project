@@ -22,7 +22,7 @@ function getSupabaseAdmin() {
   });
 }
 
-const WHITELISTED_SUPER_ADMIN_EMAILS = ["admin@cmhcb.org", "admin@cmhcb.com", "satonnee@gmail.com"];
+const WHITELISTED_SUPER_ADMIN_EMAILS = ["admin@cmhcb.com", "satonnee@gmail.com"];
 
 // Helper to authenticate the current admin session, auto-provision if needed, and check block status
 export async function getRequiredAdminSession() {
