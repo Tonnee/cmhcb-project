@@ -143,11 +143,22 @@ export async function createAdminAccountAction(
     }
 
     const supabaseAdmin = getSupabaseAdmin();
+    const cleanEmail = email.toLowerCase().trim();
 
-    // 1. Create user in Supabase auth system
-    // Set metadata role to 'admin' so they pass middleware checks
+    // Check if admin profile already exists in Prisma DB
+    const existingProfile = await prisma.adminProfile.findFirst({
+      where: { email: cleanEmail },
+    });
+
+    if (existingProfile) {
+      throw new Error("An administrator profile for this email address already exists in the directory.");
+    }
+
+    let userId: string;
+
+    // 1. Try creating user in Supabase auth system
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email,
+      email: cleanEmail,
       password,
       email_confirm: true,
       app_metadata: { role: "admin" },
@@ -155,19 +166,47 @@ export async function createAdminAccountAction(
     });
 
     if (authError) {
-      throw new Error(authError.message);
-    }
+      // If user already exists in Supabase Auth, fetch their ID and update credentials
+      if (
+        authError.message.toLowerCase().includes("already been registered") ||
+        authError.message.toLowerCase().includes("already exists")
+      ) {
+        const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
+        const existingAuthUser = listData?.users?.find(
+          (u) => u.email?.toLowerCase() === cleanEmail
+        );
 
-    const user = authData?.user;
-    if (!user) {
-      throw new Error("Failed to create user in Auth system.");
+        if (!existingAuthUser) {
+          throw new Error(authError.message);
+        }
+
+        userId = existingAuthUser.id;
+
+        // Update password & metadata in Supabase Auth
+        const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+          password,
+          app_metadata: { role: "admin" },
+          user_metadata: { name },
+        });
+
+        if (updateError) {
+          throw new Error(`Failed to update Auth credentials: ${updateError.message}`);
+        }
+      } else {
+        throw new Error(authError.message);
+      }
+    } else {
+      if (!authData?.user) {
+        throw new Error("Failed to create user in Auth system.");
+      }
+      userId = authData.user.id;
     }
 
     // 2. Create profile in database
     const profile = await prisma.adminProfile.create({
       data: {
-        id: user.id,
-        email: email.toLowerCase(),
+        id: userId,
+        email: cleanEmail,
         name,
         role,
         isBlocked: false,
@@ -183,7 +222,7 @@ export async function createAdminAccountAction(
       "AdminProfile",
       profile.id,
       profile.email,
-      `Created ${role} account for ${name} (${email})`
+      `Created ${role} account for ${name} (${cleanEmail})`
     );
 
     revalidatePath("/admin/admins");
