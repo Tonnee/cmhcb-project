@@ -72,7 +72,7 @@ export default function LoginPage({
                 required
                 disabled={isPending}
                 className="mt-1 block w-full px-4 py-3 border border-muted rounded-xl text-sm font-sans shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:bg-light/30 transition-all duration-200"
-                placeholder="admin@cmhcb.org"
+                placeholder="admin@cmhcb.com"
               />
             </div>
 
