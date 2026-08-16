@@ -231,7 +231,28 @@ export async function deleteAdminAccountAction(adminId: string) {
   }
 }
 
-// Fetch activity logs for a specific admin (Visible to all admins)
+// Clear activity logs (Super Admin only)
+export async function clearActivityLogsAction() {
+  try {
+    const currentAdmin = await getRequiredAdminSession();
+    const isCallerSuperAdmin =
+      currentAdmin.role === "super_admin" ||
+      WHITELISTED_SUPER_ADMIN_EMAILS.includes(currentAdmin.email.toLowerCase());
+
+    if (!isCallerSuperAdmin) {
+      throw new Error("Permission Denied: Only Super Administrators can clear activity logs.");
+    }
+
+    await prisma.activityLog.deleteMany();
+
+    revalidatePath("/admin/admins");
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error clearing activity logs:", error);
+    return { success: false, error: error.message || "Failed to clear activity logs." };
+  }
+}
 export async function getAdminActivityLogsAction(adminId: string) {
   try {
     await getRequiredAdminSession(); // Ensure requester is authenticated
