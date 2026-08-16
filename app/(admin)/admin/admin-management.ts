@@ -100,17 +100,91 @@ export async function logActivity(
   }
 }
 
-// List all admin profiles (Visible to all admins)
+// List all admin profiles (Visible to all admins, auto-cleans orphaned auth records)
 export async function getAdminProfilesAction() {
   try {
     await getRequiredAdminSession(); // Ensure requester is authenticated
-    const admins = await prisma.adminProfile.findMany({
+    let admins = await prisma.adminProfile.findMany({
       orderBy: { email: "asc" },
     });
+
+    // Auto-clean orphaned profiles if deleted directly from Supabase Auth dashboard
+    try {
+      const supabaseAdmin = getSupabaseAdmin();
+      const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
+      if (listData?.users) {
+        const supabaseUserIds = new Set(listData.users.map((u) => u.id));
+        const orphanIds = admins.filter((a) => !supabaseUserIds.has(a.id)).map((a) => a.id);
+
+        if (orphanIds.length > 0) {
+          await prisma.adminProfile.deleteMany({
+            where: { id: { in: orphanIds } },
+          });
+          admins = admins.filter((a) => supabaseUserIds.has(a.id));
+        }
+      }
+    } catch (syncError) {
+      console.warn("Could not sync orphaned admin profiles with Supabase Auth:", syncError);
+    }
+
     return { success: true, data: admins };
   } catch (error: any) {
     console.error("Error listing admin profiles:", error);
     return { success: false, error: error.message || "Failed to load admins list." };
+  }
+}
+
+// Delete an admin account (Super Admin only)
+export async function deleteAdminAccountAction(adminId: string) {
+  try {
+    const currentAdmin = await getRequiredAdminSession();
+    if (currentAdmin.role !== "super_admin") {
+      throw new Error("Permission Denied: Only Super Administrators can delete admin accounts.");
+    }
+
+    if (adminId === currentAdmin.id) {
+      throw new Error("Permission Denied: You cannot delete your own account.");
+    }
+
+    const adminToDelete = await prisma.adminProfile.findUnique({
+      where: { id: adminId },
+    });
+
+    if (!adminToDelete) {
+      // If profile is already missing, return success so UI removes it
+      return { success: true, data: { id: adminId } };
+    }
+
+    // 1. Delete user from Supabase Auth
+    try {
+      const supabaseAdmin = getSupabaseAdmin();
+      await supabaseAdmin.auth.admin.deleteUser(adminId);
+    } catch (authError: any) {
+      console.warn(`Auth user ${adminId} deletion warning:`, authError.message);
+    }
+
+    // 2. Delete profile from Prisma database
+    await prisma.adminProfile.delete({
+      where: { id: adminId },
+    });
+
+    // 3. Log action
+    await logActivity(
+      currentAdmin.id,
+      currentAdmin.email,
+      currentAdmin.name,
+      "DELETE",
+      "AdminProfile",
+      adminId,
+      adminToDelete.email,
+      `Deleted administrator account for ${adminToDelete.name} (${adminToDelete.email})`
+    );
+
+    revalidatePath("/admin/admins");
+    return { success: true, data: { id: adminId } };
+  } catch (error: any) {
+    console.error(`Error deleting admin account ${adminId}:`, error);
+    return { success: false, error: error.message || "Failed to delete administrator account." };
   }
 }
 

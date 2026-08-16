@@ -12,12 +12,14 @@ import {
   HiClock,
   HiXMark,
   HiEye,
-  HiEyeSlash
+  HiEyeSlash,
+  HiTrash
 } from "react-icons/hi2";
 import { 
   createAdminAccountAction, 
   updateAdminCredentialsAction, 
-  toggleBlockAdminAction 
+  toggleBlockAdminAction,
+  deleteAdminAccountAction
 } from "@/app/(admin)/admin/admin-management";
 
 interface AdminProfile {
@@ -212,6 +214,31 @@ export default function AdminsClientWrapper({
     }
   };
 
+  // Handle Admin Account Deletion
+  const handleDeleteAdmin = async (admin: AdminProfile) => {
+    if (admin.id === currentAdmin.id) {
+      alert("You cannot delete your own account.");
+      return;
+    }
+
+    const confirmMsg = `Are you sure you want to permanently delete the administrator account for ${admin.email}? This will remove their profile from the directory and revoke all access.`;
+
+    if (!window.confirm(confirmMsg)) return;
+
+    try {
+      const res = await deleteAdminAccountAction(admin.id);
+      if (res.success) {
+        setAdmins(admins.filter((a) => a.id !== admin.id));
+        setSuccessMsg(`Successfully deleted administrator account for ${admin.email}.`);
+        setTimeout(() => setSuccessMsg(""), 3000);
+      } else {
+        alert(res.error || "Failed to delete administrator account.");
+      }
+    } catch (err: unknown) {
+      alert((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 font-sans">
       {/* Directory Page Header */}
@@ -374,6 +401,17 @@ export default function AdminsClientWrapper({
                               ) : (
                                 <HiLockClosed className="w-5 h-5" />
                               )}
+                            </button>
+                          )}
+
+                          {/* Delete Admin Account - Super Admin only, can't delete self */}
+                          {isSuperAdmin && !isSelf && (
+                            <button
+                              onClick={() => handleDeleteAdmin(admin)}
+                              title="Delete Administrator Account"
+                              className="p-2 text-light-ash hover:text-red-600 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
+                            >
+                              <HiTrash className="w-5 h-5" />
                             </button>
                           )}
                         </div>
