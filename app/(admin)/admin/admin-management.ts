@@ -34,6 +34,7 @@ export async function getRequiredAdminSession() {
   }
 
   const email = user.email || "";
+  const isWhitelistedSuperAdmin = WHITELISTED_SUPER_ADMIN_EMAILS.includes(email.toLowerCase());
 
   // Check if admin profile exists in Prisma
   let adminProfile = await prisma.adminProfile.findUnique({
@@ -42,10 +43,7 @@ export async function getRequiredAdminSession() {
 
   // Auto-provision if user exists in Supabase Auth but not in our database
   if (!adminProfile) {
-    // We only auto-provision whitelisted super-admin accounts on initial login.
-    // Regular admin accounts must be created explicitly via the Super Admin management dashboard.
-    const isSuperAdmin = WHITELISTED_SUPER_ADMIN_EMAILS.includes(email.toLowerCase());
-    if (!isSuperAdmin) {
+    if (!isWhitelistedSuperAdmin) {
       throw new Error("Access Denied: Your administrator account has not been registered. Please contact a super administrator.");
     }
 
@@ -60,6 +58,12 @@ export async function getRequiredAdminSession() {
         role,
         isBlocked: false,
       },
+    });
+  } else if (isWhitelistedSuperAdmin && adminProfile.role !== "super_admin") {
+    // Ensure whitelisted super admins always have super_admin role
+    adminProfile = await prisma.adminProfile.update({
+      where: { id: adminProfile.id },
+      data: { role: "super_admin" },
     });
   }
 
@@ -143,7 +147,11 @@ export async function getAdminProfilesAction() {
 export async function deleteAdminAccountAction(adminId: string) {
   try {
     const currentAdmin = await getRequiredAdminSession();
-    if (currentAdmin.role !== "super_admin") {
+    const isCallerSuperAdmin =
+      currentAdmin.role === "super_admin" ||
+      WHITELISTED_SUPER_ADMIN_EMAILS.includes(currentAdmin.email.toLowerCase());
+
+    if (!isCallerSuperAdmin) {
       throw new Error("Permission Denied: Only Super Administrators can delete admin accounts.");
     }
 
@@ -160,18 +168,18 @@ export async function deleteAdminAccountAction(adminId: string) {
       return { success: true, data: { id: adminId } };
     }
 
-    // 1. Delete user from Supabase Auth
+    // 1. Delete profile from Prisma database first so it is immediately removed from the directory
+    await prisma.adminProfile.delete({
+      where: { id: adminId },
+    });
+
+    // 2. Delete user from Supabase Auth
     try {
       const supabaseAdmin = getSupabaseAdmin();
       await supabaseAdmin.auth.admin.deleteUser(adminId);
     } catch (authError: any) {
       console.warn(`Auth user ${adminId} deletion warning:`, authError.message);
     }
-
-    // 2. Delete profile from Prisma database
-    await prisma.adminProfile.delete({
-      where: { id: adminId },
-    });
 
     // 3. Log action
     await logActivity(
