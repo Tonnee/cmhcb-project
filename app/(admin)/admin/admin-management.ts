@@ -58,11 +58,7 @@ export async function getRequiredAdminSession() {
 
   // 2. Auto-provision if user exists in Supabase Auth but not in our database
   if (!adminProfile) {
-    if (!isWhitelistedSuperAdmin) {
-      throw new Error("Access Denied: Your administrator account has not been registered. Please contact a super administrator.");
-    }
-
-    const role = "super_admin";
+    const role = isWhitelistedSuperAdmin ? "super_admin" : (user.app_metadata?.role || "admin");
     const name = user.user_metadata?.name || user.user_metadata?.full_name || cleanEmail.split("@")[0];
 
     adminProfile = await prisma.adminProfile.create({
