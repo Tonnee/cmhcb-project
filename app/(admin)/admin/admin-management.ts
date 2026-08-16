@@ -109,22 +109,27 @@ export async function getAdminProfilesAction() {
     });
 
     // Auto-clean orphaned profiles if deleted directly from Supabase Auth dashboard
-    try {
-      const supabaseAdmin = getSupabaseAdmin();
-      const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
-      if (listData?.users) {
-        const supabaseUserIds = new Set(listData.users.map((u) => u.id));
-        const orphanIds = admins.filter((a) => !supabaseUserIds.has(a.id)).map((a) => a.id);
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-        if (orphanIds.length > 0) {
-          await prisma.adminProfile.deleteMany({
-            where: { id: { in: orphanIds } },
-          });
-          admins = admins.filter((a) => supabaseUserIds.has(a.id));
+    if (supabaseUrl && serviceRoleKey && !serviceRoleKey.includes("your-supabase")) {
+      try {
+        const supabaseAdmin = getSupabaseAdmin();
+        const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
+        if (listData?.users) {
+          const supabaseUserIds = new Set(listData.users.map((u) => u.id));
+          const orphanIds = admins.filter((a) => !supabaseUserIds.has(a.id)).map((a) => a.id);
+
+          if (orphanIds.length > 0) {
+            await prisma.adminProfile.deleteMany({
+              where: { id: { in: orphanIds } },
+            });
+            admins = admins.filter((a) => supabaseUserIds.has(a.id));
+          }
         }
+      } catch (syncError) {
+        console.warn("Could not sync orphaned admin profiles with Supabase Auth:", syncError);
       }
-    } catch (syncError) {
-      console.warn("Could not sync orphaned admin profiles with Supabase Auth:", syncError);
     }
 
     return { success: true, data: admins };
