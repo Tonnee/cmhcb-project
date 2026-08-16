@@ -11,7 +11,8 @@ import {
   HiLockOpen, 
   HiClock,
   HiXMark,
-  
+  HiEye,
+  HiEyeSlash
 } from "react-icons/hi2";
 import { 
   createAdminAccountAction, 
@@ -51,6 +52,8 @@ export default function AdminsClientWrapper({
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [role, setRole] = React.useState<"admin" | "super_admin">("admin");
+  const [showCreatePassword, setShowCreatePassword] = React.useState(false);
+  const [showEditPassword, setShowEditPassword] = React.useState(false);
 
   // Status states
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -78,6 +81,7 @@ export default function AdminsClientWrapper({
     setName(admin.name);
     setRole(admin.role as "admin" | "super_admin");
     setPassword("");
+    setShowEditPassword(false);
     clearNotifications();
     setShowEditModal(true);
   };
@@ -88,6 +92,7 @@ export default function AdminsClientWrapper({
     setEmail("");
     setPassword("");
     setRole("admin");
+    setShowCreatePassword(false);
     clearNotifications();
     setShowCreateModal(true);
   };
@@ -437,14 +442,28 @@ export default function AdminsClientWrapper({
               {/* Password */}
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-dark">Password</label>
-                <input
-                  type="password"
-                  required
-                  placeholder="Minimum 6 characters"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm"
-                />
+                <div className="relative">
+                  <input
+                    type={showCreatePassword ? "text" : "password"}
+                    required
+                    placeholder="Minimum 6 characters"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-3.5 pr-10 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCreatePassword(!showCreatePassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-light-ash/70 hover:text-dark focus:outline-none flex items-center justify-center cursor-pointer"
+                    aria-label={showCreatePassword ? "Hide password" : "Show password"}
+                  >
+                    {showCreatePassword ? (
+                      <HiEyeSlash className="w-4 h-4" />
+                    ) : (
+                      <HiEye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               {/* Role Selection */}
@@ -524,13 +543,27 @@ export default function AdminsClientWrapper({
                 <label className="text-xs font-semibold text-dark">
                   Reset Password <span className="text-light-ash/60 font-normal">(Optional)</span>
                 </label>
-                <input
-                  type="password"
-                  placeholder="Leave blank to keep current password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm"
-                />
+                <div className="relative">
+                  <input
+                    type={showEditPassword ? "text" : "password"}
+                    placeholder="Leave blank to keep current password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-3.5 pr-10 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowEditPassword(!showEditPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-light-ash/70 hover:text-dark focus:outline-none flex items-center justify-center cursor-pointer"
+                    aria-label={showEditPassword ? "Hide password" : "Show password"}
+                  >
+                    {showEditPassword ? (
+                      <HiEyeSlash className="w-4 h-4" />
+                    ) : (
+                      <HiEye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               {/* Role Selection */}
