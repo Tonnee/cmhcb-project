@@ -248,11 +248,12 @@ export default function EditAffiliationPageForm({
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark text-xs">Hero Background Image</span>
+            <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/gif"
               onChange={handleImageChange}
-              className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash"
+              className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash mt-0.5"
               disabled={isUploading}
             />
           </div>
@@ -345,10 +346,11 @@ export default function EditAffiliationPageForm({
             {/* Logo Image Upload */}
             <div className="flex flex-col gap-1 sm:col-span-1">
               <label className="text-[10px] text-light-ash">Partner Logo Image</label>
-              <div className="flex items-center gap-2">
+              <span className="text-[9px] text-light-ash">400×200 px or 300×300 px • .png, .svg, .webp (transparent preferred)</span>
+              <div className="flex items-center gap-2 mt-0.5">
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp,image/svg+xml"
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;

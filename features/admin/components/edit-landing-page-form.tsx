@@ -210,7 +210,8 @@ export default function EditLandingPageForm({
               <label className="font-sans text-xs font-semibold text-dark">
                 Hero Background Banner
               </label>
-              <div className="flex items-center gap-4">
+              <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
+              <div className="flex items-center gap-4 mt-1">
                 <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                   {heroBgImage ? (
                     <Image src={heroBgImage} alt="Hero BG" width={800} height={400} unoptimized className="w-full h-full object-cover" />
@@ -226,7 +227,7 @@ export default function EditLandingPageForm({
                   </span>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
                     onChange={handleUploadBg}
                     className="hidden"
                     disabled={isUploadingBg}
@@ -240,7 +241,8 @@ export default function EditLandingPageForm({
               <label className="font-sans text-xs font-semibold text-dark">
                 Hero Figure Illustration
               </label>
-              <div className="flex items-center gap-4">
+              <span className="text-[11px] text-light-ash">Size: <strong>800×800 px</strong> (1:1 / transparent) • Format: <strong>.png, .webp, .svg, .jpg</strong> (Max 10MB)</span>
+              <div className="flex items-center gap-4 mt-1">
                 <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                   {heroFigureImage ? (
                     <Image src={heroFigureImage} alt="Hero Figure" width={800} height={400} unoptimized className="w-full h-full object-cover" />
@@ -256,7 +258,7 @@ export default function EditLandingPageForm({
                   </span>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/webp,image/svg+xml,image/gif"
                     onChange={handleUploadFigure}
                     className="hidden"
                     disabled={isUploadingFigure}
@@ -410,7 +412,8 @@ export default function EditLandingPageForm({
             <label className="font-sans text-xs font-semibold text-dark">
               Training Display Image
             </label>
-            <div className="flex items-center gap-4">
+            <span className="text-[11px] text-light-ash">Size: <strong>800×600 px</strong> (4:3 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
+            <div className="flex items-center gap-4 mt-1">
               <div className="relative w-20 h-24 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                 {trainingImage ? (
                   <Image src={trainingImage} alt="Training Display" width={800} height={400} unoptimized className="w-full h-full object-cover" />
@@ -426,7 +429,7 @@ export default function EditLandingPageForm({
                 </span>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
                   onChange={handleUploadTraining}
                   className="hidden"
                   disabled={isUploadingTraining}

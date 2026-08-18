@@ -225,11 +225,12 @@ export default function EditBlogForm({
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark">Featured Image</span>
+            <span className="text-[11px] text-light-ash">Size: <strong>1200×630 px</strong> (1.91:1 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/gif"
               onChange={handleImageChange}
-              className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash"
+              className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash mt-0.5"
               disabled={isUploading}
             />
           </div>

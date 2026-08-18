@@ -311,11 +311,12 @@ export function EditServiceForm({
             <HiPhoto className="w-4 h-4 text-primary" />
             Service Card Image (Optional fallback uses default page background)
           </label>
+          <span className="text-[11px] text-light-ash">Size: <strong>600×400 px</strong> (3:2 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif"
             onChange={handleImageChange}
-            className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash font-sans cursor-pointer"
+            className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash font-sans cursor-pointer mt-0.5"
             disabled={isUploading || isSubmitting}
           />
         </div>
@@ -332,11 +333,12 @@ export function EditServiceForm({
             <HiPhoto className="w-4 h-4 text-primary" />
             Hero Background Image (Used on service details page hero section)
           </label>
+          <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif"
             onChange={handleBgImageChange}
-            className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash font-sans cursor-pointer"
+            className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash font-sans cursor-pointer mt-0.5"
             disabled={isUploadingBg || isSubmitting}
           />
         </div>

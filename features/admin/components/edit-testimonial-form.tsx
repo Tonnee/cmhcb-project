@@ -152,11 +152,12 @@ export function EditTestimonialForm({
             <HiPhoto className="w-4 h-4 text-primary" />
             Client Avatar Image
           </label>
+          <span className="text-[11px] text-light-ash">Size: <strong>300×300 px</strong> (1:1 square) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif"
             onChange={handleAvatarChange}
-            className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash cursor-pointer"
+            className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash cursor-pointer mt-0.5"
             disabled={isUploading || isSubmitting}
             required={!avatar}
           />

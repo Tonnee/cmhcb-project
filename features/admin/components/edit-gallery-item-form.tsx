@@ -197,6 +197,9 @@ export function EditGalleryItemForm({
           <label className="font-semibold text-xs text-dark">
             {type === "image" ? "Upload Image or Enter URL" : "Video URL (direct link or mp4)"}
           </label>
+          {type === "image" && (
+            <span className="text-[11px] text-light-ash">Size: <strong>1200×800 px</strong> (Landscape 3:2) or <strong>800×1000 px</strong> (Portrait 4:5) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
+          )}
           {type === "image" ? (
             <div className="flex flex-col sm:flex-row gap-3 items-center">
               <input
@@ -214,7 +217,7 @@ export function EditGalleryItemForm({
                 </span>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
                   onChange={handleFileChange}
                   className="hidden"
                   disabled={isUploading}
