@@ -213,7 +213,7 @@ export default function EditLandingPageForm({
               <div className="flex items-center gap-4">
                 <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                   {heroBgImage ? (
-                    <Image src={heroBgImage} alt="Hero BG" width={800} height={400} className="w-full h-full object-cover" />
+                    <Image src={heroBgImage} alt="Hero BG" width={800} height={400} unoptimized className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                       <HiPhoto className="w-6 h-6" />
@@ -243,7 +243,7 @@ export default function EditLandingPageForm({
               <div className="flex items-center gap-4">
                 <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                   {heroFigureImage ? (
-                    <Image src={heroFigureImage} alt="Hero Figure" width={800} height={400} className="w-full h-full object-cover" />
+                    <Image src={heroFigureImage} alt="Hero Figure" width={800} height={400} unoptimized className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                       <HiPhoto className="w-6 h-6" />
@@ -413,7 +413,7 @@ export default function EditLandingPageForm({
             <div className="flex items-center gap-4">
               <div className="relative w-20 h-24 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                 {trainingImage ? (
-                  <Image src={trainingImage} alt="Training Display" width={800} height={400} className="w-full h-full object-cover" />
+                  <Image src={trainingImage} alt="Training Display" width={800} height={400} unoptimized className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                     <HiPhoto className="w-6 h-6" />

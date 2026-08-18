@@ -112,7 +112,7 @@ export default function WorkshopsClientWrapper({
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-primary/10 shrink-0 relative flex items-center justify-center text-primary-dark">
                         {workshop.image ? (
-                          <Image src={workshop.image} alt={workshop.title} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
+                          <Image src={workshop.image} alt={workshop.title} width={48} height={48} unoptimized className="w-12 h-12 object-cover rounded-xl" />
                         ) : (
                           <HiCalendar className="w-5 h-5" />
                         )}

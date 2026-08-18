@@ -304,7 +304,7 @@ export function EditServiceForm({
       {/* Image File upload */}
       <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
         {imageUrl && (
-          <Image src={imageUrl} alt="Preview" width={64} height={64} className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
+          <Image src={imageUrl} alt="Preview" width={64} height={64} unoptimized className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
         )}
         <div className="flex-1 flex flex-col gap-1">
           <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
@@ -325,7 +325,7 @@ export function EditServiceForm({
       {/* Hero Background Image File upload */}
       <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
         {bgImageUrl && (
-          <Image src={bgImageUrl} alt="Background Preview" width={64} height={64} className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
+          <Image src={bgImageUrl} alt="Background Preview" width={64} height={64} unoptimized className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
         )}
         <div className="flex-1 flex flex-col gap-1">
           <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">

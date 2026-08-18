@@ -136,8 +136,7 @@ export function GalleryClientWrapper({
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="relative w-24 h-16 rounded-lg bg-muted border border-muted/50 overflow-hidden flex items-center justify-center shrink-0">
                         {item.type === "image" ? (
-                          
-                          <Image src={item.src} alt={item.alt} width={400} height={300} className="w-full h-full object-cover" />
+                          <Image src={item.src} alt={item.alt} width={400} height={300} unoptimized className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex flex-col items-center justify-center text-primary-dark bg-secondary/10">
                             <HiVideoCamera className="w-6 h-6" />

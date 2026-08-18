@@ -129,7 +129,7 @@ export function SuccessStoriesClientWrapper({
                     <td className="px-6 py-4.5">
                       <div className="flex items-center gap-3">
                         <div className="relative w-10 h-10 rounded-full overflow-hidden border border-muted/60 shrink-0 bg-light-ash/5">
-                          <Image src={story.avatar || "/home-review/mental-health-therapy-client-woman.png"} alt={story.name} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
+                          <Image src={story.avatar || "/home-review/mental-health-therapy-client-woman.png"} alt={story.name} width={48} height={48} unoptimized className="w-12 h-12 object-cover rounded-xl" />
                         </div>
                         <div className="font-semibold text-dark text-sm leading-snug">
                           {story.name}

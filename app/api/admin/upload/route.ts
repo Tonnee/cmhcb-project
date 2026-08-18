@@ -98,13 +98,31 @@ export async function POST(request: Request) {
     const fileName = `${randomString}_${Date.now()}.${fileExt}`;
     const filePath = `uploads/${fileName}`;
 
-    const { error: uploadError } = await supabaseAdmin.storage
+    let { error: uploadError } = await supabaseAdmin.storage
       .from(bucket)
       .upload(filePath, outputBuffer, {
         contentType,
         cacheControl: "31536000", // 1 year cache control for static assets
         upsert: false,
       });
+
+    if (uploadError && uploadError.message?.toLowerCase().includes("not found")) {
+      // Auto-create bucket if missing
+      await supabaseAdmin.storage.createBucket(bucket, {
+        public: true,
+        fileSizeLimit: 10485760,
+        allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"],
+      });
+      // Retry upload
+      const retryResult = await supabaseAdmin.storage
+        .from(bucket)
+        .upload(filePath, outputBuffer, {
+          contentType,
+          cacheControl: "31536000",
+          upsert: false,
+        });
+      uploadError = retryResult.error;
+    }
 
     if (uploadError) {
       return NextResponse.json({ error: `Upload error: ${uploadError.message}` }, { status: 500 });

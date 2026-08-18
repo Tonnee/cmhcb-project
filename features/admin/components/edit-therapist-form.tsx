@@ -42,7 +42,6 @@ interface TherapistFormProps {
   availableRoles: string[];
 }
 
-
 export default function EditTherapistForm({
   therapist,
   onClose,
@@ -399,7 +398,7 @@ export default function EditTherapistForm({
         {/* Image upload */}
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
           {imageUrl && (
-            <Image src={imageUrl} alt="Avatar Preview" width={64} height={64} className="w-16 h-16 rounded-full object-cover border border-primary shrink-0" />
+            <Image src={imageUrl} alt="Avatar Preview" width={64} height={64} unoptimized className="w-16 h-16 rounded-full object-cover border border-primary shrink-0" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark">Profile Image</span>
@@ -629,7 +628,6 @@ export default function EditTherapistForm({
             </div>
           </div>
         </div>
-
 
         {/* Action buttons */}
         <div className="flex items-center justify-end gap-3 border-t border-muted pt-4">

@@ -20,10 +20,15 @@ export async function uploadImageToSupabase(
     body: formData,
   });
 
-  const data = await response.json();
+  let data: any;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error(`Server returned status ${response.status} (${response.statusText || "Upload failed"})`);
+  }
 
-  if (!response.ok || !data.success) {
-    throw new Error(data.error || "Failed to upload and optimize image.");
+  if (!response.ok || !data?.success) {
+    throw new Error(data?.error || `Failed to upload image (status: ${response.status})`);
   }
 
   return data.url;

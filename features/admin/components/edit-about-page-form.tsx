@@ -177,7 +177,7 @@ export default function EditAboutPageForm({
 
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50 mt-2">
           {heroImage && (
-            <Image src={heroImage} alt="Hero Preview" width={800} height={300} className="w-full max-h-48 object-cover rounded-xl border border-muted" />
+            <Image src={heroImage} alt="Hero Preview" width={800} height={300} unoptimized className="w-full max-h-48 object-cover rounded-xl border border-muted" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark text-xs">Hero Background Image</span>

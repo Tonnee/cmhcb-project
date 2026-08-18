@@ -233,8 +233,7 @@ export function EditGalleryItemForm({
           )}
           {src && type === "image" && (
             <div className="mt-2 relative w-32 h-20 border border-muted rounded-lg overflow-hidden shrink-0">
-              
-              <Image src={src} alt="Preview" width={400} height={300} className="w-full h-full object-cover" />
+              <Image src={src} alt="Preview" width={400} height={300} unoptimized className="w-full h-full object-cover" />
             </div>
           )}
         </div>

@@ -136,7 +136,7 @@ export default function EditFaqPageForm({
         </div>
       )}
 
-      {/* Hero */}
+      {/* Hero Section */}
       <div className="flex flex-col gap-4 border-b border-muted/80 pb-6">
         <h2 className="font-marcellus text-lg font-bold text-dark-green">Hero Section Banner</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -146,7 +146,7 @@ export default function EditFaqPageForm({
               type="text"
               value={heroTitle}
               onChange={(e) => setHeroTitle(e.target.value)}
-              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans"
               required
             />
           </div>
@@ -164,7 +164,7 @@ export default function EditFaqPageForm({
 
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50 mt-2">
           {heroImage && (
-            <Image src={heroImage} alt="Hero Preview" width={800} height={300} className="w-full max-h-48 object-cover rounded-xl border border-muted" />
+            <Image src={heroImage} alt="Hero Preview" width={800} height={300} unoptimized className="w-full max-h-48 object-cover rounded-xl border border-muted" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark text-xs">Hero Background Image</span>

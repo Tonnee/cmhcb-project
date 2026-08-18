@@ -335,7 +335,7 @@ export default function TrainingsClientWrapper({
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-muted/50 shrink-0 bg-light/5">
-                              <Image src={block.image} alt={block.heading} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
+                              <Image src={block.image} alt={block.heading} width={48} height={48} unoptimized className="w-12 h-12 object-cover rounded-xl" />
                             </div>
                             <div className="font-semibold text-dark text-base leading-snug">
                               {block.heading}

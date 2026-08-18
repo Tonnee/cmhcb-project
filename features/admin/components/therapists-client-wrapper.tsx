@@ -134,7 +134,7 @@ export default function TherapistsClientWrapper({
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full overflow-hidden bg-primary/10 border border-primary/20 shrink-0 relative flex items-center justify-center text-primary-dark">
                           {therapist.image ? (
-                            <Image src={therapist.image} alt={therapist.name} width={48} height={48} className="w-12 h-12 object-cover rounded-xl" />
+                            <Image src={therapist.image} alt={therapist.name} width={48} height={48} unoptimized className="w-12 h-12 object-cover rounded-xl" />
                           ) : (
                             <HiUser className="w-5 h-5" />
                           )}
