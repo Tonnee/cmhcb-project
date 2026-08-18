@@ -433,18 +433,23 @@ export function EditTrainingForm({
           )}
         </div>
 
-        {/* 5. Course Outline Sections Builder section */}
+        {/* 5. Course Syllabus & Content Sections Builder */}
         <div className="flex flex-col gap-4 border-b border-muted pb-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
-              Course Outline Outline Builder
-            </h3>
+            <div className="flex flex-col gap-0.5">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
+                Course Curriculum &amp; Content Sections
+              </h3>
+              <span className="text-[11px] text-light-ash pl-2.5">
+                Add structured sections displayed on the training page (e.g. &ldquo;Who Should Attend?&rdquo;, &ldquo;What You Will Learn&rdquo;, &ldquo;Training Modules&rdquo;).
+              </span>
+            </div>
             <button
               type="button"
               onClick={addSection}
-              className="text-primary hover:text-primary-dark font-semibold text-xs flex items-center gap-1 cursor-pointer"
+              className="text-primary hover:text-primary-dark font-semibold text-xs flex items-center gap-1 cursor-pointer shrink-0"
             >
-              <HiPlus className="w-4 h-4" /> Add Outline Section
+              <HiPlus className="w-4 h-4" /> Add Section
             </button>
           </div>
 
