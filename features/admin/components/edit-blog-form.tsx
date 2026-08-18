@@ -172,12 +172,20 @@ export default function EditBlogForm({
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="font-semibold text-dark">Short Excerpt</label>
+          <div className="flex items-center justify-between">
+            <label className="font-semibold text-dark">Short Excerpt</label>
+            <span className="text-[11px] font-normal text-primary">
+              Shown on: <a href="/blog" target="_blank" rel="noreferrer" className="underline hover:text-primary-dark font-medium">Blog Articles (/blog)</a>
+            </span>
+          </div>
+          <span className="text-[11px] text-light-ash">
+            This preview snippet is displayed on blog cards on the <a href="/blog" target="_blank" rel="noreferrer" className="text-primary hover:underline">Blog Directory</a>.
+          </span>
           <textarea
             value={excerpt}
             onChange={(e) => setExcerpt(e.target.value)}
-            placeholder="A short summary description displayed on the blog list..."
-            className="w-full h-16 px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary resize-none"
+            placeholder="A short 1-2 sentence preview summary of the article..."
+            className="w-full h-16 px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary resize-none mt-0.5"
             required
           />
         </div>

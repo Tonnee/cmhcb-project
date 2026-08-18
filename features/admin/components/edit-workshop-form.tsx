@@ -186,12 +186,20 @@ export default function EditWorkshopForm({
           </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="font-semibold text-dark">Brief Description</label>
+          <div className="flex items-center justify-between">
+            <label className="font-semibold text-dark">Short Summary Description</label>
+            <span className="text-[11px] font-normal text-primary">
+              Shown on: <a href="/workshops" target="_blank" rel="noreferrer" className="underline hover:text-primary-dark font-medium">Workshops Page (/workshops)</a>
+            </span>
+          </div>
+          <span className="text-[11px] text-light-ash">
+            This brief overview is displayed on workshop preview cards on the <a href="/workshops" target="_blank" rel="noreferrer" className="text-primary hover:underline">Workshops Directory</a>.
+          </span>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="A short summary displayed on list pages..."
-            className="w-full h-16 px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary resize-none"
+            placeholder="A short 1-2 sentence overview of the workshop..."
+            className="w-full h-16 px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary resize-none mt-0.5"
             required
           />
         </div>

@@ -332,15 +332,26 @@ export function EditServiceForm({
 
       {/* Short Description */}
       <div className="flex flex-col gap-1.5">
-        <label className="font-sans text-xs font-semibold text-dark">
-          Short Description (Appears on grid listings)
-        </label>
+        <div className="flex items-center justify-between">
+          <label className="font-sans text-xs font-semibold text-dark">
+            Short Summary Description
+          </label>
+          <span className="text-[11px] font-normal text-primary">
+            Shown on:{" "}
+            <a href="/" target="_blank" rel="noreferrer" className="underline hover:text-primary-dark font-medium">Home Page (/)</a>
+            {" & "}
+            <a href="/services" target="_blank" rel="noreferrer" className="underline hover:text-primary-dark font-medium">Services Page (/services)</a>
+          </span>
+        </div>
+        <span className="text-[11px] text-light-ash">
+          This brief overview is displayed on service cards across the <a href="/" target="_blank" rel="noreferrer" className="text-primary hover:underline">Home Page</a> and the <a href="/services" target="_blank" rel="noreferrer" className="text-primary hover:underline">All Services directory</a>.
+        </span>
         <input
           type="text"
           value={shortDescription}
           onChange={(e) => setShortDescription(e.target.value)}
-          placeholder="e.g. one-on-one therapy sessions providing a safe, confidential space"
-          className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+          placeholder="e.g. Personalized one-on-one therapy to manage stress, build resilience, and improve emotional well-being"
+          className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors mt-0.5"
           required
         />
       </div>
