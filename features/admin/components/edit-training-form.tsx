@@ -176,6 +176,11 @@ export function EditTrainingForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Instant local preview
+    const localPreview = URL.createObjectURL(file);
+    if (isBg) setBgImageUrl(localPreview);
+    else setImageUrl(localPreview);
+
     if (isBg) setIsUploadingBg(true);
     else setIsUploading(true);
     setErrorMsg("");
@@ -582,12 +587,11 @@ export function EditTrainingForm({
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light/10 p-4 rounded-xl border border-muted/50">
               <div className="relative w-28 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
                 {imageUrl ? (
-                  <Image
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
                     src={imageUrl}
                     alt="Training Card Preview"
-                    fill
-                    unoptimized
-                    className="object-cover"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1">
@@ -624,12 +628,11 @@ export function EditTrainingForm({
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light/10 p-4 rounded-xl border border-muted/50">
               <div className="relative w-36 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
                 {bgImageUrl ? (
-                  <Image
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
                     src={bgImageUrl}
                     alt="Hero Background Preview"
-                    fill
-                    unoptimized
-                    className="object-cover"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1">

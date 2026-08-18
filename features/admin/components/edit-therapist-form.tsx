@@ -131,6 +131,10 @@ export default function EditTherapistForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Instant local preview
+    const localPreview = URL.createObjectURL(file);
+    setImageUrl(localPreview);
+
     setIsUploading(true);
     setErrorMsg("");
     try {
@@ -398,7 +402,8 @@ export default function EditTherapistForm({
         {/* Image upload */}
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
           {imageUrl && (
-            <Image src={imageUrl} alt="Avatar Preview" width={64} height={64} unoptimized className="w-16 h-16 rounded-full object-cover border border-primary shrink-0" />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={imageUrl} alt="Avatar Preview" className="w-16 h-16 rounded-full object-cover border border-primary shrink-0" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark">Profile Image</span>

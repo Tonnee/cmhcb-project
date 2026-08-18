@@ -52,6 +52,10 @@ export function EditGalleryItemForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Instant local preview
+    const localPreview = URL.createObjectURL(file);
+    setSrc(localPreview);
+
     setIsUploading(true);
     setError(null);
     try {
@@ -236,7 +240,8 @@ export function EditGalleryItemForm({
           )}
           {src && type === "image" && (
             <div className="mt-2 relative w-32 h-20 border border-muted rounded-lg overflow-hidden shrink-0">
-              <Image src={src} alt="Preview" width={400} height={300} unoptimized className="w-full h-full object-cover" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={src} alt="Preview" className="w-full h-full object-cover" />
             </div>
           )}
         </div>

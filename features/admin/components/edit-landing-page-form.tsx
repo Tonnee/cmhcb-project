@@ -65,6 +65,11 @@ export default function EditLandingPageForm({
   const handleUploadBg = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Instant local preview
+    const localPreview = URL.createObjectURL(file);
+    setHeroBgImage(localPreview);
+
     setIsUploadingBg(true);
     setError(null);
     try {
@@ -80,6 +85,11 @@ export default function EditLandingPageForm({
   const handleUploadFigure = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Instant local preview
+    const localPreview = URL.createObjectURL(file);
+    setHeroFigureImage(localPreview);
+
     setIsUploadingFigure(true);
     setError(null);
     try {
@@ -95,6 +105,11 @@ export default function EditLandingPageForm({
   const handleUploadTraining = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Instant local preview
+    const localPreview = URL.createObjectURL(file);
+    setTrainingImage(localPreview);
+
     setIsUploadingTraining(true);
     setError(null);
     try {
@@ -214,7 +229,8 @@ export default function EditLandingPageForm({
               <div className="flex items-center gap-4 mt-1">
                 <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                   {heroBgImage ? (
-                    <Image src={heroBgImage} alt="Hero BG" width={800} height={400} unoptimized className="w-full h-full object-cover" />
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={heroBgImage} alt="Hero BG" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                       <HiPhoto className="w-6 h-6" />
@@ -245,7 +261,8 @@ export default function EditLandingPageForm({
               <div className="flex items-center gap-4 mt-1">
                 <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                   {heroFigureImage ? (
-                    <Image src={heroFigureImage} alt="Hero Figure" width={800} height={400} unoptimized className="w-full h-full object-cover" />
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={heroFigureImage} alt="Hero Figure" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                       <HiPhoto className="w-6 h-6" />
@@ -416,7 +433,8 @@ export default function EditLandingPageForm({
             <div className="flex items-center gap-4 mt-1">
               <div className="relative w-20 h-24 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
                 {trainingImage ? (
-                  <Image src={trainingImage} alt="Training Display" width={800} height={400} unoptimized className="w-full h-full object-cover" />
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={trainingImage} alt="Training Display" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                     <HiPhoto className="w-6 h-6" />

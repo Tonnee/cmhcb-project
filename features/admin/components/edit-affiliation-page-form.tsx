@@ -151,6 +151,10 @@ export default function EditAffiliationPageForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Instant local preview
+    const localPreview = URL.createObjectURL(file);
+    setHeroImage(localPreview);
+
     setIsUploading(true);
     setError(null);
     try {
@@ -244,7 +248,8 @@ export default function EditAffiliationPageForm({
 
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50 mt-2">
           {heroImage && (
-            <Image src={heroImage} alt="Hero Preview" width={800} height={300} unoptimized className="w-full max-h-48 object-cover rounded-xl border border-muted" />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={heroImage} alt="Hero Preview" className="w-full max-h-48 object-cover rounded-xl border border-muted" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark text-xs">Hero Background Image</span>
@@ -354,6 +359,8 @@ export default function EditAffiliationPageForm({
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
+                    const localPreview = URL.createObjectURL(file);
+                    setNewPartnerLogo(localPreview);
                     setIsLogoUploading(true);
                     try {
                       const url = await uploadImageToSupabase(file, "cmhcb-media");
@@ -368,7 +375,8 @@ export default function EditAffiliationPageForm({
                   disabled={isLogoUploading}
                 />
                 {newPartnerLogo && (
-                  <Image src={newPartnerLogo} alt="Logo Preview" width={64} height={64} unoptimized className="w-16 h-16 object-contain rounded-xl border border-primary shrink-0" />
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={newPartnerLogo} alt="Logo Preview" className="w-16 h-16 object-contain rounded-xl border border-primary shrink-0" />
                 )}
               </div>
               {isLogoUploading && <span className="text-[9px] text-primary animate-pulse">Uploading logo...</span>}

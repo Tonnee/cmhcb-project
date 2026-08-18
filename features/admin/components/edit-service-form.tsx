@@ -105,6 +105,10 @@ export function EditServiceForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Instant local preview
+    const localPreview = URL.createObjectURL(file);
+    setBgImageUrl(localPreview);
+
     setIsUploadingBg(true);
     setError(null);
     try {
@@ -121,6 +125,10 @@ export function EditServiceForm({
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Instant local preview
+    const localPreview = URL.createObjectURL(file);
+    setImageUrl(localPreview);
 
     setIsUploading(true);
     setError(null);
@@ -303,12 +311,11 @@ export function EditServiceForm({
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
           <div className="relative w-28 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
             {imageUrl ? (
-              <Image
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
                 src={imageUrl}
                 alt="Service Card Preview"
-                fill
-                unoptimized
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             ) : (
               <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1">
@@ -349,12 +356,11 @@ export function EditServiceForm({
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
           <div className="relative w-36 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
             {bgImageUrl ? (
-              <Image
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
                 src={bgImageUrl}
                 alt="Hero Background Preview"
-                fill
-                unoptimized
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             ) : (
               <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1">
