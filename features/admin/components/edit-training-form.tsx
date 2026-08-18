@@ -197,7 +197,9 @@ export function EditTrainingForm({
     e.preventDefault();
     if (isSaving || isUploading || isUploadingBg) return;
 
-    if (!title || !slug || !heroTitle || !heroDescription || !introTitle || !introDescription || !duration || !fees) {
+    const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
+    if (!title || !finalSlug || !heroTitle || !heroDescription || !introTitle || !introDescription || !duration || !fees) {
       setErrorMsg("All core description fields, pricing, and duration are required.");
       return;
     }
@@ -209,7 +211,7 @@ export function EditTrainingForm({
       const payload = {
         id: training?.id,
         title,
-        slug,
+        slug: finalSlug,
         heroTitle,
         heroDescription,
         introTitle,
@@ -274,29 +276,16 @@ export function EditTrainingForm({
           <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
             Basic Details
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Program Title</label>
-              <input
-                type="text"
-                required
-                value={title}
-                onChange={handleTitleChange}
-                placeholder="e.g. Psychological First Aid"
-                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">URL Slug Path</label>
-              <input
-                type="text"
-                required
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                placeholder="e.g. psychological-first-aid"
-                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary font-mono text-xs"
-              />
-            </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark">Program Title</label>
+            <input
+              type="text"
+              required
+              value={title}
+              onChange={handleTitleChange}
+              placeholder="e.g. Psychological First Aid"
+              className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

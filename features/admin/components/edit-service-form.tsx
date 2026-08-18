@@ -119,11 +119,13 @@ export function EditServiceForm({
     setIsSubmitting(true);
     setError(null);
 
+    const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
     try {
       const payload = {
         id: initialService?.id,
         title,
-        slug,
+        slug: finalSlug,
         icon,
         shortDescription,
         longDescription,
@@ -180,36 +182,19 @@ export function EditServiceForm({
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Title */}
-        <div className="flex flex-col gap-1.5">
-          <label className="font-sans text-xs font-semibold text-dark">
-            Service Title
-          </label>
-          <input
-            type="text"
-            value={title}
-            onChange={handleTitleChange}
-            placeholder="e.g. Individual Therapy"
-            className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
-            required
-          />
-        </div>
-
-        {/* Slug */}
-        <div className="flex flex-col gap-1.5">
-          <label className="font-sans text-xs font-semibold text-dark">
-            Slug Path (Unique identifier)
-          </label>
-          <input
-            type="text"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            placeholder="e.g. individual-therapy"
-            className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
-            required
-          />
-        </div>
+      {/* Basic Info: Title */}
+      <div className="flex flex-col gap-1.5">
+        <label className="font-sans text-xs font-semibold text-dark">
+          Service Title
+        </label>
+        <input
+          type="text"
+          value={title}
+          onChange={handleTitleChange}
+          placeholder="e.g. Individual Therapy"
+          className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+          required
+        />
       </div>
 
       {/* Duration & Fees & Priority */}

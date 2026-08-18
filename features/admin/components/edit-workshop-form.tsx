@@ -103,9 +103,11 @@ export default function EditWorkshopForm({
         .map((tag) => tag.trim())
         .filter((tag) => tag.length > 0);
 
+      const finalSlug = slug.trim() || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
       const payload = {
         id: workshop?.id,
-        slug: slug.trim() || undefined,
+        slug: finalSlug,
         title,
         description,
         image: imageUrl,
@@ -171,7 +173,6 @@ export default function EditWorkshopForm({
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 font-sans text-sm">
         {/* Core Text fields */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="font-semibold text-dark">Title</label>
             <input
@@ -183,18 +184,6 @@ export default function EditWorkshopForm({
               required
             />
           </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="font-semibold text-dark">URL Slug (Optional)</label>
-            <input
-              type="text"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              placeholder="e.g. coping-with-anxiety-workshop (auto if empty)"
-              className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
-            />
-          </div>
-        </div>
 
         <div className="flex flex-col gap-1.5">
           <label className="font-semibold text-dark">Brief Description</label>
