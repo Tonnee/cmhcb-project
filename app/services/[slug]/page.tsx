@@ -12,6 +12,8 @@ interface ServiceDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
   const services = await prisma.service.findMany({
     select: { slug: true }

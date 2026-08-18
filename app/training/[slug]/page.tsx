@@ -27,6 +27,8 @@ interface TrainingDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
   const trainings = await prisma.training.findMany({
     select: { slug: true }
@@ -215,7 +217,7 @@ export default async function TrainingDetailPage({
         currentPage={training.heroTitle}
         title={training.heroTitle}
         description={training.heroDescription}
-        imageSrc={TRAINING_SLUG_IMAGE_MAP[training.slug] ?? training.bgImage ?? "/pages-hero-background/training-default.png"}
+        imageSrc={training.bgImage || TRAINING_SLUG_IMAGE_MAP[training.slug] || "/pages-hero-background/training-default.png"}
         imageAlt="Professional training at CMHCB"
         ctaLabel="Register Interest"
         ctaHref={`/join-training?training=${training.slug}`}
