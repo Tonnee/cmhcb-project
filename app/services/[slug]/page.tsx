@@ -210,7 +210,7 @@ export default async function ServiceDetailPage({
         ]}
         currentPage={service.title}
         title={service.title}
-        description={service.title === "Individual Therapy" ? "Individual therapy offers a safe, one-on-one space to navigate emotional challenges, develop coping strategies, and work toward personal growth with the guidance of a trained mental health professional." : service.shortDescription}
+        description={service.shortDescription}
         imageSrc={service.bgImage || "/pages-hero-background/1.png"}
         imageAlt={`${service.title} - CMHCB`}
         ctaLabel="Book an Appointment"

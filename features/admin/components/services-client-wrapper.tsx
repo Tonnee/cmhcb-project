@@ -23,6 +23,10 @@ interface ServiceDB {
   bgImage?: string | null;
   duration?: string | null;
   fees?: string | null;
+  whoIsItFor?: string | null;
+  format?: string | null;
+  language?: string | null;
+  faqs?: string | null;
 }
 
 interface ServiceInfoBlockDB {
