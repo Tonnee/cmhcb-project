@@ -433,15 +433,15 @@ export function EditTrainingForm({
           )}
         </div>
 
-        {/* 5. Course Syllabus & Content Sections Builder */}
+        {/* 5. What You Will Learn / Course Content Sections */}
         <div className="flex flex-col gap-4 border-b border-muted pb-6">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-0.5">
               <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
-                Course Curriculum &amp; Content Sections
+                What You Will Learn / Course Content Sections
               </h3>
               <span className="text-[11px] text-light-ash pl-2.5">
-                Add structured sections displayed on the training page (e.g. &ldquo;Who Should Attend?&rdquo;, &ldquo;What You Will Learn&rdquo;, &ldquo;Training Modules&rdquo;).
+                Add bulleted sections shown on the training page (e.g. &ldquo;What You Will Learn&rdquo;, &ldquo;Who Should Attend?&rdquo;, &ldquo;Topics Covered&rdquo;).
               </span>
             </div>
             <button
@@ -460,33 +460,33 @@ export function EditTrainingForm({
                   <button
                     type="button"
                     onClick={() => removeSection(secIdx)}
-                    className="absolute right-4 top-4 text-light-ash hover:text-red-600 p-1 hover:bg-red-50 rounded-lg transition-colors"
+                    className="absolute right-4 top-4 text-light-ash hover:text-red-600 p-1 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                     title="Remove Section"
                   >
                     <HiTrash className="w-4 h-4" />
                   </button>
 
                   <div className="flex flex-col gap-1 pr-10">
-                    <label className="text-xs font-bold text-dark uppercase">Section Header</label>
+                    <label className="text-xs font-bold text-dark uppercase">Section Header / Title</label>
                     <input
                       type="text"
                       required
                       value={sec.title}
                       onChange={(e) => updateSectionTitle(secIdx, e.target.value)}
-                      placeholder="e.g. Who Should Attend?"
+                      placeholder="e.g. What You Will Learn (or Who Should Attend?)"
                       className="px-3.5 py-1.5 border border-muted rounded-xl bg-white focus:outline-none focus:border-primary text-sm font-semibold"
                     />
                   </div>
 
                   <div className="flex flex-col gap-2 mt-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-semibold text-light-ash">Bullet items list</label>
+                      <label className="text-xs font-semibold text-light-ash">Bullet points list</label>
                       <button
                         type="button"
                         onClick={() => addSectionItem(secIdx)}
                         className="text-primary hover:text-primary-dark text-xs font-semibold flex items-center gap-0.5 cursor-pointer"
                       >
-                        <HiPlus className="w-3.5 h-3.5" /> Add bullet
+                        <HiPlus className="w-3.5 h-3.5" /> Add bullet point
                       </button>
                     </div>
 
@@ -498,13 +498,13 @@ export function EditTrainingForm({
                             required
                             value={item}
                             onChange={(e) => updateSectionItem(secIdx, itemIdx, e.target.value)}
-                            placeholder="Bullet item outline details..."
+                            placeholder="e.g. Core skills and practical techniques covered..."
                             className="flex-1 px-3 py-1.5 border border-muted bg-white focus:outline-none rounded-xl text-xs"
                           />
                           <button
                             type="button"
                             onClick={() => removeSectionItem(secIdx, itemIdx)}
-                            className="p-1 text-light-ash hover:text-red-600 rounded-lg"
+                            className="p-1 text-light-ash hover:text-red-600 rounded-lg cursor-pointer"
                           >
                             <HiXMark className="w-4 h-4" />
                           </button>
@@ -517,7 +517,7 @@ export function EditTrainingForm({
             </div>
           ) : (
             <div className="text-center py-6 text-xs text-light-ash border border-dashed border-muted rounded-2xl">
-              No outline sections added yet. Click &ldquo;Add Outline Section&rdquo; to outline the syllabus structure.
+              No sections added yet. Click &ldquo;Add Section&rdquo; to add &ldquo;What You Will Learn&rdquo; or &ldquo;Who Should Attend&rdquo; details.
             </div>
           )}
         </div>
