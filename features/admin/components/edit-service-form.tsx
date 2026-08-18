@@ -68,7 +68,13 @@ export function EditServiceForm({
   const [isFeatured, setIsFeatured] = React.useState(initialService?.isFeatured || false);
   const [showInNavbar, setShowInNavbar] = React.useState(initialService?.showInNavbar ?? true);
   const [imageUrl, setImageUrl] = React.useState(initialService?.image || "");
+  const [cardPreviewUrl, setCardPreviewUrl] = React.useState(initialService?.image || "");
+  const [pendingCardFile, setPendingCardFile] = React.useState<File | null>(null);
+
   const [bgImageUrl, setBgImageUrl] = React.useState(initialService?.bgImage || "");
+  const [bgPreviewUrl, setBgPreviewUrl] = React.useState(initialService?.bgImage || "");
+  const [pendingBgFile, setPendingBgFile] = React.useState<File | null>(null);
+
   const [duration, setDuration] = React.useState(initialService?.duration || "");
   const [fees, setFees] = React.useState(initialService?.fees || "");
   const [format, setFormat] = React.useState(initialService?.format || "In-person & Online");
@@ -105,15 +111,16 @@ export function EditServiceForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingBgFile(file);
     const localPreview = URL.createObjectURL(file);
-    setBgImageUrl(localPreview);
+    setBgPreviewUrl(localPreview);
 
     setIsUploadingBg(true);
     setError(null);
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setBgImageUrl(publicUrl);
+      setBgPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "Failed to upload background image. Ensure Supabase credentials are configured.");
     } finally {
@@ -126,15 +133,16 @@ export function EditServiceForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingCardFile(file);
     const localPreview = URL.createObjectURL(file);
-    setImageUrl(localPreview);
+    setCardPreviewUrl(localPreview);
 
     setIsUploading(true);
     setError(null);
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
+      setCardPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "Failed to upload image. Ensure Supabase credentials are configured.");
     } finally {
@@ -157,12 +165,48 @@ export function EditServiceForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     setIsSubmitting(true);
     setError(null);
 
     const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 
     try {
+      let finalCardUrl = imageUrl;
+      if (pendingCardFile && (!finalCardUrl || finalCardUrl.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalCardUrl = await uploadImageToSupabase(pendingCardFile);
+          setImageUrl(finalCardUrl);
+          setCardPreviewUrl(finalCardUrl);
+        } catch (uploadErr) {
+          setError((uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) || "Failed to upload card image.");
+          setIsSubmitting(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      let finalBgUrl = bgImageUrl;
+      if (pendingBgFile && (!finalBgUrl || finalBgUrl.startsWith("blob:"))) {
+        setIsUploadingBg(true);
+        try {
+          finalBgUrl = await uploadImageToSupabase(pendingBgFile);
+          setBgImageUrl(finalBgUrl);
+          setBgPreviewUrl(finalBgUrl);
+        } catch (uploadErr) {
+          setError((uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) || "Failed to upload background image.");
+          setIsSubmitting(false);
+          setIsUploadingBg(false);
+          return;
+        } finally {
+          setIsUploadingBg(false);
+        }
+      }
+
       const payload = {
         id: initialService?.id,
         title,
@@ -177,8 +221,8 @@ export function EditServiceForm({
         faqs: faq.length > 0 ? JSON.stringify(faq) : null,
         isFeatured,
         showInNavbar,
-        image: imageUrl || null,
-        bgImage: bgImageUrl || null,
+        image: finalCardUrl || null,
+        bgImage: finalBgUrl || null,
         duration: duration || null,
         fees: fees || null,
         order: Number(order) || 0,
@@ -310,10 +354,10 @@ export function EditServiceForm({
         {/* Row 1: Service Card Thumbnail */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
           <div className="relative w-28 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
-            {imageUrl ? (
+            {(cardPreviewUrl || imageUrl) ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={imageUrl}
+                src={cardPreviewUrl || imageUrl}
                 alt="Service Card Preview"
                 className="w-full h-full object-cover"
               />
@@ -330,10 +374,14 @@ export function EditServiceForm({
                 <HiPhoto className="w-4 h-4 text-primary" />
                 Service Card Thumbnail
               </label>
-              {imageUrl && (
+              {(cardPreviewUrl || imageUrl) && (
                 <button
                   type="button"
-                  onClick={() => setImageUrl("")}
+                  onClick={() => {
+                    setImageUrl("");
+                    setCardPreviewUrl("");
+                    setPendingCardFile(null);
+                  }}
                   className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
                 >
                   Remove
@@ -355,10 +403,10 @@ export function EditServiceForm({
         {/* Row 2: Hero Background Banner */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
           <div className="relative w-36 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
-            {bgImageUrl ? (
+            {(bgPreviewUrl || bgImageUrl) ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={bgImageUrl}
+                src={bgPreviewUrl || bgImageUrl}
                 alt="Hero Background Preview"
                 className="w-full h-full object-cover"
               />
@@ -375,10 +423,14 @@ export function EditServiceForm({
                 <HiPhoto className="w-4 h-4 text-primary" />
                 Hero Background Banner
               </label>
-              {bgImageUrl && (
+              {(bgPreviewUrl || bgImageUrl) && (
                 <button
                   type="button"
-                  onClick={() => setBgImageUrl("")}
+                  onClick={() => {
+                    setBgImageUrl("");
+                    setBgPreviewUrl("");
+                    setPendingBgFile(null);
+                  }}
                   className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
                 >
                   Remove

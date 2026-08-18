@@ -52,6 +52,8 @@ export default function EditTherapistForm({
   const [name, setName] = React.useState(therapist?.name || "");
   const [bio, setBio] = React.useState(therapist?.bio || "");
   const [imageUrl, setImageUrl] = React.useState(therapist?.image || "");
+  const [previewUrl, setPreviewUrl] = React.useState(therapist?.image || "");
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
 
   const [primaryRole, setPrimaryRole] = React.useState(() => {
     if (!therapist?.role) return "";
@@ -131,15 +133,16 @@ export default function EditTherapistForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingFile(file);
     const localPreview = URL.createObjectURL(file);
-    setImageUrl(localPreview);
+    setPreviewUrl(localPreview);
 
     setIsUploading(true);
     setErrorMsg("");
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
+      setPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setErrorMsg((err instanceof Error ? err.message : String(err)) || "Failed to upload image. Ensure Supabase credentials are set.");
     } finally {
@@ -240,7 +243,7 @@ export default function EditTherapistForm({
   // Submit form data
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSaving || isUploading) return;
+    if (isSaving) return;
 
     setIsSaving(true);
     setErrorMsg("");
@@ -257,12 +260,35 @@ export default function EditTherapistForm({
     }
 
     try {
+      let finalImageUrl = imageUrl;
+      if (pendingFile && (!finalImageUrl || finalImageUrl.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalImageUrl = await uploadImageToSupabase(pendingFile);
+          setImageUrl(finalImageUrl);
+          setPreviewUrl(finalImageUrl);
+        } catch (uploadErr) {
+          setErrorMsg("Failed to upload profile image.");
+          setIsSaving(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      if (!finalImageUrl) {
+        setErrorMsg("Profile image is required.");
+        setIsSaving(false);
+        return;
+      }
+
       const payload = {
         id: therapist?.id,
         name,
         role: finalRole,
         bio,
-        image: imageUrl,
+        image: finalImageUrl,
         education,
         training,
         expertise,
@@ -401,9 +427,9 @@ export default function EditTherapistForm({
 
         {/* Image upload */}
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
-          {imageUrl && (
+          {(previewUrl || imageUrl) && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageUrl} alt="Avatar Preview" className="w-16 h-16 rounded-full object-cover border border-primary shrink-0" />
+            <img src={previewUrl || imageUrl} alt="Avatar Preview" className="w-16 h-16 rounded-full object-cover border border-primary shrink-0" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark">Profile Image</span>

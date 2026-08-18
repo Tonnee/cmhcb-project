@@ -47,6 +47,8 @@ export default function EditBlogForm({
   const [excerpt, setExcerpt] = React.useState(post?.excerpt || "");
   const [content, setContent] = React.useState(post?.content || "");
   const [imageUrl, setImageUrl] = React.useState(post?.image || "");
+  const [previewUrl, setPreviewUrl] = React.useState(post?.image || "");
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
   const [author, setAuthor] = React.useState(post?.author || "");
   const [tagsString, setTagsString] = React.useState<string>(() => {
     if (!post) return "Wellness, Mental Health";
@@ -65,15 +67,16 @@ export default function EditBlogForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingFile(file);
     const localPreview = URL.createObjectURL(file);
-    setImageUrl(localPreview);
+    setPreviewUrl(localPreview);
 
     setIsUploading(true);
     setErrorMsg("");
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
+      setPreviewUrl(publicUrl);
     } catch (err) {
       setErrorMsg(err instanceof Error ? (err instanceof Error ? err.message : String(err)) : "Failed to upload image. Ensure Supabase credentials are configured.");
     } finally {
@@ -84,12 +87,36 @@ export default function EditBlogForm({
   // Submit form data
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSaving || isUploading) return;
+    if (isSaving) return;
 
     setIsSaving(true);
     setErrorMsg("");
 
     try {
+      let finalImageUrl = imageUrl;
+
+      if (pendingFile && (!finalImageUrl || finalImageUrl.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalImageUrl = await uploadImageToSupabase(pendingFile);
+          setImageUrl(finalImageUrl);
+          setPreviewUrl(finalImageUrl);
+        } catch (uploadErr) {
+          setErrorMsg("Failed to upload featured image.");
+          setIsSaving(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      if (!finalImageUrl) {
+        setErrorMsg("Featured image is required.");
+        setIsSaving(false);
+        return;
+      }
+
       // Split tags by comma
       const tags = tagsString
         .split(",")
@@ -104,7 +131,7 @@ export default function EditBlogForm({
         title,
         excerpt,
         content,
-        image: imageUrl,
+        image: finalImageUrl,
         author,
         tags,
         isFeatured,
@@ -221,9 +248,9 @@ export default function EditBlogForm({
 
         {/* Image File upload */}
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
-          {imageUrl && (
+          {(previewUrl || imageUrl) && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageUrl} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
+            <img src={previewUrl || imageUrl} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark">Featured Image</span>

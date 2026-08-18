@@ -172,23 +172,36 @@ export function EditTrainingForm({
   };
 
   // Handle Image Upload
+  const [cardPreviewUrl, setCardPreviewUrl] = React.useState(training?.image || "");
+  const [bgPreviewUrl, setBgPreviewUrl] = React.useState(training?.bgImage || "");
+  const [pendingCardFile, setPendingCardFile] = React.useState<File | null>(null);
+  const [pendingBgFile, setPendingBgFile] = React.useState<File | null>(null);
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>, isBg: boolean) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
     const localPreview = URL.createObjectURL(file);
-    if (isBg) setBgImageUrl(localPreview);
-    else setImageUrl(localPreview);
-
-    if (isBg) setIsUploadingBg(true);
-    else setIsUploading(true);
+    if (isBg) {
+      setPendingBgFile(file);
+      setBgPreviewUrl(localPreview);
+      setIsUploadingBg(true);
+    } else {
+      setPendingCardFile(file);
+      setCardPreviewUrl(localPreview);
+      setIsUploading(true);
+    }
     setErrorMsg("");
 
     try {
       const publicUrl = await uploadImageToSupabase(file);
-      if (isBg) setBgImageUrl(publicUrl);
-      else setImageUrl(publicUrl);
+      if (isBg) {
+        setBgImageUrl(publicUrl);
+        setBgPreviewUrl(publicUrl);
+      } else {
+        setImageUrl(publicUrl);
+        setCardPreviewUrl(publicUrl);
+      }
     } catch (err: unknown) {
       setErrorMsg((err instanceof Error ? err.message : String(err)) || "Failed to upload image.");
     } finally {
@@ -200,7 +213,7 @@ export function EditTrainingForm({
   // Submit Form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSaving || isUploading || isUploadingBg) return;
+    if (isSaving) return;
 
     const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 
@@ -213,6 +226,40 @@ export function EditTrainingForm({
     setErrorMsg("");
 
     try {
+      let finalCardUrl = imageUrl;
+      if (pendingCardFile && (!finalCardUrl || finalCardUrl.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalCardUrl = await uploadImageToSupabase(pendingCardFile);
+          setImageUrl(finalCardUrl);
+          setCardPreviewUrl(finalCardUrl);
+        } catch (uploadErr) {
+          setErrorMsg("Failed to upload featured card image.");
+          setIsSaving(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      let finalBgUrl = bgImageUrl;
+      if (pendingBgFile && (!finalBgUrl || finalBgUrl.startsWith("blob:"))) {
+        setIsUploadingBg(true);
+        try {
+          finalBgUrl = await uploadImageToSupabase(pendingBgFile);
+          setBgImageUrl(finalBgUrl);
+          setBgPreviewUrl(finalBgUrl);
+        } catch (uploadErr) {
+          setErrorMsg("Failed to upload hero background image.");
+          setIsSaving(false);
+          setIsUploadingBg(false);
+          return;
+        } finally {
+          setIsUploadingBg(false);
+        }
+      }
+
       const payload = {
         id: training?.id,
         title,
@@ -227,8 +274,8 @@ export function EditTrainingForm({
         duration,
         fees,
         variant,
-        image: imageUrl || null,
-        bgImage: bgImageUrl || null,
+        image: finalCardUrl || null,
+        bgImage: finalBgUrl || null,
         order: Number(order) || 0,
       };
 
@@ -591,10 +638,10 @@ export function EditTrainingForm({
             {/* Row 1: Featured Card Image */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light/10 p-4 rounded-xl border border-muted/50">
               <div className="relative w-28 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
-                {imageUrl ? (
+                {(cardPreviewUrl || imageUrl) ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={imageUrl}
+                    src={cardPreviewUrl || imageUrl}
                     alt="Training Card Preview"
                     className="w-full h-full object-cover"
                   />
@@ -607,10 +654,14 @@ export function EditTrainingForm({
               <div className="flex-1 flex flex-col gap-1 w-full">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-dark text-xs">Featured Card Image (Optional)</span>
-                  {imageUrl && (
+                  {(cardPreviewUrl || imageUrl) && (
                     <button
                       type="button"
-                      onClick={() => setImageUrl("")}
+                      onClick={() => {
+                        setImageUrl("");
+                        setCardPreviewUrl("");
+                        setPendingCardFile(null);
+                      }}
                       className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
                     >
                       Remove
@@ -632,10 +683,10 @@ export function EditTrainingForm({
             {/* Row 2: Hero Background Image */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light/10 p-4 rounded-xl border border-muted/50">
               <div className="relative w-36 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
-                {bgImageUrl ? (
+                {(bgPreviewUrl || bgImageUrl) ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={bgImageUrl}
+                    src={bgPreviewUrl || bgImageUrl}
                     alt="Hero Background Preview"
                     className="w-full h-full object-cover"
                   />
@@ -648,10 +699,14 @@ export function EditTrainingForm({
               <div className="flex-1 flex flex-col gap-1 w-full">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-dark text-xs">Hero Background Image</span>
-                  {bgImageUrl && (
+                  {(bgPreviewUrl || bgImageUrl) && (
                     <button
                       type="button"
-                      onClick={() => setBgImageUrl("")}
+                      onClick={() => {
+                        setBgImageUrl("");
+                        setBgPreviewUrl("");
+                        setPendingBgFile(null);
+                      }}
                       className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
                     >
                       Remove

@@ -383,6 +383,8 @@ export async function upsertWorkshopAction(
     );
 
     revalidatePath("/");
+    revalidatePath("/events");
+    revalidatePath(`/events/${titleSlug}`);
     revalidatePath("/workshops");
     revalidatePath(`/workshops/${titleSlug}`);
     revalidatePath("/admin/workshops");
@@ -424,10 +426,12 @@ export async function deleteWorkshopAction(
     );
 
     revalidatePath("/");
-    revalidatePath("/workshops");
+    revalidatePath("/events");
     if (slug) {
+      revalidatePath(`/events/${slug}`);
       revalidatePath(`/workshops/${slug}`);
     }
+    revalidatePath("/workshops");
     revalidatePath("/admin/workshops");
 
     return { success: true };

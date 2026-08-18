@@ -41,27 +41,29 @@ export async function generateMetadata({
   try {
     const { slug } = await params;
 
-    let event = EVENTS_DATA.find((e) => e.slug === slug);
-    if (!event) {
-      try {
-        const dbEvent = await prisma.workshop.findUnique({ where: { slug } });
-        if (dbEvent) {
-          event = {
-            id: dbEvent.id,
-            slug: dbEvent.slug,
-            title: dbEvent.title,
-            description: dbEvent.description,
-            image: dbEvent.image,
-            date: dbEvent.date,
-            time: dbEvent.time,
-            location: dbEvent.location,
-            author: dbEvent.author,
-            tags: [],
-          };
-        }
-      } catch (err) {
-        console.error("Failed to query workshop for metadata:", err);
+    let event: Event | undefined;
+    try {
+      const dbEvent = await prisma.workshop.findUnique({ where: { slug } });
+      if (dbEvent) {
+        event = {
+          id: dbEvent.id,
+          slug: dbEvent.slug,
+          title: dbEvent.title,
+          description: dbEvent.description,
+          image: dbEvent.image,
+          date: dbEvent.date,
+          time: dbEvent.time,
+          location: dbEvent.location,
+          author: dbEvent.author,
+          tags: [],
+        };
       }
+    } catch (err) {
+      console.error("Failed to query workshop for metadata:", err);
+    }
+
+    if (!event) {
+      event = EVENTS_DATA.find((e) => e.slug === slug);
     }
 
     if (!event) return {};

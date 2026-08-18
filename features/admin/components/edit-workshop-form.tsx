@@ -54,6 +54,8 @@ export default function EditWorkshopForm({
   const [slug, setSlug] = React.useState(workshop?.slug || "");
   const [description, setDescription] = React.useState(workshop?.description || "");
   const [imageUrl, setImageUrl] = React.useState(workshop?.image || "");
+  const [previewUrl, setPreviewUrl] = React.useState(workshop?.image || "");
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
   const [date, setDate] = React.useState(workshop?.date || "");
   const [time, setTime] = React.useState(workshop?.time || "");
   const [location, setLocation] = React.useState(workshop?.location || "");
@@ -76,15 +78,16 @@ export default function EditWorkshopForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingFile(file);
     const localPreview = URL.createObjectURL(file);
-    setImageUrl(localPreview);
+    setPreviewUrl(localPreview);
 
     setIsUploading(true);
     setErrorMsg("");
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
+      setPreviewUrl(publicUrl);
     } catch (err) {
       setErrorMsg(err instanceof Error ? (err instanceof Error ? err.message : String(err)) : "Failed to upload image. Ensure Supabase credentials are configured.");
     } finally {
@@ -95,12 +98,37 @@ export default function EditWorkshopForm({
   // Submit form data
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSaving || isUploading) return;
+    if (isSaving) return;
 
     setIsSaving(true);
     setErrorMsg("");
 
     try {
+      let finalImageUrl = imageUrl;
+
+      // If upload is in-flight or if imageUrl is a local blob, ensure upload finishes
+      if (pendingFile && (!finalImageUrl || finalImageUrl.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalImageUrl = await uploadImageToSupabase(pendingFile);
+          setImageUrl(finalImageUrl);
+          setPreviewUrl(finalImageUrl);
+        } catch (uploadErr) {
+          setErrorMsg((uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) || "Failed to upload image.");
+          setIsSaving(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      if (!finalImageUrl) {
+        setErrorMsg("Cover image is required.");
+        setIsSaving(false);
+        return;
+      }
+
       // Split tags by comma
       const tags = tagsString
         .split(",")
@@ -114,7 +142,7 @@ export default function EditWorkshopForm({
         slug: finalSlug,
         title,
         description,
-        image: imageUrl,
+        image: finalImageUrl,
         date,
         time,
         location,
@@ -274,9 +302,9 @@ export default function EditWorkshopForm({
 
         {/* Image File upload */}
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
-          {imageUrl && (
+          {(previewUrl || imageUrl) && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageUrl} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
+            <img src={previewUrl || imageUrl} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark">Cover Image</span>
