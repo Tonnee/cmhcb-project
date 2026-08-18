@@ -36,7 +36,15 @@ function UserIcon({ className = "" }: { className?: string }): React.JSX.Element
   );
 }
 
+import prisma from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
+  const posts = await prisma.blogPost.findMany({ select: { slug: true } });
+  if (posts.length > 0) {
+    return posts.map((post) => ({ slug: post.slug }));
+  }
   return BLOG_POSTS.map((post) => ({
     slug: post.slug,
   }));
@@ -49,13 +57,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   try {
     const { slug } = await params;
-    const post = BLOG_POSTS.find((p) => p.slug === slug);
+    const dbPost = await prisma.blogPost.findUnique({ where: { slug } }).catch(() => null);
+    const post = dbPost || BLOG_POSTS.find((p) => p.slug === slug);
     if (!post) return {};
 
     const url = `https://cmhcbd.com/blog/${post.slug}`;
-    const imageUrl = post.image.startsWith("http")
+    const imageUrl = post.image?.startsWith("http")
       ? post.image
-      : `https://cmhcbd.com${post.image.startsWith("/") ? "" : "/"}${post.image}`;
+      : `https://cmhcbd.com${post.image?.startsWith("/") ? "" : "/"}${post.image || "pages-hero-background/blog-default.png"}`;
 
     return {
       title: `${post.title} | Mental Health Article`,
@@ -68,7 +77,7 @@ export async function generateMetadata({
         title: post.title,
         description: post.excerpt,
         url: url,
-        publishedTime: post.publishedAt,
+        publishedTime: String(post.publishedAt),
         authors: [post.author],
         images: [
           {
@@ -98,11 +107,41 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = BLOG_POSTS.find((p) => p.slug === slug);
+  const dbPost = await prisma.blogPost.findUnique({ where: { slug } }).catch(() => null);
+  const staticPost = BLOG_POSTS.find((p) => p.slug === slug);
 
-  if (!post) {
+  if (!dbPost && !staticPost) {
     notFound();
   }
+
+  let postCategory = "Mental Health";
+  let postTags: string[] = ["Mental Health"];
+  if (dbPost?.tags) {
+    try {
+      const parsed = JSON.parse(dbPost.tags);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        postTags = parsed;
+        postCategory = parsed[0];
+      }
+    } catch {}
+  }
+
+  const post = dbPost
+    ? {
+        id: dbPost.id,
+        title: dbPost.title,
+        slug: dbPost.slug,
+        excerpt: dbPost.excerpt,
+        content: dbPost.content,
+        category: postCategory,
+        tags: postTags,
+        author: dbPost.author,
+        publishedAt: String(dbPost.publishedAt),
+        readTime: "5 min read",
+        image: dbPost.image || "/pages-hero-background/blog-default.png",
+        isFeatured: dbPost.isFeatured,
+      }
+    : staticPost!;
 
   // Find the matched author from therapists data
   const matchedAuthor = THERAPISTS_DATA.find(t =>

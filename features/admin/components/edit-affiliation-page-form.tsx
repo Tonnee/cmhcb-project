@@ -47,6 +47,8 @@ export default function EditAffiliationPageForm({
   const [heroTitle, setHeroTitle] = React.useState(initialContent.heroTitle);
   const [heroDescription, setHeroDescription] = React.useState(initialContent.heroDescription);
   const [heroImage, setHeroImage] = React.useState(initialContent.heroImage);
+  const [previewUrl, setPreviewUrl] = React.useState(initialContent.heroImage);
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
   
   const [partners, setPartners] = React.useState<Partner[]>(() => {
     try {
@@ -151,15 +153,16 @@ export default function EditAffiliationPageForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingFile(file);
     const localPreview = URL.createObjectURL(file);
-    setHeroImage(localPreview);
+    setPreviewUrl(localPreview);
 
     setIsUploading(true);
     setError(null);
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setHeroImage(publicUrl);
+      setPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "Failed to upload image.");
     } finally {
@@ -169,17 +172,34 @@ export default function EditAffiliationPageForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting || isUploading || isLogoUploading) return;
+    if (isSubmitting) return;
 
     setIsSubmitting(true);
     setError(null);
     setSuccess(false);
 
     try {
+      let finalHeroImage = heroImage;
+      if (pendingFile && (!finalHeroImage || finalHeroImage.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalHeroImage = await uploadImageToSupabase(pendingFile, "cmhcb-media");
+          setHeroImage(finalHeroImage);
+          setPreviewUrl(finalHeroImage);
+        } catch (uploadErr) {
+          setError("Failed to upload hero image.");
+          setIsSubmitting(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
       const res = await upsertAffiliationPageContentAction({
         heroTitle,
         heroDescription,
-        heroImage,
+        heroImage: finalHeroImage,
         partners,
         benefits,
         ctaTitle,
@@ -247,9 +267,9 @@ export default function EditAffiliationPageForm({
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50 mt-2">
-          {heroImage && (
+          {(previewUrl || heroImage) && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={heroImage} alt="Hero Preview" className="w-full max-h-48 object-cover rounded-xl border border-muted" />
+            <img src={previewUrl || heroImage} alt="Hero Preview" className="w-full max-h-48 object-cover rounded-xl border border-muted" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark text-xs">Hero Background Image</span>
@@ -359,8 +379,6 @@ export default function EditAffiliationPageForm({
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    const localPreview = URL.createObjectURL(file);
-                    setNewPartnerLogo(localPreview);
                     setIsLogoUploading(true);
                     try {
                       const url = await uploadImageToSupabase(file, "cmhcb-media");

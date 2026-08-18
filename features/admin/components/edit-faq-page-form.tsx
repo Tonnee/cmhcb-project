@@ -5,6 +5,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { HiPlus, HiTrash } from "react-icons/hi2";
 import { uploadImageToSupabase } from "@/lib/supabase";
+import { safeJsonParse } from "@/lib/json";
 import { upsertFaqPageContentAction } from "@/app/(admin)/admin/actions";
 
 interface FaqItem {
@@ -35,16 +36,14 @@ export default function EditFaqPageForm({
   const [heroTitle, setHeroTitle] = React.useState(initialContent.heroTitle);
   const [heroDescription, setHeroDescription] = React.useState(initialContent.heroDescription);
   const [heroImage, setHeroImage] = React.useState(initialContent.heroImage);
+  const [previewUrl, setPreviewUrl] = React.useState(initialContent.heroImage);
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
   
-  const [items, setItems] = React.useState<FaqItem[]>(() => {
-    try {
-      return JSON.parse(initialContent.items || "[]");
-    } catch {
-      return [];
-    }
-  });
+  const [items, setItems] = React.useState<FaqItem[]>(
+    safeJsonParse<FaqItem[]>(initialContent.items, [])
+  );
 
-  const [newCategory, setNewCategory] = React.useState("Others");
+  const [newCategory, setNewCategory] = React.useState("General Questions");
   const [newQuestion, setNewQuestion] = React.useState("");
   const [newAnswer, setNewAnswer] = React.useState("");
 
@@ -57,15 +56,16 @@ export default function EditFaqPageForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingFile(file);
     const localPreview = URL.createObjectURL(file);
-    setHeroImage(localPreview);
+    setPreviewUrl(localPreview);
 
     setIsUploading(true);
     setError(null);
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setHeroImage(publicUrl);
+      setPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "Failed to upload image.");
     } finally {
@@ -93,17 +93,34 @@ export default function EditFaqPageForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting || isUploading) return;
+    if (isSubmitting) return;
 
     setIsSubmitting(true);
     setError(null);
     setSuccess(false);
 
     try {
+      let finalHeroImage = heroImage;
+      if (pendingFile && (!finalHeroImage || finalHeroImage.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalHeroImage = await uploadImageToSupabase(pendingFile, "cmhcb-media");
+          setHeroImage(finalHeroImage);
+          setPreviewUrl(finalHeroImage);
+        } catch (uploadErr) {
+          setError("Failed to upload hero background image.");
+          setIsSubmitting(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
       const res = await upsertFaqPageContentAction({
         heroTitle,
         heroDescription,
-        heroImage,
+        heroImage: finalHeroImage,
         items,
       });
 
@@ -167,9 +184,9 @@ export default function EditFaqPageForm({
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50 mt-2">
-          {heroImage && (
+          {(previewUrl || heroImage) && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={heroImage} alt="Hero Preview" className="w-full max-h-48 object-cover rounded-xl border border-muted" />
+            <img src={previewUrl || heroImage} alt="Hero Preview" className="w-full max-h-48 object-cover rounded-xl border border-muted" />
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark text-xs">Hero Background Image</span>

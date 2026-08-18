@@ -31,6 +31,8 @@ export function EditTestimonialForm({
   const [name, setName] = React.useState(initialTestimonial?.name || "");
   const [role, setRole] = React.useState(initialTestimonial?.role || "");
   const [avatar, setAvatar] = React.useState(initialTestimonial?.avatar || "");
+  const [previewUrl, setPreviewUrl] = React.useState(initialTestimonial?.avatar || "");
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
   const [quote, setQuote] = React.useState(initialTestimonial?.quote || "");
   const [isFeatured, setIsFeatured] = React.useState(initialTestimonial?.isFeatured || false);
 
@@ -42,15 +44,16 @@ export function EditTestimonialForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingFile(file);
     const localPreview = URL.createObjectURL(file);
-    setAvatar(localPreview);
+    setPreviewUrl(localPreview);
 
     setIsUploading(true);
     setError(null);
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setAvatar(publicUrl);
+      setPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "Failed to upload avatar image.");
     } finally {
@@ -60,17 +63,40 @@ export function EditTestimonialForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting || isUploading) return;
+    if (isSubmitting) return;
 
     setIsSubmitting(true);
     setError(null);
 
     try {
+      let finalAvatar = avatar;
+      if (pendingFile && (!finalAvatar || finalAvatar.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalAvatar = await uploadImageToSupabase(pendingFile, "cmhcb-media");
+          setAvatar(finalAvatar);
+          setPreviewUrl(finalAvatar);
+        } catch (uploadErr) {
+          setError((uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) || "Failed to upload avatar image.");
+          setIsSubmitting(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      if (!finalAvatar) {
+        setError("Avatar image is required.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const payload = {
         id: initialTestimonial?.id,
         name,
         role,
-        avatar,
+        avatar: finalAvatar,
         quote,
         isFeatured,
       };
@@ -148,9 +174,9 @@ export function EditTestimonialForm({
 
       {/* Avatar Image */}
       <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
-        {avatar && (
+        {(previewUrl || avatar) && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={avatar} alt="Avatar Preview" className="w-16 h-16 rounded-full object-cover border border-primary shrink-0" />
+          <img src={previewUrl || avatar} alt="Avatar Preview" className="w-16 h-16 rounded-full object-cover border border-primary shrink-0" />
         )}
         <div className="flex-1 flex flex-col gap-1">
           <label className="font-semibold text-dark flex items-center gap-1.5">

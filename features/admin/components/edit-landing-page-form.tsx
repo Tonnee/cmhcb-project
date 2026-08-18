@@ -39,7 +39,12 @@ export default function EditLandingPageForm({
   const [heroHeadline, setHeroHeadline] = React.useState(initialContent.heroHeadline);
   const [heroSubtitle, setHeroSubtitle] = React.useState(initialContent.heroSubtitle);
   const [heroBgImage, setHeroBgImage] = React.useState(initialContent.heroBgImage);
+  const [bgPreviewUrl, setBgPreviewUrl] = React.useState(initialContent.heroBgImage);
+  const [pendingBgFile, setPendingBgFile] = React.useState<File | null>(null);
+
   const [heroFigureImage, setHeroFigureImage] = React.useState(initialContent.heroFigureImage);
+  const [figurePreviewUrl, setFigurePreviewUrl] = React.useState(initialContent.heroFigureImage);
+  const [pendingFigureFile, setPendingFigureFile] = React.useState<File | null>(null);
   
   const [wellbeingHeadline, setWellbeingHeadline] = React.useState(initialContent.wellbeingHeadline);
   const [wellbeingSubtitle, setWellbeingSubtitle] = React.useState(initialContent.wellbeingSubtitle);
@@ -52,6 +57,8 @@ export default function EditLandingPageForm({
   const [trainingHeadline, setTrainingHeadline] = React.useState(initialContent.trainingHeadline);
   const [trainingSubtitle, setTrainingSubtitle] = React.useState(initialContent.trainingSubtitle);
   const [trainingImage, setTrainingImage] = React.useState(initialContent.trainingImage);
+  const [trainingPreviewUrl, setTrainingPreviewUrl] = React.useState(initialContent.trainingImage);
+  const [pendingTrainingFile, setPendingTrainingFile] = React.useState<File | null>(null);
 
   // Status indicators
   const [isUploadingBg, setIsUploadingBg] = React.useState(false);
@@ -66,15 +73,16 @@ export default function EditLandingPageForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingBgFile(file);
     const localPreview = URL.createObjectURL(file);
-    setHeroBgImage(localPreview);
+    setBgPreviewUrl(localPreview);
 
     setIsUploadingBg(true);
     setError(null);
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setHeroBgImage(publicUrl);
+      setBgPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "Failed to upload hero background banner.");
     } finally {
@@ -86,15 +94,16 @@ export default function EditLandingPageForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingFigureFile(file);
     const localPreview = URL.createObjectURL(file);
-    setHeroFigureImage(localPreview);
+    setFigurePreviewUrl(localPreview);
 
     setIsUploadingFigure(true);
     setError(null);
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setHeroFigureImage(publicUrl);
+      setFigurePreviewUrl(publicUrl);
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "Failed to upload hero figure illustration.");
     } finally {
@@ -106,15 +115,16 @@ export default function EditLandingPageForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingTrainingFile(file);
     const localPreview = URL.createObjectURL(file);
-    setTrainingImage(localPreview);
+    setTrainingPreviewUrl(localPreview);
 
     setIsUploadingTraining(true);
     setError(null);
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setTrainingImage(publicUrl);
+      setTrainingPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "Failed to upload training display image.");
     } finally {
@@ -125,16 +135,69 @@ export default function EditLandingPageForm({
   // Submit Handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     setIsSubmitting(true);
     setError(null);
     setSuccess(false);
 
     try {
+      let finalBg = heroBgImage;
+      if (pendingBgFile && (!finalBg || finalBg.startsWith("blob:"))) {
+        setIsUploadingBg(true);
+        try {
+          finalBg = await uploadImageToSupabase(pendingBgFile, "cmhcb-media");
+          setHeroBgImage(finalBg);
+          setBgPreviewUrl(finalBg);
+        } catch (uploadErr) {
+          setError("Failed to upload hero background banner.");
+          setIsSubmitting(false);
+          setIsUploadingBg(false);
+          return;
+        } finally {
+          setIsUploadingBg(false);
+        }
+      }
+
+      let finalFigure = heroFigureImage;
+      if (pendingFigureFile && (!finalFigure || finalFigure.startsWith("blob:"))) {
+        setIsUploadingFigure(true);
+        try {
+          finalFigure = await uploadImageToSupabase(pendingFigureFile, "cmhcb-media");
+          setHeroFigureImage(finalFigure);
+          setFigurePreviewUrl(finalFigure);
+        } catch (uploadErr) {
+          setError("Failed to upload hero figure image.");
+          setIsSubmitting(false);
+          setIsUploadingFigure(false);
+          return;
+        } finally {
+          setIsUploadingFigure(false);
+        }
+      }
+
+      let finalTraining = trainingImage;
+      if (pendingTrainingFile && (!finalTraining || finalTraining.startsWith("blob:"))) {
+        setIsUploadingTraining(true);
+        try {
+          finalTraining = await uploadImageToSupabase(pendingTrainingFile, "cmhcb-media");
+          setTrainingImage(finalTraining);
+          setTrainingPreviewUrl(finalTraining);
+        } catch (uploadErr) {
+          setError("Failed to upload training image.");
+          setIsSubmitting(false);
+          setIsUploadingTraining(false);
+          return;
+        } finally {
+          setIsUploadingTraining(false);
+        }
+      }
+
       const res = await updateLandingPageContentAction({
         heroHeadline,
         heroSubtitle,
-        heroBgImage,
-        heroFigureImage,
+        heroBgImage: finalBg,
+        heroFigureImage: finalFigure,
         wellbeingHeadline,
         wellbeingSubtitle,
         experienceCount: Number(experienceCount),
@@ -143,7 +206,7 @@ export default function EditLandingPageForm({
         satisfactionRate: Number(satisfactionRate),
         trainingHeadline,
         trainingSubtitle,
-        trainingImage,
+        trainingImage: finalTraining,
       });
 
       if (res.success) {
@@ -228,9 +291,9 @@ export default function EditLandingPageForm({
               <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
               <div className="flex items-center gap-4 mt-1">
                 <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
-                  {heroBgImage ? (
+                  {(bgPreviewUrl || heroBgImage) ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={heroBgImage} alt="Hero BG" className="w-full h-full object-cover" />
+                    <img src={bgPreviewUrl || heroBgImage} alt="Hero BG" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                       <HiPhoto className="w-6 h-6" />
@@ -260,9 +323,9 @@ export default function EditLandingPageForm({
               <span className="text-[11px] text-light-ash">Size: <strong>800×800 px</strong> (1:1 / transparent) • Format: <strong>.png, .webp, .svg, .jpg</strong> (Max 10MB)</span>
               <div className="flex items-center gap-4 mt-1">
                 <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
-                  {heroFigureImage ? (
+                  {(figurePreviewUrl || heroFigureImage) ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={heroFigureImage} alt="Hero Figure" className="w-full h-full object-cover" />
+                    <img src={figurePreviewUrl || heroFigureImage} alt="Hero Figure" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                       <HiPhoto className="w-6 h-6" />
@@ -432,9 +495,9 @@ export default function EditLandingPageForm({
             <span className="text-[11px] text-light-ash">Size: <strong>800×600 px</strong> (4:3 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
             <div className="flex items-center gap-4 mt-1">
               <div className="relative w-20 h-24 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
-                {trainingImage ? (
+                {(trainingPreviewUrl || trainingImage) ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={trainingImage} alt="Training Display" className="w-full h-full object-cover" />
+                  <img src={trainingPreviewUrl || trainingImage} alt="Training Display" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-light-ash/50">
                     <HiPhoto className="w-6 h-6" />

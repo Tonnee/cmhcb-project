@@ -31,9 +31,11 @@ export function EditServiceInfoBlockForm({
   onSuccess,
 }: EditServiceInfoBlockFormProps): React.JSX.Element {
   const [heading, setHeading] = React.useState(initialBlock?.heading || "");
-  const [ctaLabel, setCtaLabel] = React.useState(initialBlock?.ctaLabel || "Book Appointment");
-  const [ctaHref, setCtaHref] = React.useState(initialBlock?.ctaHref || "/appointment");
+  const [ctaLabel, setCtaLabel] = React.useState(initialBlock?.ctaLabel || "Learn More");
+  const [ctaHref, setCtaHref] = React.useState(initialBlock?.ctaHref || "/services");
   const [imageUrl, setImageUrl] = React.useState(initialBlock?.image || "");
+  const [previewUrl, setPreviewUrl] = React.useState(initialBlock?.image || "");
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
   const [imageAlt, setImageAlt] = React.useState(initialBlock?.imageAlt || "");
   const [order, setOrder] = React.useState(initialBlock?.order ?? 0);
 
@@ -76,15 +78,16 @@ export function EditServiceInfoBlockForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingFile(file);
     const localPreview = URL.createObjectURL(file);
-    setImageUrl(localPreview);
+    setPreviewUrl(localPreview);
 
     setIsUploading(true);
     setError(null);
     try {
       const publicUrl = await uploadImageToSupabase(file);
       setImageUrl(publicUrl);
+      setPreviewUrl(publicUrl);
       if (!imageAlt) {
         setImageAlt(`Illustration for ${heading || "Services Page Content"}`);
       }
@@ -97,10 +100,7 @@ export function EditServiceInfoBlockForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!imageUrl) {
-      setError("An image is required for the split content block.");
-      return;
-    }
+    if (isSubmitting) return;
 
     // Filter empty items
     const filteredItems = items.map(t => t.trim()).filter(t => t.length > 0);
@@ -113,15 +113,38 @@ export function EditServiceInfoBlockForm({
     setError(null);
 
     try {
+      let finalImageUrl = imageUrl;
+      if (pendingFile && (!finalImageUrl || finalImageUrl.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalImageUrl = await uploadImageToSupabase(pendingFile);
+          setImageUrl(finalImageUrl);
+          setPreviewUrl(finalImageUrl);
+        } catch (uploadErr) {
+          setError("Failed to upload info block image.");
+          setIsSubmitting(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      if (!finalImageUrl) {
+        setError("An image is required for the split content block.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const payload = {
         id: initialBlock?.id,
         heading,
         items: filteredItems,
         ctaLabel,
         ctaHref,
-        image: imageUrl,
-        imageAlt: imageAlt || heading,
-        order,
+        image: finalImageUrl,
+        imageAlt: imageAlt || heading || "Service Info Block",
+        order: Number(order) || 0,
       };
 
       const res = await upsertServiceInfoBlockAction(payload);
@@ -129,7 +152,7 @@ export function EditServiceInfoBlockForm({
         onSuccess();
         onClose();
       } else {
-        setError(res.error || "Failed to save block.");
+        setError(res.error || "Failed to save services info block.");
       }
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
@@ -271,9 +294,9 @@ export function EditServiceInfoBlockForm({
 
       {/* Image File upload */}
       <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
-        {imageUrl && (
+        {(previewUrl || imageUrl) && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageUrl} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
+          <img src={previewUrl || imageUrl} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
         )}
         <div className="flex-1 flex flex-col gap-1.5 w-full">
           <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">

@@ -31,6 +31,8 @@ export function EditGalleryItemForm({
 }: EditGalleryItemFormProps): React.JSX.Element {
   const [type, setType] = React.useState<"image" | "video">(initialItem?.type || "image");
   const [src, setSrc] = React.useState(initialItem?.src || "");
+  const [previewUrl, setPreviewUrl] = React.useState(initialItem?.src || "");
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
   const [alt, setAlt] = React.useState(initialItem?.alt || "");
   const [caption, setCaption] = React.useState(initialItem?.caption || "");
   const [categorySelect, setCategorySelect] = React.useState<string>(
@@ -52,15 +54,16 @@ export function EditGalleryItemForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    setPendingFile(file);
     const localPreview = URL.createObjectURL(file);
-    setSrc(localPreview);
+    setPreviewUrl(localPreview);
 
     setIsUploading(true);
     setError(null);
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
       setSrc(publicUrl);
+      setPreviewUrl(publicUrl);
       if (!alt.trim()) {
         setAlt(file.name.split(".")[0]);
       }
@@ -73,27 +76,46 @@ export function EditGalleryItemForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting || isUploading) return;
-
-    if (!src.trim()) {
-      setError("Media source URL/file is required.");
-      return;
-    }
+    if (isSubmitting) return;
 
     setIsSubmitting(true);
     setError(null);
 
     try {
+      let finalSrc = src;
+      if (pendingFile && (!finalSrc || finalSrc.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalSrc = await uploadImageToSupabase(pendingFile, "cmhcb-media");
+          setSrc(finalSrc);
+          setPreviewUrl(finalSrc);
+        } catch (uploadErr) {
+          setError((uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) || "Failed to upload image file.");
+          setIsSubmitting(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      if (!finalSrc.trim()) {
+        setError("Media source URL/file is required.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const finalCategory = categorySelect === "custom" ? customCategory.trim() : categorySelect;
       if (!finalCategory) {
         setError("Category name is required.");
+        setIsSubmitting(false);
         return;
       }
 
       const payload = {
         id: initialItem?.id,
         type,
-        src,
+        src: finalSrc,
         alt,
         caption,
         category: finalCategory,
@@ -238,10 +260,10 @@ export function EditGalleryItemForm({
               required
             />
           )}
-          {src && type === "image" && (
+          {(previewUrl || src) && type === "image" && (
             <div className="mt-2 relative w-32 h-20 border border-muted rounded-lg overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="Preview" className="w-full h-full object-cover" />
+              <img src={previewUrl || src} alt="Preview" className="w-full h-full object-cover" />
             </div>
           )}
         </div>

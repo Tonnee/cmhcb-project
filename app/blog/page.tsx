@@ -32,15 +32,53 @@ function UserIcon({ className = "" }: { className?: string }): React.JSX.Element
   );
 }
 
+import prisma from "@/lib/prisma";
+
 export const metadata: Metadata = {
   title: "Mental Health Blog & Resources | CMHC,B",
   description: "Explore our latest articles, insights, and resources on mental health, therapy, and well-being.",
 };
 
-export default function BlogPage(): React.JSX.Element {
-  // Assuming the first featured post or the first post in the array is the featured one
-  const featuredPost = BLOG_POSTS.find(post => post.isFeatured) || BLOG_POSTS[0];
-  const remainingPosts = BLOG_POSTS.filter(post => post.id !== featuredPost.id);
+export const dynamic = "force-dynamic";
+
+export default async function BlogPage(): Promise<React.JSX.Element> {
+  const dbPosts = await prisma.blogPost.findMany({
+    orderBy: { publishedAt: "desc" },
+  }).catch(() => []);
+
+  const allPosts = dbPosts.length > 0
+    ? dbPosts.map((p) => {
+        let postCategory = "Mental Health";
+        let postTags: string[] = ["Mental Health"];
+        if (p.tags) {
+          try {
+            const parsed = JSON.parse(p.tags);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              postTags = parsed;
+              postCategory = parsed[0];
+            }
+          } catch {}
+        }
+
+        return {
+          id: p.id,
+          title: p.title,
+          slug: p.slug,
+          excerpt: p.excerpt,
+          content: p.content,
+          category: postCategory,
+          author: p.author,
+          publishedAt: String(p.publishedAt),
+          readTime: "5 min read",
+          image: p.image || "/pages-hero-background/blog-default.png",
+          tags: postTags,
+          isFeatured: p.isFeatured,
+        };
+      })
+    : BLOG_POSTS;
+
+  const featuredPost = allPosts.find(post => post.isFeatured) || allPosts[0];
+  const remainingPosts = allPosts.filter(post => post.id !== featuredPost.id);
 
   return (
     <main className="pt-12 pb-24">

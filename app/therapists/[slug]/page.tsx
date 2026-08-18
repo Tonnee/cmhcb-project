@@ -59,11 +59,19 @@ function BulletList({ items }: { items: string[] }) {
   );
 }
 
+import prisma from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
+
 /* ------------------------------------------------------------------ */
 /* Page                                                                 */
 /* ------------------------------------------------------------------ */
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const therapists = await prisma.therapist.findMany({ select: { id: true } });
+  if (therapists.length > 0) {
+    return therapists.map((t) => ({ slug: t.id }));
+  }
   return THERAPISTS_DATA.map((t) => ({ slug: t.id }));
 }
 
@@ -74,13 +82,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   try {
     const { slug } = await params;
-    const therapist = THERAPISTS_DATA.find((t) => t.id === slug);
+    const dbTherapist = await prisma.therapist.findUnique({ where: { id: slug } }).catch(() => null);
+    const therapist = dbTherapist || THERAPISTS_DATA.find((t) => t.id === slug);
     if (!therapist) return {};
 
     const url = `https://cmhcbd.com/therapists/${therapist.id}`;
-    const imageUrl = therapist.image.startsWith("http")
+    const imageUrl = therapist.image?.startsWith("http")
       ? therapist.image
-      : `https://cmhcbd.com${therapist.image.startsWith("/") ? "" : "/"}${therapist.image}`;
+      : `https://cmhcbd.com${therapist.image?.startsWith("/") ? "" : "/"}${therapist.image || "pages-hero-background/therapist-default.png"}`;
 
     return {
       title: `${therapist.name} | ${therapist.role}`,
@@ -121,11 +130,45 @@ export default async function TherapistProfilePage({
   params: Promise<{ slug: string }>;
 }): Promise<React.JSX.Element> {
   const { slug } = await params;
-  const therapist = THERAPISTS_DATA.find((t) => t.id === slug);
+  const dbTherapist = await prisma.therapist.findUnique({ where: { id: slug } }).catch(() => null);
+  const staticTherapist = THERAPISTS_DATA.find((t) => t.id === slug);
 
-  if (!therapist) {
+  if (!dbTherapist && !staticTherapist) {
     notFound();
   }
+
+  let education: string[] = staticTherapist?.education || [];
+  let training: string[] = staticTherapist?.training || [];
+  let expertise: string[] = staticTherapist?.expertise || [];
+  let experience: string[] = staticTherapist?.experience || [];
+  let services: string[] = staticTherapist?.services || [];
+  let activities: string[] = staticTherapist?.activities || [];
+  let fees: any = staticTherapist?.fees || null;
+
+  if (dbTherapist) {
+    try { if (dbTherapist.education) education = JSON.parse(dbTherapist.education); } catch {}
+    try { if (dbTherapist.training) training = JSON.parse(dbTherapist.training); } catch {}
+    try { if (dbTherapist.expertise) expertise = JSON.parse(dbTherapist.expertise); } catch {}
+    try { if (dbTherapist.experience) experience = JSON.parse(dbTherapist.experience); } catch {}
+    try { if (dbTherapist.services) services = JSON.parse(dbTherapist.services); } catch {}
+    try { if (dbTherapist.activities) activities = JSON.parse(dbTherapist.activities); } catch {}
+    try { if (dbTherapist.fees) fees = JSON.parse(dbTherapist.fees); } catch {}
+  }
+
+  const therapist = {
+    id: dbTherapist?.id || staticTherapist!.id,
+    name: dbTherapist?.name || staticTherapist!.name,
+    role: dbTherapist?.role || staticTherapist!.role,
+    image: dbTherapist?.image || staticTherapist!.image,
+    bio: dbTherapist?.bio || staticTherapist!.bio,
+    education,
+    training,
+    expertise,
+    experience,
+    services,
+    activities,
+    fees,
+  };
 
   const therapistBlogs = BLOG_POSTS.filter(
     (post) =>
@@ -262,13 +305,13 @@ export default async function TherapistProfilePage({
                   <h2 className="font-marcellus text-xl text-white tracking-wide font-semibold">Fees</h2>
                 </div>
                 <div className="flex flex-col gap-6">
-                  {therapist.fees!.map((feeCategory, ci) => (
+                  {therapist.fees!.map((feeCategory: { category: string; items: { label: string; amount: string; note?: string }[] }, ci: number) => (
                     <div key={ci} className="flex flex-col">
                       <h3 className="font-sans font-bold text-xs tracking-wider text-white/60 uppercase mb-3">
                         {feeCategory.category}
                       </h3>
                       <div className="flex flex-col gap-3">
-                        {feeCategory.items.map((item, ii) => (
+                        {feeCategory.items.map((item: { label: string; amount: string; note?: string }, ii: number) => (
                           <div key={ii} className="flex flex-col gap-1">
                             <div className="flex items-start justify-between gap-4">
                               <span className="font-sans text-[13px] font-medium text-white/90">{item.label}</span>
