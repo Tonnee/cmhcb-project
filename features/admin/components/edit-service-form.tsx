@@ -294,54 +294,101 @@ export function EditServiceForm({
       </div>
 
       {/* 2. Hero & Card Graphics */}
-      <div className="flex flex-col gap-4 border-b border-muted pb-6">
+      <div className="flex flex-col gap-5 border-b border-muted pb-6">
         <h4 className="text-xs font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
           2. Media &amp; Graphic Banners
         </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Card Image */}
-          <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
-            {imageUrl && (
-              <Image src={imageUrl} alt="Card Preview" width={64} height={64} unoptimized className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
+        
+        {/* Row 1: Service Card Thumbnail */}
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
+          <div className="relative w-28 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt="Service Card Preview"
+                fill
+                unoptimized
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1">
+                <HiPhoto className="w-6 h-6" />
+                <span className="text-[9px] font-semibold">No Card Image</span>
+              </div>
             )}
-            <div className="flex-1 flex flex-col gap-1">
+          </div>
+          <div className="flex-1 flex flex-col gap-1 w-full">
+            <div className="flex items-center justify-between">
               <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
                 <HiPhoto className="w-4 h-4 text-primary" />
                 Service Card Thumbnail
               </label>
-              <span className="text-[11px] text-light-ash">Size: <strong>600×400 px</strong> (3:2) • <strong>.jpg, .png, .webp</strong></span>
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
-                onChange={handleImageChange}
-                className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash font-sans cursor-pointer mt-0.5"
-                disabled={isUploading || isSubmitting}
-              />
+              {imageUrl && (
+                <button
+                  type="button"
+                  onClick={() => setImageUrl("")}
+                  className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
+                >
+                  Remove
+                </button>
+              )}
             </div>
-            {isUploading && <span className="text-xs text-primary font-medium font-sans animate-pulse">Uploading...</span>}
+            <span className="text-[11px] text-light-ash">Size: <strong>600×400 px</strong> (3:2 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleImageChange}
+              className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash font-sans cursor-pointer mt-1"
+              disabled={isUploading || isSubmitting}
+            />
           </div>
+          {isUploading && <span className="text-xs text-primary font-medium font-sans animate-pulse shrink-0">Uploading image...</span>}
+        </div>
 
-          {/* Hero Background Image */}
-          <div className="flex flex-col md:flex-row gap-4 items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
-            {bgImageUrl && (
-              <Image src={bgImageUrl} alt="Hero BG Preview" width={64} height={64} unoptimized className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
+        {/* Row 2: Hero Background Banner */}
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light-ash/5 p-4 rounded-xl border border-muted/50">
+          <div className="relative w-36 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
+            {bgImageUrl ? (
+              <Image
+                src={bgImageUrl}
+                alt="Hero Background Preview"
+                fill
+                unoptimized
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1">
+                <HiPhoto className="w-6 h-6" />
+                <span className="text-[9px] font-semibold">No Hero Banner</span>
+              </div>
             )}
-            <div className="flex-1 flex flex-col gap-1">
+          </div>
+          <div className="flex-1 flex flex-col gap-1 w-full">
+            <div className="flex items-center justify-between">
               <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
                 <HiPhoto className="w-4 h-4 text-primary" />
                 Hero Background Banner
               </label>
-              <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9) • <strong>.jpg, .png, .webp</strong></span>
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
-                onChange={handleBgImageChange}
-                className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash font-sans cursor-pointer mt-0.5"
-                disabled={isUploadingBg || isSubmitting}
-              />
+              {bgImageUrl && (
+                <button
+                  type="button"
+                  onClick={() => setBgImageUrl("")}
+                  className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
+                >
+                  Remove
+                </button>
+              )}
             </div>
-            {isUploadingBg && <span className="text-xs text-primary font-medium font-sans animate-pulse">Uploading...</span>}
+            <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleBgImageChange}
+              className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash font-sans cursor-pointer mt-1"
+              disabled={isUploadingBg || isSubmitting}
+            />
           </div>
+          {isUploadingBg && <span className="text-xs text-primary font-medium font-sans animate-pulse shrink-0">Uploading banner...</span>}
         </div>
       </div>
 

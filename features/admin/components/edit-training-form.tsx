@@ -577,14 +577,37 @@ export function EditTrainingForm({
           <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
             Page Graphics Banner
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Main Image */}
-            <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
-              {imageUrl && (
-                <Image src={imageUrl} alt="Preview" width={64} height={64} unoptimized className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
-              )}
-              <div className="flex-1 flex flex-col gap-1">
-                <span className="font-semibold text-dark">Featured Card Image (Optional)</span>
+          <div className="flex flex-col gap-4">
+            {/* Row 1: Featured Card Image */}
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light/10 p-4 rounded-xl border border-muted/50">
+              <div className="relative w-28 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt="Training Card Preview"
+                    fill
+                    unoptimized
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1">
+                    <span className="text-[9px] font-semibold">No Card Image</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 flex flex-col gap-1 w-full">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-dark text-xs">Featured Card Image (Optional)</span>
+                  {imageUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setImageUrl("")}
+                      className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
                 <span className="text-[11px] text-light-ash">Size: <strong>600×400 px</strong> (3:2 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
                 <input
                   type="file"
@@ -597,13 +620,36 @@ export function EditTrainingForm({
               {isUploading && <span className="text-[10px] text-primary animate-pulse shrink-0">Uploading...</span>}
             </div>
 
-            {/* Background Hero Image */}
-            <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50">
-              {bgImageUrl && (
-                <Image src={bgImageUrl} alt="Background Preview" width={64} height={64} unoptimized className="w-16 h-16 rounded-xl object-cover border border-primary shrink-0" />
-              )}
-              <div className="flex-1 flex flex-col gap-1">
-                <span className="font-semibold text-dark">Hero Background Image</span>
+            {/* Row 2: Hero Background Image */}
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light/10 p-4 rounded-xl border border-muted/50">
+              <div className="relative w-36 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
+                {bgImageUrl ? (
+                  <Image
+                    src={bgImageUrl}
+                    alt="Hero Background Preview"
+                    fill
+                    unoptimized
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1">
+                    <span className="text-[9px] font-semibold">No Hero Banner</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 flex flex-col gap-1 w-full">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-dark text-xs">Hero Background Image</span>
+                  {bgImageUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setBgImageUrl("")}
+                      className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
                 <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
                 <input
                   type="file"
