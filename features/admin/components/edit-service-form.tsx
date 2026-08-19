@@ -21,7 +21,6 @@ interface ServiceDB {
   longDescription: string;
   approach: string;
   isFeatured: boolean;
-  showInNavbar?: boolean;
   image?: string | null;
   bgImage?: string | null;
   duration?: string | null;
@@ -66,7 +65,6 @@ export function EditServiceForm({
   const [whoIsItFor, setWhoIsItFor] = React.useState(initialService?.whoIsItFor || "");
   const [approach, setApproach] = React.useState(initialService?.approach || "");
   const [isFeatured, setIsFeatured] = React.useState(initialService?.isFeatured || false);
-  const [showInNavbar, setShowInNavbar] = React.useState(initialService?.showInNavbar ?? true);
   const [imageUrl, setImageUrl] = React.useState(initialService?.image || "");
   const [cardPreviewUrl, setCardPreviewUrl] = React.useState(initialService?.image || "");
   const [pendingCardFile, setPendingCardFile] = React.useState<File | null>(null);
@@ -220,7 +218,6 @@ export function EditServiceForm({
         language: language || null,
         faqs: faq.length > 0 ? JSON.stringify(faq) : null,
         isFeatured,
-        showInNavbar,
         image: finalCardUrl || null,
         bgImage: finalBgUrl || null,
         duration: duration || null,
@@ -332,15 +329,6 @@ export function EditServiceForm({
               className="rounded border-muted text-primary focus:ring-primary w-4 h-4"
             />
             Feature on Home Page Carousel
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-dark">
-            <input
-              type="checkbox"
-              checked={showInNavbar}
-              onChange={(e) => setShowInNavbar(e.target.checked)}
-              className="rounded border-muted text-primary focus:ring-primary w-4 h-4"
-            />
-            Show in Navbar &amp; Dropdown Menu
           </label>
         </div>
       </div>

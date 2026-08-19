@@ -18,7 +18,7 @@ interface ServiceDB {
   longDescription: string;
   approach: string;
   isFeatured: boolean;
-  showInNavbar: boolean;
+  showInNavbar?: boolean;
   image?: string | null;
   bgImage?: string | null;
   duration?: string | null;
@@ -204,9 +204,6 @@ export function ServicesClientWrapper({
                 <th className="px-6 py-4 text-xs font-semibold text-dark uppercase tracking-wider text-center">
                   Featured
                 </th>
-                <th className="px-6 py-4 text-xs font-semibold text-dark uppercase tracking-wider text-center">
-                  Navbar
-                </th>
                 <th className="px-6 py-4 text-xs font-semibold text-dark uppercase tracking-wider text-right">
                   Actions
                 </th>
@@ -215,7 +212,7 @@ export function ServicesClientWrapper({
             <tbody className="divide-y divide-muted">
               {services.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-light-ash text-sm">
+                  <td colSpan={5} className="px-6 py-12 text-center text-light-ash text-sm">
                     No services found in database. Add one to get started!
                   </td>
                 </tr>
@@ -254,17 +251,7 @@ export function ServicesClientWrapper({
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4.5 text-center">
-                      {service.showInNavbar ? (
-                        <span className="inline-flex items-center gap-1 bg-primary/10 text-primary-dark px-2.5 py-1 rounded-full text-xs font-medium border border-primary/20">
-                          <HiCheck className="w-3 h-3" /> Shown
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 bg-light-ash/10 text-light-ash px-2.5 py-1 rounded-full text-xs font-medium">
-                          <HiXMark className="w-3 h-3" /> Hidden
-                        </span>
-                      )}
-                    </td>
+
                     <td className="px-6 py-4.5 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button

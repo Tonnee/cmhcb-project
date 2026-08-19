@@ -619,9 +619,7 @@ export async function getActiveServicesListAction(): Promise<{
 }> {
   try {
     const services = await prisma.service.findMany({
-      where: {
-        showInNavbar: true,
-      },
+      take: 6,
       select: {
         title: true,
         slug: true,
@@ -629,7 +627,7 @@ export async function getActiveServicesListAction(): Promise<{
         duration: true,
         fees: true,
       },
-      orderBy: { title: "asc" },
+      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
     });
     return { success: true, data: services };
   } catch (error) {
@@ -686,7 +684,6 @@ const ServiceInputSchema = z.object({
   longDescription: z.string().min(1, "Long description is required"),
   approach: z.string().min(1, "Approach is required"),
   isFeatured: z.boolean().default(false),
-  showInNavbar: z.boolean().default(true),
   image: z.string().optional().nullable(),
   bgImage: z.string().optional().nullable(),
   duration: z.string().optional().nullable(),
@@ -717,7 +714,6 @@ export async function upsertServiceAction(
       longDescription: validated.longDescription,
       approach: validated.approach,
       isFeatured: validated.isFeatured,
-      showInNavbar: validated.showInNavbar,
       image: validated.image,
       bgImage: validated.bgImage,
       duration: validated.duration,
@@ -913,6 +909,28 @@ export async function deleteServiceInfoBlockAction(
 // ============================================================================
 // Server Actions - Trainings
 // ============================================================================
+
+export async function getActiveTrainingsListAction(): Promise<{
+  success: boolean;
+  data: { title: string; slug: string; duration: string; fees: string }[];
+}> {
+  try {
+    const trainings = await prisma.training.findMany({
+      take: 6,
+      select: {
+        title: true,
+        slug: true,
+        duration: true,
+        fees: true,
+      },
+      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+    });
+    return { success: true, data: trainings };
+  } catch (error) {
+    console.error("Error in getActiveTrainingsListAction:", error);
+    return { success: false, data: [] };
+  }
+}
 
 const TrainingInputSchema = z.object({
   id: z.string().optional(),

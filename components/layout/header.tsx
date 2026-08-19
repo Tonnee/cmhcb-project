@@ -76,7 +76,7 @@ function NavLink({ href, children, active }: NavLinkProps) {
 // ---------------------------------------------------------------------------
 
 import * as HiIcons from "react-icons/hi2";
-import { getActiveServicesListAction } from "@/app/(admin)/admin/actions";
+import { getActiveServicesListAction, getActiveTrainingsListAction } from "@/app/(admin)/admin/actions";
 
 function renderIconByName(name: string): React.ReactNode {
   const IconComponent = (HiIcons as any)[name];
@@ -228,10 +228,37 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
 // Training Mega Menu
 // ---------------------------------------------------------------------------
 
+interface TrainingDropdownItem {
+  title: string;
+  slug: string;
+  duration: string;
+  fees: string;
+}
+
 function TrainingMegaMenu({ active }: { active?: boolean }) {
   const [open, setOpen] = React.useState(false);
+  const [trainings, setTrainings] = React.useState<TrainingDropdownItem[]>([]);
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
+
+  React.useEffect(() => {
+    async function load() {
+      const res = await getActiveTrainingsListAction();
+      if (res.success && res.data && res.data.length > 0) {
+        setTrainings(res.data.slice(0, 6));
+      } else {
+        setTrainings(
+          TRAININGS.slice(0, 6).map((t) => ({
+            title: t.title,
+            slug: t.slug,
+            duration: t.duration,
+            fees: t.fees,
+          }))
+        );
+      }
+    }
+    load();
+  }, []);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -295,7 +322,15 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
               className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
               role="list"
             >
-              {TRAININGS.slice(0, 6).map((training) => (
+              {(trainings.length > 0
+                ? trainings
+                : TRAININGS.slice(0, 6).map((t) => ({
+                    title: t.title,
+                    slug: t.slug,
+                    duration: t.duration,
+                    fees: t.fees,
+                  }))
+              ).map((training) => (
                 <li key={training.slug} role="none">
                   <Link
                     href={`/training/${training.slug}`}
