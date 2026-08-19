@@ -77,7 +77,7 @@ export function EditServiceForm({
   const [fees, setFees] = React.useState(initialService?.fees || "");
   const [format, setFormat] = React.useState(initialService?.format || "In-person & Online");
   const [language, setLanguage] = React.useState(initialService?.language || "English & Bangla");
-  const [order, setOrder] = React.useState(initialService?.order ?? 0);
+  const [order] = React.useState(initialService?.order ?? 0);
 
   // FAQs Builder State
   const [faq, setFaq] = React.useState<FaqItem[]>(() =>
@@ -287,36 +287,21 @@ export function EditServiceForm({
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="flex flex-col gap-1.5">
-            <label className="font-sans text-xs font-semibold text-dark">
-              Icon Representation
-            </label>
-            <select
-              value={icon}
-              onChange={(e) => setIcon(e.target.value)}
-              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors cursor-pointer"
-            >
-              {AVAILABLE_ICONS.map((i) => (
-                <option key={i.value} value={i.value}>
-                  {i.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="font-sans text-xs font-semibold text-dark">
-              Display Sort Order
-            </label>
-            <input
-              type="number"
-              value={order}
-              onChange={(e) => setOrder(Number(e.target.value))}
-              placeholder="e.g. 0, 1, 2"
-              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
-            />
-          </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="font-sans text-xs font-semibold text-dark">
+            Icon Representation
+          </label>
+          <select
+            value={icon}
+            onChange={(e) => setIcon(e.target.value)}
+            className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors cursor-pointer"
+          >
+            {AVAILABLE_ICONS.map((i) => (
+              <option key={i.value} value={i.value}>
+                {i.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Toggles */}
@@ -501,7 +486,7 @@ export function EditServiceForm({
             onChange={(e) => setWhoIsItFor(e.target.value)}
             rows={4}
             placeholder="e.g. Individuals navigating anxiety, depression, or emotional overwhelm&#10;Adults seeking self-discovery and personal growth&#10;People experiencing life transitions or relationship challenges"
-            className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors resize-y font-mono text-xs"
+            className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors resize-y"
           />
         </div>
 
@@ -518,7 +503,7 @@ export function EditServiceForm({
             onChange={(e) => setApproach(e.target.value)}
             rows={4}
             placeholder="e.g. Cognitive Behavioral Therapy (CBT) for actionable coping tools&#10;Person-Centered Therapy for a non-judgmental, empathetic environment&#10;Mindfulness-based strategies for stress reduction and self-regulation"
-            className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors resize-y font-mono text-xs"
+            className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors resize-y"
             required
           />
         </div>

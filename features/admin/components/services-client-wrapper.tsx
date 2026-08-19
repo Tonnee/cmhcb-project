@@ -217,10 +217,13 @@ export function ServicesClientWrapper({
                   </td>
                 </tr>
               ) : (
-                services.map((service) => (
+                services.map((service, index) => (
                   <tr key={service.id} className="hover:bg-light-ash/5 transition-colors">
                     <td className="px-6 py-4.5">
                       <div className="flex items-center gap-3">
+                        <span className="font-semibold text-dark-green text-sm shrink-0 w-6 font-mono">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
                         <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-muted/60 shrink-0 bg-light-ash/5">
                           <Image src={service.image || SERVICE_IMAGES[service.slug] || "/home-service-images/individual-therapy.png"} alt={service.title} width={48} height={48} unoptimized className="w-12 h-12 object-cover rounded-xl" />
                         </div>
