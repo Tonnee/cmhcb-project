@@ -4,7 +4,7 @@ import Image from "next/image";
 import * as React from "react";
 import { HiPlus, HiPencilSquare, HiTrash, HiCheck, HiXMark } from "react-icons/hi2";
 import { EditServiceForm } from "./edit-service-form";
-import { deleteServiceAction, deleteServiceInfoBlockAction } from "@/app/(admin)/admin/actions";
+import { deleteServiceAction, deleteServiceInfoBlockAction, toggleServiceFeaturedAction } from "@/app/(admin)/admin/actions";
 import { SERVICE_IMAGES } from "@/components/shared/service-card";
 import { EditServiceInfoBlockForm } from "./edit-service-info-block-form";
 import { useRouter } from "next/navigation";
@@ -54,6 +54,7 @@ export function ServicesClientWrapper({
   const [selectedService, setSelectedService] = React.useState<ServiceDB | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [isDeletingId, setIsDeletingId] = React.useState<string | null>(null);
+  const [togglingId, setTogglingId] = React.useState<string | null>(null);
 
   // Tab & Info Block states
   const [activeTab, setActiveTab] = React.useState<"services" | "infoblocks">("services");
@@ -67,6 +68,36 @@ export function ServicesClientWrapper({
     setServices(initialServices);
     setInfoBlocks(initialInfoBlocks);
   }, [initialServices, initialInfoBlocks]);
+
+  const handleToggleFeatured = async (service: ServiceDB) => {
+    const nextFeatured = !service.isFeatured;
+    setTogglingId(service.id);
+
+    // Optimistic update
+    setServices((prev) =>
+      prev.map((s) => (s.id === service.id ? { ...s, isFeatured: nextFeatured } : s))
+    );
+
+    try {
+      const res = await toggleServiceFeaturedAction(service.id, nextFeatured);
+      if (!res.success) {
+        // Revert on error
+        setServices((prev) =>
+          prev.map((s) => (s.id === service.id ? { ...s, isFeatured: service.isFeatured } : s))
+        );
+        alert(res.error || "Failed to update featured status.");
+      } else {
+        router.refresh();
+      }
+    } catch (err: unknown) {
+      setServices((prev) =>
+        prev.map((s) => (s.id === service.id ? { ...s, isFeatured: service.isFeatured } : s))
+      );
+      alert(err instanceof Error ? err.message : "An unexpected error occurred.");
+    } finally {
+      setTogglingId(null);
+    }
+  };
 
   const handleDelete = async (id: string, slug: string) => {
     if (!confirm("Are you sure you want to permanently delete this psychotherapeutic service? This cannot be undone.")) {
@@ -244,15 +275,26 @@ export function ServicesClientWrapper({
                       {service.icon}
                     </td>
                     <td className="px-6 py-4.5 text-center">
-                      {service.isFeatured ? (
-                        <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2.5 py-1 rounded-full text-xs font-medium border border-green-100">
-                          <HiCheck className="w-3 h-3" /> Featured
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 bg-light-ash/10 text-light-ash px-2.5 py-1 rounded-full text-xs font-medium">
-                          <HiXMark className="w-3 h-3" /> Standard
-                        </span>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleFeatured(service)}
+                        disabled={togglingId === service.id}
+                        title={service.isFeatured ? "Click to remove from Home page" : "Click to feature on Home page"}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95 disabled:opacity-60 ${
+                          service.isFeatured
+                            ? "bg-green-100 text-green-800 border border-green-300 hover:bg-green-200"
+                            : "bg-light-ash/10 text-dark hover:bg-light-ash/20 border border-muted"
+                        }`}
+                      >
+                        {togglingId === service.id ? (
+                          <span className="inline-block w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                        ) : service.isFeatured ? (
+                          <HiCheck className="w-3.5 h-3.5 text-green-700" />
+                        ) : (
+                          <HiXMark className="w-3.5 h-3.5 text-light-ash" />
+                        )}
+                        {service.isFeatured ? "Featured" : "Standard"}
+                      </button>
                     </td>
 
                     <td className="px-6 py-4.5 text-right">

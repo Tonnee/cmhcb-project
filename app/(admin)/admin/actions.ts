@@ -761,6 +761,48 @@ export async function upsertServiceAction(
   }
 }
 
+export async function toggleServiceFeaturedAction(
+  id: string,
+  isFeatured: boolean
+): Promise<{ success: boolean; error?: string; data?: any }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const existing = await prisma.service.findUnique({ where: { id } });
+    if (!existing) {
+      return { success: false, error: "Service not found" };
+    }
+
+    const updated = await prisma.service.update({
+      where: { id },
+      data: {
+        isFeatured,
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "Service",
+      id,
+      existing.title,
+      `${isFeatured ? "Featured" : "Unfeatured"} service "${existing.title}" on the home page.`
+    );
+
+    revalidatePath("/");
+    revalidatePath("/services");
+    revalidatePath(`/services/${existing.slug}`);
+    revalidatePath("/admin/services");
+
+    return { success: true, data: updated };
+  } catch (error: any) {
+    console.error("Error in toggleServiceFeaturedAction:", error);
+    return { success: false, error: error.message || "Failed to update service featured status" };
+  }
+}
+
 export async function deleteServiceAction(
   id: string,
   slug?: string

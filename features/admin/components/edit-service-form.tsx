@@ -313,7 +313,7 @@ export function EditServiceForm({
               onChange={(e) => setIsFeatured(e.target.checked)}
               className="rounded border-muted text-primary focus:ring-primary w-4 h-4"
             />
-            Feature on Home Page Carousel
+            Feature on Home Page (Services Section)
           </label>
         </div>
       </div>
