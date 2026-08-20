@@ -26,7 +26,7 @@ function InfoCard({ title, description, variant }: InfoCardProps): React.JSX.Ele
   const descClass = variant === "primary" ? "text-light" : "text-dark";
 
   return (
-    <div className={`min-h-[280px] h-full w-full rounded-3xl p-6 flex flex-col justify-between gap-6 shrink-0 ${bgClass}`}>
+    <div className={`min-h-70 h-full w-full rounded-3xl p-6 flex flex-col justify-between gap-6 shrink-0 ${bgClass}`}>
       <h3 className={`font-marcellus text-2xl leading-8 ${textClass}`}>
         {title}
       </h3>
@@ -44,7 +44,7 @@ interface ReviewPhotoProps {
 
 function ReviewPhoto({ src, alt }: ReviewPhotoProps): React.JSX.Element {
   return (
-    <div className="relative h-[280px] sm:h-full w-full rounded-3xl overflow-hidden shrink-0">
+    <div className="relative h-70 sm:h-full w-full rounded-3xl overflow-hidden shrink-0">
       <Image
         src={src}
         alt={alt}
