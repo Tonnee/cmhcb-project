@@ -261,7 +261,7 @@ export default async function BlogPostPage({
             {/* Left side info */}
             <div className="lg:col-span-6 flex flex-col gap-6">
               <div className="flex flex-col gap-6">
-                <h2 className="font-marcellus text-[32px] lg:text-[40px] text-dark leading-tight">
+                <h2 className="font-marcellus text-[32px] lg:text-40px text-dark leading-tight">
                   Meet the <span className="text-primary">Author</span>
                 </h2>
                 <p className="font-sans text-xl leading-relaxed text-dark max-w-xl">

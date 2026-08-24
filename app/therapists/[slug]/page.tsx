@@ -51,7 +51,7 @@ function BulletList({ items }: { items: string[] }) {
     <ul className="flex flex-col gap-3.5">
       {items.map((item, i) => (
         <li key={i} className="flex items-start gap-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0 mt-[10px]" aria-hidden="true" />
+          <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0 mt-2.5" aria-hidden="true" />
           <span className="font-sans text-sm md:text-base text-light-ash/80 leading-relaxed">{item}</span>
         </li>
       ))}
@@ -229,7 +229,7 @@ export default async function TherapistProfilePage({
           
           {/* Column 1: Portrait (Sticky) */}
           <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-32">
-            <div className="relative rounded-[32px] overflow-hidden aspect-3/4 w-full">
+            <div className="relative rounded-4xl overflow-hidden aspect-3/4 w-full">
               <Image
                 src={therapist.image}
                 alt={therapist.name}

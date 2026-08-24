@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
+import { requireAdminSession } from "@/lib/admin-auth";
 import { createClient as createSupabaseAdminClient } from "@supabase/supabase-js";
 import sharp from "sharp";
 
@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   try {
     // 1. Authenticate the admin session
-    await getRequiredAdminSession();
+    await requireAdminSession();
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || "Unauthorized" },

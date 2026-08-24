@@ -36,7 +36,7 @@ export function TherapistList({ therapists }: TherapistListProps): React.JSX.Ele
           <button
             key={category}
             onClick={() => setActiveCategory(category)}
-            className={`px-6 py-2.5 rounded-full font-sans text-[15px] font-medium transition-all duration-300 ${
+            className={`px-6 py-2.5 rounded-full font-sans text-15px font-medium transition-all duration-300 ${
               activeCategory === category
                 ? "bg-primary text-white shadow-sm animate-in fade-in duration-200"
                 : "bg-white text-dark border border-gray-200 hover:border-primary hover:text-primary cursor-pointer"
