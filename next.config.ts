@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Prevent webpack from bundling native binary modules used in Route Handlers.
-  // Without this, production builds crash at runtime even though compilation succeeds.
-  serverExternalPackages: ["sharp", "@prisma/client"],
   images: {
     remotePatterns: [
       {

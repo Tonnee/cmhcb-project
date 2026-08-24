@@ -1,17 +1,16 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/admin-auth";
 import { createClient as createSupabaseAdminClient } from "@supabase/supabase-js";
-import sharp from "sharp";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  // 1. Authenticate the admin session
   try {
-    // 1. Authenticate the admin session
     await requireAdminSession();
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { error: error.message || "Unauthorized" },
+      { error: error instanceof Error ? error.message : "Unauthorized" },
       { status: 401 }
     );
   }
@@ -26,56 +25,47 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file uploaded." }, { status: 400 });
     }
 
-    // Validate size (max 10MB)
+    // 3. Validate size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json({ error: "File size exceeds 10MB limit." }, { status: 400 });
+      return NextResponse.json(
+        { error: "File size exceeds 10MB limit." },
+        { status: 400 }
+      );
     }
 
-    // Validate type (must be image)
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
+    // 4. Validate type (must be image)
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+      "image/svg+xml",
+    ];
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ error: "Invalid file type. Only images are allowed." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid file type. Only images are allowed." },
+        { status: 400 }
+      );
     }
 
-    // 3. Read file into a buffer
+    // 5. Read file into buffer — no server-side processing needed.
+    //    The client already pre-optimizes images via optimizeImageForUpload()
+    //    in lib/supabase.ts (canvas resize + JPEG compression at 85% quality).
     const arrayBuffer = await file.arrayBuffer();
-    const inputBuffer = Buffer.from(arrayBuffer);
+    const buffer = Buffer.from(arrayBuffer);
 
-    let outputBuffer: Buffer;
-    let fileExt = "webp";
-    let contentType = "image/webp";
+    // Infer extension and content type from the uploaded file
+    const extMap: Record<string, string> = {
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/webp": "webp",
+      "image/gif": "gif",
+      "image/svg+xml": "svg",
+    };
+    const fileExt = extMap[file.type] ?? "jpg";
+    const contentType = file.type;
 
-    // SVGs are vector graphic files; upload directly without processing
-    if (file.type === "image/svg+xml") {
-      outputBuffer = inputBuffer;
-      fileExt = "svg";
-      contentType = "image/svg+xml";
-    } else {
-      // 4. Process raster images with sharp
-      let sharpInstance = sharp(inputBuffer);
-      
-      // Auto-orient based on EXIF tag (critical for portrait smartphone photos)
-      sharpInstance = sharpInstance.rotate();
-
-      // Read metadata to check dimensions
-      const metadata = await sharpInstance.metadata();
-      const maxWidth = 1600;
-      const maxHeight = 1600;
-
-      if ((metadata.width && metadata.width > maxWidth) || (metadata.height && metadata.height > maxHeight)) {
-        sharpInstance = sharpInstance.resize({
-          width: maxWidth,
-          height: maxHeight,
-          fit: "inside",
-          withoutEnlargement: true
-        });
-      }
-
-      // Convert to WebP format and compress
-      outputBuffer = await sharpInstance.webp({ quality: 80 }).toBuffer();
-    }
-
-    // 5. Initialize Supabase Admin client with service role key
+    // 6. Initialize Supabase Admin client with service role key
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -93,30 +83,30 @@ export async function POST(request: Request) {
       },
     });
 
-    // 6. Upload buffer to Supabase storage
+    // 7. Upload buffer to Supabase Storage
     const randomString = Math.random().toString(36).substring(2, 15);
     const fileName = `${randomString}_${Date.now()}.${fileExt}`;
     const filePath = `uploads/${fileName}`;
 
     let { error: uploadError } = await supabaseAdmin.storage
       .from(bucket)
-      .upload(filePath, outputBuffer, {
+      .upload(filePath, buffer, {
         contentType,
-        cacheControl: "31536000", // 1 year cache control for static assets
+        cacheControl: "31536000", // 1 year cache
         upsert: false,
       });
 
+    // Auto-create bucket if it doesn't exist yet
     if (uploadError && uploadError.message?.toLowerCase().includes("not found")) {
-      // Auto-create bucket if missing
       await supabaseAdmin.storage.createBucket(bucket, {
         public: true,
         fileSizeLimit: 10485760,
-        allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"],
+        allowedMimeTypes: allowedTypes,
       });
-      // Retry upload
+
       const retryResult = await supabaseAdmin.storage
         .from(bucket)
-        .upload(filePath, outputBuffer, {
+        .upload(filePath, buffer, {
           contentType,
           cacheControl: "31536000",
           upsert: false,
@@ -125,21 +115,34 @@ export async function POST(request: Request) {
     }
 
     if (uploadError) {
-      return NextResponse.json({ error: `Upload error: ${uploadError.message}` }, { status: 500 });
+      return NextResponse.json(
+        { error: `Upload error: ${uploadError.message}` },
+        { status: 500 }
+      );
     }
 
-    // 7. Get public URL
-    const { data: urlData } = supabaseAdmin.storage.from(bucket).getPublicUrl(filePath);
+    // 8. Return public URL
+    const { data: urlData } = supabaseAdmin.storage
+      .from(bucket)
+      .getPublicUrl(filePath);
 
     if (!urlData?.publicUrl) {
-      return NextResponse.json({ error: "Failed to get public asset URL." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to get public asset URL." },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ success: true, url: urlData.publicUrl });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Image upload pipeline error:", err);
     return NextResponse.json(
-      { error: err.message || "An unexpected error occurred during image processing." },
+      {
+        error:
+          err instanceof Error
+            ? err.message
+            : "An unexpected error occurred during upload.",
+      },
       { status: 500 }
     );
   }
