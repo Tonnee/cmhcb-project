@@ -54,6 +54,7 @@ function AppointmentFormContent() {
   const [errorMsg, setErrorMsg] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
+  const [createdId, setCreatedId] = React.useState<string | null>(null);
 
   const [formData, setFormData] = React.useState({
     name: "",
@@ -67,8 +68,6 @@ function AppointmentFormContent() {
     message: "",
     preference: "in-person",
   });
-
-
 
   // Load services and therapists from the database
   React.useEffect(() => {
@@ -129,7 +128,12 @@ function AppointmentFormContent() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
           </svg>
         </div>
-        <h3 className="font-marcellus text-2xl md:text-3xl text-primary-dark mb-4">Request Received!</h3>
+        <h3 className="font-marcellus text-2xl md:text-3xl text-primary-dark mb-2">Request Received!</h3>
+        {createdId && (
+          <div className="inline-block bg-primary/5 border border-primary/20 text-primary-dark font-mono font-bold text-sm px-4 py-1.5 rounded-full mb-4">
+            Reference ID: {createdId}
+          </div>
+        )}
         <p className="font-sans text-base text-light-ash leading-relaxed">
           Thank you! Your appointment request has been securely submitted. Our administrative team will review it and contact you via your provided contact details to confirm the schedule.
         </p>
@@ -142,6 +146,8 @@ function AppointmentFormContent() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear field-specific error when user types
+    if (errorMsg) setErrorMsg("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -158,6 +164,9 @@ function AppointmentFormContent() {
     try {
       const res = await createAppointmentAction(formData);
       if (res.success) {
+        if (res.appointmentId) {
+          setCreatedId(res.appointmentId);
+        }
         setIsSuccess(true);
       } else {
         setErrorMsg(res.error || "Failed to submit request. Please try again.");

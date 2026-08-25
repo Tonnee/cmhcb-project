@@ -31,8 +31,31 @@ export async function createTrainingRequestAction(data: unknown) {
     });
     const trainingTitle = trainingRecord?.title || validated.training;
 
-    await prisma.trainingRequest.create({
+    // Generate human-readable numeric ID based on date of request (e.g. TRN-20260826-1)
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const datePrefix = `TRN-${year}${month}${day}`;
+
+    const countToday = await prisma.trainingRequest.count({
+      where: {
+        id: {
+          startsWith: datePrefix,
+        },
+      },
+    });
+
+    let attempt = countToday + 1;
+    let requestId = `${datePrefix}-${attempt}`;
+    while (await prisma.trainingRequest.findUnique({ where: { id: requestId } })) {
+      attempt++;
+      requestId = `${datePrefix}-${attempt}`;
+    }
+
+    const createdRequest = await prisma.trainingRequest.create({
       data: {
+        id: requestId,
         name: validated.name,
         age: parseInt(validated.age, 10),
         gender: validated.gender,
@@ -44,7 +67,7 @@ export async function createTrainingRequestAction(data: unknown) {
       },
     });
 
-    return { success: true };
+    return { success: true, requestId: createdRequest.id };
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred." };
   }

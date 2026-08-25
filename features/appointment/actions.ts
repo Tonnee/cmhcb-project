@@ -40,8 +40,31 @@ export async function createAppointmentAction(data: unknown) {
     });
     const serviceTitle = serviceRecord?.title || validated.service;
 
-    await prisma.appointment.create({
+    // Generate human-readable numeric ID based on date of request (e.g. 20260826-1, 20260826-2)
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const datePrefix = `${year}${month}${day}`;
+
+    const countToday = await prisma.appointment.count({
+      where: {
+        id: {
+          startsWith: datePrefix,
+        },
+      },
+    });
+
+    let attempt = countToday + 1;
+    let appointmentId = `${datePrefix}-${attempt}`;
+    while (await prisma.appointment.findUnique({ where: { id: appointmentId } })) {
+      attempt++;
+      appointmentId = `${datePrefix}-${attempt}`;
+    }
+
+    const createdAppointment = await prisma.appointment.create({
       data: {
+        id: appointmentId,
         name: validated.name,
         age: parseInt(validated.age, 10),
         gender: validated.gender,
@@ -56,7 +79,7 @@ export async function createAppointmentAction(data: unknown) {
       },
     });
 
-    return { success: true };
+    return { success: true, appointmentId: createdAppointment.id };
   } catch (error: any) {
     return { success: false, error: error.message || "An unexpected error occurred." };
   }
