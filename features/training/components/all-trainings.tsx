@@ -9,7 +9,6 @@ interface AllTrainingsProps {
     slug: string;
     title: string;
     heroDescription: string;
-    features?: string[];
     duration: string;
     fees: string;
     variant: FeatureCardVariant;
@@ -30,7 +29,6 @@ export function AllTrainings({ trainings }: AllTrainingsProps): React.JSX.Elemen
               key={training.slug}
               title={training.title}
               description={training.heroDescription}
-              features={training.features}
               duration={training.duration}
               fees={training.fees}
               href={`/training/${training.slug}`}

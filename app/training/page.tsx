@@ -18,28 +18,14 @@ export default async function TrainingPage(): Promise<React.JSX.Element> {
     }),
   ]);
 
-  const mappedTrainings = trainings.map((t) => {
-    let parsedFeatures: string[] = [];
-    try {
-      if (t.features) {
-        parsedFeatures = JSON.parse(t.features);
-      }
-    } catch {}
-
-    const validVariant: FeatureCardVariant = ["primary", "secondary", "accent"].includes(t.variant)
-      ? (t.variant as FeatureCardVariant)
-      : "primary";
-
-    return {
-      slug: t.slug,
-      title: t.title,
-      heroDescription: t.heroDescription || "",
-      features: parsedFeatures,
-      duration: t.duration,
-      fees: t.fees,
-      variant: validVariant,
-    };
-  });
+  const mappedTrainings = trainings.map((t) => ({
+    slug: t.slug,
+    title: t.title,
+    heroDescription: t.heroDescription || "",
+    duration: t.duration,
+    fees: t.fees,
+    variant: t.variant as FeatureCardVariant,
+  }));
 
   return (
     <main>
