@@ -1010,13 +1010,15 @@ export async function upsertTrainingAction(
     const admin = await getRequiredAdminSession();
     const validated = TrainingInputSchema.parse(rawData);
     
-    // Generate id if new
-    const id = validated.id || `trn-${validated.slug}`;
-    const existing = await prisma.training.findUnique({ where: { id } });
+    // Generate clean slug from provided slug or title
+    const titleSlug = validated.slug ? slugify(validated.slug) : slugify(validated.title);
+    if (!titleSlug) {
+      return { success: false, error: "A valid URL slug could not be generated. Please enter a valid title or slug." };
+    }
 
     const dataPayload = {
       title: validated.title,
-      slug: validated.slug,
+      slug: titleSlug,
       heroTitle: validated.heroTitle,
       heroDescription: validated.heroDescription,
       introTitle: validated.introTitle,
@@ -1026,36 +1028,76 @@ export async function upsertTrainingAction(
       features: JSON.stringify(validated.features),
       duration: validated.duration,
       fees: validated.fees,
-      variant: validated.variant,
-      image: validated.image,
-      bgImage: validated.bgImage,
-      order: validated.order,
+      variant: validated.variant || "primary",
+      image: validated.image || null,
+      bgImage: validated.bgImage || null,
+      order: validated.order ?? 0,
       lastUpdatedBy: admin.email,
     };
 
-    const training = await prisma.training.upsert({
-      where: { id },
-      update: dataPayload,
-      create: {
-        id,
-        ...dataPayload,
-      },
-    });
+    let training: any;
+    let isUpdate = false;
+
+    if (validated.id) {
+      // Updating existing training
+      const existing = await prisma.training.findUnique({ where: { id: validated.id } });
+      if (!existing) {
+        return { success: false, error: "Training program not found." };
+      }
+
+      // If slug is changed, check if new slug is already in use by another training
+      if (titleSlug !== existing.slug) {
+        const slugConflict = await prisma.training.findUnique({ where: { slug: titleSlug } });
+        if (slugConflict && slugConflict.id !== validated.id) {
+          return { success: false, error: `A training program with slug "${titleSlug}" already exists. Please choose a unique title or slug.` };
+        }
+      }
+
+      training = await prisma.training.update({
+        where: { id: validated.id },
+        data: dataPayload,
+      });
+      isUpdate = true;
+    } else {
+      // Creating new training
+      const slugConflict = await prisma.training.findUnique({ where: { slug: titleSlug } });
+      if (slugConflict) {
+        return { success: false, error: `A training program with slug "${titleSlug}" already exists. Please choose a unique title or slug.` };
+      }
+
+      // Check if generated ID conflicts, append unique suffix if needed
+      let newId = `trn-${titleSlug}`;
+      const idConflict = await prisma.training.findUnique({ where: { id: newId } });
+      if (idConflict) {
+        newId = `trn-${titleSlug}-${Date.now().toString(36)}`;
+      }
+
+      training = await prisma.training.create({
+        data: {
+          id: newId,
+          ...dataPayload,
+        },
+      });
+      isUpdate = false;
+    }
 
     await logActivity(
       admin.id,
       admin.email,
       admin.name,
-      existing ? "UPDATE" : "CREATE",
+      isUpdate ? "UPDATE" : "CREATE",
       "Training",
-      id,
+      training.id,
       validated.title,
-      existing ? `Updated training details for "${validated.title}"` : `Created training program "${validated.title}"`
+      isUpdate ? `Updated training details for "${validated.title}"` : `Created training program "${validated.title}"`
     );
 
+    revalidatePath("/");
     revalidatePath("/training");
-    revalidatePath(`/training/${validated.slug}`);
+    revalidatePath(`/training/${titleSlug}`);
+    revalidatePath("/join-training");
     revalidatePath("/admin/trainings");
+    revalidatePath("/faqs");
 
     return { success: true, data: training };
   } catch (error: any) {
@@ -1093,11 +1135,14 @@ export async function deleteTrainingAction(
       `Deleted training program "${existing.title}"`
     );
 
+    revalidatePath("/");
     revalidatePath("/training");
-    if (slug) {
-      revalidatePath(`/training/${slug}`);
+    if (slug || existing.slug) {
+      revalidatePath(`/training/${slug || existing.slug}`);
     }
+    revalidatePath("/join-training");
     revalidatePath("/admin/trainings");
+    revalidatePath("/faqs");
 
     return { success: true };
   } catch (error: any) {

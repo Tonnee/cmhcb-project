@@ -6,6 +6,8 @@ import { HiPlus, HiTrash, HiXMark } from "react-icons/hi2";
 import { upsertTrainingAction } from "@/app/(admin)/admin/actions";
 import { uploadImageToSupabase } from "@/lib/supabase";
 
+import type { TrainingDB } from "./trainings-client-wrapper";
+
 interface Section {
   title: string;
   items: string[];
@@ -16,31 +18,10 @@ interface FAQItem {
   answer: string;
 }
 
-interface TrainingDB {
-  id?: string;
-  title: string;
-  slug: string;
-  heroTitle: string;
-  heroDescription: string;
-  introTitle: string;
-  introDescription: string;
-  sections: string; // JSON string
-  faq: string; // JSON string
-  features: string; // JSON string
-  duration: string;
-  fees: string;
-  variant: string;
-  image?: string | null;
-  bgImage?: string | null;
-  order?: number;
-  lastUpdatedBy?: string | null;
-  updatedAt?: string | Date;
-}
-
 interface EditTrainingFormProps {
   training?: TrainingDB | null;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (savedTraining?: TrainingDB) => void;
 }
 
 export function EditTrainingForm({
@@ -51,13 +32,14 @@ export function EditTrainingForm({
   // Simple field states
   const [title, setTitle] = React.useState(training?.title || "");
   const [slug, setSlug] = React.useState(training?.slug || "");
+  const [isSlugCustom, setIsSlugCustom] = React.useState(Boolean(training?.slug));
   const [heroTitle, setHeroTitle] = React.useState(training?.heroTitle || "");
   const [heroDescription, setHeroDescription] = React.useState(training?.heroDescription || "");
   const [introTitle, setIntroTitle] = React.useState(training?.introTitle || "");
   const [introDescription, setIntroDescription] = React.useState(training?.introDescription || "");
   const [duration, setDuration] = React.useState(training?.duration || "");
   const [fees, setFees] = React.useState(training?.fees || "");
-  const [variant] = React.useState(training?.variant || "primary");
+  const [variant, setVariant] = React.useState(training?.variant || "primary");
   const [imageUrl, setImageUrl] = React.useState(training?.image || "");
   const [bgImageUrl, setBgImageUrl] = React.useState(training?.bgImage || "");
   const [order, setOrder] = React.useState(training?.order ?? 0);
@@ -87,39 +69,34 @@ export function EditTrainingForm({
     }
   });
 
-  // Dynamic builder inputs
-  const [newFeature, setNewFeature] = React.useState("");
-
   // Status states
   const [isUploading, setIsUploading] = React.useState(false);
   const [isUploadingBg, setIsUploadingBg] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState("");
 
-  // Auto-generate slug from Title
+  // Auto-generate slug from Title if not customized
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setTitle(val);
-    if (!training) {
+    if (!training && !isSlugCustom) {
       const generatedSlug = val
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)+/g, "");
       setSlug(generatedSlug);
+    }
+    if (!training && !heroTitle) {
       setHeroTitle(val);
     }
   };
 
-  // Feature actions
-  const addFeature = () => {
-    if (newFeature.trim().length > 0) {
-      setFeatures([...features, newFeature.trim()]);
-      setNewFeature("");
-    }
-  };
-
-  const removeFeature = (idx: number) => {
-    setFeatures(features.filter((_, i) => i !== idx));
+  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsSlugCustom(true);
+    const val = e.target.value
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, "-");
+    setSlug(val);
   };
 
   // Section actions
@@ -281,7 +258,7 @@ export function EditTrainingForm({
 
       const res = await upsertTrainingAction(payload);
       if (res.success) {
-        onSuccess();
+        onSuccess(res.data);
       } else {
         setErrorMsg(res.error || "Failed to save training program details.");
       }
@@ -328,21 +305,39 @@ export function EditTrainingForm({
           <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
             Basic Details
           </h3>
-          <div className="flex flex-col gap-1.5">
-            <label className="font-semibold text-dark">Program Title</label>
-            <input
-              type="text"
-              required
-              value={title}
-              onChange={handleTitleChange}
-              placeholder="e.g. Psychological First Aid"
-              className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark">Program Title *</label>
+              <input
+                type="text"
+                required
+                value={title}
+                onChange={handleTitleChange}
+                placeholder="e.g. Psychological First Aid"
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark">URL Slug * (Unique Identifier)</label>
+              <div className="flex items-center">
+                <span className="bg-muted/30 px-3 py-2 border border-r-0 border-muted rounded-l-xl text-xs text-light-ash font-mono select-none">
+                  /training/
+                </span>
+                <input
+                  type="text"
+                  required
+                  value={slug}
+                  onChange={handleSlugChange}
+                  placeholder="e.g. psychological-first-aid"
+                  className="w-full px-3.5 py-2 border border-muted rounded-r-xl bg-page-bg/50 focus:outline-none focus:border-primary font-mono text-xs"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Session Duration</label>
+              <label className="font-semibold text-dark">Session Duration *</label>
               <input
                 type="text"
                 required
@@ -353,7 +348,7 @@ export function EditTrainingForm({
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Course Fees</label>
+              <label className="font-semibold text-dark">Course Fees *</label>
               <input
                 type="text"
                 required
@@ -364,7 +359,19 @@ export function EditTrainingForm({
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Priority Number (Order)</label>
+              <label className="font-semibold text-dark">Card Variant</label>
+              <select
+                value={variant}
+                onChange={(e) => setVariant(e.target.value)}
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs font-semibold"
+              >
+                <option value="primary">Primary (Blue/Teal Badge)</option>
+                <option value="secondary">Secondary (Green Badge)</option>
+                <option value="accent">Accent (Orange/Amber Badge)</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark">Display Order</label>
               <input
                 type="number"
                 value={order}
@@ -432,55 +439,7 @@ export function EditTrainingForm({
           </div>
         </div>
 
-        {/* 4. Quick Highlights Features section */}
-        <div className="flex flex-col gap-4 border-b border-muted pb-6">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
-            Highlights & Badges
-          </h3>
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              placeholder="Add key highlights (e.g., WHO-aligned curriculum)"
-              value={newFeature}
-              onChange={(e) => setNewFeature(e.target.value)}
-              className="flex-1 px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addFeature();
-                }
-              }}
-            />
-            <button
-              type="button"
-              onClick={addFeature}
-              className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl font-semibold flex items-center gap-1 cursor-pointer"
-            >
-              <HiPlus className="w-4 h-4" /> Add
-            </button>
-          </div>
-          {features.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-2 bg-light/10 p-4 rounded-xl border border-muted/50">
-              {features.map((feat, idx) => (
-                <span
-                  key={idx}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-full"
-                >
-                  {feat}
-                  <button
-                    type="button"
-                    onClick={() => removeFeature(idx)}
-                    className="text-primary hover:text-red-600 transition-colors"
-                  >
-                    <HiXMark className="w-3.5 h-3.5 shrink-0" />
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* 5. What You Will Learn / Course Content Sections */}
+        {/* 4. What You Will Learn / Course Content Sections */}
         <div className="flex flex-col gap-4 border-b border-muted pb-6">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-0.5">
@@ -569,7 +528,7 @@ export function EditTrainingForm({
           )}
         </div>
 
-        {/* 6. FAQ Builder section */}
+        {/* 5. FAQ Builder section */}
         <div className="flex flex-col gap-4 border-b border-muted pb-6">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
@@ -629,7 +588,7 @@ export function EditTrainingForm({
           )}
         </div>
 
-        {/* 7. Image uploads section */}
+        {/* 6. Image uploads section */}
         <div className="flex flex-col gap-4">
           <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
             Page Graphics Banner

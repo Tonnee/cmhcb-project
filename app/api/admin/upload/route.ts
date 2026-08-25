@@ -31,10 +31,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "File size exceeds 10MB limit." }, { status: 400 });
     }
 
-    // Validate type (must be image)
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ error: "Invalid file type. Only images are allowed." }, { status: 400 });
+    // Validate type and extension (must be image)
+    const fileType = (file.type || "").toLowerCase();
+    const fileNameLower = (file.name || "").toLowerCase();
+    const isImageMime = fileType.startsWith("image/") || [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+      "image/svg+xml",
+      "image/jfif",
+      "image/pjpeg",
+      "image/x-png",
+      "image/bmp",
+    ].includes(fileType);
+    const hasImageExt = /\.(jpg|jpeg|png|webp|gif|svg|jfif|bmp)$/i.test(fileNameLower);
+
+    if (!isImageMime && !hasImageExt) {
+      return NextResponse.json(
+        { error: "Invalid file type. Only image files (JPG, PNG, WebP, GIF, SVG) are allowed." },
+        { status: 400 }
+      );
     }
 
     // 3. Read file into a buffer
@@ -45,11 +63,18 @@ export async function POST(request: Request) {
     let fileExt = "webp";
     let contentType = "image/webp";
 
-    // SVGs are vector graphic files; upload directly without processing
-    if (file.type === "image/svg+xml") {
+    // SVGs are vector graphic files; upload directly without raster processing
+    const isSvg = fileType === "image/svg+xml" || fileNameLower.endsWith(".svg");
+    const isGif = fileType === "image/gif" || fileNameLower.endsWith(".gif");
+
+    if (isSvg) {
       outputBuffer = inputBuffer;
       fileExt = "svg";
       contentType = "image/svg+xml";
+    } else if (isGif) {
+      outputBuffer = inputBuffer;
+      fileExt = "gif";
+      contentType = "image/gif";
     } else {
       // 4. Process raster images with sharp
       let sharpInstance = sharp(inputBuffer);
@@ -59,8 +84,8 @@ export async function POST(request: Request) {
 
       // Read metadata to check dimensions
       const metadata = await sharpInstance.metadata();
-      const maxWidth = 1600;
-      const maxHeight = 1600;
+      const maxWidth = 1920;
+      const maxHeight = 1920;
 
       if ((metadata.width && metadata.width > maxWidth) || (metadata.height && metadata.height > maxHeight)) {
         sharpInstance = sharpInstance.resize({
@@ -72,7 +97,7 @@ export async function POST(request: Request) {
       }
 
       // Convert to WebP format and compress
-      outputBuffer = await sharpInstance.webp({ quality: 80 }).toBuffer();
+      outputBuffer = await sharpInstance.webp({ quality: 85 }).toBuffer();
     }
 
     // 5. Initialize Supabase Admin client with service role key

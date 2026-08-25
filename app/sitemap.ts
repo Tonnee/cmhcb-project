@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
+import prisma from "@/lib/prisma";
 import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 import { SERVICES } from "@/features/services/data/services";
 import { TRAININGS } from "@/features/training/data/trainings";
 import { BLOG_POSTS } from "@/features/blog/data/blogs";
 import { EVENTS_DATA } from "@/features/events/data/events";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://cmhcbd.com";
 
   // Static routes
@@ -26,6 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/terms",
     "/therapists",
     "/training",
+    "/join-training",
     "/workshops",
     "/legal/community-service",
   ].map((route) => ({
@@ -33,6 +35,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: route === "" ? 1.0 : 0.8,
+  }));
+
+  // Dynamic database fetch with safe fallback
+  let dbTrainings: { slug: string; updatedAt: Date }[] = [];
+  try {
+    dbTrainings = await prisma.training.findMany({
+      select: { slug: true, updatedAt: true },
+    });
+  } catch {
+    // fallback
+  }
+
+  const trainingRoutes = (dbTrainings.length > 0 ? dbTrainings : TRAININGS).map((tr) => ({
+    url: `${baseUrl}/training/${tr.slug}`,
+    lastModified: "updatedAt" in tr && tr.updatedAt ? new Date(tr.updatedAt) : new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
   }));
 
   // Dynamic routes
@@ -48,13 +67,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.7,
-  }));
-
-  const trainingRoutes = TRAININGS.map((tr) => ({
-    url: `${baseUrl}/training/${tr.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
   }));
 
   const blogRoutes = BLOG_POSTS.map((bp) => ({

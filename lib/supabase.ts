@@ -13,64 +13,80 @@ export const supabase = supabaseUrl && supabaseAnonKey
  */
 async function optimizeImageForUpload(file: File): Promise<File | Blob> {
   if (typeof window === "undefined") return file;
-  if (file.type === "image/svg+xml" || file.type === "image/gif") return file;
+
+  const fileType = (file.type || "").toLowerCase();
+  const fileName = (file.name || "").toLowerCase();
+
+  // SVGs and GIFs are preserved directly
+  if (
+    fileType === "image/svg+xml" ||
+    fileName.endsWith(".svg") ||
+    fileType === "image/gif" ||
+    fileName.endsWith(".gif")
+  ) {
+    return file;
+  }
   
   // If file is already small (under 750KB), send directly
   if (file.size < 750 * 1024) return file;
 
   return new Promise((resolve) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
+    try {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
 
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      const maxDim = 1920;
-      let { width, height } = img;
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const maxDim = 1920;
+        let { width, height } = img;
 
-      if (width > maxDim || height > maxDim) {
-        if (width > height) {
-          height = Math.round((height * maxDim) / width);
-          width = maxDim;
-        } else {
-          width = Math.round((width * maxDim) / height);
-          height = maxDim;
-        }
-      }
-
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-
-      if (!ctx) {
-        resolve(file);
-        return;
-      }
-
-      ctx.drawImage(img, 0, 0, width, height);
-      canvas.toBlob(
-        (blob) => {
-          if (blob && blob.size < file.size) {
-            const optimizedFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
-              type: "image/jpeg",
-              lastModified: Date.now(),
-            });
-            resolve(optimizedFile);
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
           } else {
-            resolve(file);
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
           }
-        },
-        "image/jpeg",
-        0.85
-      );
-    };
+        }
 
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (blob && blob.size < file.size) {
+              const optimizedFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+              });
+              resolve(optimizedFile);
+            } else {
+              resolve(file);
+            }
+          },
+          "image/jpeg",
+          0.85
+        );
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(file);
+      };
+
+      img.src = url;
+    } catch {
       resolve(file);
-    };
-
-    img.src = url;
+    }
   });
 }
 

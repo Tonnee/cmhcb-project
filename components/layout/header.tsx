@@ -245,10 +245,10 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
     async function load() {
       const res = await getActiveTrainingsListAction();
       if (res.success && res.data && res.data.length > 0) {
-        setTrainings(res.data.slice(0, 6));
+        setTrainings(res.data);
       } else {
         setTrainings(
-          TRAININGS.slice(0, 6).map((t) => ({
+          TRAININGS.map((t) => ({
             title: t.title,
             slug: t.slug,
             duration: t.duration,
@@ -313,18 +313,18 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
                 className="text-sm font-sans text-primary hover:text-primary-dark underline-offset-2 hover:underline transition-colors"
                 onClick={() => setOpen(false)}
               >
-                View all training →
+                View all training ({trainings.length}) →
               </Link>
             </div>
 
             {/* Training cards grid */}
             <ul
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-[60vh] overflow-y-auto pr-1"
               role="list"
             >
               {(trainings.length > 0
                 ? trainings
-                : TRAININGS.slice(0, 6).map((t) => ({
+                : TRAININGS.map((t) => ({
                     title: t.title,
                     slug: t.slug,
                     duration: t.duration,
