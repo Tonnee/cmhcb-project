@@ -1010,9 +1010,25 @@ export async function upsertTrainingAction(
     const admin = await getRequiredAdminSession();
     const validated = TrainingInputSchema.parse(rawData);
     
-    // Generate id if new
-    const id = validated.id || `trn-${validated.slug}`;
-    const existing = await prisma.training.findUnique({ where: { id } });
+    // Check for slug collisions
+    if (validated.id) {
+      const existingSlug = await prisma.training.findFirst({
+        where: {
+          slug: validated.slug,
+          NOT: { id: validated.id },
+        },
+      });
+      if (existingSlug) {
+        return { success: false, error: `A training program with slug "${validated.slug}" already exists.` };
+      }
+    } else {
+      const existingSlug = await prisma.training.findUnique({
+        where: { slug: validated.slug },
+      });
+      if (existingSlug) {
+        return { success: false, error: `A training program with slug "${validated.slug}" already exists.` };
+      }
+    }
 
     const dataPayload = {
       title: validated.title,
@@ -1033,29 +1049,39 @@ export async function upsertTrainingAction(
       lastUpdatedBy: admin.email,
     };
 
-    const training = await prisma.training.upsert({
-      where: { id },
-      update: dataPayload,
-      create: {
-        id,
-        ...dataPayload,
-      },
-    });
+    let training;
+    if (validated.id) {
+      training = await prisma.training.update({
+        where: { id: validated.id },
+        data: dataPayload,
+      });
+    } else {
+      const newId = `trn-${validated.slug}-${Date.now().toString(36)}`;
+      training = await prisma.training.create({
+        data: {
+          id: newId,
+          ...dataPayload,
+        },
+      });
+    }
 
     await logActivity(
       admin.id,
       admin.email,
       admin.name,
-      existing ? "UPDATE" : "CREATE",
+      validated.id ? "UPDATE" : "CREATE",
       "Training",
-      id,
+      training.id,
       validated.title,
-      existing ? `Updated training details for "${validated.title}"` : `Created training program "${validated.title}"`
+      validated.id ? `Updated training details for "${validated.title}"` : `Created training program "${validated.title}"`
     );
 
+    revalidatePath("/");
     revalidatePath("/training");
     revalidatePath(`/training/${validated.slug}`);
+    revalidatePath("/join-training");
     revalidatePath("/admin/trainings");
+    revalidatePath("/faqs");
 
     return { success: true, data: training };
   } catch (error: any) {

@@ -8,7 +8,7 @@ import { EditTrainingInfoBlockForm } from "./edit-training-info-block-form";
 import { deleteTrainingAction, deleteTrainingInfoBlockAction } from "@/app/(admin)/admin/actions";
 import { useRouter } from "next/navigation";
 
-interface TrainingDB {
+export interface TrainingDB {
   id: string;
   title: string;
   slug: string;
@@ -24,11 +24,12 @@ interface TrainingDB {
   variant: string;
   image?: string | null;
   bgImage?: string | null;
+  order: number;
   lastUpdatedBy?: string | null;
-  updatedAt: Date;
+  updatedAt: Date | string;
 }
 
-interface TrainingInfoBlockDB {
+export interface TrainingInfoBlockDB {
   id: string;
   heading: string;
   items: string; // JSON string of string[]
@@ -96,11 +97,22 @@ export default function TrainingsClientWrapper({
     setIsModalOpen(true);
   };
 
-  const handleSuccess = () => {
+  const handleSuccess = (savedTraining?: TrainingDB) => {
     setIsModalOpen(false);
     setSelectedTraining(null);
     setIsBlockModalOpen(false);
     setSelectedBlock(null);
+    if (savedTraining) {
+      setTrainings((prev) => {
+        const idx = prev.findIndex((t) => t.id === savedTraining.id);
+        if (idx >= 0) {
+          const updated = [...prev];
+          updated[idx] = savedTraining;
+          return updated;
+        }
+        return [...prev, savedTraining];
+      });
+    }
     router.refresh();
   };
 

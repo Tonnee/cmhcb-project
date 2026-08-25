@@ -5,6 +5,7 @@ import * as React from "react";
 import { HiPlus, HiTrash, HiXMark } from "react-icons/hi2";
 import { upsertTrainingAction } from "@/app/(admin)/admin/actions";
 import { uploadImageToSupabase } from "@/lib/supabase";
+import type { TrainingDB } from "./trainings-client-wrapper";
 
 interface Section {
   title: string;
@@ -16,31 +17,10 @@ interface FAQItem {
   answer: string;
 }
 
-interface TrainingDB {
-  id?: string;
-  title: string;
-  slug: string;
-  heroTitle: string;
-  heroDescription: string;
-  introTitle: string;
-  introDescription: string;
-  sections: string; // JSON string
-  faq: string; // JSON string
-  features: string; // JSON string
-  duration: string;
-  fees: string;
-  variant: string;
-  image?: string | null;
-  bgImage?: string | null;
-  order?: number;
-  lastUpdatedBy?: string | null;
-  updatedAt?: string | Date;
-}
-
 interface EditTrainingFormProps {
   training?: TrainingDB | null;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (savedTraining?: TrainingDB) => void;
 }
 
 export function EditTrainingForm({
@@ -266,7 +246,7 @@ export function EditTrainingForm({
 
       const res = await upsertTrainingAction(payload);
       if (res.success) {
-        onSuccess();
+        onSuccess(res.data);
       } else {
         setErrorMsg(res.error || "Failed to save training program details.");
       }
