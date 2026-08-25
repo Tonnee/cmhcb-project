@@ -137,8 +137,8 @@ export default function TrainingsClientWrapper({
 
   // Filter trainings based on search query
   const filteredTrainings = trainings.filter((t) =>
-    t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.slug.toLowerCase().includes(searchQuery.toLowerCase())
+    (t.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (t.slug || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -276,7 +276,7 @@ export default function TrainingsClientWrapper({
                           <div className="flex flex-col">
                             <span className="font-medium">{t.lastUpdatedBy || "System Seed"}</span>
                             <span className="text-[10px] text-light-ash/60">
-                              {new Date(t.updatedAt).toLocaleString()}
+                              {t.updatedAt ? new Date(t.updatedAt).toLocaleString() : ""}
                             </span>
                           </div>
                         </td>
