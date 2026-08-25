@@ -300,7 +300,7 @@ export default async function EventRegistrationPage({
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {event.gallery.slice(0, 4).map((img, idx) => (
-                  <div key={idx} className="relative aspect-square rounded-[24px] overflow-hidden group">
+                  <div key={idx} className="relative aspect-square rounded-3xl overflow-hidden group">
                     <Image
                       src={img}
                       alt={`Gallery image ${idx + 1}`}
@@ -351,7 +351,7 @@ export default async function EventRegistrationPage({
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
           {/* Left Side: Essential Event Details */}
           <div className="flex-1">
-            <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[510px] rounded-[32px] overflow-hidden bg-gray-100 mb-10 shadow-sm">
+            <div className="relative w-full h-62.5 sm:h-350 lg:h-127.5 rounded-4xl overflow-hidden bg-gray-100 mb-10 shadow-sm">
               <Image
                 src={event.image}
                 alt={event.title}
@@ -416,8 +416,8 @@ export default async function EventRegistrationPage({
           </div>
 
           {/* Right Side: Registration Now */}
-          <div className="w-full lg:w-[450px]">
-            <div className="bg-white rounded-[32px] p-8 lg:p-10 border border-gray-100 shadow-xl shadow-gray-200/50 sticky top-24">
+          <div className="w-full lg:w-112.5">
+            <div className="bg-white rounded-4xl p-8 lg:p-10 border border-gray-100 shadow-xl shadow-gray-200/50 sticky top-24">
               <div className="mb-8">
                 <h2 className="font-marcellus text-3xl text-dark mb-2">
                   Register Now

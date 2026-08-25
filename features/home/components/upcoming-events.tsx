@@ -27,7 +27,7 @@ function EventCard({ title, date, time, colorMode, description, isInfoCard = fal
   const textClass = colorMode === "accent" ? "text-dark" : "text-white";
 
   return (
-    <div className={`min-h-[280px] h-full rounded-3xl p-6 flex flex-col justify-between ${bgClass}`}>
+    <div className={`min-h-70 h-full rounded-3xl p-6 flex flex-col justify-between ${bgClass}`}>
       {isInfoCard ? (
         <>
           <h3 className={`font-marcellus text-3xl leading-8 ${textClass}`}>
@@ -179,7 +179,7 @@ export function UpcomingEvents({
     <section className="py-20">
       <div className="container">
         {/* Featured Event */}
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-[86px] mb-20">
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-86 mb-20">
           {/* Left side - Event details */}
           <div className="flex-1 flex flex-col justify-center">
             <SectionHeading
@@ -242,8 +242,8 @@ export function UpcomingEvents({
           </div>
 
           {/* Right side - Event image */}
-          <div className="shrink-0 w-full lg:w-[474px]">
-            <div className="relative w-full h-[350px] lg:h-full rounded-3xl overflow-hidden bg-gray-100">
+          <div className="shrink-0 w-full lg:w-474">
+            <div className="relative w-full h-350 lg:h-full rounded-3xl overflow-hidden bg-gray-100">
               <Image
                 src={featured.image || "/understanding-anxiety-workshop-event.png"}
                 alt={featured.title}
@@ -260,7 +260,7 @@ export function UpcomingEvents({
           {displayGrid.map((event) => {
             if (event.isImageCard) {
               return (
-                <div key={event.id} className="relative min-h-[280px] h-full rounded-3xl overflow-hidden bg-gray-100 border border-muted/30 hover:shadow-xs transition-shadow duration-300">
+                <div key={event.id} className="relative min-h-70 h-full rounded-3xl overflow-hidden bg-gray-100 border border-muted/30 hover:shadow-xs transition-shadow duration-300">
                   <Image
                     src={event.image}
                     alt="CMHCB Event"

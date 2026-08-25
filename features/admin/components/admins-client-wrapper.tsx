@@ -317,7 +317,7 @@ export default function AdminsClientWrapper({
                           </div>
                           <div className="flex flex-col min-w-0">
                             <span className="font-semibold text-dark truncate">
-                              {admin.name} {isSelf && <span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded-full ml-1.5 font-medium">You</span>}
+                              {admin.name} {isSelf && <span className="text-2xs text-primary bg-primary/10 px-2 py-0.5 rounded-full ml-1.5 font-medium">You</span>}
                             </span>
                             <span className="text-xs text-light-ash truncate">{admin.email}</span>
                           </div>
@@ -617,7 +617,7 @@ export default function AdminsClientWrapper({
                   <option value="super_admin">Super Admin (Can manage other admins & access controls)</option>
                 </select>
                 {selectedAdmin.id === currentAdmin.id && (
-                  <span className="text-[10px] text-light-ash/80 italic mt-0.5">
+                  <span className="text-2xs text-light-ash/80 italic mt-0.5">
                     You cannot change your own access role to avoid accidental lockouts.
                   </span>
                 )}
