@@ -87,9 +87,6 @@ export function EditTrainingForm({
     }
   });
 
-  // Dynamic builder inputs
-  const [newFeature, setNewFeature] = React.useState("");
-
   // Status states
   const [isUploading, setIsUploading] = React.useState(false);
   const [isUploadingBg, setIsUploadingBg] = React.useState(false);
@@ -108,18 +105,6 @@ export function EditTrainingForm({
       setSlug(generatedSlug);
       setHeroTitle(val);
     }
-  };
-
-  // Feature actions
-  const addFeature = () => {
-    if (newFeature.trim().length > 0) {
-      setFeatures([...features, newFeature.trim()]);
-      setNewFeature("");
-    }
-  };
-
-  const removeFeature = (idx: number) => {
-    setFeatures(features.filter((_, i) => i !== idx));
   };
 
   // Section actions
@@ -432,55 +417,7 @@ export function EditTrainingForm({
           </div>
         </div>
 
-        {/* 4. Quick Highlights Features section */}
-        <div className="flex flex-col gap-4 border-b border-muted pb-6">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
-            Highlights & Badges
-          </h3>
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              placeholder="Add key highlights (e.g., WHO-aligned curriculum)"
-              value={newFeature}
-              onChange={(e) => setNewFeature(e.target.value)}
-              className="flex-1 px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addFeature();
-                }
-              }}
-            />
-            <button
-              type="button"
-              onClick={addFeature}
-              className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl font-semibold flex items-center gap-1 cursor-pointer"
-            >
-              <HiPlus className="w-4 h-4" /> Add
-            </button>
-          </div>
-          {features.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-2 bg-light/10 p-4 rounded-xl border border-muted/50">
-              {features.map((feat, idx) => (
-                <span
-                  key={idx}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-full"
-                >
-                  {feat}
-                  <button
-                    type="button"
-                    onClick={() => removeFeature(idx)}
-                    className="text-primary hover:text-red-600 transition-colors"
-                  >
-                    <HiXMark className="w-3.5 h-3.5 shrink-0" />
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* 5. What You Will Learn / Course Content Sections */}
+        {/* 4. What You Will Learn / Course Content Sections */}
         <div className="flex flex-col gap-4 border-b border-muted pb-6">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-0.5">
@@ -569,7 +506,7 @@ export function EditTrainingForm({
           )}
         </div>
 
-        {/* 6. FAQ Builder section */}
+        {/* 5. FAQ Builder section */}
         <div className="flex flex-col gap-4 border-b border-muted pb-6">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
@@ -629,7 +566,7 @@ export function EditTrainingForm({
           )}
         </div>
 
-        {/* 7. Image uploads section */}
+        {/* 6. Image uploads section */}
         <div className="flex flex-col gap-4">
           <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
             Page Graphics Banner
