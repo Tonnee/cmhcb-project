@@ -21,6 +21,7 @@ interface WorkshopFormProps {
     author: string;
     tags: string; // JSON string
     isFeatured: boolean;
+    isLatest?: boolean;
     content: string | null;
     gallery: string | null; // JSON string
     lastUpdatedBy?: string | null;
@@ -40,6 +41,7 @@ const workshopSchema = z.object({
   author: z.string().min(1, "Instructor/Author is required"),
   tags: z.array(z.string()).default([]),
   isFeatured: z.boolean().default(false),
+  isLatest: z.boolean().default(false),
   content: z.string().optional(),
   gallery: z.array(z.string()).default([]),
 });
@@ -66,6 +68,7 @@ export default function EditWorkshopForm({
     return Array.isArray(parsed) ? parsed.join(", ") : "";
   });
   const [isFeatured, setIsFeatured] = React.useState(workshop?.isFeatured || false);
+  const [isLatest, setIsLatest] = React.useState(workshop?.isLatest || false);
   const [content, setContent] = React.useState(workshop?.content || "");
 
   // Status states
@@ -149,6 +152,7 @@ export default function EditWorkshopForm({
         author,
         tags,
         isFeatured,
+        isLatest,
         content: content || undefined,
         gallery: workshop ? safeJsonParse<string[]>(workshop.gallery, []) : [],
       };
@@ -320,16 +324,32 @@ export default function EditWorkshopForm({
           {isUploading && <span className="text-xs text-primary font-medium animate-pulse">Uploading image to Supabase...</span>}
         </div>
 
-        {/* Featured Toggle */}
-        <label className="flex items-center gap-2 cursor-pointer w-fit text-light-ash">
-          <input
-            type="checkbox"
-            checked={isFeatured}
-            onChange={(e) => setIsFeatured(e.target.checked)}
-            className="rounded border-muted text-primary focus:ring-primary w-4 h-4"
-          />
-          <span className="font-semibold text-dark">Feature this event on the landing page hero</span>
-        </label>
+        {/* Featured / Display Toggles */}
+        <div className="flex flex-col sm:flex-row gap-4 p-4 bg-light/10 border border-muted/50 rounded-2xl">
+          <label className="flex items-center gap-2 cursor-pointer w-fit text-light-ash">
+            <input
+              type="checkbox"
+              checked={isFeatured}
+              onChange={(e) => setIsFeatured(e.target.checked)}
+              className="rounded border-muted text-primary focus:ring-primary w-4 h-4 cursor-pointer"
+            />
+            <span className="font-semibold text-dark text-xs sm:text-sm">
+              Feature this event on the landing page as upcoming event
+            </span>
+          </label>
+
+          <label className="flex items-center gap-2 cursor-pointer w-fit text-light-ash">
+            <input
+              type="checkbox"
+              checked={isLatest}
+              onChange={(e) => setIsLatest(e.target.checked)}
+              className="rounded border-muted text-primary focus:ring-primary w-4 h-4 cursor-pointer"
+            />
+            <span className="font-semibold text-dark text-xs sm:text-sm">
+              Mark this event as latest event in workshops page
+            </span>
+          </label>
+        </div>
 
         {/* Content text area */}
         <div className="flex flex-col gap-1.5">

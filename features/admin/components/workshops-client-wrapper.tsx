@@ -19,6 +19,7 @@ interface WorkshopDB {
   author: string;
   tags: string; // JSON string
   isFeatured: boolean;
+  isLatest?: boolean;
   content: string | null;
   gallery: string | null; // JSON string
 }
@@ -119,7 +120,19 @@ export default function WorkshopsClientWrapper({
                       </div>
                       <div className="flex flex-col truncate">
                         <span className="font-semibold text-dark truncate">{workshop.title}</span>
-                        <span className="text-[10px] text-light-ash">/{workshop.slug}</span>
+                        <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                          <span className="text-[10px] text-light-ash">/{workshop.slug}</span>
+                          {workshop.isFeatured && (
+                            <span className="bg-amber-100 text-amber-800 text-[9px] font-semibold px-1.5 py-0.2 rounded">
+                              Landing Upcoming
+                            </span>
+                          )}
+                          {workshop.isLatest && (
+                            <span className="bg-primary/10 text-primary-dark text-[9px] font-semibold px-1.5 py-0.2 rounded">
+                              Workshops Latest
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </td>

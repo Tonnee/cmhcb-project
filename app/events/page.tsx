@@ -58,6 +58,7 @@ export default async function EventsPage(): Promise<React.JSX.Element> {
       }
     })(),
     isFeatured: e.isFeatured,
+    isLatest: (e as any).isLatest || false,
     content: e.content || "",
     gallery: (() => {
       try {
@@ -84,8 +85,10 @@ export default async function EventsPage(): Promise<React.JSX.Element> {
     return isAUpcoming ? -1 : 1; // Upcoming always before past
   });
 
-  const featuredEvent = sortedEvents[0];
-  const remainingEvents = sortedEvents.slice(1);
+  // Priority: 1. Event marked with isLatest: true, 2. Top sorted event
+  const explicitlyLatest = sortedEvents.find((e) => (e as any).isLatest);
+  const featuredEvent = explicitlyLatest || sortedEvents[0];
+  const remainingEvents = sortedEvents.filter((e) => e.id !== featuredEvent?.id);
 
   return (
     <main className="pt-12 pb-24">

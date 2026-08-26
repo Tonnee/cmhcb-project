@@ -38,6 +38,7 @@ model Workshop {
   author      String
   tags        String   // JSON string of string[]
   isFeatured  Boolean  @default(false)
+  isLatest    Boolean  @default(false)
   content     String?
   gallery     String?  // JSON string of string[]
   createdAt   DateTime @default(now())

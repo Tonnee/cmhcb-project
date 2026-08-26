@@ -36,13 +36,11 @@ export default async function Page(): Promise<React.JSX.Element> {
       take: 10,
     }),
     prisma.workshop.findMany({
-      where: {
-        date: {
-          gte: now, // Future workshops only
-        },
-      },
-      orderBy: { date: "asc" },
-      take: 5,
+      orderBy: [
+        { isFeatured: "desc" },
+        { date: "asc" },
+      ],
+      take: 6,
     }),
     prisma.service.findMany({
       where: { isFeatured: true },

@@ -57,6 +57,7 @@ const WorkshopInputSchema = z.object({
   author: z.string().min(1, "Instructor/Author is required"),
   tags: z.array(z.string()).default([]),
   isFeatured: z.boolean().default(false),
+  isLatest: z.boolean().default(false),
   content: z.string().optional(),
   gallery: z.array(z.string()).default([]),
 });
@@ -357,6 +358,7 @@ export async function upsertWorkshopAction(
       author: validated.author,
       tags: JSON.stringify(validated.tags),
       isFeatured: validated.isFeatured,
+      isLatest: validated.isLatest,
       content: validated.content || "",
       gallery: JSON.stringify(validated.gallery),
       lastUpdatedBy: admin.email,
