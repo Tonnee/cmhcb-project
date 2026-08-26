@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function AdminSupportPage(): Promise<React.JSX.Element> {
   const dbContent = await prisma.supportPageContent.findFirst();

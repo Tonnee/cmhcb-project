@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 
 // Force dynamic rendering since we are doing dynamic database reads
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function AdminTherapistsPage(): Promise<React.JSX.Element> {
   // Fetch list of therapists from Prisma

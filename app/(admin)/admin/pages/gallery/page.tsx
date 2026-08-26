@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function AdminGalleryPage(): Promise<React.JSX.Element> {
   const items = await prisma.galleryItem.findMany({
