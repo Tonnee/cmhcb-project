@@ -1,13 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 
-// Fallback to Supabase PostgreSQL if DATABASE_URL is missing or is a SQLite path
+// Use transaction mode pooler (port 6543) for serverless/Vercel compatibility.
+// Session mode (port 5432) hits max connection limits under parallel Next.js build queries.
 function getDatabaseUrl(): string {
   const envUrl = process.env.DATABASE_URL;
   if (envUrl && !envUrl.startsWith("file:")) {
     return envUrl;
   }
-  // Fallback: use Supabase PostgreSQL directly if env var is missing/invalid
-  return "postgresql://postgres.qeaszomzltstfhikrais:CmhcbProjectDb2026@aws-1-ap-south-1.pooler.supabase.com:5432/postgres";
+  // Fallback: Supabase transaction mode pooler (port 6543 + pgbouncer=true)
+  return "postgresql://postgres.qeaszomzltstfhikrais:CmhcbProjectDb2026@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1";
 }
 
 const globalForPrisma = globalThis as unknown as {
