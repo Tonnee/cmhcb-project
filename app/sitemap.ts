@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
+import prisma from "@/lib/prisma";
 import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 import { SERVICES } from "@/features/services/data/services";
 import { TRAININGS } from "@/features/training/data/trainings";
 import { BLOG_POSTS } from "@/features/blog/data/blogs";
 import { EVENTS_DATA } from "@/features/events/data/events";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://cmhcbd.com";
 
   // Static routes
@@ -35,31 +36,51 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1.0 : 0.8,
   }));
 
-  // Dynamic routes
-  const therapistRoutes = THERAPISTS_DATA.map((t) => ({
+  // Fetch DB items with static fallbacks
+  let dbTherapists: any[] = [];
+  let dbServices: any[] = [];
+  let dbTrainings: any[] = [];
+  let dbBlogs: any[] = [];
+
+  try {
+    const [t, s, tr, b] = await Promise.all([
+      prisma.therapist.findMany({ select: { id: true, updatedAt: true } }),
+      prisma.service.findMany({ select: { slug: true, updatedAt: true } }),
+      prisma.training.findMany({ select: { slug: true, updatedAt: true } }),
+      prisma.blogPost.findMany({ select: { slug: true, updatedAt: true } }),
+    ]);
+    dbTherapists = t;
+    dbServices = s;
+    dbTrainings = tr;
+    dbBlogs = b;
+  } catch (err) {
+    console.error("Error fetching sitemap entities:", err);
+  }
+
+  const therapistRoutes = (dbTherapists.length > 0 ? dbTherapists.map((t) => ({ id: t.id, date: t.updatedAt })) : THERAPISTS_DATA.map((t) => ({ id: t.id, date: new Date() }))).map((t) => ({
     url: `${baseUrl}/therapists/${t.id}`,
-    lastModified: new Date(),
+    lastModified: new Date(t.date || new Date()),
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
-  const serviceRoutes = SERVICES.map((s) => ({
+  const serviceRoutes = (dbServices.length > 0 ? dbServices.map((s) => ({ slug: s.slug, date: s.updatedAt })) : SERVICES.map((s) => ({ slug: s.slug, date: new Date() }))).map((s) => ({
     url: `${baseUrl}/services/${s.slug}`,
-    lastModified: new Date(),
+    lastModified: new Date(s.date || new Date()),
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
 
-  const trainingRoutes = TRAININGS.map((tr) => ({
+  const trainingRoutes = (dbTrainings.length > 0 ? dbTrainings.map((tr) => ({ slug: tr.slug, date: tr.updatedAt })) : TRAININGS.map((tr) => ({ slug: tr.slug, date: new Date() }))).map((tr) => ({
     url: `${baseUrl}/training/${tr.slug}`,
-    lastModified: new Date(),
+    lastModified: new Date(tr.date || new Date()),
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
 
-  const blogRoutes = BLOG_POSTS.map((bp) => ({
+  const blogRoutes = (dbBlogs.length > 0 ? dbBlogs.map((bp) => ({ slug: bp.slug, date: bp.updatedAt })) : BLOG_POSTS.map((bp) => ({ slug: bp.slug, date: new Date() }))).map((bp) => ({
     url: `${baseUrl}/blog/${bp.slug}`,
-    lastModified: new Date(),
+    lastModified: new Date(bp.date || new Date()),
     changeFrequency: "weekly" as const,
     priority: 0.6,
   }));

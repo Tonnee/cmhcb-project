@@ -5,27 +5,62 @@ import { TrainingInfoSection } from "@/features/training/components/training-inf
 import prisma from "@/lib/prisma";
 import { type FeatureCardVariant } from "@/components/shared/feature-card";
 
+import { TRAININGS } from "@/features/training/data/trainings";
+
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function TrainingPage(): Promise<React.JSX.Element> {
   // Query all training programs and dynamic info blocks from the database
-  const [trainings, infoBlocks] = await Promise.all([
-    prisma.training.findMany({
-      orderBy: { order: "asc" },
-    }),
-    prisma.trainingInfoBlock.findMany({
-      orderBy: { order: "asc" },
-    }),
-  ]);
+  let trainings: any[] = [];
+  let infoBlocks: any[] = [];
 
-  const mappedTrainings = trainings.map((t) => ({
-    slug: t.slug,
-    title: t.title,
-    heroDescription: t.heroDescription || "",
-    duration: t.duration,
-    fees: t.fees,
-    variant: t.variant as FeatureCardVariant,
-  }));
+  try {
+    const [dbTrainings, dbInfoBlocks] = await Promise.all([
+      prisma.training.findMany({
+        orderBy: { order: "asc" },
+      }),
+      prisma.trainingInfoBlock.findMany({
+        orderBy: { order: "asc" },
+      }),
+    ]);
+    trainings = dbTrainings;
+    infoBlocks = dbInfoBlocks;
+  } catch (error) {
+    console.error("Failed to fetch trainings from database:", error);
+  }
+
+  const mappedTrainings = trainings.length > 0
+    ? trainings.map((t) => {
+        let parsedFeatures: string[] = [];
+        try {
+          if (t.features) {
+            const parsed = typeof t.features === "string" ? JSON.parse(t.features) : t.features;
+            if (Array.isArray(parsed)) {
+              parsedFeatures = parsed;
+            }
+          }
+        } catch {}
+
+        return {
+          slug: t.slug,
+          title: t.title,
+          heroDescription: t.heroDescription || "",
+          features: parsedFeatures,
+          duration: t.duration,
+          fees: t.fees,
+          variant: (t.variant as FeatureCardVariant) || "primary",
+        };
+      })
+    : TRAININGS.map((t) => ({
+        slug: t.slug,
+        title: t.title,
+        heroDescription: t.heroDescription || "",
+        features: t.features || [],
+        duration: t.duration,
+        fees: t.fees,
+        variant: t.variant,
+      }));
 
   return (
     <main>

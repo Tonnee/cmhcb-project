@@ -37,7 +37,7 @@ export function EditTrainingForm({
   const [introDescription, setIntroDescription] = React.useState(training?.introDescription || "");
   const [duration, setDuration] = React.useState(training?.duration || "");
   const [fees, setFees] = React.useState(training?.fees || "");
-  const [variant] = React.useState(training?.variant || "primary");
+  const [variant, setVariant] = React.useState<string>(training?.variant || "primary");
   const [imageUrl, setImageUrl] = React.useState(training?.image || "");
   const [bgImageUrl, setBgImageUrl] = React.useState(training?.bgImage || "");
   const [order, setOrder] = React.useState(training?.order ?? 0);
@@ -85,6 +85,21 @@ export function EditTrainingForm({
       setSlug(generatedSlug);
       setHeroTitle(val);
     }
+  };
+
+  // Feature bullets actions (displayed on training cards)
+  const addFeature = () => {
+    setFeatures([...features, ""]);
+  };
+
+  const updateFeature = (index: number, val: string) => {
+    const updated = [...features];
+    updated[index] = val;
+    setFeatures(updated);
+  };
+
+  const removeFeature = (index: number) => {
+    setFeatures(features.filter((_, i) => i !== index));
   };
 
   // Section actions
@@ -293,19 +308,38 @@ export function EditTrainingForm({
           <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
             Basic Details
           </h3>
-          <div className="flex flex-col gap-1.5">
-            <label className="font-semibold text-dark">Program Title</label>
-            <input
-              type="text"
-              required
-              value={title}
-              onChange={handleTitleChange}
-              placeholder="e.g. Psychological First Aid"
-              className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark">Program Title</label>
+              <input
+                type="text"
+                required
+                value={title}
+                onChange={handleTitleChange}
+                placeholder="e.g. Psychological First Aid"
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark">URL Slug (Path)</label>
+              <div className="flex items-center">
+                <span className="bg-light-ash/10 px-3 py-2 border border-r-0 border-muted rounded-l-xl text-xs font-mono text-light-ash shrink-0">
+                  /training/
+                </span>
+                <input
+                  type="text"
+                  required
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "-"))}
+                  placeholder="e.g. psychological-first-aid"
+                  className="w-full px-3.5 py-2 border border-muted rounded-r-xl bg-page-bg/50 focus:outline-none focus:border-primary font-mono text-xs"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="font-semibold text-dark">Session Duration</label>
               <input
@@ -329,7 +363,19 @@ export function EditTrainingForm({
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Priority Number (Order)</label>
+              <label className="font-semibold text-dark">Card Color Theme</label>
+              <select
+                value={variant}
+                onChange={(e) => setVariant(e.target.value)}
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm cursor-pointer"
+              >
+                <option value="primary">Primary (Standard White)</option>
+                <option value="accent">Accent (Highlighted Green)</option>
+                <option value="secondary">Secondary (Muted)</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark">Display Order</label>
               <input
                 type="number"
                 value={order}
@@ -338,6 +384,53 @@ export function EditTrainingForm({
                 className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
               />
             </div>
+          </div>
+
+          {/* Card Features / Key Highlights Bullets */}
+          <div className="flex flex-col gap-3 pt-2 bg-light/10 p-4 rounded-2xl border border-muted/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="font-semibold text-dark text-xs uppercase tracking-wide">
+                  Card Highlights / Bullet Points (Shown on /training Card)
+                </label>
+                <p className="text-[11px] text-light-ash">
+                  Key summary points shown directly on the training listing card.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={addFeature}
+                className="text-primary hover:text-primary-dark font-semibold text-xs flex items-center gap-1 cursor-pointer"
+              >
+                <HiPlus className="w-3.5 h-3.5" /> Add Highlight
+              </button>
+            </div>
+            {features.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                {features.map((feat, fIdx) => (
+                  <div key={fIdx} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={feat}
+                      onChange={(e) => updateFeature(fIdx, e.target.value)}
+                      placeholder="e.g. WHO-aligned curriculum / Crisis support skills / Certificate awarded"
+                      className="flex-1 px-3 py-1.5 border border-muted bg-white focus:outline-none focus:border-primary rounded-xl text-xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeFeature(fIdx)}
+                      className="p-1 text-light-ash hover:text-red-600 rounded-lg cursor-pointer"
+                    >
+                      <HiTrash className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-xs text-light-ash italic">
+                No card bullet highlights added yet. Click &ldquo;Add Highlight&rdquo; to add bullet points to the card.
+              </div>
+            )}
           </div>
         </div>
 

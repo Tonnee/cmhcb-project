@@ -7,6 +7,7 @@ import { Faq } from "@/components/shared/faq";
 import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import { JsonLd } from "@/components/shared/json-ld";
+import { TRAININGS } from "@/features/training/data/trainings";
 
 const TRAINING_SLUG_IMAGE_MAP: Record<string, string> = {
   "psychological-first-aid": "/pages-hero-background/psychological-first-aid.png",
@@ -28,12 +29,19 @@ interface TrainingDetailPageProps {
 }
 
 export const dynamic = "force-dynamic";
+export const dynamicParams = true;
+export const revalidate = 0;
 
 export async function generateStaticParams() {
-  const trainings = await prisma.training.findMany({
-    select: { slug: true }
-  });
-  return trainings.map((t) => ({ slug: t.slug }));
+  try {
+    const trainings = await prisma.training.findMany({
+      select: { slug: true },
+    });
+    if (trainings.length > 0) {
+      return trainings.map((t) => ({ slug: t.slug }));
+    }
+  } catch {}
+  return TRAININGS.map((t) => ({ slug: t.slug }));
 }
 
 export async function generateMetadata({
@@ -41,9 +49,19 @@ export async function generateMetadata({
 }: TrainingDetailPageProps): Promise<Metadata> {
   try {
     const { slug } = await params;
-    const training = await prisma.training.findUnique({
-      where: { slug },
-    });
+    const decodedSlug = decodeURIComponent(slug);
+    const dbTraining = await prisma.training.findUnique({
+      where: { slug: decodedSlug },
+    }).catch(() => null);
+
+    const staticTraining = TRAININGS.find((t) => t.slug === decodedSlug);
+    const training = dbTraining || (staticTraining ? {
+      slug: staticTraining.slug,
+      title: staticTraining.title,
+      heroDescription: staticTraining.heroDescription,
+      bgImage: null,
+    } : null);
+
     if (!training) return {};
 
     const url = `https://cmhcbd.com/training/${training.slug}`;
@@ -89,76 +107,133 @@ export default async function TrainingDetailPage({
   params,
 }: TrainingDetailPageProps): Promise<React.JSX.Element> {
   const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
 
-  // Retrieve training program details from database
-  const training = await prisma.training.findUnique({
-    where: { slug },
-  });
+  // Retrieve training program details from database with static fallback
+  const dbTraining = await prisma.training.findUnique({
+    where: { slug: decodedSlug },
+  }).catch(() => null);
 
-  if (!training) {
+  const staticTraining = TRAININGS.find((t) => t.slug === decodedSlug);
+
+  if (!dbTraining && !staticTraining) {
     notFound();
   }
 
   // Retrieve and filter dynamic trainers (therapists specializing as trainers)
-  const dbTherapists = await prisma.therapist.findMany({
-    orderBy: { name: "asc" },
-  });
-
-  const trainingTrainers = dbTherapists.map((t) => {
-    let parsedEducation: string[] = [];
-    let parsedTraining: string[] = [];
-    let parsedExpertise: string[] = [];
-    let parsedExperience: string[] = [];
-    let parsedServices: string[] = [];
-    let parsedActivities: string[] = [];
-    let parsedFees: any = null;
-
-    try { parsedEducation = JSON.parse(t.education || "[]"); } catch { }
-    try { parsedTraining = JSON.parse(t.training || "[]"); } catch { }
-    try { parsedExpertise = JSON.parse(t.expertise || "[]"); } catch { }
-    try { parsedExperience = JSON.parse(t.experience || "[]"); } catch { }
-    try { parsedServices = JSON.parse(t.services || "[]"); } catch { }
-    try { parsedActivities = JSON.parse(t.activities || "[]"); } catch { }
-    try { parsedFees = JSON.parse(t.fees || "null"); } catch { }
-
-    return {
-      id: t.id,
-      image: t.image,
-      name: t.name,
-      role: t.role,
-      bio: t.bio,
-      education: parsedEducation,
-      training: parsedTraining,
-      expertise: parsedExpertise,
-      experience: parsedExperience,
-      fees: parsedFees,
-      services: parsedServices,
-      activities: parsedActivities,
-    };
-  }).filter((therapist) => {
-    return therapist.role.toLowerCase().includes("trainer");
-  });
-
-  // Parse complex JSON columns
-  let parsedSections = [];
-  let parsedFaq: any[] = [];
+  let trainingTrainers: any[] = [];
   try {
-    parsedSections = JSON.parse(training.sections);
+    const dbTherapists = await prisma.therapist.findMany({
+      orderBy: { name: "asc" },
+    });
+
+    trainingTrainers = dbTherapists.map((t) => {
+      let parsedEducation: string[] = [];
+      let parsedTraining: string[] = [];
+      let parsedExpertise: string[] = [];
+      let parsedExperience: string[] = [];
+      let parsedServices: string[] = [];
+      let parsedActivities: string[] = [];
+      let parsedFees: any = null;
+
+      try { parsedEducation = JSON.parse(t.education || "[]"); } catch { }
+      try { parsedTraining = JSON.parse(t.training || "[]"); } catch { }
+      try { parsedExpertise = JSON.parse(t.expertise || "[]"); } catch { }
+      try { parsedExperience = JSON.parse(t.experience || "[]"); } catch { }
+      try { parsedServices = JSON.parse(t.services || "[]"); } catch { }
+      try { parsedActivities = JSON.parse(t.activities || "[]"); } catch { }
+      try { parsedFees = JSON.parse(t.fees || "null"); } catch { }
+
+      return {
+        id: t.id,
+        image: t.image,
+        name: t.name,
+        role: t.role,
+        bio: t.bio,
+        education: parsedEducation,
+        training: parsedTraining,
+        expertise: parsedExpertise,
+        experience: parsedExperience,
+        fees: parsedFees,
+        services: parsedServices,
+        activities: parsedActivities,
+      };
+    }).filter((therapist) => {
+      return therapist.role.toLowerCase().includes("trainer");
+    });
   } catch (err) {
-    console.error("Error parsing training sections:", err);
+    console.error("Error querying trainers:", err);
   }
-  try {
-    parsedFaq = JSON.parse(training.faq);
-  } catch (err) {
-    console.error("Error parsing training faq:", err);
+
+  // Unified training properties and safe section/faq parsing
+  let title = "";
+  let heroTitle = "";
+  let heroDescription = "";
+  let introTitle = "";
+  let introDescription = "";
+  let duration = "";
+  let fees = "";
+  let bgImage: string | null = null;
+  let parsedSections: { title: string; items: string[] }[] = [];
+  let parsedFaq: { question: string; answer: string }[] = [];
+
+  if (dbTraining) {
+    title = dbTraining.title;
+    heroTitle = dbTraining.heroTitle;
+    heroDescription = dbTraining.heroDescription;
+    introTitle = dbTraining.introTitle;
+    introDescription = dbTraining.introDescription;
+    duration = dbTraining.duration;
+    fees = dbTraining.fees;
+    bgImage = dbTraining.bgImage;
+
+    try {
+      const s = typeof dbTraining.sections === "string" ? JSON.parse(dbTraining.sections) : dbTraining.sections;
+      if (Array.isArray(s)) {
+        parsedSections = s.map((sec: any) => ({
+          title: sec?.title || "Overview",
+          items: Array.isArray(sec?.items) ? sec.items : [],
+        }));
+      }
+    } catch (err) {
+      console.error("Error parsing training sections:", err);
+    }
+
+    try {
+      const f = typeof dbTraining.faq === "string" ? JSON.parse(dbTraining.faq) : dbTraining.faq;
+      if (Array.isArray(f)) {
+        parsedFaq = f.map((item: any) => ({
+          question: item?.question || "",
+          answer: item?.answer || "",
+        }));
+      }
+    } catch (err) {
+      console.error("Error parsing training faq:", err);
+    }
+  } else if (staticTraining) {
+    title = staticTraining.title;
+    heroTitle = staticTraining.heroTitle;
+    heroDescription = staticTraining.heroDescription;
+    introTitle = staticTraining.description.introduction.title;
+    introDescription = staticTraining.description.introduction.description;
+    duration = staticTraining.duration;
+    fees = staticTraining.fees;
+    parsedSections = staticTraining.description.sections.map((sec) => ({
+      title: sec.title,
+      items: Array.isArray(sec.items) ? sec.items : [],
+    }));
+    parsedFaq = staticTraining.faq.map((item) => ({
+      question: item.question,
+      answer: item.answer,
+    }));
   }
 
   const courseJsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",
-    "@id": `https://cmhcbd.com/training/${training.slug}#course`,
-    name: training.title,
-    description: training.heroDescription,
+    "@id": `https://cmhcbd.com/training/${decodedSlug}#course`,
+    name: title,
+    description: heroDescription,
     provider: {
       "@id": "https://cmhcbd.com/#organization",
     },
@@ -183,8 +258,8 @@ export default async function TrainingDetailPage({
       {
         "@type": "ListItem",
         position: 3,
-        name: training.title,
-        item: `https://cmhcbd.com/training/${training.slug}`,
+        name: title,
+        item: `https://cmhcbd.com/training/${decodedSlug}`,
       },
     ],
   };
@@ -214,36 +289,40 @@ export default async function TrainingDetailPage({
           { label: "Home", href: "/" },
           { label: "Training", href: "/training" },
         ]}
-        currentPage={training.heroTitle}
-        title={training.heroTitle}
-        description={training.heroDescription}
-        imageSrc={training.bgImage || TRAINING_SLUG_IMAGE_MAP[training.slug] || "/pages-hero-background/training-default.png"}
-        imageAlt="Professional training at CMHCB"
+        currentPage={heroTitle}
+        title={heroTitle}
+        description={heroDescription}
+        imageSrc={bgImage || TRAINING_SLUG_IMAGE_MAP[decodedSlug] || "/pages-hero-background/training-default.png"}
+        imageAlt={`Professional training: ${title} at CMHCB`}
         ctaLabel="Register Interest"
-        ctaHref={`/join-training?training=${training.slug}`}
-        duration={training.duration ?? undefined}
-        fees={training.fees ?? undefined}
+        ctaHref={`/join-training?training=${decodedSlug}`}
+        duration={duration || undefined}
+        fees={fees || undefined}
       />
       <ServiceDescription
         introduction={{
-          title: training.introTitle,
-          description: training.introDescription,
+          title: introTitle,
+          description: introDescription,
         }}
         sections={parsedSections}
         sessionDetails={{
-          duration: training.duration,
-          fees: training.fees,
+          duration: duration,
+          fees: fees,
         }}
       />
-      <ServiceProfessionals
-        therapists={trainingTrainers}
-        heading="Our Top Trainers"
-        description="All training programmes are facilitated by qualified professionals with both clinical expertise and extensive training delivery experience."
-      />
-      <Faq
-        heading={`Frequently Asked Questions – ${training.title}`}
-        items={parsedFaq}
-      />
+      {trainingTrainers.length > 0 && (
+        <ServiceProfessionals
+          therapists={trainingTrainers}
+          heading="Our Top Trainers"
+          description="All training programmes are facilitated by qualified professionals with both clinical expertise and extensive training delivery experience."
+        />
+      )}
+      {parsedFaq.length > 0 && (
+        <Faq
+          heading={`Frequently Asked Questions – ${title}`}
+          items={parsedFaq}
+        />
+      )}
     </main>
   );
 }

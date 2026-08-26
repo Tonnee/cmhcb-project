@@ -6,7 +6,10 @@ import { TrainingRegistrationForm } from "@/features/training/components/trainin
 import prisma from "@/lib/prisma";
 import { HiUserGroup, HiBookOpen, HiSparkles } from "react-icons/hi2";
 
+import { TRAININGS } from "@/features/training/data/trainings";
+
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Register for Training | CMHCB",
@@ -23,13 +26,25 @@ export default async function JoinTrainingPage({
   const resolvedParams = await searchParams;
   const initialTrainingSlug = resolvedParams.training;
 
-  const trainings = await prisma.training.findMany({
-    orderBy: { order: "asc" },
-    select: {
-      slug: true,
-      title: true,
-    },
-  });
+  let trainings: { slug: string; title: string }[] = [];
+  try {
+    const dbTrainings = await prisma.training.findMany({
+      orderBy: { order: "asc" },
+      select: {
+        slug: true,
+        title: true,
+      },
+    });
+    if (dbTrainings.length > 0) {
+      trainings = dbTrainings;
+    }
+  } catch (error) {
+    console.error("Error fetching trainings in join-training page:", error);
+  }
+
+  if (trainings.length === 0) {
+    trainings = TRAININGS.map((t) => ({ slug: t.slug, title: t.title }));
+  }
 
   return (
     <main className="flex-1 bg-page-bg py-16 lg:py-24">
