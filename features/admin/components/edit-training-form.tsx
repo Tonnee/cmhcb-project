@@ -20,7 +20,7 @@ interface FAQItem {
 interface EditTrainingFormProps {
   training?: TrainingDB | null;
   onClose: () => void;
-  onSuccess: (savedTraining?: TrainingDB) => void;
+  onSuccess: () => void;
 }
 
 export function EditTrainingForm({
@@ -197,8 +197,8 @@ export function EditTrainingForm({
 
     const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 
-    if (!title || !finalSlug || !heroTitle || !heroDescription || !introTitle || !introDescription || !duration || !fees) {
-      setErrorMsg("All core description fields, pricing, and duration are required.");
+    if (!title || !finalSlug) {
+      setErrorMsg("Program title and URL slug are required.");
       return;
     }
 
@@ -214,7 +214,7 @@ export function EditTrainingForm({
           setImageUrl(finalCardUrl);
           setCardPreviewUrl(finalCardUrl);
         } catch (uploadErr) {
-          setErrorMsg("Failed to upload featured card image.");
+          setErrorMsg((uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) || "Failed to upload featured card image.");
           setIsSaving(false);
           setIsUploading(false);
           return;
@@ -231,7 +231,7 @@ export function EditTrainingForm({
           setBgImageUrl(finalBgUrl);
           setBgPreviewUrl(finalBgUrl);
         } catch (uploadErr) {
-          setErrorMsg("Failed to upload hero background image.");
+          setErrorMsg((uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) || "Failed to upload hero background image.");
           setIsSaving(false);
           setIsUploadingBg(false);
           return;
@@ -244,16 +244,16 @@ export function EditTrainingForm({
         id: training?.id,
         title,
         slug: finalSlug,
-        heroTitle,
-        heroDescription,
-        introTitle,
-        introDescription,
-        sections,
-        faq,
-        features,
-        duration,
-        fees,
-        variant,
+        heroTitle: heroTitle || title,
+        heroDescription: heroDescription || "",
+        introTitle: introTitle || `What Is ${title}?`,
+        introDescription: introDescription || heroDescription || "",
+        sections: sections.length > 0 ? sections : [],
+        faq: faq.length > 0 ? faq : [],
+        features: features.filter(f => f.trim().length > 0),
+        duration: duration || "",
+        fees: fees || "",
+        variant: variant || "primary",
         image: finalCardUrl || null,
         bgImage: finalBgUrl || null,
         order: Number(order) || 0,
@@ -261,7 +261,8 @@ export function EditTrainingForm({
 
       const res = await upsertTrainingAction(payload);
       if (res.success) {
-        onSuccess(res.data);
+        onSuccess();
+        onClose();
       } else {
         setErrorMsg(res.error || "Failed to save training program details.");
       }

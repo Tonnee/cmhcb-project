@@ -1,7 +1,6 @@
 import * as React from "react";
 import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
-import { getRequiredAdminSession } from "../admin-management";
 import TrainingsClientWrapper from "@/features/admin/components/trainings-client-wrapper";
 
 export const metadata: Metadata = {
@@ -13,9 +12,6 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminTrainingsPage(): Promise<React.JSX.Element> {
-  // Ensure user is authenticated and not blocked
-  await getRequiredAdminSession();
-
   // Retrieve trainings and info blocks from database
   const [trainings, infoBlocks] = await Promise.all([
     prisma.training.findMany({
@@ -27,6 +23,8 @@ export default async function AdminTrainingsPage(): Promise<React.JSX.Element> {
   ]);
 
   return (
-    <TrainingsClientWrapper initialTrainings={trainings} initialInfoBlocks={infoBlocks} />
+    <div className="flex flex-col gap-8">
+      <TrainingsClientWrapper initialTrainings={trainings} initialInfoBlocks={infoBlocks} />
+    </div>
   );
 }

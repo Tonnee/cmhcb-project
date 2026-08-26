@@ -975,28 +975,18 @@ export async function getActiveTrainingsListAction(): Promise<{
 }
 
 const TrainingInputSchema = z.object({
-  id: z.string().optional(),
+  id: z.string().optional().nullable(),
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
-  heroTitle: z.string().min(1, "Hero Title is required"),
-  heroDescription: z.string().min(1, "Hero Description is required"),
-  introTitle: z.string().min(1, "Introduction Title is required"),
-  introDescription: z.string().min(1, "Introduction Description is required"),
-  sections: z.array(
-    z.object({
-      title: z.string(),
-      items: z.array(z.string()),
-    })
-  ).default([]),
-  faq: z.array(
-    z.object({
-      question: z.string(),
-      answer: z.string(),
-    })
-  ).default([]),
-  features: z.array(z.string()).default([]),
-  duration: z.string().min(1, "Duration is required"),
-  fees: z.string().min(1, "Fees are required"),
+  heroTitle: z.string().optional().nullable(),
+  heroDescription: z.string().optional().nullable(),
+  introTitle: z.string().optional().nullable(),
+  introDescription: z.string().optional().nullable(),
+  sections: z.any().optional().nullable(),
+  faq: z.any().optional().nullable(),
+  features: z.any().optional().nullable(),
+  duration: z.string().optional().nullable(),
+  fees: z.string().optional().nullable(),
   variant: z.string().default("primary"),
   image: z.string().optional().nullable(),
   bgImage: z.string().optional().nullable(),
@@ -1010,70 +1000,77 @@ export async function upsertTrainingAction(
     const admin = await getRequiredAdminSession();
     const validated = TrainingInputSchema.parse(rawData);
     
-    // Check for slug collisions
-    if (validated.id) {
-      const existingSlug = await prisma.training.findFirst({
-        where: {
-          slug: validated.slug,
-          NOT: { id: validated.id },
-        },
-      });
-      if (existingSlug) {
-        return { success: false, error: `A training program with slug "${validated.slug}" already exists.` };
-      }
-    } else {
-      const existingSlug = await prisma.training.findUnique({
-        where: { slug: validated.slug },
-      });
-      if (existingSlug) {
-        return { success: false, error: `A training program with slug "${validated.slug}" already exists.` };
-      }
+    // Generate id if new, identical to upsertServiceAction
+    const id = validated.id || `trn-${validated.slug}`;
+    const existing = await prisma.training.findUnique({ where: { id } });
+
+    // Format fields with safe smart defaults
+    const heroTitle = validated.heroTitle || validated.title;
+    const heroDescription = validated.heroDescription || "";
+    const introTitle = validated.introTitle || `What Is ${validated.title}?`;
+    const introDescription = validated.introDescription || heroDescription;
+    const duration = validated.duration || "";
+    const fees = validated.fees || "";
+    const variant = validated.variant || "primary";
+
+    let sectionsStr = "[]";
+    if (typeof validated.sections === "string") {
+      sectionsStr = validated.sections;
+    } else if (Array.isArray(validated.sections)) {
+      sectionsStr = JSON.stringify(validated.sections);
+    }
+
+    let faqStr = "[]";
+    if (typeof validated.faq === "string") {
+      faqStr = validated.faq;
+    } else if (Array.isArray(validated.faq)) {
+      faqStr = JSON.stringify(validated.faq);
+    }
+
+    let featuresStr = "[]";
+    if (typeof validated.features === "string") {
+      featuresStr = validated.features;
+    } else if (Array.isArray(validated.features)) {
+      featuresStr = JSON.stringify(validated.features);
     }
 
     const dataPayload = {
       title: validated.title,
       slug: validated.slug,
-      heroTitle: validated.heroTitle,
-      heroDescription: validated.heroDescription,
-      introTitle: validated.introTitle,
-      introDescription: validated.introDescription,
-      sections: JSON.stringify(validated.sections),
-      faq: JSON.stringify(validated.faq),
-      features: JSON.stringify(validated.features),
-      duration: validated.duration,
-      fees: validated.fees,
-      variant: validated.variant,
-      image: validated.image,
-      bgImage: validated.bgImage,
-      order: validated.order,
+      heroTitle,
+      heroDescription,
+      introTitle,
+      introDescription,
+      sections: sectionsStr,
+      faq: faqStr,
+      features: featuresStr,
+      duration,
+      fees,
+      variant,
+      image: validated.image || null,
+      bgImage: validated.bgImage || null,
+      order: validated.order ?? 0,
       lastUpdatedBy: admin.email,
     };
 
-    let training;
-    if (validated.id) {
-      training = await prisma.training.update({
-        where: { id: validated.id },
-        data: dataPayload,
-      });
-    } else {
-      const newId = `trn-${validated.slug}-${Date.now().toString(36)}`;
-      training = await prisma.training.create({
-        data: {
-          id: newId,
-          ...dataPayload,
-        },
-      });
-    }
+    const training = await prisma.training.upsert({
+      where: { id },
+      update: dataPayload,
+      create: {
+        id,
+        ...dataPayload,
+      },
+    });
 
     await logActivity(
       admin.id,
       admin.email,
       admin.name,
-      validated.id ? "UPDATE" : "CREATE",
+      existing ? "UPDATE" : "CREATE",
       "Training",
-      training.id,
+      id,
       validated.title,
-      validated.id ? `Updated training details for "${validated.title}"` : `Created training program "${validated.title}"`
+      existing ? `Updated training details for "${validated.title}"` : `Created training program "${validated.title}"`
     );
 
     revalidatePath("/");
@@ -1081,7 +1078,6 @@ export async function upsertTrainingAction(
     revalidatePath(`/training/${validated.slug}`);
     revalidatePath("/join-training");
     revalidatePath("/admin/trainings");
-    revalidatePath("/faqs");
 
     return { success: true, data: training };
   } catch (error: any) {

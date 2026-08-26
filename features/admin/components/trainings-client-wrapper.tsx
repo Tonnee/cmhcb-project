@@ -97,22 +97,12 @@ export default function TrainingsClientWrapper({
     setIsModalOpen(true);
   };
 
-  const handleSuccess = (savedTraining?: TrainingDB) => {
+  const handleSuccess = () => {
+    // Reset modal states and refresh page data via SPA
     setIsModalOpen(false);
     setSelectedTraining(null);
     setIsBlockModalOpen(false);
     setSelectedBlock(null);
-    if (savedTraining) {
-      setTrainings((prev) => {
-        const idx = prev.findIndex((t) => t.id === savedTraining.id);
-        if (idx >= 0) {
-          const updated = [...prev];
-          updated[idx] = savedTraining;
-          return updated;
-        }
-        return [...prev, savedTraining];
-      });
-    }
     router.refresh();
   };
 
