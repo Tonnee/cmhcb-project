@@ -977,7 +977,7 @@ export async function getActiveTrainingsListAction(): Promise<{
 const TrainingInputSchema = z.object({
   id: z.string().optional().nullable(),
   title: z.string().min(1, "Title is required"),
-  slug: z.string().min(1, "Slug is required"),
+  slug: z.string().optional().nullable(),
   heroTitle: z.string().optional().nullable(),
   heroDescription: z.string().optional().nullable(),
   introTitle: z.string().optional().nullable(),
@@ -1000,8 +1000,13 @@ export async function upsertTrainingAction(
     const admin = await getRequiredAdminSession();
     const validated = TrainingInputSchema.parse(rawData);
     
+    // Auto-generate slug from title if not explicitly provided
+    const finalSlug = (validated.slug && validated.slug.trim().length > 0)
+      ? validated.slug.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/(^-|-$)+/g, "")
+      : validated.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
     // Generate id if new, identical to upsertServiceAction
-    const id = validated.id || `trn-${validated.slug}`;
+    const id = validated.id || `trn-${finalSlug}`;
     const existing = await prisma.training.findUnique({ where: { id } });
 
     // Format fields with safe smart defaults
@@ -1036,7 +1041,7 @@ export async function upsertTrainingAction(
 
     const dataPayload = {
       title: validated.title,
-      slug: validated.slug,
+      slug: finalSlug,
       heroTitle,
       heroDescription,
       introTitle,
@@ -1075,7 +1080,7 @@ export async function upsertTrainingAction(
 
     revalidatePath("/");
     revalidatePath("/training");
-    revalidatePath(`/training/${validated.slug}`);
+    revalidatePath(`/training/${finalSlug}`);
     revalidatePath("/join-training");
     revalidatePath("/admin/trainings");
 

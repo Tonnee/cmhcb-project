@@ -195,10 +195,10 @@ export function EditTrainingForm({
     e.preventDefault();
     if (isSaving) return;
 
-    const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+    const finalSlug = slug || training?.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 
-    if (!title || !finalSlug) {
-      setErrorMsg("Program title and URL slug are required.");
+    if (!title.trim()) {
+      setErrorMsg("Program title is required.");
       return;
     }
 
@@ -309,35 +309,16 @@ export function EditTrainingForm({
           <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
             Basic Details
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Program Title</label>
-              <input
-                type="text"
-                required
-                value={title}
-                onChange={handleTitleChange}
-                placeholder="e.g. Psychological First Aid"
-                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">URL Slug (Path)</label>
-              <div className="flex items-center">
-                <span className="bg-light-ash/10 px-3 py-2 border border-r-0 border-muted rounded-l-xl text-xs font-mono text-light-ash shrink-0">
-                  /training/
-                </span>
-                <input
-                  type="text"
-                  required
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "-"))}
-                  placeholder="e.g. psychological-first-aid"
-                  className="w-full px-3.5 py-2 border border-muted rounded-r-xl bg-page-bg/50 focus:outline-none focus:border-primary font-mono text-xs"
-                />
-              </div>
-            </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark">Program Title</label>
+            <input
+              type="text"
+              required
+              value={title}
+              onChange={handleTitleChange}
+              placeholder="e.g. Psychological First Aid"
+              className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
+            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
