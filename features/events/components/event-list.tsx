@@ -13,17 +13,10 @@ interface EventListProps {
 
 export function EventList({ events }: EventListProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [selectedInstructor, setSelectedInstructor] = React.useState("all");
   const [selectedTag, setSelectedTag] = React.useState("all");
   const [sortOrder, setSortOrder] = React.useState<"newest" | "oldest">("newest");
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 9;
-
-  // Extract unique instructors sorted alphabetically
-  const instructors = React.useMemo(() => {
-    const list = events.map((event) => event.author).filter(Boolean);
-    return Array.from(new Set(list)).sort((a, b) => a.localeCompare(b));
-  }, [events]);
 
   // Extract unique tags sorted alphabetically
   const allTags = React.useMemo(() => {
@@ -36,11 +29,6 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const handleInstructorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedInstructor(e.target.value);
     setCurrentPage(1);
   };
 
@@ -69,11 +57,6 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
       );
     }
 
-    // Instructor filter
-    if (selectedInstructor !== "all") {
-      result = result.filter((event) => event.author === selectedInstructor);
-    }
-
     // Tag filter
     if (selectedTag !== "all") {
       result = result.filter((event) => event.tags.includes(selectedTag));
@@ -87,7 +70,7 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
     });
 
     return result;
-  }, [events, searchQuery, selectedInstructor, selectedTag, sortOrder]);
+  }, [events, searchQuery, selectedTag, sortOrder]);
 
   const totalPages = Math.ceil(filteredAndSortedEvents.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -124,26 +107,6 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
 
         {/* Filters and Sort */}
         <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
-          {/* Instructor Filter */}
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <label htmlFor="instructor-filter" className="font-sans text-sm text-dark font-medium whitespace-nowrap">
-              Facilitator:
-            </label>
-            <Select
-              id="instructor-filter"
-              value={selectedInstructor}
-              onChange={handleInstructorChange}
-              className="sm:w-auto min-w-[160px]"
-            >
-              <option value="all">All Facilitators</option>
-              {instructors.map((instructor) => (
-                <option key={instructor} value={instructor}>
-                  {instructor}
-                </option>
-              ))}
-            </Select>
-          </div>
-
           {/* Topic / Tag Filter */}
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <label htmlFor="tag-filter" className="font-sans text-sm text-dark font-medium whitespace-nowrap">
@@ -153,7 +116,7 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
               id="tag-filter"
               value={selectedTag}
               onChange={handleTagChange}
-              className="sm:w-auto min-w-[150px]"
+              className="sm:w-auto min-w-[160px]"
             >
               <option value="all">All Topics</option>
               {allTags.map((tag) => (
@@ -173,7 +136,7 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
               id="sort-order"
               value={sortOrder}
               onChange={handleSortChange}
-              className="sm:w-auto min-w-[140px]"
+              className="sm:w-auto min-w-[150px]"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
