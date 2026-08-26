@@ -184,6 +184,7 @@ model Training {
   duration         String
   fees             String
   variant          String   @default("primary")
+  trainers         String?  // JSON string of therapist IDs or names assigned as trainers
   image            String?
   bgImage          String?
   order            Int      @default(0)

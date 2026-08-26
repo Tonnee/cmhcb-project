@@ -985,6 +985,7 @@ const TrainingInputSchema = z.object({
   sections: z.any().optional().nullable(),
   faq: z.any().optional().nullable(),
   features: z.any().optional().nullable(),
+  trainers: z.any().optional().nullable(),
   duration: z.string().optional().nullable(),
   fees: z.string().optional().nullable(),
   variant: z.string().default("primary"),
@@ -1039,6 +1040,13 @@ export async function upsertTrainingAction(
       featuresStr = JSON.stringify(validated.features);
     }
 
+    let trainersStr = "[]";
+    if (typeof validated.trainers === "string") {
+      trainersStr = validated.trainers;
+    } else if (Array.isArray(validated.trainers)) {
+      trainersStr = JSON.stringify(validated.trainers);
+    }
+
     const dataPayload = {
       title: validated.title,
       slug: finalSlug,
@@ -1049,6 +1057,7 @@ export async function upsertTrainingAction(
       sections: sectionsStr,
       faq: faqStr,
       features: featuresStr,
+      trainers: trainersStr,
       duration,
       fees,
       variant,

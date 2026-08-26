@@ -120,14 +120,24 @@ export default async function TrainingDetailPage({
     notFound();
   }
 
-  // Retrieve and filter dynamic trainers (therapists specializing as trainers)
+  // Retrieve and filter dynamic trainers (therapists assigned to this training or specializing as trainers)
   let trainingTrainers: any[] = [];
   try {
+    let assignedTrainerIds: string[] = [];
+    if (dbTraining?.trainers) {
+      try {
+        const parsed = typeof dbTraining.trainers === "string" ? JSON.parse(dbTraining.trainers) : dbTraining.trainers;
+        if (Array.isArray(parsed)) {
+          assignedTrainerIds = parsed;
+        }
+      } catch {}
+    }
+
     const dbTherapists = await prisma.therapist.findMany({
       orderBy: { name: "asc" },
     });
 
-    trainingTrainers = dbTherapists.map((t) => {
+    const mappedTherapists = dbTherapists.map((t) => {
       let parsedEducation: string[] = [];
       let parsedTraining: string[] = [];
       let parsedExpertise: string[] = [];
@@ -158,9 +168,19 @@ export default async function TrainingDetailPage({
         services: parsedServices,
         activities: parsedActivities,
       };
-    }).filter((therapist) => {
-      return therapist.role.toLowerCase().includes("trainer");
     });
+
+    if (assignedTrainerIds.length > 0) {
+      // Show explicitly assigned therapists
+      trainingTrainers = mappedTherapists.filter((therapist) =>
+        assignedTrainerIds.includes(therapist.id) || assignedTrainerIds.includes(therapist.name)
+      );
+    } else {
+      // Fallback: show therapists with "trainer" in their role
+      trainingTrainers = mappedTherapists.filter((therapist) =>
+        therapist.role.toLowerCase().includes("trainer")
+      );
+    }
   } catch (err) {
     console.error("Error querying trainers:", err);
   }

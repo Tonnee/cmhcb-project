@@ -2,8 +2,8 @@
 import Image from "next/image";
 
 import * as React from "react";
-import { HiPlus, HiTrash, HiXMark } from "react-icons/hi2";
-import { upsertTrainingAction } from "@/app/(admin)/admin/actions";
+import { HiPlus, HiTrash, HiXMark, HiUserGroup } from "react-icons/hi2";
+import { upsertTrainingAction, getAllTherapistsForFormAction } from "@/app/(admin)/admin/actions";
 import { uploadImageToSupabase } from "@/lib/supabase";
 import type { TrainingDB } from "./trainings-client-wrapper";
 
@@ -41,6 +41,26 @@ export function EditTrainingForm({
   const [imageUrl, setImageUrl] = React.useState(training?.image || "");
   const [bgImageUrl, setBgImageUrl] = React.useState(training?.bgImage || "");
   const [order, setOrder] = React.useState(training?.order ?? 0);
+
+  // Available therapists from database
+  const [allTherapists, setAllTherapists] = React.useState<{ id: string; name: string; role: string }[]>([]);
+
+  React.useEffect(() => {
+    getAllTherapistsForFormAction().then((res) => {
+      if (res.success && res.data) {
+        setAllTherapists(res.data);
+      }
+    });
+  }, []);
+
+  // Selected trainers list state
+  const [selectedTrainers, setSelectedTrainers] = React.useState<string[]>(() => {
+    try {
+      return training?.trainers ? JSON.parse(training.trainers) : [];
+    } catch {
+      return [];
+    }
+  });
 
   // Complex list states (parsed from JSON on load)
   const [features, setFeatures] = React.useState<string[]>(() => {
@@ -100,6 +120,17 @@ export function EditTrainingForm({
 
   const removeFeature = (index: number) => {
     setFeatures(features.filter((_, i) => i !== index));
+  };
+
+  // Trainer actions
+  const addTrainer = (therapistId: string) => {
+    if (therapistId && !selectedTrainers.includes(therapistId)) {
+      setSelectedTrainers([...selectedTrainers, therapistId]);
+    }
+  };
+
+  const removeTrainer = (therapistId: string) => {
+    setSelectedTrainers(selectedTrainers.filter((id) => id !== therapistId));
   };
 
   // Section actions
@@ -251,6 +282,7 @@ export function EditTrainingForm({
         sections: sections.length > 0 ? sections : [],
         faq: faq.length > 0 ? faq : [],
         features: features.filter(f => f.trim().length > 0),
+        trainers: selectedTrainers,
         duration: duration || "",
         fees: fees || "",
         variant: variant || "primary",
@@ -411,6 +443,74 @@ export function EditTrainingForm({
             ) : (
               <div className="text-xs text-light-ash italic">
                 No card bullet highlights added yet. Click &ldquo;Add Highlight&rdquo; to add bullet points to the card.
+              </div>
+            )}
+          </div>
+
+          {/* Our Top Trainers Selector */}
+          <div className="flex flex-col gap-3 pt-2 bg-light/10 p-4 rounded-2xl border border-muted/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="font-semibold text-dark text-xs uppercase tracking-wide flex items-center gap-1.5">
+                  <HiUserGroup className="w-4 h-4 text-primary" />
+                  Our Top Trainers (Shown on Program Detail Page)
+                </label>
+                <p className="text-[11px] text-light-ash">
+                  Select therapists from the dropdown to assign them as the featured trainers for this program.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <select
+                defaultValue=""
+                onChange={(e) => {
+                  if (e.target.value) {
+                    addTrainer(e.target.value);
+                    e.target.value = "";
+                  }
+                }}
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-white focus:outline-none focus:border-primary text-xs cursor-pointer"
+              >
+                <option value="" disabled>-- Select a therapist to add as Top Trainer --</option>
+                {allTherapists.map((therapist) => (
+                  <option
+                    key={therapist.id}
+                    value={therapist.id}
+                    disabled={selectedTrainers.includes(therapist.id)}
+                  >
+                    {therapist.name} ({therapist.role}) {selectedTrainers.includes(therapist.id) ? "✓ Added" : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {selectedTrainers.length > 0 ? (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {selectedTrainers.map((trainerId) => {
+                  const therapist = allTherapists.find((t) => t.id === trainerId);
+                  const displayName = therapist ? `${therapist.name} (${therapist.role})` : trainerId;
+                  return (
+                    <div
+                      key={trainerId}
+                      className="flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary-dark px-3 py-1.5 rounded-xl text-xs font-medium"
+                    >
+                      <span>{displayName}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeTrainer(trainerId)}
+                        className="p-0.5 hover:bg-primary/20 rounded-md text-red-600 cursor-pointer"
+                        title="Remove trainer"
+                      >
+                        <HiXMark className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-xs text-light-ash italic">
+                No specific trainers selected. (If none are selected, therapists with &quot;Trainer&quot; in their role will be shown by default).
               </div>
             )}
           </div>

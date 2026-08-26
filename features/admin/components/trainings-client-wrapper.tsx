@@ -22,6 +22,7 @@ export interface TrainingDB {
   duration: string;
   fees: string;
   variant: string;
+  trainers?: string | null; // JSON string of therapist IDs
   image?: string | null;
   bgImage?: string | null;
   order: number;
