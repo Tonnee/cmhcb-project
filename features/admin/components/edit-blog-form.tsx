@@ -279,12 +279,12 @@ export default function EditBlogForm({
 
         {/* Content text area */}
         <div className="flex flex-col gap-1.5">
-          <label className="font-semibold text-dark">Blog Article Body (HTML format supported)</label>
+          <label className="font-semibold text-dark">Blog Article Body</label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Write HTML paragraphs, headers, and bullet points detailing the article body..."
-            className="w-full h-44 px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary font-mono text-xs"
+            placeholder="Write the full article content in plain text..."
+            className="w-full h-44 px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
             required
           />
         </div>

@@ -255,7 +255,7 @@ export default function EditLandingPageForm({
         <div className="grid grid-cols-1 gap-6">
           <div className="flex flex-col gap-1.5">
             <label className="font-sans text-xs font-semibold text-dark">
-              Hero Headline (HTML Support)
+              Hero Headline
             </label>
             <input
               type="text"
@@ -264,9 +264,6 @@ export default function EditLandingPageForm({
               className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
               required
             />
-            <p className="font-sans text-[10px] text-light-ash/80 mt-1">
-              Add highlight spans like: <code>&lt;span class=&ldquo;text-accent&rdquo;&gt;Mind&lt;/span&gt;</code> or <code>&lt;span class=&ldquo;text-primary&rdquo;&gt;Life&lt;/span&gt;</code>
-            </p>
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -360,7 +357,7 @@ export default function EditLandingPageForm({
         <div className="grid grid-cols-1 gap-6">
           <div className="flex flex-col gap-1.5">
             <label className="font-sans text-xs font-semibold text-dark">
-              Well-Being Title (HTML Support)
+              Well-Being Title
             </label>
             <input
               type="text"
@@ -463,7 +460,7 @@ export default function EditLandingPageForm({
         <div className="grid grid-cols-1 gap-6">
           <div className="flex flex-col gap-1.5">
             <label className="font-sans text-xs font-semibold text-dark">
-              Training Title (HTML Support)
+              Training Title
             </label>
             <input
               type="text"

@@ -6,6 +6,7 @@ import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 import DOMPurify from "isomorphic-dompurify";
 
 import prisma from "@/lib/prisma";
+import { formatContentToHtml } from "@/lib/text";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | CMHCB",
@@ -122,7 +123,7 @@ export default async function PrivacyPolicyPage(): Promise<React.JSX.Element> {
         <Container>
           <div
             className="max-w-4xl font-sans text-base leading-relaxed text-dark space-y-8"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(htmlContent) }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(formatContentToHtml(htmlContent)) }}
           />
         </Container>
       </section>

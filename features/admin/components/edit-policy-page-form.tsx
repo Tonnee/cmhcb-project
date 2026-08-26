@@ -108,20 +108,17 @@ export default function EditPolicyPageForm({
         </div>
       </div>
 
-      {/* Page Content Markdown/HTML */}
+      {/* Page Content */}
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
-          <label className="font-semibold text-dark text-xs">Page Content (HTML support)</label>
-          <span className="text-[10px] text-light-ash/80 italic">You can use basic HTML paragraph, strong, and heading tags.</span>
+          <label className="font-semibold text-dark text-xs">Page Content</label>
+          <span className="text-[10px] text-light-ash/80">Enter policy paragraphs and sections.</span>
         </div>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="<p>Write your policy paragraphs here...</p>
-
-<h2>Section 1. Heading</h2>
-<p>More details...</p>"
-          className="w-full h-96 px-4 py-3 border border-muted rounded-2xl bg-page-bg/50 focus:outline-none focus:border-primary font-mono text-xs leading-relaxed resize-y"
+          placeholder="Write your policy text, sections, and paragraphs here in plain text..."
+          className="w-full h-96 px-4 py-3 border border-muted rounded-2xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs leading-relaxed resize-y"
           required
         />
       </div>

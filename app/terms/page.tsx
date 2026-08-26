@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import { Container } from "@/components/layout/container";
 import { SimplePageHeader } from "@/components/shared/simple-page-header";
 import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
-
+import DOMPurify from "isomorphic-dompurify";
 import prisma from "@/lib/prisma";
+import { formatContentToHtml } from "@/lib/text";
 
 export const metadata: Metadata = {
   title: "Terms of Service | CMHCB",
@@ -128,7 +129,7 @@ export default async function TermsOfServicePage(): Promise<React.JSX.Element> {
         <Container>
           <div
             className="max-w-4xl font-sans text-base leading-relaxed text-dark space-y-8"
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(formatContentToHtml(htmlContent)) }}
           />
         </Container>
       </section>
