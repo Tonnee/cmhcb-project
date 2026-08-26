@@ -59,11 +59,8 @@ async function main() {
     });
   }
 
-  console.log("Seeding Workshops (Filtered from Events)...");
-  const workshops = EVENTS_DATA.filter((event) =>
-    event.tags.some((tag) => tag.toLowerCase() === "workshop")
-  );
-  for (const w of workshops) {
+  console.log("Seeding Workshops & Events from EVENTS_DATA...");
+  for (const w of EVENTS_DATA) {
     await prisma.workshop.create({
       data: {
         id: w.id || "",
@@ -77,6 +74,7 @@ async function main() {
         author: w.author || "",
         tags: JSON.stringify(w.tags || []),
         isFeatured: w.isFeatured || false,
+        isLatest: w.isLatest || false,
         content: w.content || "",
         gallery: JSON.stringify(w.gallery || []),
       },

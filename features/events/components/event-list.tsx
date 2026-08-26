@@ -13,9 +13,46 @@ interface EventListProps {
 
 export function EventList({ events }: EventListProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [selectedInstructor, setSelectedInstructor] = React.useState("all");
+  const [selectedTag, setSelectedTag] = React.useState("all");
   const [sortOrder, setSortOrder] = React.useState<"newest" | "oldest">("newest");
   const [currentPage, setCurrentPage] = React.useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 9;
+
+  // Extract unique instructors sorted alphabetically
+  const instructors = React.useMemo(() => {
+    const list = events.map((event) => event.author).filter(Boolean);
+    return Array.from(new Set(list)).sort((a, b) => a.localeCompare(b));
+  }, [events]);
+
+  // Extract unique tags sorted alphabetically
+  const allTags = React.useMemo(() => {
+    const tagsSet = new Set<string>();
+    events.forEach((event) => {
+      event.tags?.forEach((t) => tagsSet.add(t));
+    });
+    return Array.from(tagsSet).sort((a, b) => a.localeCompare(b));
+  }, [events]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleInstructorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedInstructor(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleTagChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTag(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOrder(e.target.value as "newest" | "oldest");
+    setCurrentPage(1);
+  };
 
   // Filter and sort the events
   const filteredAndSortedEvents = React.useMemo(() => {
@@ -27,8 +64,19 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
       result = result.filter(
         (event) =>
           event.title.toLowerCase().includes(query) ||
+          event.description.toLowerCase().includes(query) ||
           event.tags.some((tag) => tag.toLowerCase().includes(query))
       );
+    }
+
+    // Instructor filter
+    if (selectedInstructor !== "all") {
+      result = result.filter((event) => event.author === selectedInstructor);
+    }
+
+    // Tag filter
+    if (selectedTag !== "all") {
+      result = result.filter((event) => event.tags.includes(selectedTag));
     }
 
     // Sort
@@ -39,35 +87,34 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
     });
 
     return result;
-  }, [events, searchQuery, sortOrder]);
-
-  // Reset pagination when search or sort changes
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, sortOrder]);
+  }, [events, searchQuery, selectedInstructor, selectedTag, sortOrder]);
 
   const totalPages = Math.ceil(filteredAndSortedEvents.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedEvents = filteredAndSortedEvents.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    startIndex,
+    startIndex + itemsPerPage
   );
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 300, behavior: "smooth" });
+    const element = document.getElementById("events-list");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
-    <div className="flex flex-col gap-10">
+    <div id="events-list" className="flex flex-col gap-10">
       {/* Controls Section */}
-      <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
+      <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
         {/* Search */}
-        <div className="relative w-full sm:max-w-md">
+        <div className="relative w-full lg:max-w-md">
           <input
             type="text"
-            placeholder="Search by title or tag..."
+            placeholder="Search workshops by title, topic, or tag..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-sans text-sm transition-shadow"
           />
           <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -75,32 +122,75 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
           </div>
         </div>
 
-        {/* Sort */}
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <label htmlFor="sort-order" className="font-sans text-sm text-dark font-medium whitespace-nowrap">
-            Sort by:
-          </label>
-          <Select
-            id="sort-order"
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
-            className="sm:w-auto"
-          >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-          </Select>
+        {/* Filters and Sort */}
+        <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+          {/* Instructor Filter */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <label htmlFor="instructor-filter" className="font-sans text-sm text-dark font-medium whitespace-nowrap">
+              Facilitator:
+            </label>
+            <Select
+              id="instructor-filter"
+              value={selectedInstructor}
+              onChange={handleInstructorChange}
+              className="sm:w-auto min-w-[160px]"
+            >
+              <option value="all">All Facilitators</option>
+              {instructors.map((instructor) => (
+                <option key={instructor} value={instructor}>
+                  {instructor}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          {/* Topic / Tag Filter */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <label htmlFor="tag-filter" className="font-sans text-sm text-dark font-medium whitespace-nowrap">
+              Topic:
+            </label>
+            <Select
+              id="tag-filter"
+              value={selectedTag}
+              onChange={handleTagChange}
+              className="sm:w-auto min-w-[150px]"
+            >
+              <option value="all">All Topics</option>
+              {allTags.map((tag) => (
+                <option key={tag} value={tag}>
+                  {tag}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          {/* Sort */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <label htmlFor="sort-order" className="font-sans text-sm text-dark font-medium whitespace-nowrap">
+              Sort by:
+            </label>
+            <Select
+              id="sort-order"
+              value={sortOrder}
+              onChange={handleSortChange}
+              className="sm:w-auto min-w-[140px]"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </Select>
+          </div>
         </div>
       </div>
 
       {/* Grid Section */}
-      {filteredAndSortedEvents.length > 0 ? (
-        <div className="flex flex-col gap-10">
+      {paginatedEvents.length > 0 ? (
+        <div className="flex flex-col gap-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {paginatedEvents.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
           </div>
-          
+
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -109,7 +199,7 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
         </div>
       ) : (
         <div className="text-center py-20 bg-gray-50 rounded-3xl border border-gray-100">
-          <p className="font-marcellus text-2xl text-dark mb-2">No events found</p>
+          <p className="font-marcellus text-2xl text-dark mb-2">No workshops found</p>
           <p className="font-sans text-light-ash">Try adjusting your search terms or filters.</p>
         </div>
       )}
