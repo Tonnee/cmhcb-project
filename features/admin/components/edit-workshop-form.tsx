@@ -27,6 +27,7 @@ interface WorkshopFormProps {
     lastUpdatedBy?: string | null;
     updatedAt?: string | Date;
   } | null;
+  currentFeaturedCount?: number;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -48,6 +49,7 @@ const workshopSchema = z.object({
 
 export default function EditWorkshopForm({
   workshop,
+  currentFeaturedCount = 0,
   onClose,
   onSuccess,
 }: WorkshopFormProps): React.JSX.Element {
@@ -75,6 +77,20 @@ export default function EditWorkshopForm({
   const [isUploading, setIsUploading] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState("");
+
+  const isFeaturedLimitReached = !workshop?.isFeatured && currentFeaturedCount >= 4;
+
+  const handleFeaturedToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    if (checked && isFeaturedLimitReached) {
+      setErrorMsg("Only 4 events can be marked as featured on the landing page at a time. Please uncheck another featured event first.");
+      return;
+    }
+    setIsFeatured(checked);
+    if (errorMsg.includes("4 events")) {
+      setErrorMsg("");
+    }
+  };
 
   // Handle Image upload
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -325,18 +341,38 @@ export default function EditWorkshopForm({
         </div>
 
         {/* Featured / Display Toggles */}
-        <div className="flex flex-col sm:flex-row gap-4 p-4 bg-light/10 border border-muted/50 rounded-2xl">
-          <label className="flex items-center gap-2 cursor-pointer w-fit text-light-ash">
-            <input
-              type="checkbox"
-              checked={isFeatured}
-              onChange={(e) => setIsFeatured(e.target.checked)}
-              className="rounded border-muted text-primary focus:ring-primary w-4 h-4 cursor-pointer"
-            />
-            <span className="font-semibold text-dark text-xs sm:text-sm">
-              Feature this event on the landing page as upcoming event
-            </span>
-          </label>
+        <div className="flex flex-col gap-4 p-4 bg-light/10 border border-muted/50 rounded-2xl">
+          <div className="flex flex-col gap-1.5">
+            <label className={`flex items-center gap-2 cursor-pointer w-fit text-light-ash ${isFeaturedLimitReached && !isFeatured ? "opacity-75" : ""}`}>
+              <input
+                type="checkbox"
+                checked={isFeatured}
+                onChange={handleFeaturedToggle}
+                className="rounded border-muted text-primary focus:ring-primary w-4 h-4 cursor-pointer"
+              />
+              <span className="font-semibold text-dark text-xs sm:text-sm">
+                Feature this event on the landing page as upcoming event
+              </span>
+              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                isFeatured
+                  ? "bg-primary/15 text-primary-dark"
+                  : isFeaturedLimitReached
+                  ? "bg-amber-100 text-amber-800"
+                  : "bg-muted/40 text-light-ash"
+              }`}>
+                {workshop?.isFeatured
+                  ? `${currentFeaturedCount}/4 Active`
+                  : isFeatured
+                  ? `${Math.min(currentFeaturedCount + 1, 4)}/4 Active`
+                  : `${currentFeaturedCount}/4 Used`}
+              </span>
+            </label>
+            {isFeaturedLimitReached && !isFeatured && (
+              <p className="text-[11px] text-amber-700 font-sans pl-6">
+                All 4 landing page featured event slots are currently filled. Uncheck another featured event to feature this one.
+              </p>
+            )}
+          </div>
 
           <label className="flex items-center gap-2 cursor-pointer w-fit text-light-ash">
             <input

@@ -107,9 +107,24 @@ describe("Training Registration Validation Schema", () => {
       gender: "male",
       contact: "bob@cmhcbd.com",
       training: "mental-health-first-aid",
-      preference: "invalid-preference",
+      preference: "invalid-option",
     };
     const result = registrationSchema.safeParse(invalidData);
     expect(result.success).toBe(false);
   });
 });
+
+describe("Landing Page Featured Workshops Constraint", () => {
+  it("should enforce maximum 4 featured events on the landing page", () => {
+    const canFeatureMore = (currentCount: number, isAlreadyFeatured: boolean) => {
+      if (isAlreadyFeatured) return true;
+      return currentCount < 4;
+    };
+
+    expect(canFeatureMore(3, false)).toBe(true);
+    expect(canFeatureMore(4, false)).toBe(false);
+    expect(canFeatureMore(4, true)).toBe(true);
+    expect(canFeatureMore(5, false)).toBe(false);
+  });
+});
+

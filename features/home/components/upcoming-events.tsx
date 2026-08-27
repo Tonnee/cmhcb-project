@@ -127,7 +127,7 @@ export function UpcomingEvents({
   gridWorkshops,
 }: UpcomingEventsProps): React.JSX.Element {
   const displayGrid = React.useMemo(() => {
-    const list = [...gridWorkshops];
+    const list = [...gridWorkshops].slice(0, 4);
     const needed = 4 - list.length;
 
     const fallbackImages = [

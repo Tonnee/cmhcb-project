@@ -63,6 +63,8 @@ export const EVENTS_DATA: Event[] = [
     location: "CMHCB Seminar Hall, Dhaka",
     author: "Dr. Hasan",
     tags: ["Parenting", "Child Health", "Tech"],
+    isFeatured: true,
+    isLatest: false,
     content: "Our seminar on Parenting in the Digital Age addresses one of the most pressing concerns for modern families: how to balance technology use with genuine emotional connection.\n\nThe seminar covers screen time management, digital boundary-setting, cyber safety, and strategies for opening dialogue with children about online stress.\n\nCore Strategies Discussed:\n- Collaborative family tech agreements\n- Creating tech-free zones during meals and bedtime\n- Modeling healthy digital habits as caregivers\n- Spotting early warning signs of digital fatigue and social comparison",
   },
   {
@@ -76,6 +78,8 @@ export const EVENTS_DATA: Event[] = [
     location: "Lakeshore Hotel, Gulshan",
     author: "Dr. Rahman",
     tags: ["Corporate", "Wellness", "Burnout"],
+    isFeatured: true,
+    isLatest: false,
     content: "The Workplace Wellness seminar provides data-driven strategies and hands-on exercises to combat chronic career fatigue and psychological exhaustion.\n\nKey Takeaways:\n- Identifying the three clinical stages of burnout\n- Practical desk-based stress relief and somatic resets\n- Navigating workplace boundaries and workload negotiation\n- Building a team culture centered on psychological safety",
   },
   {
@@ -89,6 +93,8 @@ export const EVENTS_DATA: Event[] = [
     location: "CMHCB Creative Studio, Dhaka",
     author: "Sara Ahmed",
     tags: ["Art Therapy", "Creative", "Healing"],
+    isFeatured: true,
+    isLatest: false,
     content: "Art therapy provides a non-verbal channel to explore complex emotions, release tension, and process subconscious blocks.\n\nParticipants use water colors, clay modeling, and collage work to externalize internal thoughts under the gentle guidance of licensed expressive art therapists.",
   },
   {

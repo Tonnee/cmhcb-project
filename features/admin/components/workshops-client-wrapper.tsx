@@ -36,6 +36,8 @@ export default function WorkshopsClientWrapper({
   const [editingWorkshop, setEditingWorkshop] = React.useState<WorkshopDB | null>(null);
   const [isDeleting, setIsDeleting] = React.useState<string | null>(null);
 
+  const featuredCount = initialWorkshops.filter((w) => w.isFeatured).length;
+
   const handleOpenAdd = () => {
     setEditingWorkshop(null);
     setIsModalOpen(true);
@@ -76,11 +78,20 @@ export default function WorkshopsClientWrapper({
       {/* Header section with add button */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h1 className="font-marcellus text-3xl font-bold text-dark-green">
-            Manage Events & Workshops
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="font-marcellus text-3xl font-bold text-dark-green">
+              Manage Events & Workshops
+            </h1>
+            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+              featuredCount >= 4
+                ? "bg-amber-100 text-amber-800 border border-amber-200"
+                : "bg-primary/10 text-primary-dark border border-primary/20"
+            }`}>
+              Landing Featured: {featuredCount}/4
+            </span>
+          </div>
           <p className="font-sans text-sm text-light-ash">
-            Create, edit, delete, and feature events and workshops dynamically.
+            Create, edit, delete, and feature events. Exactly 4 marked events appear as upcoming events on the landing page.
           </p>
         </div>
         <button
@@ -184,6 +195,7 @@ export default function WorkshopsClientWrapper({
           <div className="bg-white rounded-3xl p-6 shadow-2xl max-w-4xl w-full border border-muted relative animate-in fade-in zoom-in duration-200">
             <EditWorkshopForm
               workshop={editingWorkshop}
+              currentFeaturedCount={featuredCount}
               onClose={() => setIsModalOpen(false)}
               onSuccess={handleFormSuccess}
             />

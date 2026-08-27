@@ -347,6 +347,26 @@ export async function upsertWorkshopAction(
     const id = validated.id || `ws-${titleSlug}`;
     const existing = await prisma.workshop.findUnique({ where: { id } });
 
+    // Validate that only 4 events can be marked as featured on landing page
+    if (validated.isFeatured) {
+      const currentFeaturedCount = await prisma.workshop.count({
+        where: {
+          isFeatured: true,
+          NOT: [
+            { id },
+            { slug: titleSlug }
+          ]
+        },
+      });
+
+      if (currentFeaturedCount >= 4) {
+        return {
+          success: false,
+          error: "Only 4 events can be featured on the landing page as upcoming events. Please uncheck another featured event first.",
+        };
+      }
+    }
+
     const dataPayload = {
       slug: titleSlug,
       title: validated.title,

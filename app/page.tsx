@@ -29,23 +29,24 @@ export default async function Page(): Promise<React.JSX.Element> {
   const now = new Date().toISOString();
 
   // Parallel database fetch for dynamic content
-  const [landingContent, dbTestimonials, dbWorkshops, dbServices] = await Promise.all([
+  const [landingContent, dbTestimonials, dbFeaturedWorkshops, dbServices, latestWorkshop] = await Promise.all([
     prisma.landingPageContent.findFirst(),
     prisma.testimonial.findMany({
       where: { isFeatured: true },
       take: 10,
     }),
     prisma.workshop.findMany({
-      orderBy: [
-        { isFeatured: "desc" },
-        { date: "asc" },
-      ],
-      take: 6,
+      where: { isFeatured: true },
+      orderBy: { date: "asc" },
+      take: 4,
     }),
     prisma.service.findMany({
       where: { isFeatured: true },
       orderBy: { order: "asc" },
       take: 6,
+    }),
+    prisma.workshop.findFirst({
+      where: { isLatest: true },
     }),
   ]);
 
@@ -116,18 +117,21 @@ export default async function Page(): Promise<React.JSX.Element> {
   ];
   const testimonials = dbTestimonials.length > 0 ? dbTestimonials : fallbackTestimonials;
 
-  // 3. Workshops list fallback
-  let workshops = dbWorkshops;
-  if (workshops.length === 0) {
-    // If no future workshops exist, pull past ones to avoid empty grid
-    workshops = await prisma.workshop.findMany({
-      orderBy: { date: "desc" },
-      take: 5,
+  // 3. Workshops list for Upcoming Events (4 featured cards)
+  let gridWorkshops = dbFeaturedWorkshops;
+  if (gridWorkshops.length === 0) {
+    // If no workshops marked as isFeatured, query upcoming ones as fallback
+    gridWorkshops = await prisma.workshop.findMany({
+      orderBy: { date: "asc" },
+      take: 4,
     });
   }
 
-  const featuredWorkshop = workshops.length > 0 ? workshops[0] : null;
-  const gridWorkshops = workshops.slice(1);
+  // Featured hero event above the 4 cards
+  let featuredWorkshop = latestWorkshop;
+  if (!featuredWorkshop) {
+    featuredWorkshop = gridWorkshops.length > 0 ? gridWorkshops[0] : (await prisma.workshop.findFirst({ orderBy: { date: "asc" } }));
+  }
 
   // 4. Services list fallback
   const fallbackServices = [
