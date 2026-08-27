@@ -61,22 +61,22 @@ export function PageHero({
       <Container className="relative w-full">
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center w-full">
           {/* Content Column */}
-          <div className="relative z-10 flex flex-col justify-center text-left">
+          <div className="relative z-10 flex flex-col justify-center items-start text-left w-full">
             <Breadcrumb className="mb-6" items={allBreadcrumbs} theme="dark" />
 
-            <h1 className="font-marcellus text-3xl md:text-4xl lg:text-5xl leading-tight text-white mb-6">
+            <h1 className="font-marcellus text-3xl md:text-4xl lg:text-5xl leading-tight text-white mb-6 text-left">
               {title}
             </h1>
 
             {description && (
-              <p className="font-sans font-normal text-base leading-relaxed text-white/80 mb-6 max-w-xl">
+              <p className="font-sans font-normal text-base leading-relaxed text-white/80 mb-6 max-w-xl text-left">
                 {description}
               </p>
             )}
 
             {/* Fees & Duration Metadata */}
             {(duration || fees) && (
-              <div className="flex flex-wrap gap-3 items-center mb-8 text-xs font-semibold text-white">
+              <div className="flex flex-wrap gap-3 items-center justify-start mb-8 text-xs font-semibold text-white">
                 {duration && (
                   <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
                     <span className="text-white/60">Duration:</span> {duration}
@@ -90,11 +90,11 @@ export function PageHero({
               </div>
             )}
 
-            {children && <div className="mb-8">{children}</div>}
+            {children && <div className="mb-8 w-full text-left flex flex-col items-start">{children}</div>}
 
             {/* CTA */}
             {ctaLabel && (
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-start items-start">
                 <Button
                   variant="white"
                   href={onCtaClick ? undefined : ctaHref}

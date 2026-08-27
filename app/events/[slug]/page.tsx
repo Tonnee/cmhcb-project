@@ -259,8 +259,8 @@ export default async function EventRegistrationPage({
           ctaLabel=""
           className="bg-dark-green"
         >
-          <div className="flex flex-col items-center gap-6 mt-8">
-            <div className="flex flex-wrap items-center justify-center gap-6 text-white/90 font-sans text-base">
+          <div className="flex flex-col items-start text-left gap-6 mt-6">
+            <div className="flex flex-wrap items-center justify-start gap-6 text-white/90 font-sans text-base">
               <div className="flex items-center gap-2">
                 <UserIcon className="w-5 h-5 shrink-0 text-accent" />
                 <span className="font-medium">Hosted by {event.author}</span>
@@ -275,7 +275,7 @@ export default async function EventRegistrationPage({
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex flex-wrap justify-start gap-3">
               {event.tags.map(tag => (
                 <Tag key={tag} variant="glass">
                   {tag}

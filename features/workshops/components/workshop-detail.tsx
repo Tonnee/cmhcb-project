@@ -32,11 +32,13 @@ export default function WorkshopDetail({
           currentPage={workshop.title}
           title={workshop.title}
           description={workshop.description}
+          imageSrc={workshop.image || "/pages-hero-background/1.png"}
+          imageAlt={workshop.title}
           ctaLabel=""
           className="bg-dark-green"
         >
-          <div className="flex flex-col items-center gap-6 mt-8">
-            <div className="flex flex-wrap items-center justify-center gap-6 text-white/90 font-sans text-base">
+          <div className="flex flex-col items-start text-left gap-6 mt-6">
+            <div className="flex flex-wrap items-center justify-start gap-6 text-white/90 font-sans text-base">
               <div className="flex items-center gap-2">
                 <HiUser className="w-5 h-5 shrink-0 text-accent" />
                 <span className="font-medium">Hosted by {workshop.author}</span>
@@ -57,7 +59,7 @@ export default function WorkshopDetail({
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex flex-wrap justify-start gap-3">
               {workshop.tags.map((tag) => (
                 <Tag key={tag} variant="glass">
                   {tag}
