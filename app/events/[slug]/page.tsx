@@ -254,6 +254,8 @@ export default async function EventRegistrationPage({
           currentPage={event.title}
           title={event.title}
           description={event.description}
+          imageSrc={event.image || "/pages-hero-background/1.png"}
+          imageAlt={event.title}
           ctaLabel=""
           className="bg-dark-green"
         >

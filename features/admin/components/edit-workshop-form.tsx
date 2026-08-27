@@ -328,6 +328,9 @@ export default function EditWorkshopForm({
           )}
           <div className="flex-1 flex flex-col gap-1">
             <span className="font-semibold text-dark">Cover Image</span>
+            <span className="text-[11px] text-light-ash">
+              Used as the <strong>event card image</strong> across directories and the <strong>hero banner image</strong> on the event detail page.
+            </span>
             <span className="text-[11px] text-light-ash">Size: <strong>800×500 px</strong> (16:10 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
             <input
               type="file"
