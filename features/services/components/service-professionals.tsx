@@ -46,9 +46,9 @@ export function ServiceProfessionals({
           </div>
 
           {/* Right: therapist cards — 6 columns */}
-          <div className={`grid gap-6 lg:col-span-6 ${therapists.length === 1 ? "grid-cols-1 justify-items-end" : "grid-cols-1 sm:grid-cols-2"}`}>
-            {therapists.map((therapist) => (
-              <div key={therapist.id} className={therapists.length === 1 ? "w-full max-w-xs sm:max-w-sm" : "w-full"}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:col-span-6">
+            {therapists.map((therapist, idx) => (
+              <div key={therapist.id} className={therapists.length === 1 && idx === 0 ? "sm:col-start-2" : ""}>
                 <TherapistCard therapist={therapist} />
               </div>
             ))}
