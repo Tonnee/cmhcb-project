@@ -184,6 +184,8 @@ model Training {
   features         String   // JSON string of string[]
   duration         String
   fees             String
+  format           String?
+  language         String?
   variant          String   @default("primary")
   trainers         String?  // JSON string of therapist IDs or names assigned as trainers
   image            String?

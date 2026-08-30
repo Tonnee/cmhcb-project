@@ -193,6 +193,8 @@ export default async function TrainingDetailPage({
   let introDescription = "";
   let duration = "";
   let fees = "";
+  let format: string | null = null;
+  let language: string | null = null;
   let bgImage: string | null = null;
   let parsedSections: { title: string; items: string[] }[] = [];
   let parsedFaq: { question: string; answer: string }[] = [];
@@ -205,6 +207,8 @@ export default async function TrainingDetailPage({
     introDescription = dbTraining.introDescription;
     duration = dbTraining.duration;
     fees = dbTraining.fees;
+    format = dbTraining.format;
+    language = dbTraining.language;
     bgImage = dbTraining.bgImage;
 
     try {
@@ -318,6 +322,8 @@ export default async function TrainingDetailPage({
         ctaHref={`/join-training?training=${decodedSlug}`}
         duration={duration || undefined}
         fees={fees || undefined}
+        format={format || undefined}
+        language={language || undefined}
       />
       <ServiceDescription
         introduction={{
@@ -328,6 +334,8 @@ export default async function TrainingDetailPage({
         sessionDetails={{
           duration: duration,
           fees: fees,
+          format: format || undefined,
+          language: language || undefined,
         }}
       />
       {trainingTrainers.length > 0 && (

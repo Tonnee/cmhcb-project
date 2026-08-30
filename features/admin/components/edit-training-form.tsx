@@ -17,6 +17,7 @@ interface FAQItem {
   answer: string;
 }
 
+
 interface EditTrainingFormProps {
   training?: TrainingDB | null;
   onClose: () => void;
@@ -37,9 +38,10 @@ export function EditTrainingForm({
   const [introDescription, setIntroDescription] = React.useState(training?.introDescription || "");
   const [duration, setDuration] = React.useState(training?.duration || "");
   const [fees, setFees] = React.useState(training?.fees || "");
+  const [format, setFormat] = React.useState(training?.format || "In-person / Online (if applicable)");
+  const [language, setLanguage] = React.useState(training?.language || "Bangla / English");
   const [variant, setVariant] = React.useState<string>(training?.variant || "primary");
-  const [imageUrl, setImageUrl] = React.useState(training?.image || "");
-  const [bgImageUrl, setBgImageUrl] = React.useState(training?.bgImage || "");
+  const [imageUrl, setImageUrl] = React.useState(training?.bgImage || training?.image || "");
   const [order, setOrder] = React.useState(training?.order ?? 0);
 
   // Available therapists from database
@@ -89,7 +91,6 @@ export function EditTrainingForm({
 
   // Status states
   const [isUploading, setIsUploading] = React.useState(false);
-  const [isUploadingBg, setIsUploadingBg] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState("");
 
@@ -183,41 +184,27 @@ export function EditTrainingForm({
   };
 
   // Handle Image Upload
-  const [cardPreviewUrl, setCardPreviewUrl] = React.useState(training?.image || "");
-  const [bgPreviewUrl, setBgPreviewUrl] = React.useState(training?.bgImage || "");
-  const [pendingCardFile, setPendingCardFile] = React.useState<File | null>(null);
-  const [pendingBgFile, setPendingBgFile] = React.useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = React.useState(training?.bgImage || training?.image || "");
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>, isBg: boolean) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const localPreview = URL.createObjectURL(file);
-    if (isBg) {
-      setPendingBgFile(file);
-      setBgPreviewUrl(localPreview);
-      setIsUploadingBg(true);
-    } else {
-      setPendingCardFile(file);
-      setCardPreviewUrl(localPreview);
-      setIsUploading(true);
-    }
+    setPendingFile(file);
+    setPreviewUrl(localPreview);
+    setIsUploading(true);
     setErrorMsg("");
 
     try {
       const publicUrl = await uploadImageToSupabase(file);
-      if (isBg) {
-        setBgImageUrl(publicUrl);
-        setBgPreviewUrl(publicUrl);
-      } else {
-        setImageUrl(publicUrl);
-        setCardPreviewUrl(publicUrl);
-      }
+      setImageUrl(publicUrl);
+      setPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setErrorMsg((err instanceof Error ? err.message : String(err)) || "Failed to upload image.");
     } finally {
-      if (isBg) setIsUploadingBg(false);
-      else setIsUploading(false);
+      setIsUploading(false);
     }
   };
 
@@ -237,37 +224,20 @@ export function EditTrainingForm({
     setErrorMsg("");
 
     try {
-      let finalCardUrl = imageUrl;
-      if (pendingCardFile && (!finalCardUrl || finalCardUrl.startsWith("blob:"))) {
+      let finalImageUrl = imageUrl;
+      if (pendingFile && (!finalImageUrl || finalImageUrl.startsWith("blob:"))) {
         setIsUploading(true);
         try {
-          finalCardUrl = await uploadImageToSupabase(pendingCardFile);
-          setImageUrl(finalCardUrl);
-          setCardPreviewUrl(finalCardUrl);
+          finalImageUrl = await uploadImageToSupabase(pendingFile);
+          setImageUrl(finalImageUrl);
+          setPreviewUrl(finalImageUrl);
         } catch (uploadErr) {
-          setErrorMsg((uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) || "Failed to upload featured card image.");
+          setErrorMsg((uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) || "Failed to upload training image.");
           setIsSaving(false);
           setIsUploading(false);
           return;
         } finally {
           setIsUploading(false);
-        }
-      }
-
-      let finalBgUrl = bgImageUrl;
-      if (pendingBgFile && (!finalBgUrl || finalBgUrl.startsWith("blob:"))) {
-        setIsUploadingBg(true);
-        try {
-          finalBgUrl = await uploadImageToSupabase(pendingBgFile);
-          setBgImageUrl(finalBgUrl);
-          setBgPreviewUrl(finalBgUrl);
-        } catch (uploadErr) {
-          setErrorMsg((uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) || "Failed to upload hero background image.");
-          setIsSaving(false);
-          setIsUploadingBg(false);
-          return;
-        } finally {
-          setIsUploadingBg(false);
         }
       }
 
@@ -285,9 +255,11 @@ export function EditTrainingForm({
         trainers: selectedTrainers,
         duration: duration || "",
         fees: fees || "",
+        format: format || null,
+        language: language || null,
         variant: variant || "primary",
-        image: finalCardUrl || null,
-        bgImage: finalBgUrl || null,
+        image: finalImageUrl || null,
+        bgImage: finalImageUrl || null,
         order: Number(order) || 0,
       };
 
@@ -514,6 +486,29 @@ export function EditTrainingForm({
               </div>
             )}
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark">Session Format</label>
+              <input
+                type="text"
+                value={format}
+                onChange={(e) => setFormat(e.target.value)}
+                placeholder="e.g. In-person / Online (if applicable)"
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark">Training Language</label>
+              <input
+                type="text"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                placeholder="e.g. Bangla / English"
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
+              />
+            </div>
+          </div>
         </div>
 
         {/* 2. Hero Configuration section */}
@@ -721,101 +716,58 @@ export function EditTrainingForm({
           )}
         </div>
 
-        {/* 6. Image uploads section */}
+        {/* 6. Single Image Upload section */}
         <div className="flex flex-col gap-4">
           <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
-            Page Graphics Banner
+            Program Display & Hero Image
           </h3>
-          <div className="flex flex-col gap-4">
-            {/* Row 1: Featured Card Image */}
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light/10 p-4 rounded-xl border border-muted/50">
-              <div className="relative w-28 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
-                {(cardPreviewUrl || imageUrl) ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={cardPreviewUrl || imageUrl}
-                    alt="Training Card Preview"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1">
-                    <span className="text-[9px] font-semibold">No Card Image</span>
-                  </div>
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light/10 p-4 rounded-xl border border-muted/50">
+            <div className="relative w-36 h-24 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
+              {(previewUrl || imageUrl) ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={previewUrl || imageUrl}
+                  alt="Program Banner Preview"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1 text-center p-2">
+                  <span className="text-[9px] font-semibold">No Program Image</span>
+                </div>
+              )}
+            </div>
+            <div className="flex-1 flex flex-col gap-1 w-full">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-dark text-xs">Hero & Card Image</span>
+                {(previewUrl || imageUrl) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImageUrl("");
+                      setPreviewUrl("");
+                      setPendingFile(null);
+                    }}
+                    className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
+                  >
+                    Remove
+                  </button>
                 )}
               </div>
-              <div className="flex-1 flex flex-col gap-1 w-full">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-dark text-xs">Featured Card Image (Optional)</span>
-                  {(cardPreviewUrl || imageUrl) && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setImageUrl("");
-                        setCardPreviewUrl("");
-                        setPendingCardFile(null);
-                      }}
-                      className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-                <span className="text-[11px] text-light-ash">Size: <strong>600×400 px</strong> (3:2 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp,image/gif"
-                  onChange={(e) => handleImageChange(e, false)}
-                  className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash mt-1"
-                  disabled={isUploading}
-                />
-              </div>
-              {isUploading && <span className="text-[10px] text-primary animate-pulse shrink-0">Uploading...</span>}
+              <span className="text-[11px] text-light-ash">
+                Recommended Size: <strong>1200×800 px</strong> (3:2 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)
+              </span>
+              <span className="text-[10px] text-light-ash/80 italic">
+                * Note: This hero banner image will also be used as the featured program card image across the site.
+              </span>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={handleImageChange}
+                className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash mt-1 cursor-pointer"
+                disabled={isUploading}
+              />
             </div>
-
-            {/* Row 2: Hero Background Image */}
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-light/10 p-4 rounded-xl border border-muted/50">
-              <div className="relative w-36 h-20 bg-light-ash/10 rounded-xl overflow-hidden border border-muted/60 flex items-center justify-center shrink-0">
-                {(bgPreviewUrl || bgImageUrl) ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={bgPreviewUrl || bgImageUrl}
-                    alt="Hero Background Preview"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-light-ash/60 gap-1">
-                    <span className="text-[9px] font-semibold">No Hero Banner</span>
-                  </div>
-                )}
-              </div>
-              <div className="flex-1 flex flex-col gap-1 w-full">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-dark text-xs">Hero Background Image</span>
-                  {(bgPreviewUrl || bgImageUrl) && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setBgImageUrl("");
-                        setBgPreviewUrl("");
-                        setPendingBgFile(null);
-                      }}
-                      className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-                <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp,image/gif"
-                  onChange={(e) => handleImageChange(e, true)}
-                  className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash mt-1"
-                  disabled={isUploadingBg}
-                />
-              </div>
-              {isUploadingBg && <span className="text-[10px] text-primary animate-pulse shrink-0">Uploading...</span>}
-            </div>
+            {isUploading && <span className="text-[10px] text-primary animate-pulse shrink-0">Uploading...</span>}
           </div>
         </div>
 
@@ -825,14 +777,14 @@ export function EditTrainingForm({
             type="button"
             onClick={onClose}
             className="px-4 py-2 border border-muted text-light-ash hover:bg-light text-xs font-semibold rounded-xl"
-            disabled={isSaving || isUploading || isUploadingBg}
+            disabled={isSaving || isUploading}
           >
             Cancel
           </button>
           <button
             type="submit"
             className="px-4 py-2 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-xl flex items-center gap-2 cursor-pointer disabled:opacity-50"
-            disabled={isSaving || isUploading || isUploadingBg}
+            disabled={isSaving || isUploading}
           >
             {isSaving ? "Saving..." : "Save Program"}
           </button>

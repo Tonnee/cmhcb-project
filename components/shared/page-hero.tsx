@@ -34,6 +34,10 @@ export interface PageHeroProps {
   duration?: string;
   /** Optional fees text to show. */
   fees?: string;
+  /** Optional session format text to show. */
+  format?: string;
+  /** Optional language text to show. */
+  language?: string;
 }
 
 export function PageHero({
@@ -50,6 +54,8 @@ export function PageHero({
   children,
   duration,
   fees,
+  format,
+  language,
 }: PageHeroProps): React.JSX.Element {
   const allBreadcrumbs: BreadcrumbItem[] = [
     ...breadcrumbs,
@@ -75,7 +81,7 @@ export function PageHero({
             )}
 
             {/* Fees & Duration Metadata */}
-            {(duration || fees) && (
+            {(duration || fees || format || language) && (
               <div className="flex flex-wrap gap-3 items-center justify-start mb-8 text-xs font-semibold text-white">
                 {duration && (
                   <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
@@ -85,6 +91,16 @@ export function PageHero({
                 {fees && (
                   <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
                     <span className="text-white/60">Fees:</span> {fees}
+                  </span>
+                )}
+                {format && (
+                  <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
+                    <span className="text-white/60">Format:</span> {format}
+                  </span>
+                )}
+                {language && (
+                  <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
+                    <span className="text-white/60">Language:</span> {language}
                   </span>
                 )}
               </div>
