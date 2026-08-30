@@ -325,7 +325,7 @@ export function EditTrainingForm({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="font-semibold text-dark">Session Duration</label>
               <input
@@ -334,7 +334,7 @@ export function EditTrainingForm({
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 placeholder="e.g. 2 Days / 16 Hrs"
-                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm"
               />
             </div>
             <div className="flex flex-col gap-1.5">
@@ -345,11 +345,35 @@ export function EditTrainingForm({
                 value={fees}
                 onChange={(e) => setFees(e.target.value)}
                 placeholder="e.g. BDT 5,000"
-                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm"
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Card Color Theme</label>
+              <label className="font-semibold text-dark">Training Type</label>
+              <select
+                value={format}
+                onChange={(e) => setFormat(e.target.value)}
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm cursor-pointer"
+              >
+                <option value="In-person / Online (if applicable)">In-person / Online (if applicable)</option>
+                <option value="Online">Online</option>
+                <option value="In-person">In-person</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark">Training Language</label>
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm cursor-pointer"
+              >
+                <option value="Bangla / English">Bangla / English</option>
+                <option value="Bangla">Bangla</option>
+                <option value="English">English</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark">Card Theme</label>
               <select
                 value={variant}
                 onChange={(e) => setVariant(e.target.value)}
@@ -360,27 +384,17 @@ export function EditTrainingForm({
                 <option value="secondary">Secondary (Muted)</option>
               </select>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Display Order</label>
-              <input
-                type="number"
-                value={order}
-                onChange={(e) => setOrder(Number(e.target.value))}
-                placeholder="e.g. 0"
-                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
-              />
-            </div>
           </div>
 
-          {/* Card Features / Key Highlights Bullets */}
+          {/* Course Content / Bullet Points List (placed right after duration & fees) */}
           <div className="flex flex-col gap-3 pt-2 bg-light/10 p-4 rounded-2xl border border-muted/50">
             <div className="flex items-center justify-between">
               <div>
                 <label className="font-semibold text-dark text-xs uppercase tracking-wide">
-                  Card Highlights / Bullet Points (Shown on /training Card)
+                  Course Content & Key Highlights (Bullet Points List)
                 </label>
                 <p className="text-[11px] text-light-ash">
-                  Key summary points shown directly on the training listing card.
+                  Bullet points displayed under What You Will Learn on the training page and cards.
                 </p>
               </div>
               <button
@@ -388,7 +402,7 @@ export function EditTrainingForm({
                 onClick={addFeature}
                 className="text-primary hover:text-primary-dark font-semibold text-xs flex items-center gap-1 cursor-pointer"
               >
-                <HiPlus className="w-3.5 h-3.5" /> Add Highlight
+                <HiPlus className="w-3.5 h-3.5" /> Add Bullet Point
               </button>
             </div>
             {features.length > 0 ? (
@@ -399,7 +413,7 @@ export function EditTrainingForm({
                       type="text"
                       value={feat}
                       onChange={(e) => updateFeature(fIdx, e.target.value)}
-                      placeholder="e.g. WHO-aligned curriculum / Crisis support skills / Certificate awarded"
+                      placeholder="e.g. Core skills and practical techniques covered..."
                       className="flex-1 px-3 py-1.5 border border-muted bg-white focus:outline-none focus:border-primary rounded-xl text-xs"
                     />
                     <button
@@ -414,7 +428,7 @@ export function EditTrainingForm({
               </div>
             ) : (
               <div className="text-xs text-light-ash italic">
-                No card bullet highlights added yet. Click &ldquo;Add Highlight&rdquo; to add bullet points to the card.
+                No bullet points added yet. Click &ldquo;Add Bullet Point&rdquo; to add key items.
               </div>
             )}
           </div>
@@ -486,29 +500,6 @@ export function EditTrainingForm({
               </div>
             )}
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-            <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Session Format</label>
-              <input
-                type="text"
-                value={format}
-                onChange={(e) => setFormat(e.target.value)}
-                placeholder="e.g. In-person / Online (if applicable)"
-                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Training Language</label>
-              <input
-                type="text"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                placeholder="e.g. Bangla / English"
-                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
-              />
-            </div>
-          </div>
         </div>
 
         {/* 2. Hero Configuration section */}
@@ -567,94 +558,6 @@ export function EditTrainingForm({
           </div>
         </div>
 
-        {/* 4. What You Will Learn / Course Content Sections */}
-        <div className="flex flex-col gap-4 border-b border-muted pb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col gap-0.5">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
-                What You Will Learn / Course Content Sections
-              </h3>
-              <span className="text-[11px] text-light-ash pl-2.5">
-                Add bulleted sections shown on the training page (e.g. &ldquo;What You Will Learn&rdquo;, &ldquo;Who Should Attend?&rdquo;, &ldquo;Topics Covered&rdquo;).
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={addSection}
-              className="text-primary hover:text-primary-dark font-semibold text-xs flex items-center gap-1 cursor-pointer shrink-0"
-            >
-              <HiPlus className="w-4 h-4" /> Add Section
-            </button>
-          </div>
-
-          {sections.length > 0 ? (
-            <div className="flex flex-col gap-4 mt-2">
-              {sections.map((sec, secIdx) => (
-                <div key={secIdx} className="bg-light/10 border border-muted rounded-2xl p-4 flex flex-col gap-3 relative">
-                  <button
-                    type="button"
-                    onClick={() => removeSection(secIdx)}
-                    className="absolute right-4 top-4 text-light-ash hover:text-red-600 p-1 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                    title="Remove Section"
-                  >
-                    <HiTrash className="w-4 h-4" />
-                  </button>
-
-                  <div className="flex flex-col gap-1 pr-10">
-                    <label className="text-xs font-bold text-dark uppercase">Section Header / Title</label>
-                    <input
-                      type="text"
-                      required
-                      value={sec.title}
-                      onChange={(e) => updateSectionTitle(secIdx, e.target.value)}
-                      placeholder="e.g. What You Will Learn (or Who Should Attend?)"
-                      className="px-3.5 py-1.5 border border-muted rounded-xl bg-white focus:outline-none focus:border-primary text-sm font-semibold"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-2 mt-2">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-semibold text-light-ash">Bullet points list</label>
-                      <button
-                        type="button"
-                        onClick={() => addSectionItem(secIdx)}
-                        className="text-primary hover:text-primary-dark text-xs font-semibold flex items-center gap-0.5 cursor-pointer"
-                      >
-                        <HiPlus className="w-3.5 h-3.5" /> Add bullet point
-                      </button>
-                    </div>
-
-                    <div className="flex flex-col gap-2 pl-3">
-                      {sec.items.map((item, itemIdx) => (
-                        <div key={itemIdx} className="flex items-center gap-2">
-                          <input
-                            type="text"
-                            required
-                            value={item}
-                            onChange={(e) => updateSectionItem(secIdx, itemIdx, e.target.value)}
-                            placeholder="e.g. Core skills and practical techniques covered..."
-                            className="flex-1 px-3 py-1.5 border border-muted bg-white focus:outline-none rounded-xl text-xs"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeSectionItem(secIdx, itemIdx)}
-                            className="p-1 text-light-ash hover:text-red-600 rounded-lg cursor-pointer"
-                          >
-                            <HiXMark className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-6 text-xs text-light-ash border border-dashed border-muted rounded-2xl">
-              No sections added yet. Click &ldquo;Add Section&rdquo; to add &ldquo;What You Will Learn&rdquo; or &ldquo;Who Should Attend&rdquo; details.
-            </div>
-          )}
-        </div>
 
         {/* 5. FAQ Builder section */}
         <div className="flex flex-col gap-4 border-b border-muted pb-6">
