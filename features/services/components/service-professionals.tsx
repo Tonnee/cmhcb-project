@@ -45,10 +45,12 @@ export function ServiceProfessionals({
             </Button>
           </div>
 
-          {/* Right: therapist cards — 3 of 8 columns, 3-col sub-grid */}
-          <div className="grid grid-cols-2 gap-6 lg:col-span-6">
+          {/* Right: therapist cards — 6 columns */}
+          <div className={`grid gap-6 lg:col-span-6 ${therapists.length === 1 ? "grid-cols-1 justify-items-end" : "grid-cols-1 sm:grid-cols-2"}`}>
             {therapists.map((therapist) => (
-              <TherapistCard key={therapist.id} therapist={therapist} />
+              <div key={therapist.id} className={therapists.length === 1 ? "w-full max-w-xs sm:max-w-sm" : "w-full"}>
+                <TherapistCard therapist={therapist} />
+              </div>
             ))}
           </div>
         </div>
