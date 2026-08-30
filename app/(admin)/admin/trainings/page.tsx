@@ -12,15 +12,23 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminTrainingsPage(): Promise<React.JSX.Element> {
-  // Retrieve trainings and info blocks from database
-  const [trainings, infoBlocks] = await Promise.all([
-    prisma.training.findMany({
-      orderBy: { order: "asc" },
-    }),
-    prisma.trainingInfoBlock.findMany({
-      orderBy: { order: "asc" },
-    }),
-  ]);
+  let trainings: any[] = [];
+  let infoBlocks: any[] = [];
+
+  try {
+    const [dbTrainings, dbInfoBlocks] = await Promise.all([
+      prisma.training.findMany({
+        orderBy: { order: "asc" },
+      }),
+      prisma.trainingInfoBlock.findMany({
+        orderBy: { order: "asc" },
+      }),
+    ]);
+    trainings = dbTrainings;
+    infoBlocks = dbInfoBlocks;
+  } catch (error) {
+    console.error("Failed to load training programs from database:", error);
+  }
 
   return (
     <div className="flex flex-col gap-8">
