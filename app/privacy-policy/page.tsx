@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "Privacy Policy for the Center for Mental Health and Care Bangladesh.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const defaultContent = `
 <p>

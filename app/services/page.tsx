@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Explore our professional, ethical, and evidence-based mental health services in Bangladesh.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function ServicesPage(): Promise<React.JSX.Element> {
   // Fetch services dynamically from database

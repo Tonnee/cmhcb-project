@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     "Meet our team of experienced clinical psychologists and counselors dedicated to supporting your mental health journey with evidence-based care.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function TherapistsPage() {
   let therapists = THERAPISTS_DATA;

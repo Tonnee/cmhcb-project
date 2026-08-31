@@ -15,7 +15,7 @@ import { Container } from "@/components/layout/container";
 import { JsonLd } from "@/components/shared/json-ld";
 
 // Force dynamic page rendering so queries run on every request
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function Page(): Promise<React.JSX.Element> {
   let isAdmin = false;

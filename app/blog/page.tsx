@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   description: "Explore our latest articles, insights, and resources on mental health, therapy, and well-being.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function BlogPage(): Promise<React.JSX.Element> {
   const dbPosts = await prisma.blogPost.findMany({

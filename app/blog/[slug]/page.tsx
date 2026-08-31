@@ -39,7 +39,7 @@ function UserIcon({ className = "" }: { className?: string }): React.JSX.Element
 
 import prisma from "@/lib/prisma";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const posts = await prisma.blogPost.findMany({ select: { slug: true } }).catch(() => []);

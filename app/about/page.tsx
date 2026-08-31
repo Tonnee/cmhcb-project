@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "Learn about the Center for Mental Health and Care Bangladesh (CMHCB), our mission, vision, and core values.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function AboutPage(): Promise<React.JSX.Element> {
   let isAdmin = false;

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "Terms and conditions for using the services provided by CMHCB.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const defaultContent = `
 <p>
