@@ -13,7 +13,7 @@ import Link from "next/link";
 import { Tag } from "@/components/ui/tag";
 import { JsonLd } from "@/components/shared/json-ld";
 
-import DOMPurify from "isomorphic-dompurify";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { formatContentToHtml } from "@/lib/text";
 
 // Shared icon components to match blog/page.tsx
@@ -258,7 +258,7 @@ export default async function BlogPostPage({
       <Container className="py-20">
         <article
           className="mx-auto font-sans text-dark text-lg leading-relaxed [&>p]:mb-8 [&>h3]:font-marcellus [&>h3]:text-3xl [&>h3]:text-dark [&>h3]:mb-6 [&>h3]:mt-12 [&>h3]:leading-tight [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-8 [&_li]:mb-2"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(formatContentToHtml(post.content)) }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(formatContentToHtml(post.content)) }}
         />
       </Container>
 
