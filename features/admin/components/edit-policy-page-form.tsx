@@ -4,6 +4,8 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { upsertPolicyPageContentAction } from "@/app/(admin)/admin/actions";
 
+import { DEFAULT_TERMS_CONTENT, DEFAULT_PRIVACY_CONTENT } from "@/features/legal/data/policy-defaults";
+
 interface PolicyPageContent {
   id: string;
   title: string;
@@ -24,9 +26,11 @@ export default function EditPolicyPageForm({
 }: EditPolicyPageFormProps): React.JSX.Element {
   const router = useRouter();
 
+  const defaultFallback = id === "privacy-policy" ? DEFAULT_PRIVACY_CONTENT : DEFAULT_TERMS_CONTENT;
+
   const [title, setTitle] = React.useState(initialContent?.title || (id === "privacy-policy" ? "Privacy Policy" : "Terms of Service"));
   const [subtitle, setSubtitle] = React.useState(initialContent?.subtitle || "Last Updated: May 2026");
-  const [content, setContent] = React.useState(initialContent?.content || "");
+  const [content, setContent] = React.useState(initialContent?.content || defaultFallback);
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
