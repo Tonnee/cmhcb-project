@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BLOG_POSTS } from "@/features/blog/data/blogs";
 import { PageHero } from "@/components/shared/page-hero";
 import { Container } from "@/components/layout/container";
-import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
+import { THERAPISTS_DATA, getTherapistByAuthorName } from "@/features/therapists/data/therapists";
 import { TherapistCard } from "@/components/shared/therapist-card";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { BlogCard } from "@/features/blog/components/blog-card";
@@ -145,10 +145,7 @@ export default async function BlogPostPage({
     : staticPost!;
 
   // Find the matched author from therapists data
-  const matchedAuthor = THERAPISTS_DATA.find(t =>
-    post.author.toLowerCase().includes(t.name.toLowerCase()) ||
-    t.name.toLowerCase().includes(post.author.toLowerCase())
-  ) || THERAPISTS_DATA[0];
+  const matchedAuthor = getTherapistByAuthorName(post.author);
 
   const otherPosts = BLOG_POSTS.filter((p) => p.slug !== slug).slice(0, 3);
 

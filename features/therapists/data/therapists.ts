@@ -279,3 +279,15 @@ export const THERAPISTS_DATA: Therapist[] = [
     services: ["individual-therapy", "psychometric-assessment"],
   },
 ];
+
+export function getTherapistByAuthorName(authorName?: string | null): Therapist {
+  if (!authorName) return THERAPISTS_DATA[0];
+  const normalized = authorName.toLowerCase().trim();
+  const matched = THERAPISTS_DATA.find((t) =>
+    normalized.includes(t.name.toLowerCase()) ||
+    t.name.toLowerCase().includes(normalized) ||
+    t.id === normalized.replace(/[^a-z0-9]+/g, "-")
+  );
+  return matched || THERAPISTS_DATA[0];
+}
+

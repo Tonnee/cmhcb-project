@@ -5,6 +5,7 @@ import { HiCalendarDays, HiUser } from "react-icons/hi2";
 import { BlogPost } from "@/features/blog/data/blogs";
 import { Tag } from "@/components/ui/tag";
 import { LinkButton } from "@/components/ui/link-button";
+import { getTherapistByAuthorName } from "@/features/therapists/data/therapists";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -55,7 +56,7 @@ export function BlogCard({ post, className = "" }: BlogCardProps): React.JSX.Ele
             <div className="flex items-center gap-2 text-xs text-light-ash">
               <HiUser className="w-4 h-4 text-accent shrink-0" />
               <Link
-                href={`/therapists/${post.author.toLowerCase().replace(/\./g, '').replace(/\s+/g, '-')}`}
+                href={`/therapists/${getTherapistByAuthorName(post.author).id}`}
                 className="text-primary hover:underline font-medium relative z-20"
               >
                 {post.author}

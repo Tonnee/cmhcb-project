@@ -7,6 +7,7 @@ import { upsertBlogPostAction } from "@/app/(admin)/admin/actions";
 import { HiXMark } from "react-icons/hi2";
 import { safeJsonParse } from "@/lib/json";
 import { z } from "zod";
+import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 
 interface BlogFormProps {
   post?: {
@@ -49,7 +50,7 @@ export default function EditBlogForm({
   const [imageUrl, setImageUrl] = React.useState(post?.image || "");
   const [previewUrl, setPreviewUrl] = React.useState(post?.image || "");
   const [pendingFile, setPendingFile] = React.useState<File | null>(null);
-  const [author, setAuthor] = React.useState(post?.author || "");
+  const [author, setAuthor] = React.useState(post?.author || THERAPISTS_DATA[0]?.name || "");
   const [tagsString, setTagsString] = React.useState<string>(() => {
     if (!post) return "Wellness, Mental Health";
     const parsed = safeJsonParse<string[]>(post.tags, []);
@@ -223,15 +224,26 @@ export default function EditBlogForm({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
-            <label className="font-semibold text-dark">Author Name</label>
-            <input
-              type="text"
+            <label className="font-semibold text-dark flex items-center justify-between">
+              <span>Author (Therapist Profile)</span>
+              <span className="text-[11px] font-normal text-primary">Links to therapist profile page</span>
+            </label>
+            <select
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              placeholder="e.g. Nazme Ara"
-              className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary"
+              className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary font-sans text-sm cursor-pointer"
               required
-            />
+            >
+              <option value="" disabled>Select Therapist Profile...</option>
+              {THERAPISTS_DATA.map((t) => (
+                <option key={t.id} value={t.name}>
+                  {t.name} — {t.role.split("|")[0].trim()}
+                </option>
+              ))}
+              {author && !THERAPISTS_DATA.some((t) => t.name.toLowerCase() === author.toLowerCase()) && (
+                <option value={author}>{author} (Custom)</option>
+              )}
+            </select>
           </div>
 
           <div className="flex flex-col gap-1.5">
