@@ -85,7 +85,7 @@ export default async function PrivacyPolicyPage(): Promise<React.JSX.Element> {
 
   const dbContent = await prisma.policyPageContent.findUnique({
     where: { id: "privacy-policy" },
-  });
+  }).catch(() => null);
 
   const title = dbContent?.title || "Privacy Policy";
   const subtitle = dbContent?.subtitle || "Last Updated: May 2026";

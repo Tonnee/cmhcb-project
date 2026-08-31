@@ -91,7 +91,7 @@ export default async function TermsOfServicePage(): Promise<React.JSX.Element> {
 
   const dbContent = await prisma.policyPageContent.findUnique({
     where: { id: "terms" },
-  });
+  }).catch(() => null);
 
   const title = dbContent?.title || "Terms of Service";
   const subtitle = dbContent?.subtitle || "Last Updated: May 2026";
