@@ -7,14 +7,14 @@ function getDatabaseUrl(): string {
 
   // If missing or is a SQLite path → use hardcoded Supabase transaction pooler
   if (!envUrl || envUrl.startsWith("file:")) {
-    return "postgresql://postgres.qeaszomzltstfhikrais:CmhcbProjectDb2026@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1";
+    return "postgresql://postgres.qeaszomzltstfhikrais:CmhcbProjectDb2026@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=10&pool_timeout=30";
   }
 
   // If it's already a PostgreSQL URL but using session mode port 5432 → force transaction mode port 6543
   if (envUrl.includes(":5432/") && !envUrl.includes("pgbouncer=true")) {
     const fixed = envUrl
       .replace(":5432/", ":6543/")
-      .replace(/\?.*$/, "") + "?pgbouncer=true&connection_limit=1";
+      .replace(/\?.*$/, "") + "?pgbouncer=true&connection_limit=10&pool_timeout=30";
     return fixed;
   }
 

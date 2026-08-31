@@ -28,27 +28,41 @@ export default async function Page(): Promise<React.JSX.Element> {
 
   const now = new Date().toISOString();
 
-  // Parallel database fetch for dynamic content
-  const [landingContent, dbTestimonials, dbFeaturedWorkshops, dbServices, latestWorkshop] = await Promise.all([
-    prisma.landingPageContent.findFirst(),
-    prisma.testimonial.findMany({
-      where: { isFeatured: true },
-      take: 10,
-    }),
-    prisma.workshop.findMany({
-      where: { isFeatured: true },
-      orderBy: { date: "asc" },
-      take: 4,
-    }),
-    prisma.service.findMany({
-      where: { isFeatured: true },
-      orderBy: { order: "asc" },
-      take: 6,
-    }),
-    prisma.workshop.findFirst({
-      where: { isLatest: true },
-    }),
-  ]);
+  let landingContent = null;
+  let dbTestimonials: any[] = [];
+  let dbFeaturedWorkshops: any[] = [];
+  let dbServices: any[] = [];
+  let latestWorkshop = null;
+
+  try {
+    const res = await Promise.all([
+      prisma.landingPageContent.findFirst(),
+      prisma.testimonial.findMany({
+        where: { isFeatured: true },
+        take: 10,
+      }),
+      prisma.workshop.findMany({
+        where: { isFeatured: true },
+        orderBy: { date: "asc" },
+        take: 4,
+      }),
+      prisma.service.findMany({
+        where: { isFeatured: true },
+        orderBy: { order: "asc" },
+        take: 6,
+      }),
+      prisma.workshop.findFirst({
+        where: { isLatest: true },
+      }),
+    ]);
+    landingContent = res[0];
+    dbTestimonials = res[1] || [];
+    dbFeaturedWorkshops = res[2] || [];
+    dbServices = res[3] || [];
+    latestWorkshop = res[4];
+  } catch (err) {
+    console.error("Error fetching homepage database content:", err);
+  }
 
   const defaultContent = {
     heroHeadline: "Empowering Your <span class=\"text-accent\">Mind</span>, Transforming Your <span class=\"text-primary\">Life</span>",
