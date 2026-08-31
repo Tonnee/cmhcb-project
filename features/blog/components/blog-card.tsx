@@ -51,7 +51,17 @@ export function BlogCard({ post, className = "" }: BlogCardProps): React.JSX.Ele
           <div className="flex flex-col gap-2 pointer-events-auto">
             <div className="flex items-center gap-2 text-xs text-light-ash">
               <HiCalendarDays className="w-4 h-4 text-accent shrink-0" />
-              <span>{new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+              <span>
+                {(() => {
+                  try {
+                    const d = new Date(post.publishedAt);
+                    if (isNaN(d.getTime())) return post.publishedAt || "Recent";
+                    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                  } catch {
+                    return post.publishedAt || "Recent";
+                  }
+                })()}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-xs text-light-ash">
               <HiUser className="w-4 h-4 text-accent shrink-0" />
