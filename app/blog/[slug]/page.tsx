@@ -42,8 +42,8 @@ import prisma from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
-  const posts = await prisma.blogPost.findMany({ select: { slug: true } });
-  if (posts.length > 0) {
+  const posts = await prisma.blogPost.findMany({ select: { slug: true } }).catch(() => []);
+  if (posts && posts.length > 0) {
     return posts.map((post) => ({ slug: post.slug }));
   }
   return BLOG_POSTS.map((post) => ({
@@ -231,7 +231,17 @@ export default async function BlogPostPage({
             </div>
             <div className="flex items-center gap-2">
               <CalendarIcon className="w-5 h-5 shrink-0 text-accent" />
-              <span>{new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              <span>
+                {(() => {
+                  try {
+                    const d = new Date(post.publishedAt);
+                    if (isNaN(d.getTime())) return post.publishedAt || "Recent";
+                    return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                  } catch {
+                    return post.publishedAt || "Recent";
+                  }
+                })()}
+              </span>
             </div>
           </div>
 

@@ -137,7 +137,15 @@ export default async function BlogPage(): Promise<React.JSX.Element> {
                   </div>
                   <div className="flex flex-col">
                     <span className="font-marcellus text-lg text-dark leading-tight">
-                      {new Date(featuredPost.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      {(() => {
+                        try {
+                          const d = new Date(featuredPost.publishedAt);
+                          if (isNaN(d.getTime())) return featuredPost.publishedAt || "Recent";
+                          return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                        } catch {
+                          return featuredPost.publishedAt || "Recent";
+                        }
+                      })()}
                     </span>
                     <span className="font-sans text-sm text-light-ash">Date of Publish</span>
                   </div>
