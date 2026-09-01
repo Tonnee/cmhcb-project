@@ -138,7 +138,7 @@ export default function WorkshopsClientWrapper({
             </span>
           </div>
           <p className="font-sans text-sm text-light-ash">
-            Create, edit, delete, reorder, and feature events. Drag handles on the left to reorder event serials. Exactly 4 marked events appear as upcoming events on the landing page.
+            Manage and drag to reorder events. Top 4 featured events appear on the landing page.
           </p>
         </div>
         <button
