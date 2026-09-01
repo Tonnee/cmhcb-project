@@ -89,10 +89,14 @@ export default async function ServiceDetailPage({
     notFound();
   }
 
-  // Retrieve and filter dynamic therapists specializing in this service slug
-  const dbTherapists = await prisma.therapist.findMany({
-    orderBy: { name: "asc" },
-  });
+  let dbTherapists: any[] = [];
+  try {
+    dbTherapists = await prisma.therapist.findMany({
+      orderBy: [{ order: "asc" }, { name: "asc" }],
+    });
+  } catch {
+    dbTherapists = await prisma.therapist.findMany().catch(() => []);
+  }
 
   const serviceTherapists = dbTherapists.map((t) => {
     let parsedEducation: string[] = [];

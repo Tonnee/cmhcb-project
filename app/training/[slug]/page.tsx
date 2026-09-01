@@ -133,9 +133,14 @@ export default async function TrainingDetailPage({
       } catch {}
     }
 
-    const dbTherapists = await prisma.therapist.findMany({
-      orderBy: { name: "asc" },
-    });
+    let dbTherapists: any[] = [];
+    try {
+      dbTherapists = await prisma.therapist.findMany({
+        orderBy: [{ order: "asc" }, { name: "asc" }],
+      });
+    } catch {
+      dbTherapists = await prisma.therapist.findMany().catch(() => []);
+    }
 
     const mappedTherapists = dbTherapists.map((t) => {
       let parsedEducation: string[] = [];

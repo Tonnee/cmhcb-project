@@ -20,9 +20,14 @@ export default async function TherapistsPage() {
   let therapists = THERAPISTS_DATA;
 
   try {
-    const dbTherapists = await prisma.therapist.findMany({
-      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
-    });
+    let dbTherapists: any[] = [];
+    try {
+      dbTherapists = await prisma.therapist.findMany({
+        orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+      });
+    } catch {
+      dbTherapists = await prisma.therapist.findMany().catch(() => []);
+    }
 
     if (dbTherapists && dbTherapists.length > 0) {
       const mapped = dbTherapists.map((t) => {

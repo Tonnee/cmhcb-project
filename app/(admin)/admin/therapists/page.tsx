@@ -13,10 +13,16 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminTherapistsPage(): Promise<React.JSX.Element> {
-  // Fetch list of therapists from Prisma
-  const therapists = await prisma.therapist.findMany({
-    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-  });
+  let therapists: any[] = [];
+  try {
+    therapists = await prisma.therapist.findMany({
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    });
+  } catch {
+    therapists = await prisma.therapist.findMany({
+      orderBy: { createdAt: "desc" },
+    }).catch(() => []);
+  }
 
   return (
     <TherapistsClientWrapper initialTherapists={therapists} />
