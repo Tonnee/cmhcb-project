@@ -377,17 +377,22 @@ export default function EditWorkshopForm({
             )}
           </div>
 
-          <label className="flex items-center gap-2 cursor-pointer w-fit text-light-ash">
-            <input
-              type="checkbox"
-              checked={isLatest}
-              onChange={(e) => setIsLatest(e.target.checked)}
-              className="rounded border-muted text-primary focus:ring-primary w-4 h-4 cursor-pointer"
-            />
-            <span className="font-semibold text-dark text-xs sm:text-sm">
-              Mark this event as latest event in workshops page
-            </span>
-          </label>
+          <div className="flex flex-col gap-1">
+            <label className="flex items-center gap-2 cursor-pointer w-fit text-light-ash">
+              <input
+                type="checkbox"
+                checked={isLatest}
+                onChange={(e) => setIsLatest(e.target.checked)}
+                className="rounded border-muted text-primary focus:ring-primary w-4 h-4 cursor-pointer"
+              />
+              <span className="font-semibold text-dark text-xs sm:text-sm">
+                Mark this event as latest event in workshops page
+              </span>
+            </label>
+            <p className="text-[11px] text-light-ash font-sans pl-6">
+              Only 1 event can be set as the latest event. Marking this will unmark any previous latest event.
+            </p>
+          </div>
         </div>
 
         {/* Content text area */}

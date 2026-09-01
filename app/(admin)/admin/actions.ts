@@ -404,6 +404,22 @@ export async function upsertWorkshopAction(
       }
     }
 
+    // Ensure only 1 event in the database can be marked as latest event
+    if (validated.isLatest) {
+      await prisma.workshop.updateMany({
+        where: {
+          isLatest: true,
+          NOT: [
+            { id },
+            { slug: titleSlug },
+          ],
+        },
+        data: {
+          isLatest: false,
+        },
+      });
+    }
+
     const dataPayload = {
       slug: titleSlug,
       title: validated.title,
