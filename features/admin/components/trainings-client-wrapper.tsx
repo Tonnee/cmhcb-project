@@ -5,7 +5,7 @@ import * as React from "react";
 import { HiPlus, HiPencilSquare, HiTrash, HiMagnifyingGlass, HiBars3 } from "react-icons/hi2";
 import { EditTrainingForm } from "./edit-training-form";
 import { EditTrainingInfoBlockForm } from "./edit-training-info-block-form";
-import { deleteTrainingAction, deleteTrainingInfoBlockAction, reorderTrainingsAction } from "@/app/(admin)/admin/actions";
+import { deleteTrainingAction, deleteTrainingInfoBlockAction, reorderTrainingsAction, reorderTrainingInfoBlocksAction } from "@/app/(admin)/admin/actions";
 import { useRouter } from "next/navigation";
 
 export interface TrainingDB {
@@ -61,6 +61,7 @@ export default function TrainingsClientWrapper({
 
   // Drag & Reorder state
   const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+  const [draggedBlockIndex, setDraggedBlockIndex] = React.useState<number | null>(null);
   const [isReordering, setIsReordering] = React.useState(false);
 
   // Tab & Info Block states
@@ -107,6 +108,43 @@ export default function TrainingsClientWrapper({
       }
     } catch (err: unknown) {
       console.error("Error saving training order:", err);
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
+  // Drag and Drop handlers for reordering info blocks
+  const handleBlockDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    setDraggedBlockIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+  };
+
+  const handleBlockDragOver = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (draggedBlockIndex === null || draggedBlockIndex === index) return;
+
+    const newBlocks = [...infoBlocks];
+    const [draggedItem] = newBlocks.splice(draggedBlockIndex, 1);
+    newBlocks.splice(index, 0, draggedItem);
+    setInfoBlocks(newBlocks);
+    setDraggedBlockIndex(index);
+  };
+
+  const handleBlockDragEnd = async () => {
+    setDraggedBlockIndex(null);
+    setIsReordering(true);
+    try {
+      const orderedIds = infoBlocks.map((b) => b.id);
+      const res = await reorderTrainingInfoBlocksAction(orderedIds);
+      if (!res.success) {
+        alert(res.error || "Failed to save new info block order.");
+      } else {
+        router.refresh();
+      }
+    } catch (err: unknown) {
+      console.error("Error saving info block order:", err);
     } finally {
       setIsReordering(false);
     }
@@ -366,10 +404,10 @@ export default function TrainingsClientWrapper({
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-light/20 text-xs font-semibold text-light-ash uppercase tracking-wider border-b border-muted/50">
+                  <th className="px-4 py-4 text-center w-16">Order</th>
                   <th className="px-6 py-4">Block Heading</th>
                   <th className="px-6 py-4">List Items</th>
                   <th className="px-6 py-4">CTA Button</th>
-                  <th className="px-6 py-4 text-center">Display Order</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -381,14 +419,37 @@ export default function TrainingsClientWrapper({
                     </td>
                   </tr>
                 ) : (
-                  infoBlocks.map((block) => {
+                  infoBlocks.map((block, index) => {
                     let itemsCount = 0;
                     try {
                       itemsCount = JSON.parse(block.items).length;
                     } catch {}
                     
                     return (
-                      <tr key={block.id} className="hover:bg-light/10 transition-colors">
+                      <tr
+                        key={block.id}
+                        draggable
+                        onDragStart={(e) => handleBlockDragStart(e, index)}
+                        onDragOver={(e) => handleBlockDragOver(e, index)}
+                        onDragEnd={handleBlockDragEnd}
+                        className={`transition-all duration-150 ${
+                          draggedBlockIndex === index
+                            ? "bg-primary/10 opacity-70 border-2 border-dashed border-primary cursor-grabbing"
+                            : "hover:bg-light/10 cursor-grab"
+                        }`}
+                      >
+                        {/* Order Serial & Drag Handle */}
+                        <td className="px-4 py-4 text-center shrink-0">
+                          <div className="flex items-center justify-center gap-1.5 text-light-ash">
+                            <HiBars3
+                              className="w-4 h-4 text-light-ash/50 hover:text-primary shrink-0 cursor-grab active:cursor-grabbing"
+                              title="Drag up or down to reorder info block serial"
+                            />
+                            <span className="font-semibold text-dark-green text-sm shrink-0 font-mono">
+                              {String(index + 1).padStart(2, "0")}
+                            </span>
+                          </div>
+                        </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-muted/50 shrink-0 bg-light/5">
@@ -404,9 +465,6 @@ export default function TrainingsClientWrapper({
                         </td>
                         <td className="px-6 py-4 text-primary-dark font-medium">
                           {block.ctaLabel} ({block.ctaHref})
-                        </td>
-                        <td className="px-6 py-4 text-center font-semibold text-dark">
-                          {block.order}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">

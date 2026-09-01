@@ -1386,6 +1386,42 @@ export async function deleteTrainingInfoBlockAction(
   }
 }
 
+export async function reorderTrainingInfoBlocksAction(
+  orderedIds: string[]
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+
+    await prisma.$transaction(
+      orderedIds.map((id, index) =>
+        prisma.trainingInfoBlock.update({
+          where: { id },
+          data: { order: index },
+        })
+      )
+    );
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "TrainingInfoBlock",
+      "reorder",
+      "Training Info Blocks Order",
+      "Reordered training info blocks display sequence."
+    );
+
+    revalidatePath("/training");
+    revalidatePath("/admin/trainings");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in reorderTrainingInfoBlocksAction:", error);
+    return { success: false, error: error.message || "Failed to reorder info blocks" };
+  }
+}
+
 // ============================================================================
 // Server Actions - Custom Pages Content Management
 // ============================================================================
