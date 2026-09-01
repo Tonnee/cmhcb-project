@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { HiPlus, HiPencil, HiTrash, HiCalendar, HiBars3, HiStar, HiFolder } from "react-icons/hi2";
+import { HiPlus, HiPencil, HiTrash, HiCalendar, HiBars3 } from "react-icons/hi2";
 import EditWorkshopForm from "./edit-workshop-form";
 import { deleteWorkshopAction, reorderWorkshopsAction } from "@/app/(admin)/admin/actions";
 
@@ -182,41 +182,28 @@ export default function WorkshopsClientWrapper({
       </div>
 
       {/* Tabs navigation */}
-      <div className="flex items-center gap-2 border-b border-muted pb-1">
+      <div className="flex border-b border-muted/50 -mt-2">
         <button
           type="button"
           onClick={() => setActiveTab("featured")}
-          className={`px-4 py-2.5 rounded-xl font-sans text-sm font-semibold transition-all cursor-pointer flex items-center gap-2.5 ${
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
             activeTab === "featured"
-              ? "bg-primary text-white shadow-sm"
-              : "bg-light/40 text-dark-green hover:bg-light/70"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
           }`}
         >
-          <HiStar className="w-4 h-4" />
-          <span>Featured Events & Workshops</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${
-            activeTab === "featured" ? "bg-white/20 text-white" : "bg-primary/10 text-primary-dark"
-          }`}>
-            {featuredWorkshops.length}
-          </span>
+          Featured Events & Workshops ({featuredWorkshops.length})
         </button>
-
         <button
           type="button"
           onClick={() => setActiveTab("more")}
-          className={`px-4 py-2.5 rounded-xl font-sans text-sm font-semibold transition-all cursor-pointer flex items-center gap-2.5 ${
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
             activeTab === "more"
-              ? "bg-primary text-white shadow-sm"
-              : "bg-light/40 text-dark-green hover:bg-light/70"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
           }`}
         >
-          <HiFolder className="w-4 h-4" />
-          <span>More Events & Workshops</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${
-            activeTab === "more" ? "bg-white/20 text-white" : "bg-primary/10 text-primary-dark"
-          }`}>
-            {moreWorkshops.length}
-          </span>
+          More Events & Workshops ({moreWorkshops.length})
         </button>
       </div>
 
