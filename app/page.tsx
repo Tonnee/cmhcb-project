@@ -44,7 +44,7 @@ export default async function Page(): Promise<React.JSX.Element> {
       }),
       prisma.workshop.findMany({
         where: { isFeatured: true },
-        orderBy: { date: "asc" },
+        orderBy: [{ order: "asc" }, { createdAt: "desc" }],
         take: 4,
       }),
       prisma.service.findMany({

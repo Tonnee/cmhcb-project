@@ -14,7 +14,7 @@ interface EventListProps {
 export function EventList({ events }: EventListProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedTag, setSelectedTag] = React.useState("all");
-  const [sortOrder, setSortOrder] = React.useState<"newest" | "oldest">("newest");
+  const [sortOrder, setSortOrder] = React.useState<"default" | "newest" | "oldest">("default");
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 9;
 
@@ -38,7 +38,7 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
   };
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortOrder(e.target.value as "newest" | "oldest");
+    setSortOrder(e.target.value as "default" | "newest" | "oldest");
     setCurrentPage(1);
   };
 
@@ -62,12 +62,12 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
       result = result.filter((event) => event.tags.includes(selectedTag));
     }
 
-    // Sort
-    result.sort((a, b) => {
-      const dateA = new Date(a.date).getTime();
-      const dateB = new Date(b.date).getTime();
-      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
-    });
+    // Sort: if 'default', retain the admin serial order passed via props
+    if (sortOrder === "newest") {
+      result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    } else if (sortOrder === "oldest") {
+      result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    }
 
     return result;
   }, [events, searchQuery, selectedTag, sortOrder]);
@@ -138,6 +138,7 @@ export function EventList({ events }: EventListProps): React.JSX.Element {
               onChange={handleSortChange}
               className="sm:w-auto min-w-[150px]"
             >
+              <option value="default">Default Order</option>
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
             </Select>
