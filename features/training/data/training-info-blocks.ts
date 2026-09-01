@@ -37,7 +37,7 @@ export const TRAINING_INFO_BLOCKS: SplitBlockContent[] = [
       "Case studies and real-world scenario analysis",
       "Take-home resources and certificates",
     ],
-    cta: { label: "View Calendar", href: "/events" },
+    cta: { label: "View Calendar", href: "/events-workshops" },
     image: {
       src: "/training_methodology.png",
       alt: "Interactive workshop activity at CMHCB",

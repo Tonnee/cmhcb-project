@@ -135,7 +135,7 @@ export default async function AdminDashboardPage(): Promise<React.JSX.Element> {
           title="Scheduled Workshops"
           value={String(workshopCount)}
           trend="Awareness events & intensives"
-          href="/admin/workshops"
+          href="/admin/events-workshops"
           icon={HiAcademicCap}
           color="accent"
         />

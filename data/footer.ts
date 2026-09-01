@@ -30,7 +30,7 @@ export const FOOTER_LINK_COLUMNS: FooterLinkColumn[] = [
   {
     title: "Resources & Support",
     links: [
-      { label: "Events & Workshops", href: "/events" },
+      { label: "Events & Workshops", href: "/events-workshops" },
       { label: "Blogs", href: "/blog" },
       { label: "FAQs", href: "/faqs" },
       { label: "Gallery", href: "/gallery" },

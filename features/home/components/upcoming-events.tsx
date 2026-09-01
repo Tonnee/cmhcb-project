@@ -235,7 +235,7 @@ export function UpcomingEvents({
 
             {/* CTA Button */}
             <div>
-              <Button href={`/events/${featured.slug}`} variant="primary">
+              <Button href={`/events-workshops/${featured.slug}`} variant="primary">
                 Register Now
               </Button>
             </div>
@@ -273,7 +273,7 @@ export function UpcomingEvents({
             }
 
             return (
-              <a href={`/events/${event.slug}`} key={event.id} className="block group h-full">
+              <a href={`/events-workshops/${event.slug}`} key={event.id} className="block group h-full">
                 <EventCard
                   title={`"${event.title}"`}
                   date={event.date}
@@ -292,7 +292,7 @@ export function UpcomingEvents({
             annual event calendar highlights key training sessions, mental health awareness days, and community
             initiatives designed to educate, support, and empower individuals across all age groups.
           </p>
-          <Button href="/events" variant="primary">
+          <Button href="/events-workshops" variant="primary">
             Explore all Events & Workshops
           </Button>
         </div>

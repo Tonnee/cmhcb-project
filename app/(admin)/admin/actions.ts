@@ -458,10 +458,13 @@ export async function upsertWorkshopAction(
     );
 
     revalidatePath("/");
+    revalidatePath("/events-workshops");
+    revalidatePath(`/events-workshops/${titleSlug}`);
     revalidatePath("/events");
     revalidatePath(`/events/${titleSlug}`);
     revalidatePath("/workshops");
     revalidatePath(`/workshops/${titleSlug}`);
+    revalidatePath("/admin/events-workshops");
     revalidatePath("/admin/workshops");
 
     return { success: true, data: workshop };
@@ -501,12 +504,15 @@ export async function deleteWorkshopAction(
     );
 
     revalidatePath("/");
+    revalidatePath("/events-workshops");
     revalidatePath("/events");
     if (slug) {
+      revalidatePath(`/events-workshops/${slug}`);
       revalidatePath(`/events/${slug}`);
       revalidatePath(`/workshops/${slug}`);
     }
     revalidatePath("/workshops");
+    revalidatePath("/admin/events-workshops");
     revalidatePath("/admin/workshops");
 
     return { success: true };
@@ -543,8 +549,10 @@ export async function reorderWorkshopsAction(
     );
 
     revalidatePath("/");
+    revalidatePath("/events-workshops");
     revalidatePath("/events");
     revalidatePath("/workshops");
+    revalidatePath("/admin/events-workshops");
     revalidatePath("/admin/workshops");
 
     return { success: true };

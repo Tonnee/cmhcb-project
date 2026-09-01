@@ -68,7 +68,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     label: "Events & Workshops",
-    href: "/admin/workshops",
+    href: "/admin/events-workshops",
     icon: HiAcademicCap,
   },
   {

@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/appointment",
     "/blog",
     "/contact",
-    "/events",
+    "/events-workshops",
     "/faqs",
     "/gallery",
     "/privacy-policy",
@@ -86,7 +86,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const eventRoutes = EVENTS_DATA.map((ev) => ({
-    url: `${baseUrl}/events/${ev.slug}`,
+    url: `${baseUrl}/events-workshops/${ev.slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.6,

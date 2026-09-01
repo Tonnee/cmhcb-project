@@ -6,5 +6,5 @@ export default async function WorkshopRegistrationPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  redirect(`/events/${slug}`);
+  redirect(`/events-workshops/${slug}`);
 }

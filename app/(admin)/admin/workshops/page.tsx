@@ -1,23 +1,5 @@
-import * as React from "react";
-import type { Metadata } from "next";
-import prisma from "@/lib/prisma";
-import WorkshopsClientWrapper from "@/features/admin/components/workshops-client-wrapper";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Manage Workshops | Admin Portal | CMHCB",
-  description: "Manage workshop events, registration forms, and client sign-ups for Center for Mental Health and Care, Bangladesh.",
-};
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
-export default async function AdminWorkshopsPage(): Promise<React.JSX.Element> {
-  // Fetch workshops from database: 1. Latest event, 2. Featured events, 3. Remaining events
-  const workshops = await prisma.workshop.findMany({
-    orderBy: [{ isLatest: "desc" }, { isFeatured: "desc" }, { order: "asc" }, { createdAt: "desc" }],
-  });
-
-  return (
-    <WorkshopsClientWrapper initialWorkshops={workshops} />
-  );
+export default function AdminWorkshopsRedirectPage(): never {
+  redirect("/admin/events-workshops");
 }
