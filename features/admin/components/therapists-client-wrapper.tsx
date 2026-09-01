@@ -3,9 +3,9 @@ import Image from "next/image";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { HiPlus, HiPencil, HiTrash, HiUser } from "react-icons/hi2";
+import { HiPlus, HiPencil, HiTrash, HiUser, HiBars3 } from "react-icons/hi2";
 import EditTherapistForm from "./edit-therapist-form";
-import { deleteTherapistAction } from "@/app/(admin)/admin/actions";
+import { deleteTherapistAction, reorderTherapistsAction } from "@/app/(admin)/admin/actions";
 
 interface TherapistDB {
   id: string;
@@ -20,6 +20,7 @@ interface TherapistDB {
   fees: string;
   services: string;
   activities: string;
+  order?: number;
 }
 
 interface TherapistsClientWrapperProps {
@@ -30,9 +31,55 @@ export default function TherapistsClientWrapper({
   initialTherapists,
 }: TherapistsClientWrapperProps): React.JSX.Element {
   const router = useRouter();
+  const [therapists, setTherapists] = React.useState<TherapistDB[]>(initialTherapists);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [editingTherapist, setEditingTherapist] = React.useState<TherapistDB | null>(null);
   const [isDeleting, setIsDeleting] = React.useState<string | null>(null);
+
+  // Drag & Reorder state
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+  const [isReordering, setIsReordering] = React.useState(false);
+
+  React.useEffect(() => {
+    setTherapists(initialTherapists);
+  }, [initialTherapists]);
+
+  // Drag and Drop handlers for reordering therapists
+  const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const newTherapists = [...therapists];
+    const [draggedItem] = newTherapists.splice(draggedIndex, 1);
+    newTherapists.splice(index, 0, draggedItem);
+    setTherapists(newTherapists);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = async () => {
+    setDraggedIndex(null);
+    setIsReordering(true);
+    try {
+      const orderedIds = therapists.map((t) => t.id);
+      const res = await reorderTherapistsAction(orderedIds);
+      if (!res.success) {
+        alert(res.error || "Failed to save new therapist order.");
+      } else {
+        router.refresh();
+      }
+    } catch (err: unknown) {
+      console.error("Error saving therapist order:", err);
+    } finally {
+      setIsReordering(false);
+    }
+  };
 
   const handleOpenAdd = () => {
     setEditingTherapist(null);
@@ -113,6 +160,7 @@ export default function TherapistsClientWrapper({
           <table className="w-full border-collapse text-left font-sans text-sm">
             <thead>
               <tr className="bg-light/35 border-b border-muted">
+                <th className="px-4 py-4 font-semibold text-dark text-center w-16">Order</th>
                 <th className="px-6 py-4 font-semibold text-dark">Name</th>
                 <th className="px-6 py-4 font-semibold text-dark">Specialty/Role</th>
                 <th className="px-6 py-4 font-semibold text-dark">Services</th>
@@ -120,7 +168,7 @@ export default function TherapistsClientWrapper({
               </tr>
             </thead>
             <tbody className="divide-y divide-muted/60">
-              {initialTherapists.map((therapist) => {
+              {therapists.map((therapist, index) => {
                 let servicesArray: string[] = [];
                 try {
                   servicesArray = JSON.parse(therapist.services);
@@ -129,7 +177,30 @@ export default function TherapistsClientWrapper({
                 }
 
                 return (
-                  <tr key={therapist.id} className="hover:bg-light/10 transition-colors">
+                  <tr
+                    key={therapist.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragEnd={handleDragEnd}
+                    className={`transition-all duration-150 ${
+                      draggedIndex === index
+                        ? "bg-primary/10 opacity-70 border-2 border-dashed border-primary cursor-grabbing"
+                        : "hover:bg-light/10 cursor-grab"
+                    }`}
+                  >
+                    {/* Order Serial & Drag Handle */}
+                    <td className="px-4 py-4 text-center shrink-0">
+                      <div className="flex items-center justify-center gap-1.5 text-light-ash">
+                        <HiBars3
+                          className="w-4 h-4 text-light-ash/50 hover:text-primary shrink-0 cursor-grab active:cursor-grabbing"
+                          title="Drag up or down to reorder therapist serial"
+                        />
+                        <span className="font-semibold text-dark-green text-sm shrink-0 font-mono">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                      </div>
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full overflow-hidden bg-primary/10 border border-primary/20 shrink-0 relative flex items-center justify-center text-primary-dark">
@@ -183,9 +254,9 @@ export default function TherapistsClientWrapper({
                 );
               })}
 
-              {initialTherapists.length === 0 && (
+              {therapists.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-light-ash font-sans">
+                  <td colSpan={5} className="px-6 py-12 text-center text-light-ash font-sans">
                     No therapists registered. Click &ldquo;Add Therapist&rdquo; to register a practitioner.
                   </td>
                 </tr>

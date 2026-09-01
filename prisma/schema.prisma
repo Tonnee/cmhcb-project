@@ -21,6 +21,7 @@ model Therapist {
   fees       String   // JSON string of fee categories
   services   String   // JSON string of string[]
   activities String   // JSON string of string[]
+  order      Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   lastUpdatedBy String?

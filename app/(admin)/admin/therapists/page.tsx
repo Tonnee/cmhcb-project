@@ -15,7 +15,7 @@ export const revalidate = 0;
 export default async function AdminTherapistsPage(): Promise<React.JSX.Element> {
   // Fetch list of therapists from Prisma
   const therapists = await prisma.therapist.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
 
   return (

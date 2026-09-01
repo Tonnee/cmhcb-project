@@ -32,6 +32,7 @@ export default async function Page(): Promise<React.JSX.Element> {
   let dbTestimonials: any[] = [];
   let dbFeaturedWorkshops: any[] = [];
   let dbServices: any[] = [];
+  let dbTherapists: any[] = [];
   let latestWorkshop = null;
 
   try {
@@ -54,12 +55,16 @@ export default async function Page(): Promise<React.JSX.Element> {
       prisma.workshop.findFirst({
         where: { isLatest: true },
       }),
+      prisma.therapist.findMany({
+        orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+      }),
     ]);
     landingContent = res[0];
     dbTestimonials = res[1] || [];
     dbFeaturedWorkshops = res[2] || [];
     dbServices = res[3] || [];
     latestWorkshop = res[4];
+    dbTherapists = res[5] || [];
   } catch (err) {
     console.error("Error fetching homepage database content:", err);
   }
@@ -221,7 +226,7 @@ export default async function Page(): Promise<React.JSX.Element> {
         subtitle={content.trainingSubtitle}
         image={content.trainingImage}
       />
-      <Therapists />
+      <Therapists therapists={dbTherapists} />
       <ScheduleAppointment />
       
       {/* 3. Dynamic Upcoming Events */}

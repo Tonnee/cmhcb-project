@@ -331,6 +331,43 @@ export async function deleteTherapistAction(
   }
 }
 
+export async function reorderTherapistsAction(
+  orderedIds: string[]
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+
+    await prisma.$transaction(
+      orderedIds.map((id, index) =>
+        prisma.therapist.update({
+          where: { id },
+          data: { order: index },
+        })
+      )
+    );
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "Therapist",
+      "reorder",
+      "Therapists Order",
+      "Reordered therapists display sequence."
+    );
+
+    revalidatePath("/");
+    revalidatePath("/therapists");
+    revalidatePath("/admin/therapists");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in reorderTherapistsAction:", error);
+    return { success: false, error: error.message || "Failed to reorder therapists" };
+  }
+}
+
 // ============================================================================
 // Server Actions - Workshops
 // ============================================================================

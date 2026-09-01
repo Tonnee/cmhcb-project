@@ -5,7 +5,48 @@ import { TherapistCarousel } from "@/features/home/components/therapist-carousel
 
 import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 
-export default function Therapists(): React.JSX.Element {
+interface TherapistsProps {
+  therapists?: any[];
+}
+
+export default function Therapists({ therapists }: TherapistsProps): React.JSX.Element {
+  let displayTherapists = THERAPISTS_DATA;
+
+  if (therapists && therapists.length > 0) {
+    displayTherapists = therapists.map((t) => {
+      let parsedEducation: string[] = [];
+      let parsedTraining: string[] = [];
+      let parsedExpertise: string[] = [];
+      let parsedExperience: string[] = [];
+      let parsedServices: string[] = [];
+      let parsedActivities: string[] = [];
+      let parsedFees: any = null;
+
+      try { parsedEducation = JSON.parse(t.education || "[]"); } catch { }
+      try { parsedTraining = JSON.parse(t.training || "[]"); } catch { }
+      try { parsedExpertise = JSON.parse(t.expertise || "[]"); } catch { }
+      try { parsedExperience = JSON.parse(t.experience || "[]"); } catch { }
+      try { parsedServices = JSON.parse(t.services || "[]"); } catch { }
+      try { parsedActivities = JSON.parse(t.activities || "[]"); } catch { }
+      try { parsedFees = JSON.parse(t.fees || "null"); } catch { }
+
+      return {
+        id: t.id,
+        image: t.image,
+        name: t.name,
+        role: t.role,
+        bio: t.bio,
+        education: parsedEducation,
+        training: parsedTraining,
+        expertise: parsedExpertise,
+        experience: parsedExperience,
+        fees: parsedFees,
+        services: parsedServices,
+        activities: parsedActivities,
+      };
+    });
+  }
+
   return (
     <section className="py-20 lg:py-24">
       <Container>
@@ -16,7 +57,7 @@ export default function Therapists(): React.JSX.Element {
         />
 
         {/* Dynamic Interactive Leaf Component Mounting Block */}
-        <TherapistCarousel therapists={THERAPISTS_DATA} />
+        <TherapistCarousel therapists={displayTherapists} />
 
       </Container>
     </section>

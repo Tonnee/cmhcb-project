@@ -20,12 +20,11 @@ export default async function TherapistsPage() {
   let therapists = THERAPISTS_DATA;
 
   try {
-    const dbTherapists = await prisma.therapist.findMany();
+    const dbTherapists = await prisma.therapist.findMany({
+      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+    });
 
     if (dbTherapists && dbTherapists.length > 0) {
-      // Map DB therapists and maintain consistent roster ordering matching THERAPISTS_DATA
-      const orderMap = new Map(THERAPISTS_DATA.map((t, index) => [t.id, index]));
-
       const mapped = dbTherapists.map((t) => {
         let parsedEducation: string[] = [];
         let parsedTraining: string[] = [];
@@ -56,14 +55,11 @@ export default async function TherapistsPage() {
           fees: parsedFees,
           services: parsedServices,
           activities: parsedActivities,
+          order: t.order ?? 0,
         };
       });
 
-      therapists = mapped.sort((a, b) => {
-        const orderA = orderMap.get(a.id) ?? 999;
-        const orderB = orderMap.get(b.id) ?? 999;
-        return orderA - orderB;
-      });
+      therapists = mapped.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     }
   } catch (error) {
     console.error("Failed to load therapists from DB, falling back to static data:", error);
