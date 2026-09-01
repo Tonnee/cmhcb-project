@@ -386,53 +386,6 @@ export function EditTrainingForm({
             </div>
           </div>
 
-          {/* Course Content / Bullet Points List (placed right after duration & fees) */}
-          <div className="flex flex-col gap-3 pt-2 bg-light/10 p-4 rounded-2xl border border-muted/50">
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="font-semibold text-dark text-xs uppercase tracking-wide">
-                  Course Content & Key Highlights (Bullet Points List)
-                </label>
-                <p className="text-[11px] text-light-ash">
-                  Bullet points displayed under What You Will Learn on the training page and cards.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={addFeature}
-                className="text-primary hover:text-primary-dark font-semibold text-xs flex items-center gap-1 cursor-pointer"
-              >
-                <HiPlus className="w-3.5 h-3.5" /> Add Bullet Point
-              </button>
-            </div>
-            {features.length > 0 ? (
-              <div className="flex flex-col gap-2">
-                {features.map((feat, fIdx) => (
-                  <div key={fIdx} className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={feat}
-                      onChange={(e) => updateFeature(fIdx, e.target.value)}
-                      placeholder="e.g. Core skills and practical techniques covered..."
-                      className="flex-1 px-3 py-1.5 border border-muted bg-white focus:outline-none focus:border-primary rounded-xl text-xs"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeFeature(fIdx)}
-                      className="p-1 text-light-ash hover:text-red-600 rounded-lg cursor-pointer"
-                    >
-                      <HiTrash className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-xs text-light-ash italic">
-                No bullet points added yet. Click &ldquo;Add Bullet Point&rdquo; to add key items.
-              </div>
-            )}
-          </div>
-
           {/* Our Top Trainers Selector */}
           <div className="flex flex-col gap-3 pt-2 bg-light/10 p-4 rounded-2xl border border-muted/50">
             <div className="flex items-center justify-between">
@@ -555,6 +508,53 @@ export function EditTrainingForm({
               placeholder="Write a detailed explanation of the program..."
               className="w-full h-24 px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary resize-none"
             />
+          </div>
+
+          {/* Who Should Attend? / Bullet Points List (placed right after Intro Details Description) */}
+          <div className="flex flex-col gap-3 pt-2 bg-light/10 p-4 rounded-2xl border border-muted/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="font-semibold text-dark text-xs uppercase tracking-wide">
+                  Who Should Attend? (Bullet Points List)
+                </label>
+                <p className="text-[11px] text-light-ash">
+                  Bullet points displayed under Who Should Attend? on the training page and cards.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={addFeature}
+                className="text-primary hover:text-primary-dark font-semibold text-xs flex items-center gap-1 cursor-pointer"
+              >
+                <HiPlus className="w-3.5 h-3.5" /> Add Bullet Point
+              </button>
+            </div>
+            {features.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                {features.map((feat, fIdx) => (
+                  <div key={fIdx} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={feat}
+                      onChange={(e) => updateFeature(fIdx, e.target.value)}
+                      placeholder="e.g. Core skills and practical techniques covered..."
+                      className="flex-1 px-3 py-1.5 border border-muted bg-white focus:outline-none focus:border-primary rounded-xl text-xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeFeature(fIdx)}
+                      className="p-1 text-light-ash hover:text-red-600 rounded-lg cursor-pointer"
+                    >
+                      <HiTrash className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-xs text-light-ash italic">
+                No bullet points added yet. Click &ldquo;Add Bullet Point&rdquo; to add key items.
+              </div>
+            )}
           </div>
         </div>
 
