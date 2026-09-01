@@ -13,7 +13,8 @@ export default function Therapists({ therapists }: TherapistsProps): React.JSX.E
   let displayTherapists = THERAPISTS_DATA;
 
   if (therapists && therapists.length > 0) {
-    displayTherapists = therapists.map((t) => {
+    const sortedTherapists = [...therapists].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    displayTherapists = sortedTherapists.map((t) => {
       let parsedEducation: string[] = [];
       let parsedTraining: string[] = [];
       let parsedExpertise: string[] = [];
