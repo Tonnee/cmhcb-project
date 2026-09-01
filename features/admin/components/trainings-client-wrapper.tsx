@@ -2,7 +2,6 @@
 import Image from "next/image";
 
 import * as React from "react";
-import * as React from "react";
 import { HiPlus, HiPencilSquare, HiTrash, HiMagnifyingGlass, HiBars3 } from "react-icons/hi2";
 import { EditTrainingForm } from "./edit-training-form";
 import { EditTrainingInfoBlockForm } from "./edit-training-info-block-form";
