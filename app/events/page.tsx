@@ -34,9 +34,9 @@ export const dynamic = "force-dynamic";
 export default async function EventsPage(): Promise<React.JSX.Element> {
   const now = new Date().getTime();
 
-  // Fetch from database ordered by admin serial
+  // Fetch from database ordered with latest event first by default
   const dbEvents = await prisma.workshop.findMany({
-    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    orderBy: [{ isLatest: "desc" }, { order: "asc" }, { createdAt: "desc" }],
   });
 
   const parsedEvents = dbEvents.map((e) => ({
