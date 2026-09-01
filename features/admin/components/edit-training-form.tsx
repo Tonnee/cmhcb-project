@@ -67,10 +67,36 @@ export function EditTrainingForm({
   // Complex list states (parsed from JSON on load)
   const [features, setFeatures] = React.useState<string[]>(() => {
     try {
-      return training ? JSON.parse(training.features) : [];
-    } catch {
-      return [];
-    }
+      if (training?.features) {
+        const parsedFeat = typeof training.features === "string" ? JSON.parse(training.features) : training.features;
+        if (Array.isArray(parsedFeat) && parsedFeat.length > 0) return parsedFeat;
+      }
+      if (training?.sections) {
+        const parsedSecs = typeof training.sections === "string" ? JSON.parse(training.sections) : training.sections;
+        if (Array.isArray(parsedSecs)) {
+          const whoSec = parsedSecs.find((s: any) => s.title?.toLowerCase().includes("who"));
+          if (whoSec && Array.isArray(whoSec.items)) return whoSec.items;
+        }
+      }
+    } catch {}
+    return [];
+  });
+
+  const [learnItems, setLearnItems] = React.useState<string[]>(() => {
+    try {
+      if (training?.sections) {
+        const parsedSecs = typeof training.sections === "string" ? JSON.parse(training.sections) : training.sections;
+        if (Array.isArray(parsedSecs)) {
+          const learnSec = parsedSecs.find((s: any) =>
+            s.title?.toLowerCase().includes("learn") || s.title?.toLowerCase().includes("what")
+          );
+          if (learnSec && Array.isArray(learnSec.items)) {
+            return learnSec.items;
+          }
+        }
+      }
+    } catch {}
+    return [];
   });
 
   const [sections, setSections] = React.useState<Section[]>(() => {
@@ -108,7 +134,7 @@ export function EditTrainingForm({
     }
   };
 
-  // Feature bullets actions (displayed on training cards)
+  // Feature bullets actions (Who Should Attend)
   const addFeature = () => {
     setFeatures([...features, ""]);
   };
@@ -121,6 +147,21 @@ export function EditTrainingForm({
 
   const removeFeature = (index: number) => {
     setFeatures(features.filter((_, i) => i !== index));
+  };
+
+  // What You Will Learn actions
+  const addLearnItem = () => {
+    setLearnItems([...learnItems, ""]);
+  };
+
+  const updateLearnItem = (index: number, val: string) => {
+    const updated = [...learnItems];
+    updated[index] = val;
+    setLearnItems(updated);
+  };
+
+  const removeLearnItem = (index: number) => {
+    setLearnItems(learnItems.filter((_, i) => i !== index));
   };
 
   // Trainer actions
@@ -241,6 +282,31 @@ export function EditTrainingForm({
         }
       }
 
+      const cleanFeatures = features.filter((f) => f.trim().length > 0);
+      const cleanLearnItems = learnItems.filter((f) => f.trim().length > 0);
+
+      const otherSections = sections.filter(
+        (s) =>
+          !s.title?.toLowerCase().includes("who") &&
+          !s.title?.toLowerCase().includes("learn") &&
+          !s.title?.toLowerCase().includes("what")
+      );
+
+      const builtSections: Section[] = [];
+      if (cleanFeatures.length > 0) {
+        builtSections.push({
+          title: "Who Should Attend?",
+          items: cleanFeatures,
+        });
+      }
+      if (cleanLearnItems.length > 0) {
+        builtSections.push({
+          title: "What You Will Learn",
+          items: cleanLearnItems,
+        });
+      }
+      builtSections.push(...otherSections);
+
       const payload = {
         id: training?.id,
         title,
@@ -249,9 +315,9 @@ export function EditTrainingForm({
         heroDescription: heroDescription || "",
         introTitle: introTitle || `What Is ${title}?`,
         introDescription: introDescription || heroDescription || "",
-        sections: sections.length > 0 ? sections : [],
+        sections: builtSections.length > 0 ? builtSections : [],
         faq: faq.length > 0 ? faq : [],
-        features: features.filter(f => f.trim().length > 0),
+        features: cleanFeatures,
         trainers: selectedTrainers,
         duration: duration || "",
         fees: fees || "",
@@ -543,6 +609,53 @@ export function EditTrainingForm({
                     <button
                       type="button"
                       onClick={() => removeFeature(fIdx)}
+                      className="p-1 text-light-ash hover:text-red-600 rounded-lg cursor-pointer"
+                    >
+                      <HiTrash className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-xs text-light-ash italic">
+                No bullet points added yet. Click &ldquo;Add Bullet Point&rdquo; to add key items.
+              </div>
+            )}
+          </div>
+
+          {/* What You Will Learn / Bullet Points List */}
+          <div className="flex flex-col gap-3 pt-2 bg-light/10 p-4 rounded-2xl border border-muted/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="font-semibold text-dark text-xs uppercase tracking-wide">
+                  What You Will Learn (Bullet Points List)
+                </label>
+                <p className="text-[11px] text-light-ash">
+                  Bullet points displayed under What You Will Learn on the training detail page.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={addLearnItem}
+                className="text-primary hover:text-primary-dark font-semibold text-xs flex items-center gap-1 cursor-pointer"
+              >
+                <HiPlus className="w-3.5 h-3.5" /> Add Bullet Point
+              </button>
+            </div>
+            {learnItems.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                {learnItems.map((item, lIdx) => (
+                  <div key={lIdx} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={item}
+                      onChange={(e) => updateLearnItem(lIdx, e.target.value)}
+                      placeholder="e.g. Core skills, techniques, and topics covered..."
+                      className="flex-1 px-3 py-1.5 border border-muted bg-white focus:outline-none focus:border-primary rounded-xl text-xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeLearnItem(lIdx)}
                       className="p-1 text-light-ash hover:text-red-600 rounded-lg cursor-pointer"
                     >
                       <HiTrash className="w-4 h-4" />
