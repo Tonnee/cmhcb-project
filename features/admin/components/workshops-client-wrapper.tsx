@@ -38,40 +38,51 @@ export default function WorkshopsClientWrapper({
   const [editingWorkshop, setEditingWorkshop] = React.useState<WorkshopDB | null>(null);
   const [isDeleting, setIsDeleting] = React.useState<string | null>(null);
 
-  // Drag and drop state
-  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
-  const [isReordering, setIsReordering] = React.useState(false);
+  const workshopsRef = React.useRef<WorkshopDB[]>(initialWorkshops);
+  const draggedIndexRef = React.useRef<number | null>(null);
 
   React.useEffect(() => {
     setWorkshops(initialWorkshops);
+    workshopsRef.current = initialWorkshops;
   }, [initialWorkshops]);
 
   const featuredCount = workshops.filter((w) => w.isFeatured).length;
 
   // Drag and Drop handlers for reordering workshops
   const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    draggedIndexRef.current = index;
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", String(index));
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+  const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>, targetIndex: number) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
-    if (draggedIndex === null || draggedIndex === index) return;
 
-    const newWorkshops = [...workshops];
-    const [draggedItem] = newWorkshops.splice(draggedIndex, 1);
-    newWorkshops.splice(index, 0, draggedItem);
-    setWorkshops(newWorkshops);
-    setDraggedIndex(index);
+    const currentDragged = draggedIndexRef.current;
+    if (currentDragged === null || currentDragged === targetIndex) return;
+
+    setWorkshops((prev) => {
+      const updated = [...prev];
+      const [movedItem] = updated.splice(currentDragged, 1);
+      updated.splice(targetIndex, 0, movedItem);
+      workshopsRef.current = updated;
+      return updated;
+    });
+
+    draggedIndexRef.current = targetIndex;
+    setDraggedIndex(targetIndex);
   };
 
   const handleDragEnd = async () => {
     setDraggedIndex(null);
+    draggedIndexRef.current = null;
     setIsReordering(true);
+
     try {
-      const orderedIds = workshops.map((w) => w.id);
+      const currentList = workshopsRef.current;
+      const orderedIds = currentList.map((w) => w.id);
       const res = await reorderWorkshopsAction(orderedIds);
       if (!res.success) {
         alert(res.error || "Failed to save new workshop order.");
