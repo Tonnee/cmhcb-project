@@ -95,10 +95,10 @@ export function ServiceDescription({
         title: "Session Details",
         highlight: true,
         items: [
-          `Duration: ${sessionDetails.duration}`,
-          `Fee: ${sessionDetails.fees}`,
-          `Format: ${sessionDetails.format ?? "In-person / Online (if applicable)"}`,
-          `Language: ${sessionDetails.language ?? "Bangla / English"}`,
+          `Session Duration: ${sessionDetails.duration}`,
+          `Course Fees: ${sessionDetails.fees}`,
+          `Training Type: ${sessionDetails.format ?? "In-person / Online (if applicable)"}`,
+          `Training Language: ${sessionDetails.language ?? "Bangla / English"}`,
         ],
       }
     : null;
