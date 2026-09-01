@@ -3,9 +3,9 @@ import Image from "next/image";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { HiPlus, HiPencil, HiTrash, HiCalendar } from "react-icons/hi2";
+import { HiPlus, HiPencil, HiTrash, HiCalendar, HiBars3 } from "react-icons/hi2";
 import EditWorkshopForm from "./edit-workshop-form";
-import { deleteWorkshopAction } from "@/app/(admin)/admin/actions";
+import { deleteWorkshopAction, reorderWorkshopsAction } from "@/app/(admin)/admin/actions";
 
 interface WorkshopDB {
   id: string;
@@ -22,6 +22,7 @@ interface WorkshopDB {
   isLatest?: boolean;
   content: string | null;
   gallery: string | null; // JSON string
+  order?: number;
 }
 
 interface WorkshopsClientWrapperProps {
@@ -32,11 +33,57 @@ export default function WorkshopsClientWrapper({
   initialWorkshops,
 }: WorkshopsClientWrapperProps): React.JSX.Element {
   const router = useRouter();
+  const [workshops, setWorkshops] = React.useState<WorkshopDB[]>(initialWorkshops);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [editingWorkshop, setEditingWorkshop] = React.useState<WorkshopDB | null>(null);
   const [isDeleting, setIsDeleting] = React.useState<string | null>(null);
 
-  const featuredCount = initialWorkshops.filter((w) => w.isFeatured).length;
+  // Drag and drop state
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+  const [isReordering, setIsReordering] = React.useState(false);
+
+  React.useEffect(() => {
+    setWorkshops(initialWorkshops);
+  }, [initialWorkshops]);
+
+  const featuredCount = workshops.filter((w) => w.isFeatured).length;
+
+  // Drag and Drop handlers for reordering workshops
+  const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const newWorkshops = [...workshops];
+    const [draggedItem] = newWorkshops.splice(draggedIndex, 1);
+    newWorkshops.splice(index, 0, draggedItem);
+    setWorkshops(newWorkshops);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = async () => {
+    setDraggedIndex(null);
+    setIsReordering(true);
+    try {
+      const orderedIds = workshops.map((w) => w.id);
+      const res = await reorderWorkshopsAction(orderedIds);
+      if (!res.success) {
+        alert(res.error || "Failed to save new workshop order.");
+      } else {
+        router.refresh();
+      }
+    } catch (err: unknown) {
+      console.error("Error saving workshop order:", err);
+    } finally {
+      setIsReordering(false);
+    }
+  };
 
   const handleOpenAdd = () => {
     setEditingWorkshop(null);
@@ -91,7 +138,7 @@ export default function WorkshopsClientWrapper({
             </span>
           </div>
           <p className="font-sans text-sm text-light-ash">
-            Create, edit, delete, and feature events. Exactly 4 marked events appear as upcoming events on the landing page.
+            Create, edit, delete, reorder, and feature events. Drag handles on the left to reorder event serials. Exactly 4 marked events appear as upcoming events on the landing page.
           </p>
         </div>
         <button
@@ -110,6 +157,9 @@ export default function WorkshopsClientWrapper({
           <table className="w-full border-collapse text-left font-sans text-sm">
             <thead>
               <tr className="bg-light/35 border-b border-muted">
+                <th className="px-4 py-4 text-xs font-semibold text-dark uppercase tracking-wider text-center w-16">
+                  Order
+                </th>
                 <th className="px-6 py-4 font-semibold text-dark">Title</th>
                 <th className="px-6 py-4 font-semibold text-dark">Instructor</th>
                 <th className="px-6 py-4 font-semibold text-dark">Date & Time</th>
@@ -118,8 +168,30 @@ export default function WorkshopsClientWrapper({
               </tr>
             </thead>
             <tbody className="divide-y divide-muted/60">
-              {initialWorkshops.map((workshop) => (
-                <tr key={workshop.id} className="hover:bg-light/10 transition-colors">
+              {workshops.map((workshop, index) => (
+                <tr
+                  key={workshop.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={`transition-all duration-150 ${
+                    draggedIndex === index
+                      ? "bg-primary/10 opacity-70 border-2 border-dashed border-primary cursor-grabbing"
+                      : "hover:bg-light/10 cursor-grab"
+                  }`}
+                >
+                  <td className="px-4 py-4 text-center shrink-0">
+                    <div className="flex items-center justify-center gap-1.5 text-light-ash">
+                      <HiBars3
+                        className="w-4 h-4 text-light-ash/50 hover:text-primary shrink-0 cursor-grab active:cursor-grabbing"
+                        title="Drag up or down to reorder event card serial"
+                      />
+                      <span className="font-semibold text-dark-green text-sm shrink-0 font-mono">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                  </td>
                   <td className="px-6 py-4 font-medium text-dark-green max-w-xs truncate">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-primary/10 shrink-0 relative flex items-center justify-center text-primary-dark">
@@ -177,10 +249,10 @@ export default function WorkshopsClientWrapper({
                 </tr>
               ))}
 
-              {initialWorkshops.length === 0 && (
+              {workshops.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-light-ash font-sans">
-                    No workshops scheduled. Click &ldquo;Create Workshop&rdquo; to set up a new event.
+                  <td colSpan={6} className="px-6 py-12 text-center text-light-ash font-sans">
+                    No workshops scheduled. Click &ldquo;Create Event&rdquo; to set up a new event.
                   </td>
                 </tr>
               )}

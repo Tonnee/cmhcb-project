@@ -34,9 +34,9 @@ export const dynamic = "force-dynamic";
 export default async function EventsPage(): Promise<React.JSX.Element> {
   const now = new Date().getTime();
 
-  // Fetch from database
+  // Fetch from database ordered by admin serial
   const dbEvents = await prisma.workshop.findMany({
-    orderBy: { date: "asc" },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
 
   const parsedEvents = dbEvents.map((e) => ({
@@ -72,23 +72,10 @@ export default async function EventsPage(): Promise<React.JSX.Element> {
 
   const events = parsedEvents.length > 0 ? parsedEvents : EVENTS_DATA;
 
-  // Sort events by date: nearest future event first, then latest past event
-  const sortedEvents = [...events].sort((a, b) => {
-    const timeA = new Date(a.date).getTime();
-    const timeB = new Date(b.date).getTime();
-
-    const isAUpcoming = timeA >= now;
-    const isBUpcoming = timeB >= now;
-
-    if (isAUpcoming && isBUpcoming) return timeA - timeB; // Nearest future first
-    if (!isAUpcoming && !isBUpcoming) return timeB - timeA; // Latest past first
-    return isAUpcoming ? -1 : 1; // Upcoming always before past
-  });
-
-  // Priority: 1. Event marked with isLatest: true, 2. Top sorted event
-  const explicitlyLatest = sortedEvents.find((e) => (e as any).isLatest);
-  const featuredEvent = explicitlyLatest || sortedEvents[0];
-  const remainingEvents = sortedEvents.filter((e) => e.id !== featuredEvent?.id);
+  // Priority: 1. Event marked with isLatest: true, 2. Top serial event
+  const explicitlyLatest = events.find((e) => (e as any).isLatest);
+  const featuredEvent = explicitlyLatest || events[0];
+  const remainingEvents = events.filter((e) => e.id !== featuredEvent?.id);
 
   return (
     <main className="pt-12 pb-24">

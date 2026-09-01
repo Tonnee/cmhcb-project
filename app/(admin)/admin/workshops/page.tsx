@@ -14,7 +14,7 @@ export const revalidate = 0;
 export default async function AdminWorkshopsPage(): Promise<React.JSX.Element> {
   // Fetch workshops from database
   const workshops = await prisma.workshop.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
 
   return (

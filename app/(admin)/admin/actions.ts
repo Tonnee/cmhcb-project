@@ -500,6 +500,44 @@ export async function deleteWorkshopAction(
   }
 }
 
+export async function reorderWorkshopsAction(
+  orderedIds: string[]
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+
+    await prisma.$transaction(
+      orderedIds.map((id, index) =>
+        prisma.workshop.update({
+          where: { id },
+          data: { order: index },
+        })
+      )
+    );
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "Workshop",
+      "reorder",
+      "Workshops Order",
+      "Reordered workshops display sequence."
+    );
+
+    revalidatePath("/");
+    revalidatePath("/events");
+    revalidatePath("/workshops");
+    revalidatePath("/admin/workshops");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in reorderWorkshopsAction:", error);
+    return { success: false, error: error.message || "Failed to reorder workshops" };
+  }
+}
+
 // ============================================================================
 // Server Actions - Blog Posts
 // ============================================================================
