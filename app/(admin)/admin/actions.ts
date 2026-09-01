@@ -1241,6 +1241,46 @@ export async function deleteTrainingAction(
   }
 }
 
+export async function reorderTrainingsAction(
+  orderedIds: string[]
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+
+    await prisma.$transaction(
+      orderedIds.map((id, index) =>
+        prisma.training.update({
+          where: { id },
+          data: {
+            order: index,
+            variant: index === 0 ? "accent" : "primary",
+          },
+        })
+      )
+    );
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "Training",
+      "reorder",
+      "Trainings Order",
+      "Reordered training program items display sequence."
+    );
+
+    revalidatePath("/");
+    revalidatePath("/training");
+    revalidatePath("/admin/trainings");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in reorderTrainingsAction:", error);
+    return { success: false, error: error.message || "Failed to reorder trainings" };
+  }
+}
+
 // ============================================================================
 // Server Actions - Training Info Blocks
 // ============================================================================

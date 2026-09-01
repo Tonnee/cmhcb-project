@@ -391,7 +391,7 @@ export function EditTrainingForm({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="font-semibold text-dark">Session Duration</label>
               <input
@@ -436,18 +436,6 @@ export function EditTrainingForm({
                 <option value="Bangla / English">Bangla / English</option>
                 <option value="Bangla">Bangla</option>
                 <option value="English">English</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="font-semibold text-dark">Card Theme</label>
-              <select
-                value={variant}
-                onChange={(e) => setVariant(e.target.value)}
-                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm cursor-pointer"
-              >
-                <option value="primary">Primary (Standard White)</option>
-                <option value="accent">Accent (Highlighted Green)</option>
-                <option value="secondary">Secondary (Muted)</option>
               </select>
             </div>
           </div>

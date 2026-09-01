@@ -2,10 +2,11 @@
 import Image from "next/image";
 
 import * as React from "react";
-import { HiPlus, HiPencilSquare, HiTrash, HiMagnifyingGlass } from "react-icons/hi2";
+import * as React from "react";
+import { HiPlus, HiPencilSquare, HiTrash, HiMagnifyingGlass, HiBars3 } from "react-icons/hi2";
 import { EditTrainingForm } from "./edit-training-form";
 import { EditTrainingInfoBlockForm } from "./edit-training-info-block-form";
-import { deleteTrainingAction, deleteTrainingInfoBlockAction } from "@/app/(admin)/admin/actions";
+import { deleteTrainingAction, deleteTrainingInfoBlockAction, reorderTrainingsAction } from "@/app/(admin)/admin/actions";
 import { useRouter } from "next/navigation";
 
 export interface TrainingDB {
@@ -59,6 +60,10 @@ export default function TrainingsClientWrapper({
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [isDeletingId, setIsDeletingId] = React.useState<string | null>(null);
 
+  // Drag & Reorder state
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+  const [isReordering, setIsReordering] = React.useState(false);
+
   // Tab & Info Block states
   const [activeTab, setActiveTab] = React.useState<"trainings" | "infoblocks">("trainings");
   const [infoBlocks, setInfoBlocks] = React.useState<TrainingInfoBlockDB[]>(initialInfoBlocks);
@@ -70,6 +75,43 @@ export default function TrainingsClientWrapper({
     setTrainings(initialTrainings);
     setInfoBlocks(initialInfoBlocks);
   }, [initialTrainings, initialInfoBlocks]);
+
+  // Drag and Drop handlers for reordering training programs
+  const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const newTrainings = [...trainings];
+    const [draggedItem] = newTrainings.splice(draggedIndex, 1);
+    newTrainings.splice(index, 0, draggedItem);
+    setTrainings(newTrainings);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = async () => {
+    setDraggedIndex(null);
+    setIsReordering(true);
+    try {
+      const orderedIds = trainings.map((t) => t.id);
+      const res = await reorderTrainingsAction(orderedIds);
+      if (!res.success) {
+        alert(res.error || "Failed to save new training order.");
+      } else {
+        router.refresh();
+      }
+    } catch (err: unknown) {
+      console.error("Error saving training order:", err);
+    } finally {
+      setIsReordering(false);
+    }
+  };
 
   const handleDelete = async (id: string, slug: string) => {
     if (!confirm("Are you sure you want to permanently delete this training program? This action cannot be undone.")) {
@@ -216,19 +258,43 @@ export default function TrainingsClientWrapper({
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-light/20 text-xs font-semibold text-light-ash uppercase tracking-wider border-b border-muted/50">
+                  <th className="px-4 py-4 text-center w-16">Order</th>
                   <th className="px-6 py-4">Program Details</th>
                   <th className="px-6 py-4">Duration</th>
                   <th className="px-6 py-4">Fees</th>
-                  <th className="px-6 py-4">Card Variant</th>
                   <th className="px-6 py-4">Last Modified By</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-muted/30 text-sm">
                 {filteredTrainings.length > 0 ? (
-                  filteredTrainings.map((t) => {
+                  filteredTrainings.map((t, index) => {
                     return (
-                      <tr key={t.id} className="hover:bg-light/10 transition-colors">
+                      <tr
+                        key={t.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, index)}
+                        onDragOver={(e) => handleDragOver(e, index)}
+                        onDragEnd={handleDragEnd}
+                        className={`transition-all duration-150 ${
+                          draggedIndex === index
+                            ? "bg-primary/10 opacity-70 border-2 border-dashed border-primary cursor-grabbing"
+                            : "hover:bg-light/10 cursor-grab"
+                        }`}
+                      >
+                        {/* Order Serial & Drag Handle */}
+                        <td className="px-4 py-4 text-center shrink-0">
+                          <div className="flex items-center justify-center gap-1.5 text-light-ash">
+                            <HiBars3
+                              className="w-4 h-4 text-light-ash/50 hover:text-primary shrink-0 cursor-grab active:cursor-grabbing"
+                              title="Drag up or down to reorder training program serial"
+                            />
+                            <span className="font-semibold text-dark-green text-sm shrink-0 font-mono">
+                              {String(index + 1).padStart(2, "0")}
+                            </span>
+                          </div>
+                        </td>
+
                         {/* Title & Slug */}
                         <td className="px-6 py-4">
                           <div className="flex flex-col min-w-0">
@@ -249,19 +315,6 @@ export default function TrainingsClientWrapper({
                         {/* Fees */}
                         <td className="px-6 py-4 text-primary-dark font-semibold">
                           {t.fees}
-                        </td>
-
-                        {/* Badge Variant */}
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide border ${
-                            t.variant === "primary"
-                              ? "text-primary-dark bg-primary/5 border-primary/20"
-                              : t.variant === "secondary"
-                              ? "text-green-700 bg-green-50 border-green-200"
-                              : "text-amber-700 bg-amber-50 border-amber-200"
-                          }`}>
-                            {t.variant}
-                          </span>
                         </td>
 
                         {/* Last Modified By */}
