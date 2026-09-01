@@ -2,9 +2,9 @@
 import Image from "next/image";
 
 import * as React from "react";
-import { HiPlus, HiPencilSquare, HiTrash, HiCheck, HiXMark } from "react-icons/hi2";
+import { HiPlus, HiPencilSquare, HiTrash, HiCheck, HiXMark, HiBars3 } from "react-icons/hi2";
 import { EditServiceForm } from "./edit-service-form";
-import { deleteServiceAction, deleteServiceInfoBlockAction, toggleServiceFeaturedAction } from "@/app/(admin)/admin/actions";
+import { deleteServiceAction, deleteServiceInfoBlockAction, toggleServiceFeaturedAction, reorderServicesAction } from "@/app/(admin)/admin/actions";
 import { SERVICE_IMAGES } from "@/components/shared/service-card";
 import { EditServiceInfoBlockForm } from "./edit-service-info-block-form";
 import { useRouter } from "next/navigation";
@@ -56,6 +56,10 @@ export function ServicesClientWrapper({
   const [isDeletingId, setIsDeletingId] = React.useState<string | null>(null);
   const [togglingId, setTogglingId] = React.useState<string | null>(null);
 
+  // Reorder & Drag state
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+  const [isReordering, setIsReordering] = React.useState(false);
+
   // Tab & Info Block states
   const [activeTab, setActiveTab] = React.useState<"services" | "infoblocks">("services");
   const [infoBlocks, setInfoBlocks] = React.useState<ServiceInfoBlockDB[]>(initialInfoBlocks);
@@ -68,6 +72,43 @@ export function ServicesClientWrapper({
     setServices(initialServices);
     setInfoBlocks(initialInfoBlocks);
   }, [initialServices, initialInfoBlocks]);
+
+  // Drag and Drop handlers for reordering services
+  const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const newServices = [...services];
+    const [draggedItem] = newServices.splice(draggedIndex, 1);
+    newServices.splice(index, 0, draggedItem);
+    setServices(newServices);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = async () => {
+    setDraggedIndex(null);
+    setIsReordering(true);
+    try {
+      const orderedIds = services.map((s) => s.id);
+      const res = await reorderServicesAction(orderedIds);
+      if (!res.success) {
+        alert(res.error || "Failed to save new service order.");
+      } else {
+        router.refresh();
+      }
+    } catch (err: unknown) {
+      console.error("Error saving service order:", err);
+    } finally {
+      setIsReordering(false);
+    }
+  };
 
   const handleToggleFeatured = async (service: ServiceDB) => {
     const nextFeatured = !service.isFeatured;
@@ -223,6 +264,9 @@ export function ServicesClientWrapper({
           <table className="w-full text-left border-collapse font-sans">
             <thead>
               <tr className="bg-light-ash/5 border-b border-muted">
+                <th className="px-4 py-4 text-xs font-semibold text-dark uppercase tracking-wider text-center w-16">
+                  Order
+                </th>
                 <th className="px-6 py-4 text-xs font-semibold text-dark uppercase tracking-wider">
                   Service / Title
                 </th>
@@ -243,18 +287,37 @@ export function ServicesClientWrapper({
             <tbody className="divide-y divide-muted">
               {services.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-light-ash text-sm">
+                  <td colSpan={6} className="px-6 py-12 text-center text-light-ash text-sm">
                     No services found in database. Add one to get started!
                   </td>
                 </tr>
               ) : (
                 services.map((service, index) => (
-                  <tr key={service.id} className="hover:bg-light-ash/5 transition-colors">
-                    <td className="px-6 py-4.5">
-                      <div className="flex items-center gap-3">
-                        <span className="font-semibold text-dark-green text-sm shrink-0 w-6 font-mono">
+                  <tr
+                    key={service.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragEnd={handleDragEnd}
+                    className={`transition-all duration-150 ${
+                      draggedIndex === index
+                        ? "bg-primary/10 opacity-70 border-2 border-dashed border-primary cursor-grabbing"
+                        : "hover:bg-light-ash/5 cursor-grab"
+                    }`}
+                  >
+                    <td className="px-4 py-4.5 text-center shrink-0">
+                      <div className="flex items-center justify-center gap-1.5 text-light-ash">
+                        <HiBars3
+                          className="w-4 h-4 text-light-ash/50 hover:text-primary shrink-0 cursor-grab active:cursor-grabbing"
+                          title="Drag up or down to reorder service card serial"
+                        />
+                        <span className="font-semibold text-dark-green text-sm shrink-0 font-mono">
                           {String(index + 1).padStart(2, "0")}
                         </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4.5">
+                      <div className="flex items-center gap-3">
                         <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-muted/60 shrink-0 bg-light-ash/5">
                           <Image src={service.image || SERVICE_IMAGES[service.slug] || "/home-service-images/individual-therapy.png"} alt={service.title} width={48} height={48} unoptimized className="w-12 h-12 object-cover rounded-xl" />
                         </div>

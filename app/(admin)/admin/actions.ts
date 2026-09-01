@@ -865,6 +865,43 @@ export async function deleteServiceAction(
   }
 }
 
+export async function reorderServicesAction(
+  orderedIds: string[]
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+
+    await prisma.$transaction(
+      orderedIds.map((id, index) =>
+        prisma.service.update({
+          where: { id },
+          data: { order: index },
+        })
+      )
+    );
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "Service",
+      "reorder",
+      "Services Order",
+      "Reordered service items display sequence."
+    );
+
+    revalidatePath("/");
+    revalidatePath("/services");
+    revalidatePath("/admin/services");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in reorderServicesAction:", error);
+    return { success: false, error: error.message || "Failed to reorder services" };
+  }
+}
+
 // ============================================================================
 // Server Actions - Service Info Blocks
 // ============================================================================
