@@ -4,7 +4,7 @@ import Image from "next/image";
 import * as React from "react";
 import { HiPlus, HiPencilSquare, HiTrash, HiCheck, HiXMark, HiBars3 } from "react-icons/hi2";
 import { EditServiceForm } from "./edit-service-form";
-import { deleteServiceAction, deleteServiceInfoBlockAction, toggleServiceFeaturedAction, reorderServicesAction } from "@/app/(admin)/admin/actions";
+import { deleteServiceAction, deleteServiceInfoBlockAction, toggleServiceFeaturedAction, reorderServicesAction, reorderServiceInfoBlocksAction } from "@/app/(admin)/admin/actions";
 import { SERVICE_IMAGES } from "@/components/shared/service-card";
 import { EditServiceInfoBlockForm } from "./edit-service-info-block-form";
 import { useRouter } from "next/navigation";
@@ -58,6 +58,7 @@ export function ServicesClientWrapper({
 
   // Reorder & Drag state
   const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+  const [draggedBlockIndex, setDraggedBlockIndex] = React.useState<number | null>(null);
   const [isReordering, setIsReordering] = React.useState(false);
 
   // Tab & Info Block states
@@ -105,6 +106,43 @@ export function ServicesClientWrapper({
       }
     } catch (err: unknown) {
       console.error("Error saving service order:", err);
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
+  // Drag and Drop handlers for reordering info blocks
+  const handleBlockDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    setDraggedBlockIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+  };
+
+  const handleBlockDragOver = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (draggedBlockIndex === null || draggedBlockIndex === index) return;
+
+    const newBlocks = [...infoBlocks];
+    const [draggedItem] = newBlocks.splice(draggedBlockIndex, 1);
+    newBlocks.splice(index, 0, draggedItem);
+    setInfoBlocks(newBlocks);
+    setDraggedBlockIndex(index);
+  };
+
+  const handleBlockDragEnd = async () => {
+    setDraggedBlockIndex(null);
+    setIsReordering(true);
+    try {
+      const orderedIds = infoBlocks.map((b) => b.id);
+      const res = await reorderServiceInfoBlocksAction(orderedIds);
+      if (!res.success) {
+        alert(res.error || "Failed to save new info block order.");
+      } else {
+        router.refresh();
+      }
+    } catch (err: unknown) {
+      console.error("Error saving info block order:", err);
     } finally {
       setIsReordering(false);
     }
@@ -392,6 +430,9 @@ export function ServicesClientWrapper({
             <table className="w-full text-left border-collapse font-sans">
               <thead>
                 <tr className="bg-light-ash/5 border-b border-muted">
+                  <th className="px-4 py-4 text-xs font-semibold text-dark uppercase tracking-wider text-center w-16">
+                    Order
+                  </th>
                   <th className="px-6 py-4 text-xs font-semibold text-dark uppercase tracking-wider">
                     Block Title / Heading
                   </th>
@@ -400,9 +441,6 @@ export function ServicesClientWrapper({
                   </th>
                   <th className="px-6 py-4 text-xs font-semibold text-dark uppercase tracking-wider">
                     CTA Action
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold text-dark uppercase tracking-wider text-center">
-                    Display Order
                   </th>
                   <th className="px-6 py-4 text-xs font-semibold text-dark uppercase tracking-wider text-right">
                     Actions
@@ -417,14 +455,36 @@ export function ServicesClientWrapper({
                     </td>
                   </tr>
                 ) : (
-                  infoBlocks.map((block) => {
+                  infoBlocks.map((block, index) => {
                     let itemsCount = 0;
                     try {
                       itemsCount = JSON.parse(block.items).length;
                     } catch {}
                     
                     return (
-                      <tr key={block.id} className="hover:bg-light-ash/5 transition-colors">
+                      <tr
+                        key={block.id}
+                        draggable
+                        onDragStart={(e) => handleBlockDragStart(e, index)}
+                        onDragOver={(e) => handleBlockDragOver(e, index)}
+                        onDragEnd={handleBlockDragEnd}
+                        className={`transition-all duration-150 ${
+                          draggedBlockIndex === index
+                            ? "bg-primary/10 opacity-70 border-2 border-dashed border-primary cursor-grabbing"
+                            : "hover:bg-light-ash/5 cursor-grab"
+                        }`}
+                      >
+                        <td className="px-4 py-4.5 text-center shrink-0">
+                          <div className="flex items-center justify-center gap-1.5 text-light-ash">
+                            <HiBars3
+                              className="w-4 h-4 text-light-ash/50 hover:text-primary shrink-0 cursor-grab active:cursor-grabbing"
+                              title="Drag up or down to reorder info block serial"
+                            />
+                            <span className="font-semibold text-dark-green text-sm shrink-0 font-mono">
+                              {String(index + 1).padStart(2, "0")}
+                            </span>
+                          </div>
+                        </td>
                         <td className="px-6 py-4.5">
                           <div className="flex items-center gap-3">
                             <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-muted shrink-0 bg-light-ash/5">
@@ -440,9 +500,6 @@ export function ServicesClientWrapper({
                         </td>
                         <td className="px-6 py-4.5 text-sm text-light-ash">
                           {block.ctaLabel} ({block.ctaHref})
-                        </td>
-                        <td className="px-6 py-4.5 text-center text-sm text-dark">
-                          {block.order}
                         </td>
                         <td className="px-6 py-4.5 text-right">
                           <div className="flex items-center justify-end gap-2">
