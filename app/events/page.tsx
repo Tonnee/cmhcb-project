@@ -70,9 +70,18 @@ export default async function EventsPage(): Promise<React.JSX.Element> {
     })(),
   }));
 
-  const events = parsedEvents.length > 0 ? parsedEvents : EVENTS_DATA;
+  const rawEvents = parsedEvents.length > 0 ? parsedEvents : EVENTS_DATA;
 
-  // Priority: 1. Event marked with isLatest: true, 2. Top serial event
+  // Explicitly sort: 1. Latest event, 2. Featured events, 3. Remaining events
+  const events = [...rawEvents].sort((a, b) => {
+    if (a.isLatest && !b.isLatest) return -1;
+    if (!a.isLatest && b.isLatest) return 1;
+    if (a.isFeatured && !b.isFeatured) return -1;
+    if (!a.isFeatured && b.isFeatured) return 1;
+    return 0;
+  });
+
+  // Hero section: 1. Event marked with isLatest: true, 2. Top serial event
   const explicitlyLatest = events.find((e) => (e as any).isLatest);
   const featuredEvent = explicitlyLatest || events[0];
   const remainingEvents = events.filter((e) => e.id !== featuredEvent?.id);
