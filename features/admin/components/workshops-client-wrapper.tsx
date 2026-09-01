@@ -340,7 +340,7 @@ export default function WorkshopsClientWrapper({
               workshop={editingWorkshop}
               onClose={() => setIsModalOpen(false)}
               onSuccess={handleFormSuccess}
-              featuredCount={featuredCount}
+              currentFeaturedCount={featuredCount}
             />
           </div>
         </div>
