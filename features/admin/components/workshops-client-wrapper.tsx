@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { HiPlus, HiPencil, HiTrash, HiCalendar, HiBars3 } from "react-icons/hi2";
+import { HiPlus, HiPencil, HiTrash, HiCalendar, HiBars3, HiStar, HiFolder } from "react-icons/hi2";
 import EditWorkshopForm from "./edit-workshop-form";
 import { deleteWorkshopAction, reorderWorkshopsAction } from "@/app/(admin)/admin/actions";
 
@@ -34,21 +34,29 @@ export default function WorkshopsClientWrapper({
 }: WorkshopsClientWrapperProps): React.JSX.Element {
   const router = useRouter();
   const [workshops, setWorkshops] = React.useState<WorkshopDB[]>(initialWorkshops);
+  const [activeTab, setActiveTab] = React.useState<"featured" | "more">("featured");
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [editingWorkshop, setEditingWorkshop] = React.useState<WorkshopDB | null>(null);
   const [isDeleting, setIsDeleting] = React.useState<string | null>(null);
 
   const workshopsRef = React.useRef<WorkshopDB[]>(initialWorkshops);
   const draggedIndexRef = React.useRef<number | null>(null);
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+  const [isReordering, setIsReordering] = React.useState(false);
 
   React.useEffect(() => {
     setWorkshops(initialWorkshops);
     workshopsRef.current = initialWorkshops;
   }, [initialWorkshops]);
 
+  // Split workshops into Featured (1 Latest + up to 4 Featured) vs More Events
+  const featuredWorkshops = workshops.filter((w) => w.isLatest || w.isFeatured);
+  const moreWorkshops = workshops.filter((w) => !w.isLatest && !w.isFeatured);
+  const displayedWorkshops = activeTab === "featured" ? featuredWorkshops : moreWorkshops;
+
   const featuredCount = workshops.filter((w) => w.isFeatured).length;
 
-  // Drag and Drop handlers for reordering workshops
+  // Drag and Drop handlers for reordering workshops within the active tab view
   const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
     draggedIndexRef.current = index;
     setDraggedIndex(index);
@@ -63,10 +71,21 @@ export default function WorkshopsClientWrapper({
     const currentDragged = draggedIndexRef.current;
     if (currentDragged === null || currentDragged === targetIndex) return;
 
+    const currentTabList = activeTab === "featured" ? featuredWorkshops : moreWorkshops;
+    const draggedItem = currentTabList[currentDragged];
+    const targetItem = currentTabList[targetIndex];
+
+    if (!draggedItem || !targetItem) return;
+
     setWorkshops((prev) => {
       const updated = [...prev];
-      const [movedItem] = updated.splice(currentDragged, 1);
-      updated.splice(targetIndex, 0, movedItem);
+      const fromIndex = updated.findIndex((w) => w.id === draggedItem.id);
+      const toIndex = updated.findIndex((w) => w.id === targetItem.id);
+
+      if (fromIndex !== -1 && toIndex !== -1) {
+        const [moved] = updated.splice(fromIndex, 1);
+        updated.splice(toIndex, 0, moved);
+      }
       workshopsRef.current = updated;
       return updated;
     });
@@ -162,6 +181,45 @@ export default function WorkshopsClientWrapper({
         </button>
       </div>
 
+      {/* Tabs navigation */}
+      <div className="flex items-center gap-2 border-b border-muted pb-1">
+        <button
+          type="button"
+          onClick={() => setActiveTab("featured")}
+          className={`px-4 py-2.5 rounded-xl font-sans text-sm font-semibold transition-all cursor-pointer flex items-center gap-2.5 ${
+            activeTab === "featured"
+              ? "bg-primary text-white shadow-sm"
+              : "bg-light/40 text-dark-green hover:bg-light/70"
+          }`}
+        >
+          <HiStar className="w-4 h-4" />
+          <span>Featured Events & Workshops</span>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${
+            activeTab === "featured" ? "bg-white/20 text-white" : "bg-primary/10 text-primary-dark"
+          }`}>
+            {featuredWorkshops.length}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab("more")}
+          className={`px-4 py-2.5 rounded-xl font-sans text-sm font-semibold transition-all cursor-pointer flex items-center gap-2.5 ${
+            activeTab === "more"
+              ? "bg-primary text-white shadow-sm"
+              : "bg-light/40 text-dark-green hover:bg-light/70"
+          }`}
+        >
+          <HiFolder className="w-4 h-4" />
+          <span>More Events & Workshops</span>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${
+            activeTab === "more" ? "bg-white/20 text-white" : "bg-primary/10 text-primary-dark"
+          }`}>
+            {moreWorkshops.length}
+          </span>
+        </button>
+      </div>
+
       {/* Main content - Table */}
       <div className="bg-white border border-muted rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
@@ -179,7 +237,7 @@ export default function WorkshopsClientWrapper({
               </tr>
             </thead>
             <tbody className="divide-y divide-muted/60">
-              {workshops.map((workshop, index) => (
+              {displayedWorkshops.map((workshop, index) => (
                 <tr
                   key={workshop.id}
                   draggable
@@ -216,14 +274,14 @@ export default function WorkshopsClientWrapper({
                         <span className="font-semibold text-dark truncate">{workshop.title}</span>
                         <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
                           <span className="text-[10px] text-light-ash">/{workshop.slug}</span>
+                          {workshop.isLatest && (
+                            <span className="bg-primary/10 text-primary-dark text-[9px] font-semibold px-1.5 py-0.2 rounded">
+                              Workshops Latest (Hero)
+                            </span>
+                          )}
                           {workshop.isFeatured && (
                             <span className="bg-amber-100 text-amber-800 text-[9px] font-semibold px-1.5 py-0.2 rounded">
                               Landing Upcoming
-                            </span>
-                          )}
-                          {workshop.isLatest && (
-                            <span className="bg-primary/10 text-primary-dark text-[9px] font-semibold px-1.5 py-0.2 rounded">
-                              Workshops Latest
                             </span>
                           )}
                         </div>
@@ -260,10 +318,12 @@ export default function WorkshopsClientWrapper({
                 </tr>
               ))}
 
-              {workshops.length === 0 && (
+              {displayedWorkshops.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-light-ash font-sans">
-                    No workshops scheduled. Click &ldquo;Create Event&rdquo; to set up a new event.
+                    {activeTab === "featured"
+                      ? "No featured events or workshops marked."
+                      : "No additional events scheduled. Click \u201cCreate Event\u201d to set up a new event."}
                   </td>
                 </tr>
               )}
@@ -278,9 +338,9 @@ export default function WorkshopsClientWrapper({
           <div className="bg-white rounded-3xl p-6 shadow-2xl max-w-4xl w-full border border-muted relative animate-in fade-in zoom-in duration-200">
             <EditWorkshopForm
               workshop={editingWorkshop}
-              currentFeaturedCount={featuredCount}
               onClose={() => setIsModalOpen(false)}
               onSuccess={handleFormSuccess}
+              featuredCount={featuredCount}
             />
           </div>
         </div>

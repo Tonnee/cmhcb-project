@@ -12,9 +12,9 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminWorkshopsPage(): Promise<React.JSX.Element> {
-  // Fetch workshops from database with latest event first by default
+  // Fetch workshops from database: 1. Latest event, 2. Featured events, 3. Remaining events
   const workshops = await prisma.workshop.findMany({
-    orderBy: [{ isLatest: "desc" }, { order: "asc" }, { createdAt: "desc" }],
+    orderBy: [{ isLatest: "desc" }, { isFeatured: "desc" }, { order: "asc" }, { createdAt: "desc" }],
   });
 
   return (
