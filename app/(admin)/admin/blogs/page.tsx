@@ -14,7 +14,7 @@ export const revalidate = 0;
 export default async function AdminBlogsPage(): Promise<React.JSX.Element> {
   // Fetch posts from database
   const posts = await prisma.blogPost.findMany({
-    orderBy: { publishedAt: "desc" },
+    orderBy: [{ order: "asc" }, { publishedAt: "desc" }],
   });
 
   return (

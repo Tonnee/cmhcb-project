@@ -43,7 +43,7 @@ export const revalidate = 60;
 
 export default async function BlogPage(): Promise<React.JSX.Element> {
   const dbPosts = await prisma.blogPost.findMany({
-    orderBy: { publishedAt: "desc" },
+    orderBy: [{ order: "asc" }, { publishedAt: "desc" }],
   }).catch(() => []);
 
   const allPosts = dbPosts.length > 0

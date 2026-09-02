@@ -592,6 +592,14 @@ export async function upsertBlogPostAction(
       lastUpdatedBy: admin.email,
     };
 
+    // Enforce single featured blog: unset any other featured post
+    if (validated.isFeatured) {
+      await prisma.blogPost.updateMany({
+        where: { isFeatured: true, NOT: { id } },
+        data: { isFeatured: false },
+      });
+    }
+
     const blogPost = await prisma.blogPost.upsert({
       where: { id },
       update: dataPayload,
@@ -662,6 +670,42 @@ export async function deleteBlogPostAction(
   } catch (error: any) {
     console.error("Error in deleteBlogPostAction:", error);
     return { success: false, error: error.message || "Failed to delete blog post record" };
+  }
+}
+
+export async function reorderBlogPostsAction(
+  orderedIds: string[]
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+
+    await prisma.$transaction(
+      orderedIds.map((id, index) =>
+        prisma.blogPost.update({
+          where: { id },
+          data: { order: index },
+        })
+      )
+    );
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "BlogPost",
+      "reorder",
+      "Blog Posts Order",
+      "Reordered blog posts display sequence."
+    );
+
+    revalidatePath("/blog");
+    revalidatePath("/admin/blogs");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in reorderBlogPostsAction:", error);
+    return { success: false, error: error.message || "Failed to reorder blog posts" };
   }
 }
 
