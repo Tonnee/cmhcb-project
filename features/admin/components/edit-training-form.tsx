@@ -18,6 +18,24 @@ interface FAQItem {
 }
 
 
+export const AVAILABLE_TRAINING_ICONS = [
+  { value: "HiPlusCircle", label: "Plus Circle (Crisis / First Aid)" },
+  { value: "HiFaceFrown", label: "Face / Emotion (Anger / Stress)" },
+  { value: "HiArrowsPointingOut", label: "Arrows Pointing Out (Stress Management)" },
+  { value: "HiSun", label: "Sun (Relaxation / Mind & Body)" },
+  { value: "HiStar", label: "Star (Confidence / Development)" },
+  { value: "HiHandRaised", label: "Hand Raised (Behavior / Boundary)" },
+  { value: "HiAcademicCap", label: "Academic Cap (Professional Certification)" },
+  { value: "HiBookOpen", label: "Book Open (Skills & Education)" },
+  { value: "HiSparkles", label: "Sparkles (Wellness & Growth)" },
+  { value: "HiUserGroup", label: "User Group (Community / Group Dynamics)" },
+  { value: "HiHeart", label: "Heart (Empathy & Emotional Care)" },
+  { value: "HiPuzzlePiece", label: "Puzzle Piece (Cognitive & Skill Building)" },
+  { value: "HiBriefcase", label: "Briefcase (Workplace & Institutional)" },
+  { value: "HiShieldCheck", label: "Shield Check (Safety & Ethics)" },
+  { value: "HiGlobeAlt", label: "Globe (Outreach & Public Programs)" },
+];
+
 interface EditTrainingFormProps {
   training?: TrainingDB | null;
   onClose: () => void;
@@ -41,6 +59,7 @@ export function EditTrainingForm({
   const [format, setFormat] = React.useState(training?.format || "In-person / Online (if applicable)");
   const [language, setLanguage] = React.useState(training?.language || "Bangla / English");
   const [variant, setVariant] = React.useState<string>(training?.variant || "primary");
+  const [icon, setIcon] = React.useState(training?.icon || "HiAcademicCap");
   const [imageUrl, setImageUrl] = React.useState(training?.bgImage || training?.image || "");
   const [order, setOrder] = React.useState(training?.order ?? 0);
 
@@ -324,6 +343,7 @@ export function EditTrainingForm({
         format: format || null,
         language: language || null,
         variant: variant || "primary",
+        icon: icon || "HiAcademicCap",
         image: finalImageUrl || null,
         bgImage: finalImageUrl || null,
         order: Number(order) || 0,
@@ -436,6 +456,23 @@ export function EditTrainingForm({
                 <option value="Bangla / English">Bangla / English</option>
                 <option value="Bangla">Bangla</option>
                 <option value="English">English</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5 md:col-span-2">
+              <label className="font-semibold text-dark flex items-center justify-between">
+                <span>Icon Representation</span>
+                <span className="text-xs text-primary font-normal">Appears in header megamenu & badges</span>
+              </label>
+              <select
+                value={icon}
+                onChange={(e) => setIcon(e.target.value)}
+                className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm cursor-pointer"
+              >
+                {AVAILABLE_TRAINING_ICONS.map((i) => (
+                  <option key={i.value} value={i.value}>
+                    {i.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

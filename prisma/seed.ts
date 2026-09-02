@@ -254,6 +254,7 @@ async function main() {
         id: `trn-${t.slug}`,
         title: t.title,
         slug: t.slug,
+        icon: t.icon || "HiAcademicCap",
         heroTitle: t.heroTitle,
         heroDescription: t.heroDescription,
         introTitle: t.description.introduction.title,

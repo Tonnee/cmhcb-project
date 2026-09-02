@@ -13,6 +13,7 @@ export interface TrainingItem {
   duration: string;
   fees: string;
   variant: FeatureCardVariant;
+  icon?: string;
 }
 
 export const TRAININGS: TrainingItem[] = [
@@ -72,6 +73,7 @@ export const TRAININGS: TrainingItem[] = [
     duration: "2 Days / 16 Hrs",
     fees: "BDT 5,000",
     variant: "primary",
+    icon: "HiPlusCircle",
   },
   {
     slug: "anger-management",
@@ -123,6 +125,7 @@ export const TRAININGS: TrainingItem[] = [
     duration: "1 Day / 8 Hrs",
     fees: "BDT 3,000",
     variant: "secondary",
+    icon: "HiFaceFrown",
   },
   {
     slug: "stress-management",
@@ -174,6 +177,7 @@ export const TRAININGS: TrainingItem[] = [
     duration: "1 Day / 8 Hrs",
     fees: "BDT 3,000",
     variant: "secondary",
+    icon: "HiArrowsPointingOut",
   },
   {
     slug: "relaxation",
@@ -224,6 +228,7 @@ export const TRAININGS: TrainingItem[] = [
     duration: "1 Day / 8 Hrs",
     fees: "BDT 2,500",
     variant: "secondary",
+    icon: "HiSun",
   },
   {
     slug: "helping-children-self-confidence",
@@ -275,6 +280,7 @@ export const TRAININGS: TrainingItem[] = [
     duration: "1 Day / 8 Hrs",
     fees: "BDT 3,500",
     variant: "secondary",
+    icon: "HiStar",
   },
   {
     slug: "managing-childrens-misbehavior",
@@ -326,6 +332,7 @@ export const TRAININGS: TrainingItem[] = [
     duration: "1 Day / 8 Hrs",
     fees: "BDT 3,500",
     variant: "secondary",
+    icon: "HiHandRaised",
   },
   {
     slug: "study-skills",

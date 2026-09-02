@@ -24,6 +24,7 @@ export interface TrainingDB {
   format?: string | null;
   language?: string | null;
   variant: string;
+  icon?: string | null;
   trainers?: string | null; // JSON string of therapist IDs
   image?: string | null;
   bgImage?: string | null;
@@ -335,9 +336,16 @@ export default function TrainingsClientWrapper({
                         {/* Title & Slug */}
                         <td className="px-6 py-4">
                           <div className="flex flex-col min-w-0">
-                            <span className="font-semibold text-dark truncate text-base">
-                              {t.title}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-dark truncate text-base">
+                                {t.title}
+                              </span>
+                              {t.icon && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-medium bg-primary/10 text-primary-dark shrink-0">
+                                  {t.icon}
+                                </span>
+                              )}
+                            </div>
                             <span className="text-xs text-light-ash truncate font-mono">
                               /training/{t.slug}
                             </span>

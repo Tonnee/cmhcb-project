@@ -1192,7 +1192,7 @@ export async function reorderServiceInfoBlocksAction(
 
 export async function getActiveTrainingsListAction(): Promise<{
   success: boolean;
-  data: { title: string; slug: string; duration: string; fees: string }[];
+  data: { title: string; slug: string; duration: string; fees: string; icon?: string | null }[];
 }> {
   try {
     const trainings = await prisma.training.findMany({
@@ -1202,6 +1202,7 @@ export async function getActiveTrainingsListAction(): Promise<{
         slug: true,
         duration: true,
         fees: true,
+        icon: true,
       },
       orderBy: [{ order: "asc" }, { createdAt: "asc" }],
     });
@@ -1229,6 +1230,7 @@ const TrainingInputSchema = z.object({
   format: z.string().optional().nullable(),
   language: z.string().optional().nullable(),
   variant: z.string().default("primary"),
+  icon: z.string().optional().nullable().default("HiAcademicCap"),
   image: z.string().optional().nullable(),
   bgImage: z.string().optional().nullable(),
   order: z.number().default(0),
@@ -1303,6 +1305,7 @@ export async function upsertTrainingAction(
       format: validated.format || null,
       language: validated.language || null,
       variant,
+      icon: validated.icon || "HiAcademicCap",
       image: validated.image || null,
       bgImage: validated.bgImage || null,
       order: validated.order ?? 0,

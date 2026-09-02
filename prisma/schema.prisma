@@ -178,6 +178,7 @@ model Training {
   id               String   @id @default(cuid())
   title            String
   slug             String   @unique
+  icon             String?  @default("HiAcademicCap")
   heroTitle        String
   heroDescription  String
   introTitle       String

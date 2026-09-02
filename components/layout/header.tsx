@@ -233,6 +233,7 @@ interface TrainingDropdownItem {
   slug: string;
   duration: string;
   fees: string;
+  icon?: string | null;
 }
 
 function TrainingMegaMenu({ active }: { active?: boolean }) {
@@ -253,6 +254,7 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
             slug: t.slug,
             duration: t.duration,
             fees: t.fees,
+            icon: t.icon,
           }))
         );
       }
@@ -329,6 +331,7 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
                     slug: t.slug,
                     duration: t.duration,
                     fees: t.fees,
+                    icon: t.icon,
                   }))
               ).map((training) => (
                 <li key={training.slug} role="none">
@@ -343,7 +346,9 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
                   >
                     {/* Icon */}
                     <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-200">
-                      {TRAINING_ICONS[training.slug] ?? <HiPlus className="w-6 h-6" />}
+                      {training.icon
+                        ? renderIconByName(training.icon)
+                        : (TRAINING_ICONS[training.slug] ?? <HiPlus className="w-6 h-6" />)}
                     </span>
 
                     {/* Title */}
