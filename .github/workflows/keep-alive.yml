@@ -15,7 +15,7 @@ jobs:
         run: |
           TARGET_URL="${{ secrets.HEALTH_CHECK_URL }}"
           if [ -z "$TARGET_URL" ]; then
-            TARGET_URL="https://cmhcb.com/api/health"
+            TARGET_URL="https://cmhcb-5926.vercel.app/api/health"
           fi
           echo "Pinging: $TARGET_URL"
           RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" "$TARGET_URL")
