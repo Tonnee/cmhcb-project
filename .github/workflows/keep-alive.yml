@@ -1,0 +1,29 @@
+name: Keep Database & Site Alive
+
+on:
+  schedule:
+    # Runs every 2 days at 04:00 UTC (10:00 AM BST) to prevent Supabase inactivity auto-pauses
+    - cron: "0 4 */2 * *"
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  ping-health:
+    name: Ping Database Health Endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send keep-alive ping
+        run: |
+          TARGET_URL="${{ secrets.HEALTH_CHECK_URL }}"
+          if [ -z "$TARGET_URL" ]; then
+            TARGET_URL="https://cmhcb.com/api/health"
+          fi
+          echo "Pinging: $TARGET_URL"
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" "$TARGET_URL")
+          echo "$RESPONSE"
+          
+          STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d: -f2)
+          if [ "$STATUS" -ne 200 ]; then
+            echo "Warning: Received HTTP status $STATUS"
+            exit 1
+          fi
+          echo "Health check succeeded. Supabase inactivity timer reset."
