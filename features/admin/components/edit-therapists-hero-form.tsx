@@ -269,7 +269,7 @@ export function EditTherapistsHeroForm({
               }}
               rows={3}
               placeholder="Enter a descriptive overview of therapists and clinical team..."
-              className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors resize-y min-h-[90px]"
+              className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors resize-y min-h-22.5"
               required
             />
           </div>
@@ -365,7 +365,7 @@ export function EditTherapistsHeroForm({
             {/* Stat 1: Specialist Therapists (Auto-calculated) */}
             <div className="bg-white p-4 rounded-xl border border-muted/80 flex flex-col justify-between gap-3 shadow-2xs">
               <div>
-                <span className="text-[10px] font-semibold text-primary uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-full inline-block">
+                <span className="text-2xs font-semibold text-primary uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-full inline-block">
                   Stat 1 • Auto-calculated
                 </span>
                 <div className="font-marcellus text-3xl font-bold text-dark-green mt-2">
@@ -382,7 +382,7 @@ export function EditTherapistsHeroForm({
 
             {/* Stat 2: Combined Years of Experience */}
             <div className="bg-white p-4 rounded-xl border border-muted/80 flex flex-col gap-3 shadow-2xs">
-              <span className="text-[10px] font-semibold text-primary uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-full inline-block">
+              <span className="text-2xs font-semibold text-primary uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-full inline-block">
                 Stat 2 • Editable
               </span>
               <div className="flex flex-col gap-1">
@@ -417,7 +417,7 @@ export function EditTherapistsHeroForm({
 
             {/* Stat 3: Therapy Sessions Conducted */}
             <div className="bg-white p-4 rounded-xl border border-muted/80 flex flex-col gap-3 shadow-2xs">
-              <span className="text-[10px] font-semibold text-primary uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-full inline-block">
+              <span className="text-2xs font-semibold text-primary uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-full inline-block">
                 Stat 3 • Editable
               </span>
               <div className="flex flex-col gap-1">

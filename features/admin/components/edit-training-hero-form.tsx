@@ -238,7 +238,7 @@ export function EditTrainingHeroForm({
               }}
               rows={3}
               placeholder="Enter a descriptive overview of training programs offered..."
-              className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors resize-y min-h-[90px]"
+              className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors resize-y min-h-22.5"
               required
             />
           </div>
