@@ -135,6 +135,17 @@ model ServiceInfoBlock {
   lastUpdatedBy String?
 }
 
+model ServicesPageContent {
+  id              String   @id @default("services-content")
+  heroTitle       String   @default("Professional, ethical, and evidence-based mental health care")
+  heroDescription String   @default("At CMHC,B, we provide compassionate and confidential psychotherapeutic services to support individuals, couples, families, and organizations in improving mental well-being and quality of life.")
+  heroImage       String   @default("/mental-health-services-bangladesh.jpg")
+  heroImageAlt    String   @default("Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUpdatedBy   String?
+}
+
 model TrainingInfoBlock {
   id            String   @id @default(cuid())
   heading       String

@@ -7,6 +7,7 @@ import { EditServiceForm } from "./edit-service-form";
 import { deleteServiceAction, deleteServiceInfoBlockAction, toggleServiceFeaturedAction, reorderServicesAction, reorderServiceInfoBlocksAction } from "@/app/(admin)/admin/actions";
 import { SERVICE_IMAGES } from "@/components/shared/service-card";
 import { EditServiceInfoBlockForm } from "./edit-service-info-block-form";
+import { EditServicesHeroForm, type ServicesPageContentDB } from "./edit-services-hero-form";
 import { useRouter } from "next/navigation";
 
 interface ServiceDB {
@@ -43,14 +44,19 @@ interface ServiceInfoBlockDB {
 interface ServicesClientWrapperProps {
   initialServices: ServiceDB[];
   initialInfoBlocks: ServiceInfoBlockDB[];
+  initialPageContent?: ServicesPageContentDB | null;
 }
 
 export function ServicesClientWrapper({
   initialServices,
   initialInfoBlocks,
+  initialPageContent,
 }: ServicesClientWrapperProps): React.JSX.Element {
   const router = useRouter();
   const [services, setServices] = React.useState<ServiceDB[]>(initialServices);
+  const [pageContent, setPageContent] = React.useState<ServicesPageContentDB | null>(
+    initialPageContent || null
+  );
   const [selectedService, setSelectedService] = React.useState<ServiceDB | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [isDeletingId, setIsDeletingId] = React.useState<string | null>(null);
@@ -62,7 +68,7 @@ export function ServicesClientWrapper({
   const [isReordering, setIsReordering] = React.useState(false);
 
   // Tab & Info Block states
-  const [activeTab, setActiveTab] = React.useState<"services" | "infoblocks">("services");
+  const [activeTab, setActiveTab] = React.useState<"hero" | "services" | "infoblocks">("services");
   const [infoBlocks, setInfoBlocks] = React.useState<ServiceInfoBlockDB[]>(initialInfoBlocks);
   const [selectedBlock, setSelectedBlock] = React.useState<ServiceInfoBlockDB | null>(null);
   const [isBlockModalOpen, setIsBlockModalOpen] = React.useState(false);
@@ -72,7 +78,8 @@ export function ServicesClientWrapper({
   React.useEffect(() => {
     setServices(initialServices);
     setInfoBlocks(initialInfoBlocks);
-  }, [initialServices, initialInfoBlocks]);
+    setPageContent(initialPageContent || null);
+  }, [initialServices, initialInfoBlocks, initialPageContent]);
 
   // Drag and Drop handlers for reordering services
   const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
@@ -248,7 +255,7 @@ export function ServicesClientWrapper({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {activeTab === "services" ? (
+          {activeTab === "services" && (
             <button
               onClick={handleAddClick}
               className="bg-primary hover:bg-primary-dark text-white font-sans text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors duration-200 flex items-center gap-2 cursor-pointer"
@@ -256,7 +263,8 @@ export function ServicesClientWrapper({
               <HiPlus className="w-4 h-4" />
               Add Service
             </button>
-          ) : (
+          )}
+          {activeTab === "infoblocks" && (
             <button
               onClick={() => {
                 setSelectedBlock(null);
@@ -273,6 +281,16 @@ export function ServicesClientWrapper({
 
       {/* Tabs */}
       <div className="flex border-b border-muted/50 -mt-2">
+        <button
+          onClick={() => setActiveTab("hero")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "hero"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Hero Section
+        </button>
         <button
           onClick={() => setActiveTab("services")}
           className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
@@ -295,8 +313,13 @@ export function ServicesClientWrapper({
         </button>
       </div>
 
+      {/* Tab Contents */}
+      {activeTab === "hero" && (
+        <EditServicesHeroForm initialContent={pageContent} />
+      )}
+
       {/* Services Grid/Table */}
-      {activeTab === "services" ? (
+      {activeTab === "services" && (
         <div className="bg-white border border-muted rounded-2xl shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse font-sans">
@@ -424,7 +447,10 @@ export function ServicesClientWrapper({
           </table>
         </div>
       </div>
-      ) : (
+      )}
+
+      {/* Info Blocks Grid/Table */}
+      {activeTab === "infoblocks" && (
         <div className="bg-white border border-muted rounded-2xl shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse font-sans">

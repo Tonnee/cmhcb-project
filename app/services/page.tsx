@@ -12,16 +12,29 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
+const DEFAULT_HERO = {
+  heroTitle: "Professional, ethical, and evidence-based mental health care",
+  heroDescription: "At CMHC,B, we provide compassionate and confidential psychotherapeutic services to support individuals, couples, families, and organizations in improving mental well-being and quality of life.",
+  heroImage: "/mental-health-services-bangladesh.jpg",
+  heroImageAlt: "Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh",
+};
+
 export default async function ServicesPage(): Promise<React.JSX.Element> {
-  // Fetch services dynamically from database
-  const [services, infoBlocks] = await Promise.all([
+  // Fetch services and page content dynamically from database
+  const [services, infoBlocks, pageContent] = await Promise.all([
     prisma.service.findMany({
       orderBy: { order: "asc" },
     }),
     prisma.serviceInfoBlock.findMany({
       orderBy: { order: "asc" },
     }),
+    prisma.servicesPageContent.findFirst().catch(() => null),
   ]);
+
+  const heroTitle = pageContent?.heroTitle || DEFAULT_HERO.heroTitle;
+  const heroDescription = pageContent?.heroDescription || DEFAULT_HERO.heroDescription;
+  const heroImage = pageContent?.heroImage || DEFAULT_HERO.heroImage;
+  const heroImageAlt = pageContent?.heroImageAlt || DEFAULT_HERO.heroImageAlt;
 
   return (
     <main className="bg-page-bg">
@@ -30,10 +43,10 @@ export default async function ServicesPage(): Promise<React.JSX.Element> {
           { label: "Home", href: "/" },
         ]}
         currentPage="Services"
-        title="Professional, ethical, and evidence-based mental health care"
-        description="At CMHC,B, we provide compassionate and confidential psychotherapeutic services to support individuals, couples, families, and organizations in improving mental well-being and quality of life."
-        imageSrc="/mental-health-services-bangladesh.jpg"
-        imageAlt="Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh"
+        title={heroTitle}
+        description={heroDescription}
+        imageSrc={heroImage}
+        imageAlt={heroImageAlt}
         ctaLabel="Book an Appointment"
         ctaHref="/appointment"
       />

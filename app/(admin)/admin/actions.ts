@@ -118,6 +118,13 @@ const FaqPageInputSchema = z.object({
   ).default([]),
 });
 
+const ServicesPageInputSchema = z.object({
+  heroTitle: z.string().min(1, "Hero Title is required"),
+  heroDescription: z.string().min(1, "Hero Description is required"),
+  heroImage: z.string().min(1, "Hero Image is required"),
+  heroImageAlt: z.string().optional().default("Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh"),
+});
+
 const PolicyPageInputSchema = z.object({
   title: z.string().min(1, "Title is required"),
   subtitle: z.string().min(1, "Subtitle is required"),
@@ -1769,6 +1776,67 @@ export async function upsertFaqPageContentAction(
       return { success: false, error: error.issues.map(e => e.message).join(", ") };
     }
     return { success: false, error: error.message || "Failed to save faq page content" };
+  }
+}
+
+export async function getServicesPageContentAction(): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await prisma.servicesPageContent.findFirst();
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getServicesPageContentAction:", error);
+    return { success: false, error: error.message || "Failed to fetch services page content" };
+  }
+}
+
+export async function upsertServicesPageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = ServicesPageInputSchema.parse(data);
+
+    const existing = await prisma.servicesPageContent.findFirst();
+
+    const record = await prisma.servicesPageContent.upsert({
+      where: { id: existing?.id || "services-content" },
+      create: {
+        id: "services-content",
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        heroImageAlt: validated.heroImageAlt || "Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh",
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        heroImageAlt: validated.heroImageAlt || "Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh",
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "ServicesPageContent",
+      record.id,
+      "Services Page",
+      `Updated Services page hero content`
+    );
+
+    revalidatePath("/services");
+    revalidatePath("/admin/services");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertServicesPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save services page content" };
   }
 }
 
