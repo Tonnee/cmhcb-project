@@ -12,12 +12,17 @@ export interface TherapistsPageContentDB {
   heroDescription: string;
   heroImage: string;
   heroImageAlt?: string | null;
+  experienceValue?: string | null;
+  experienceLabel?: string | null;
+  sessionsValue?: string | null;
+  sessionsLabel?: string | null;
   lastUpdatedBy?: string | null;
   updatedAt?: Date | string | null;
 }
 
 interface EditTherapistsHeroFormProps {
   initialContent?: TherapistsPageContentDB | null;
+  therapistsCount?: number;
 }
 
 const DEFAULT_HERO = {
@@ -26,10 +31,15 @@ const DEFAULT_HERO = {
     "Our multidisciplinary team of clinical psychologists and counselors brings decades of combined experience in evidence-based care — from CBT and DBT to systemic family therapy and trauma-focused interventions.",
   heroImage: "/experienced-mental-health-therapists.png",
   heroImageAlt: "Experienced mental health therapists and counselors team - CMHCB",
+  experienceValue: "25+",
+  experienceLabel: "Combined Years of Experience",
+  sessionsValue: "2.8K+",
+  sessionsLabel: "Therapy Sessions Conducted",
 };
 
 export function EditTherapistsHeroForm({
   initialContent,
+  therapistsCount = 0,
 }: EditTherapistsHeroFormProps): React.JSX.Element {
   const router = useRouter();
 
@@ -44,6 +54,19 @@ export function EditTherapistsHeroForm({
   );
   const [heroImageAlt, setHeroImageAlt] = React.useState(
     initialContent?.heroImageAlt || DEFAULT_HERO.heroImageAlt
+  );
+
+  const [experienceValue, setExperienceValue] = React.useState(
+    initialContent?.experienceValue || DEFAULT_HERO.experienceValue
+  );
+  const [experienceLabel, setExperienceLabel] = React.useState(
+    initialContent?.experienceLabel || DEFAULT_HERO.experienceLabel
+  );
+  const [sessionsValue, setSessionsValue] = React.useState(
+    initialContent?.sessionsValue || DEFAULT_HERO.sessionsValue
+  );
+  const [sessionsLabel, setSessionsLabel] = React.useState(
+    initialContent?.sessionsLabel || DEFAULT_HERO.sessionsLabel
   );
 
   const [previewUrl, setPreviewUrl] = React.useState(
@@ -63,6 +86,10 @@ export function EditTherapistsHeroForm({
       setHeroImage(initialContent.heroImage || DEFAULT_HERO.heroImage);
       setPreviewUrl(initialContent.heroImage || DEFAULT_HERO.heroImage);
       setHeroImageAlt(initialContent.heroImageAlt || DEFAULT_HERO.heroImageAlt);
+      setExperienceValue(initialContent.experienceValue || DEFAULT_HERO.experienceValue);
+      setExperienceLabel(initialContent.experienceLabel || DEFAULT_HERO.experienceLabel);
+      setSessionsValue(initialContent.sessionsValue || DEFAULT_HERO.sessionsValue);
+      setSessionsLabel(initialContent.sessionsLabel || DEFAULT_HERO.sessionsLabel);
     }
   }, [initialContent]);
 
@@ -142,6 +169,10 @@ export function EditTherapistsHeroForm({
         heroDescription: heroDescription.trim(),
         heroImage: finalImageUrl.trim(),
         heroImageAlt: heroImageAlt.trim() || DEFAULT_HERO.heroImageAlt,
+        experienceValue: experienceValue.trim() || DEFAULT_HERO.experienceValue,
+        experienceLabel: experienceLabel.trim() || DEFAULT_HERO.experienceLabel,
+        sessionsValue: sessionsValue.trim() || DEFAULT_HERO.sessionsValue,
+        sessionsLabel: sessionsLabel.trim() || DEFAULT_HERO.sessionsLabel,
       };
 
       const res = await upsertTherapistsPageContentAction(payload);
@@ -164,10 +195,10 @@ export function EditTherapistsHeroForm({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-muted/60 pb-4">
         <div>
           <h2 className="font-marcellus text-xl font-bold text-dark-green">
-            Therapists Page Hero Header
+            Therapists Page Hero Header & Stats
           </h2>
           <p className="font-sans text-xs text-light-ash mt-0.5">
-            Configure the main banner title, descriptive copy, and background image shown at the top of{" "}
+            Configure the main banner title, descriptive copy, background image, and editorial statistics shown at the top of{" "}
             <a
               href="/therapists"
               target="_blank"
@@ -193,7 +224,7 @@ export function EditTherapistsHeroForm({
       {success && (
         <div className="bg-emerald-50 text-emerald-800 p-4 rounded-xl text-sm font-sans font-medium border border-emerald-200 flex items-center gap-2">
           <HiCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-          <span>Therapists page hero banner has been successfully saved and published!</span>
+          <span>Therapists page hero banner and stats have been successfully saved and published!</span>
         </div>
       )}
 
@@ -321,6 +352,106 @@ export function EditTherapistsHeroForm({
           </div>
         </div>
 
+        {/* Hero Statistics Counters Section */}
+        <div className="flex flex-col gap-4 bg-light-ash/5 p-4 md:p-5 rounded-2xl border border-muted/70">
+          <div className="flex flex-col">
+            <h3 className="font-semibold text-dark text-sm">Hero Statistics Counters</h3>
+            <p className="text-[11px] text-light-ash mt-0.5">
+              The public therapists hero showcases 3 stats. The first stat is automatically calculated from the number of therapist profiles created in the register. You can customize the other two statistics below.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Stat 1: Specialist Therapists (Auto-calculated) */}
+            <div className="bg-white p-4 rounded-xl border border-muted/80 flex flex-col justify-between gap-3 shadow-2xs">
+              <div>
+                <span className="text-[10px] font-semibold text-primary uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-full inline-block">
+                  Stat 1 • Auto-calculated
+                </span>
+                <div className="font-marcellus text-3xl font-bold text-dark-green mt-2">
+                  {therapistsCount}
+                </div>
+                <div className="text-xs font-semibold text-dark mt-0.5">
+                  Specialist Therapists
+                </div>
+              </div>
+              <p className="text-[11px] text-light-ash/80 bg-light-ash/5 p-2 rounded-lg border border-muted/50 leading-relaxed">
+                Automatically reflects the total number of therapist profiles currently registered in the database ({therapistsCount}).
+              </p>
+            </div>
+
+            {/* Stat 2: Combined Years of Experience */}
+            <div className="bg-white p-4 rounded-xl border border-muted/80 flex flex-col gap-3 shadow-2xs">
+              <span className="text-[10px] font-semibold text-primary uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-full inline-block">
+                Stat 2 • Editable
+              </span>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-dark">Value / Number</label>
+                <input
+                  type="text"
+                  value={experienceValue}
+                  onChange={(e) => {
+                    setExperienceValue(e.target.value);
+                    setSuccess(false);
+                  }}
+                  placeholder="e.g. 25+"
+                  className="w-full px-3 py-2 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-xs font-semibold"
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-dark">Label / Description</label>
+                <input
+                  type="text"
+                  value={experienceLabel}
+                  onChange={(e) => {
+                    setExperienceLabel(e.target.value);
+                    setSuccess(false);
+                  }}
+                  placeholder="e.g. Combined Years of Experience"
+                  className="w-full px-3 py-2 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-xs"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Stat 3: Therapy Sessions Conducted */}
+            <div className="bg-white p-4 rounded-xl border border-muted/80 flex flex-col gap-3 shadow-2xs">
+              <span className="text-[10px] font-semibold text-primary uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-full inline-block">
+                Stat 3 • Editable
+              </span>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-dark">Value / Number</label>
+                <input
+                  type="text"
+                  value={sessionsValue}
+                  onChange={(e) => {
+                    setSessionsValue(e.target.value);
+                    setSuccess(false);
+                  }}
+                  placeholder="e.g. 2.8K+"
+                  className="w-full px-3 py-2 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-xs font-semibold"
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-dark">Label / Description</label>
+                <input
+                  type="text"
+                  value={sessionsLabel}
+                  onChange={(e) => {
+                    setSessionsLabel(e.target.value);
+                    setSuccess(false);
+                  }}
+                  placeholder="e.g. Therapy Sessions Conducted"
+                  className="w-full px-3 py-2 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-xs"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Form Actions */}
         <div className="flex items-center justify-between border-t border-muted pt-5 mt-2">
           <button
@@ -331,6 +462,10 @@ export function EditTherapistsHeroForm({
               setHeroImage(initialContent?.heroImage || DEFAULT_HERO.heroImage);
               setPreviewUrl(initialContent?.heroImage || DEFAULT_HERO.heroImage);
               setHeroImageAlt(initialContent?.heroImageAlt || DEFAULT_HERO.heroImageAlt);
+              setExperienceValue(initialContent?.experienceValue || DEFAULT_HERO.experienceValue);
+              setExperienceLabel(initialContent?.experienceLabel || DEFAULT_HERO.experienceLabel);
+              setSessionsValue(initialContent?.sessionsValue || DEFAULT_HERO.sessionsValue);
+              setSessionsLabel(initialContent?.sessionsLabel || DEFAULT_HERO.sessionsLabel);
               setError(null);
               setSuccess(false);
             }}

@@ -177,6 +177,10 @@ model TherapistsPageContent {
   heroDescription String   @default("Our multidisciplinary team of clinical psychologists and counselors brings decades of combined experience in evidence-based care — from CBT and DBT to systemic family therapy and trauma-focused interventions.")
   heroImage       String   @default("/experienced-mental-health-therapists.png")
   heroImageAlt    String   @default("Experienced mental health therapists and counselors team - CMHCB")
+  experienceValue String   @default("25+")
+  experienceLabel String   @default("Combined Years of Experience")
+  sessionsValue   String   @default("2.8K+")
+  sessionsLabel   String   @default("Therapy Sessions Conducted")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   lastUpdatedBy   String?

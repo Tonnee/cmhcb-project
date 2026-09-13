@@ -190,7 +190,10 @@ export default function TherapistsClientWrapper({
 
       {/* Tab Contents */}
       {activeTab === "hero" && (
-        <EditTherapistsHeroForm initialContent={pageContent} />
+        <EditTherapistsHeroForm
+          initialContent={pageContent}
+          therapistsCount={therapists.length}
+        />
       )}
 
       {/* Main content - Table */}

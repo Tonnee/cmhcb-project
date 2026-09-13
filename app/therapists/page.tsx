@@ -22,6 +22,10 @@ const DEFAULT_HERO = {
     "Our multidisciplinary team of clinical psychologists and counselors brings decades of combined experience in evidence-based care — from CBT and DBT to systemic family therapy and trauma-focused interventions.",
   heroImage: "/experienced-mental-health-therapists.png",
   heroImageAlt: "Experienced mental health therapists and counselors team - CMHCB",
+  experienceValue: "25+",
+  experienceLabel: "Combined Years of Experience",
+  sessionsValue: "2.8K+",
+  sessionsLabel: "Therapy Sessions Conducted",
 };
 
 export default async function TherapistsPage() {
@@ -99,8 +103,14 @@ export default async function TherapistsPage() {
 
   const stats = [
     { value: `${therapists.length}`, label: "Specialist Therapists" },
-    { value: `${totalYears}+`, label: "Combined Years of Experience" },
-    { value: `${(totalSessions / 1000).toFixed(0)}K+`, label: "Therapy Sessions Conducted" },
+    {
+      value: pageContent?.experienceValue || (totalYears > 0 ? `${totalYears}+` : DEFAULT_HERO.experienceValue),
+      label: pageContent?.experienceLabel || DEFAULT_HERO.experienceLabel,
+    },
+    {
+      value: pageContent?.sessionsValue || (totalSessions > 0 ? `${(totalSessions / 1000).toFixed(0)}K+` : DEFAULT_HERO.sessionsValue),
+      label: pageContent?.sessionsLabel || DEFAULT_HERO.sessionsLabel,
+    },
   ];
 
   return (

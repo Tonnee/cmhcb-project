@@ -137,6 +137,10 @@ const TherapistsPageInputSchema = z.object({
   heroDescription: z.string().min(1, "Hero Description is required"),
   heroImage: z.string().min(1, "Hero Image is required"),
   heroImageAlt: z.string().optional().default("Experienced mental health therapists and counselors team - CMHCB"),
+  experienceValue: z.string().optional().default("25+"),
+  experienceLabel: z.string().optional().default("Combined Years of Experience"),
+  sessionsValue: z.string().optional().default("2.8K+"),
+  sessionsLabel: z.string().optional().default("Therapy Sessions Conducted"),
 });
 
 const PolicyPageInputSchema = z.object({
@@ -1942,6 +1946,10 @@ export async function upsertTherapistsPageContentAction(
         heroDescription: validated.heroDescription,
         heroImage: validated.heroImage,
         heroImageAlt: validated.heroImageAlt || "Experienced mental health therapists and counselors team - CMHCB",
+        experienceValue: validated.experienceValue || "25+",
+        experienceLabel: validated.experienceLabel || "Combined Years of Experience",
+        sessionsValue: validated.sessionsValue || "2.8K+",
+        sessionsLabel: validated.sessionsLabel || "Therapy Sessions Conducted",
         lastUpdatedBy: admin.email,
       },
       update: {
@@ -1949,6 +1957,10 @@ export async function upsertTherapistsPageContentAction(
         heroDescription: validated.heroDescription,
         heroImage: validated.heroImage,
         heroImageAlt: validated.heroImageAlt || "Experienced mental health therapists and counselors team - CMHCB",
+        experienceValue: validated.experienceValue || "25+",
+        experienceLabel: validated.experienceLabel || "Combined Years of Experience",
+        sessionsValue: validated.sessionsValue || "2.8K+",
+        sessionsLabel: validated.sessionsLabel || "Therapy Sessions Conducted",
         lastUpdatedBy: admin.email,
       },
     });
