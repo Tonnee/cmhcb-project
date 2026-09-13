@@ -160,6 +160,28 @@ model TrainingInfoBlock {
   lastUpdatedBy String?
 }
 
+model TrainingPageContent {
+  id              String   @id @default("training-content")
+  heroTitle       String   @default("Building future mental health professionals and advocates")
+  heroDescription String   @default("CMHCB offers a range of professional training programs designed to equip individuals with practical mental health knowledge and skills — from psychological first aid to advanced counselling techniques.")
+  heroImage       String   @default("/training_hero.png")
+  heroImageAlt    String   @default("CMHCB training programme participants")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUpdatedBy   String?
+}
+
+model TherapistsPageContent {
+  id              String   @id @default("therapists-content")
+  heroTitle       String   @default("Meet Our Therapists")
+  heroDescription String   @default("Our multidisciplinary team of clinical psychologists and counselors brings decades of combined experience in evidence-based care — from CBT and DBT to systemic family therapy and trauma-focused interventions.")
+  heroImage       String   @default("/experienced-mental-health-therapists.png")
+  heroImageAlt    String   @default("Experienced mental health therapists and counselors team - CMHCB")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUpdatedBy   String?
+}
+
 model AdminProfile {
   id           String        @id
   email        String        @unique

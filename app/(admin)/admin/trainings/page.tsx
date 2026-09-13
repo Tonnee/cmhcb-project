@@ -14,25 +14,32 @@ export const revalidate = 0;
 export default async function AdminTrainingsPage(): Promise<React.JSX.Element> {
   let trainings: any[] = [];
   let infoBlocks: any[] = [];
+  let pageContent: any = null;
 
   try {
-    const [dbTrainings, dbInfoBlocks] = await Promise.all([
+    const [dbTrainings, dbInfoBlocks, dbPageContent] = await Promise.all([
       prisma.training.findMany({
         orderBy: { order: "asc" },
       }),
       prisma.trainingInfoBlock.findMany({
         orderBy: { order: "asc" },
       }),
+      prisma.trainingPageContent.findFirst().catch(() => null),
     ]);
     trainings = dbTrainings;
     infoBlocks = dbInfoBlocks;
+    pageContent = dbPageContent;
   } catch (error) {
     console.error("Failed to load training programs from database:", error);
   }
 
   return (
     <div className="flex flex-col gap-8">
-      <TrainingsClientWrapper initialTrainings={trainings} initialInfoBlocks={infoBlocks} />
+      <TrainingsClientWrapper
+        initialTrainings={trainings}
+        initialInfoBlocks={infoBlocks}
+        initialPageContent={pageContent}
+      />
     </div>
   );
 }

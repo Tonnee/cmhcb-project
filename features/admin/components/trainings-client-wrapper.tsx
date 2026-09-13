@@ -5,6 +5,7 @@ import * as React from "react";
 import { HiPlus, HiPencilSquare, HiTrash, HiMagnifyingGlass, HiBars3 } from "react-icons/hi2";
 import { EditTrainingForm } from "./edit-training-form";
 import { EditTrainingInfoBlockForm } from "./edit-training-info-block-form";
+import { EditTrainingHeroForm, type TrainingPageContentDB } from "./edit-training-hero-form";
 import { deleteTrainingAction, deleteTrainingInfoBlockAction, reorderTrainingsAction, reorderTrainingInfoBlocksAction } from "@/app/(admin)/admin/actions";
 import { useRouter } from "next/navigation";
 
@@ -47,14 +48,19 @@ export interface TrainingInfoBlockDB {
 interface TrainingsClientWrapperProps {
   initialTrainings: TrainingDB[];
   initialInfoBlocks: TrainingInfoBlockDB[];
+  initialPageContent?: TrainingPageContentDB | null;
 }
 
 export default function TrainingsClientWrapper({
   initialTrainings,
   initialInfoBlocks,
+  initialPageContent,
 }: TrainingsClientWrapperProps): React.JSX.Element {
   const router = useRouter();
   const [trainings, setTrainings] = React.useState<TrainingDB[]>(initialTrainings);
+  const [pageContent, setPageContent] = React.useState<TrainingPageContentDB | null>(
+    initialPageContent || null
+  );
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedTraining, setSelectedTraining] = React.useState<TrainingDB | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -66,7 +72,7 @@ export default function TrainingsClientWrapper({
   const [isReordering, setIsReordering] = React.useState(false);
 
   // Tab & Info Block states
-  const [activeTab, setActiveTab] = React.useState<"trainings" | "infoblocks">("trainings");
+  const [activeTab, setActiveTab] = React.useState<"hero" | "trainings" | "infoblocks">("trainings");
   const [infoBlocks, setInfoBlocks] = React.useState<TrainingInfoBlockDB[]>(initialInfoBlocks);
   const [selectedBlock, setSelectedBlock] = React.useState<TrainingInfoBlockDB | null>(null);
   const [isBlockModalOpen, setIsBlockModalOpen] = React.useState(false);
@@ -75,7 +81,8 @@ export default function TrainingsClientWrapper({
   React.useEffect(() => {
     setTrainings(initialTrainings);
     setInfoBlocks(initialInfoBlocks);
-  }, [initialTrainings, initialInfoBlocks]);
+    setPageContent(initialPageContent || null);
+  }, [initialTrainings, initialInfoBlocks, initialPageContent]);
 
   // Drag and Drop handlers for reordering training programs
   const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
@@ -227,7 +234,7 @@ export default function TrainingsClientWrapper({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {activeTab === "trainings" ? (
+          {activeTab === "trainings" && (
             <button
               onClick={handleAddClick}
               className="bg-primary hover:bg-primary-dark text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2 cursor-pointer text-sm shadow-md"
@@ -235,7 +242,8 @@ export default function TrainingsClientWrapper({
               <HiPlus className="w-5 h-5" />
               Add Training Program
             </button>
-          ) : (
+          )}
+          {activeTab === "infoblocks" && (
             <button
               onClick={() => {
                 setSelectedBlock(null);
@@ -252,6 +260,16 @@ export default function TrainingsClientWrapper({
 
       {/* Tabs */}
       <div className="flex border-b border-muted/50 -mt-2">
+        <button
+          onClick={() => setActiveTab("hero")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "hero"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Hero Section
+        </button>
         <button
           onClick={() => setActiveTab("trainings")}
           className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
@@ -275,7 +293,11 @@ export default function TrainingsClientWrapper({
       </div>
 
       {/* Dynamic Tab Body */}
-      {activeTab === "trainings" ? (
+      {activeTab === "hero" && (
+        <EditTrainingHeroForm initialContent={pageContent} />
+      )}
+
+      {activeTab === "trainings" && (
         <div className="bg-white border border-muted/50 rounded-2xl shadow-sm overflow-hidden">
           {/* Search bar inside header */}
           <div className="p-4 border-b border-muted/50 flex items-center bg-light/10">
@@ -406,7 +428,9 @@ export default function TrainingsClientWrapper({
             </table>
           </div>
         </div>
-      ) : (
+      )}
+
+      {activeTab === "infoblocks" && (
         <div className="bg-white border border-muted/50 rounded-2xl shadow-sm overflow-hidden animate-fade-in">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">

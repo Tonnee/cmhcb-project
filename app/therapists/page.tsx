@@ -16,18 +16,30 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
+const DEFAULT_HERO = {
+  heroTitle: "Meet Our Therapists",
+  heroDescription:
+    "Our multidisciplinary team of clinical psychologists and counselors brings decades of combined experience in evidence-based care — from CBT and DBT to systemic family therapy and trauma-focused interventions.",
+  heroImage: "/experienced-mental-health-therapists.png",
+  heroImageAlt: "Experienced mental health therapists and counselors team - CMHCB",
+};
+
 export default async function TherapistsPage() {
   let therapists = THERAPISTS_DATA;
+  let pageContent: any = null;
 
   try {
-    let dbTherapists: any[] = [];
-    try {
-      dbTherapists = await prisma.therapist.findMany({
+    const [dbTherapists, dbPageContent] = await Promise.all([
+      prisma.therapist.findMany({
         orderBy: [{ order: "asc" }, { createdAt: "asc" }],
-      });
-    } catch {
-      dbTherapists = await prisma.therapist.findMany().catch(() => []);
-    }
+      }).catch(async () => {
+        return prisma.therapist.findMany({
+          orderBy: { createdAt: "desc" },
+        }).catch(() => []);
+      }),
+      prisma.therapistsPageContent.findFirst().catch(() => null),
+    ]);
+    pageContent = dbPageContent;
 
     if (dbTherapists && dbTherapists.length > 0) {
       const mapped = dbTherapists.map((t) => {
@@ -96,10 +108,10 @@ export default async function TherapistsPage() {
       <PageHero
         breadcrumbs={[{ label: "Home", href: "/" }]}
         currentPage="Therapists"
-        title="Meet Our Therapists"
-        description="Our multidisciplinary team of clinical psychologists and counselors brings decades of combined experience in evidence-based care — from CBT and DBT to systemic family therapy and trauma-focused interventions."
-        imageSrc="/experienced-mental-health-therapists.png"
-        imageAlt="Experienced mental health therapists and counselors team - CMHCB"
+        title={pageContent?.heroTitle || DEFAULT_HERO.heroTitle}
+        description={pageContent?.heroDescription || DEFAULT_HERO.heroDescription}
+        imageSrc={pageContent?.heroImage || DEFAULT_HERO.heroImage}
+        imageAlt={pageContent?.heroImageAlt || DEFAULT_HERO.heroImageAlt}
         ctaLabel="Book an Appointment"
         ctaHref="/appointment"
       >

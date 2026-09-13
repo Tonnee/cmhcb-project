@@ -5,6 +5,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { HiPlus, HiPencil, HiTrash, HiUser, HiBars3 } from "react-icons/hi2";
 import EditTherapistForm from "./edit-therapist-form";
+import { EditTherapistsHeroForm, type TherapistsPageContentDB } from "./edit-therapists-hero-form";
 import { deleteTherapistAction, reorderTherapistsAction } from "@/app/(admin)/admin/actions";
 
 interface TherapistDB {
@@ -25,13 +26,19 @@ interface TherapistDB {
 
 interface TherapistsClientWrapperProps {
   initialTherapists: TherapistDB[];
+  initialPageContent?: TherapistsPageContentDB | null;
 }
 
 export default function TherapistsClientWrapper({
   initialTherapists,
+  initialPageContent,
 }: TherapistsClientWrapperProps): React.JSX.Element {
   const router = useRouter();
   const [therapists, setTherapists] = React.useState<TherapistDB[]>(initialTherapists);
+  const [pageContent, setPageContent] = React.useState<TherapistsPageContentDB | null>(
+    initialPageContent || null
+  );
+  const [activeTab, setActiveTab] = React.useState<"hero" | "therapists">("therapists");
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [editingTherapist, setEditingTherapist] = React.useState<TherapistDB | null>(null);
   const [isDeleting, setIsDeleting] = React.useState<string | null>(null);
@@ -42,7 +49,8 @@ export default function TherapistsClientWrapper({
 
   React.useEffect(() => {
     setTherapists(initialTherapists);
-  }, [initialTherapists]);
+    setPageContent(initialPageContent || null);
+  }, [initialTherapists, initialPageContent]);
 
   // Drag and Drop handlers for reordering therapists
   const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
@@ -144,18 +152,50 @@ export default function TherapistsClientWrapper({
             View, edit, suspend, or add new professional therapists to the CMHC,B register.
           </p>
         </div>
+        {activeTab === "therapists" && (
+          <button
+            type="button"
+            onClick={handleOpenAdd}
+            className="bg-primary hover:bg-primary-dark text-white font-sans text-sm font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2 transition-colors duration-200 self-start sm:self-auto cursor-pointer"
+          >
+            <HiPlus className="w-5 h-5" />
+            Add Therapist
+          </button>
+        )}
+      </div>
+
+      {/* Tabs */}
+      <div className="flex border-b border-muted/50 -mt-2">
         <button
-          type="button"
-          onClick={handleOpenAdd}
-          className="bg-primary hover:bg-primary-dark text-white font-sans text-sm font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2 transition-colors duration-200 self-start sm:self-auto cursor-pointer"
+          onClick={() => setActiveTab("hero")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "hero"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
         >
-          <HiPlus className="w-5 h-5" />
-          Add Therapist
+          Hero Section
+        </button>
+        <button
+          onClick={() => setActiveTab("therapists")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "therapists"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Therapists Directory ({therapists.length})
         </button>
       </div>
 
+      {/* Tab Contents */}
+      {activeTab === "hero" && (
+        <EditTherapistsHeroForm initialContent={pageContent} />
+      )}
+
       {/* Main content - Table */}
-      <div className="bg-white border border-muted rounded-2xl shadow-sm overflow-hidden">
+      {activeTab === "therapists" && (
+        <div className="bg-white border border-muted rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left font-sans text-sm">
             <thead>
@@ -265,6 +305,7 @@ export default function TherapistsClientWrapper({
           </table>
         </div>
       </div>
+      )}
 
       {/* Edit / Create Modal Dialog */}
       {isModalOpen && (

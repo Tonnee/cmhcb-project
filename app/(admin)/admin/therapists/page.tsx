@@ -14,17 +14,29 @@ export const revalidate = 0;
 
 export default async function AdminTherapistsPage(): Promise<React.JSX.Element> {
   let therapists: any[] = [];
+  let pageContent: any = null;
+
   try {
-    therapists = await prisma.therapist.findMany({
-      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-    });
+    const [dbTherapists, dbPageContent] = await Promise.all([
+      prisma.therapist.findMany({
+        orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+      }).catch(async () => {
+        return prisma.therapist.findMany({
+          orderBy: { createdAt: "desc" },
+        }).catch(() => []);
+      }),
+      prisma.therapistsPageContent.findFirst().catch(() => null),
+    ]);
+    therapists = dbTherapists;
+    pageContent = dbPageContent;
   } catch {
-    therapists = await prisma.therapist.findMany({
-      orderBy: { createdAt: "desc" },
-    }).catch(() => []);
+    therapists = [];
   }
 
   return (
-    <TherapistsClientWrapper initialTherapists={therapists} />
+    <TherapistsClientWrapper
+      initialTherapists={therapists}
+      initialPageContent={pageContent}
+    />
   );
 }

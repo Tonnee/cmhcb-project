@@ -10,22 +10,33 @@ import { TRAININGS } from "@/features/training/data/trainings";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+const DEFAULT_HERO = {
+  heroTitle: "Building future mental health professionals and advocates",
+  heroDescription:
+    "CMHCB offers a range of professional training programs designed to equip individuals with practical mental health knowledge and skills — from psychological first aid to advanced counselling techniques.",
+  heroImage: "/training_hero.png",
+  heroImageAlt: "CMHCB training programme participants",
+};
+
 export default async function TrainingPage(): Promise<React.JSX.Element> {
   // Query all training programs and dynamic info blocks from the database
   let trainings: any[] = [];
   let infoBlocks: any[] = [];
+  let pageContent: any = null;
 
   try {
-    const [dbTrainings, dbInfoBlocks] = await Promise.all([
+    const [dbTrainings, dbInfoBlocks, dbPageContent] = await Promise.all([
       prisma.training.findMany({
         orderBy: { order: "asc" },
       }),
       prisma.trainingInfoBlock.findMany({
         orderBy: { order: "asc" },
       }),
+      prisma.trainingPageContent.findFirst().catch(() => null),
     ]);
     trainings = dbTrainings;
     infoBlocks = dbInfoBlocks;
+    pageContent = dbPageContent;
   } catch (error) {
     console.error("Failed to fetch trainings from database:", error);
   }
@@ -69,10 +80,10 @@ export default async function TrainingPage(): Promise<React.JSX.Element> {
           { label: "Home", href: "/" },
         ]}
         currentPage="Training"
-        title="Building future mental health professionals and advocates"
-        description="CMHCB offers a range of professional training programs designed to equip individuals with practical mental health knowledge and skills — from psychological first aid to advanced counselling techniques."
-        imageSrc="/training_hero.png"
-        imageAlt="CMHCB training programme participants"
+        title={pageContent?.heroTitle || DEFAULT_HERO.heroTitle}
+        description={pageContent?.heroDescription || DEFAULT_HERO.heroDescription}
+        imageSrc={pageContent?.heroImage || DEFAULT_HERO.heroImage}
+        imageAlt={pageContent?.heroImageAlt || DEFAULT_HERO.heroImageAlt}
         ctaLabel="Join Training"
         ctaHref="/join-training"
       />

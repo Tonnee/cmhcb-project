@@ -125,6 +125,20 @@ const ServicesPageInputSchema = z.object({
   heroImageAlt: z.string().optional().default("Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh"),
 });
 
+const TrainingPageInputSchema = z.object({
+  heroTitle: z.string().min(1, "Hero Title is required"),
+  heroDescription: z.string().min(1, "Hero Description is required"),
+  heroImage: z.string().min(1, "Hero Image is required"),
+  heroImageAlt: z.string().optional().default("CMHCB training programme participants"),
+});
+
+const TherapistsPageInputSchema = z.object({
+  heroTitle: z.string().min(1, "Hero Title is required"),
+  heroDescription: z.string().min(1, "Hero Description is required"),
+  heroImage: z.string().min(1, "Hero Image is required"),
+  heroImageAlt: z.string().optional().default("Experienced mental health therapists and counselors team - CMHCB"),
+});
+
 const PolicyPageInputSchema = z.object({
   title: z.string().min(1, "Title is required"),
   subtitle: z.string().min(1, "Subtitle is required"),
@@ -1837,6 +1851,128 @@ export async function upsertServicesPageContentAction(
       return { success: false, error: error.issues.map(e => e.message).join(", ") };
     }
     return { success: false, error: error.message || "Failed to save services page content" };
+  }
+}
+
+export async function getTrainingPageContentAction(): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await prisma.trainingPageContent.findFirst();
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getTrainingPageContentAction:", error);
+    return { success: false, error: error.message || "Failed to fetch training page content" };
+  }
+}
+
+export async function upsertTrainingPageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = TrainingPageInputSchema.parse(data);
+
+    const existing = await prisma.trainingPageContent.findFirst();
+
+    const record = await prisma.trainingPageContent.upsert({
+      where: { id: existing?.id || "training-content" },
+      create: {
+        id: "training-content",
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        heroImageAlt: validated.heroImageAlt || "CMHCB training programme participants",
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        heroImageAlt: validated.heroImageAlt || "CMHCB training programme participants",
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "TrainingPageContent",
+      record.id,
+      "Training Page",
+      `Updated Training page hero content`
+    );
+
+    revalidatePath("/training");
+    revalidatePath("/admin/trainings");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertTrainingPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save training page content" };
+  }
+}
+
+export async function getTherapistsPageContentAction(): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await prisma.therapistsPageContent.findFirst();
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getTherapistsPageContentAction:", error);
+    return { success: false, error: error.message || "Failed to fetch therapists page content" };
+  }
+}
+
+export async function upsertTherapistsPageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = TherapistsPageInputSchema.parse(data);
+
+    const existing = await prisma.therapistsPageContent.findFirst();
+
+    const record = await prisma.therapistsPageContent.upsert({
+      where: { id: existing?.id || "therapists-content" },
+      create: {
+        id: "therapists-content",
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        heroImageAlt: validated.heroImageAlt || "Experienced mental health therapists and counselors team - CMHCB",
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        heroImageAlt: validated.heroImageAlt || "Experienced mental health therapists and counselors team - CMHCB",
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "TherapistsPageContent",
+      record.id,
+      "Therapists Page",
+      `Updated Therapists page hero content`
+    );
+
+    revalidatePath("/therapists");
+    revalidatePath("/admin/therapists");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertTherapistsPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save therapists page content" };
   }
 }
 
