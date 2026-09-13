@@ -322,43 +322,6 @@ export function EditServicesHeroForm({
           </div>
         </div>
 
-        {/* Live Appearance Preview */}
-        <div className="flex flex-col gap-2">
-          <span className="font-semibold text-dark text-xs uppercase tracking-wider text-light-ash">
-            Live Preview (How it will render on /services)
-          </span>
-          <div className="relative rounded-2xl overflow-hidden border border-muted shadow-inner min-h-[220px] flex items-center p-6 md:p-8 bg-dark-green">
-            {previewUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={previewUrl}
-                alt={heroImageAlt || "Hero Preview"}
-                className="absolute inset-0 w-full h-full object-cover opacity-35"
-              />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-r from-dark-green/90 via-dark-green/70 to-dark-green/40" />
-
-            <div className="relative z-10 max-w-xl text-white flex flex-col gap-3">
-              <div className="flex items-center gap-2 text-xs font-sans text-muted">
-                <span>Home</span>
-                <span>/</span>
-                <span className="text-secondary font-semibold">Services</span>
-              </div>
-              <h3 className="font-marcellus text-xl md:text-2xl font-bold leading-snug">
-                {heroTitle || "Professional, ethical, and evidence-based mental health care"}
-              </h3>
-              <p className="font-sans text-xs md:text-sm text-light/90 leading-relaxed line-clamp-3">
-                {heroDescription || "At CMHC,B, we provide compassionate and confidential psychotherapeutic services..."}
-              </p>
-              <div>
-                <span className="inline-block bg-primary text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-xs pointer-events-none opacity-90">
-                  Book an Appointment
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Form Actions */}
         <div className="flex items-center justify-between border-t border-muted pt-5 mt-2">
           <button
