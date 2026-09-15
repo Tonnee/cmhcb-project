@@ -2,6 +2,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { TherapistAppointmentButton, TherapistProfileButton } from "@/components/ui/therapist-buttons";
+import { Tag } from "@/components/ui/tag";
 
 export interface TherapistFeeItem {
   label: string;
@@ -52,6 +53,13 @@ export function TherapistCard({
   imageClassName = "",
   interactive = true,
 }: TherapistCardProps): React.JSX.Element {
+  const roles = therapist.role
+    ? therapist.role
+        .split("|")
+        .map((r) => r.trim())
+        .filter(Boolean)
+    : [];
+
   return (
     <div className={`group/card flex flex-col items-center min-w-0 ${className}`}>
       {/* Photo Container */}
@@ -68,6 +76,21 @@ export function TherapistCard({
 
         {/* Dark overlay on hover */}
         <div className="absolute inset-0 bg-primary-dark/10 opacity-0 group-hover/card:opacity-100 transition-all duration-300 pointer-events-none z-10" />
+
+        {/* Roles Tags on Hover */}
+        {roles.length > 0 && (
+          <div className="absolute inset-x-3 top-3 z-20 flex flex-wrap gap-1.5 opacity-0 -translate-y-2 group-hover/card:opacity-100 group-hover/card:translate-y-0 transition-all duration-300 pointer-events-none">
+            {roles.map((role) => (
+              <Tag
+                key={role}
+                variant="outline"
+                className="bg-white/85 backdrop-blur-sm shadow-xs text-center"
+              >
+                {role}
+              </Tag>
+            ))}
+          </div>
+        )}
 
         {/* Hover Action Buttons */}
         {interactive && (

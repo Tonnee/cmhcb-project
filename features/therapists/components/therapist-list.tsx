@@ -7,26 +7,28 @@ interface TherapistListProps {
   therapists: Therapist[];
 }
 
-/** Returns the primary role (text before the first "|") for filter categorization */
-function getPrimaryRole(role: string): string {
-  return role.split("|")[0].trim();
+/** Returns all individual roles and credentials (split by "|") */
+function getAllRoles(role: string): string[] {
+  if (!role) return [];
+  return role
+    .split("|")
+    .map((r) => r.trim())
+    .filter(Boolean);
 }
 
 export function TherapistList({ therapists }: TherapistListProps): React.JSX.Element {
   const [activeCategory, setActiveCategory] = React.useState("All");
 
-  // Derive unique primary-role categories dynamically from the actual therapists list
+  // Derive unique categories dynamically from all roles & credentials across therapists
   const categories = [
     "All",
-    ...Array.from(new Set(therapists.map((t) => getPrimaryRole(t.role)))),
+    ...Array.from(new Set(therapists.flatMap((t) => getAllRoles(t.role)))),
   ];
 
   const filteredTherapists =
     activeCategory === "All"
       ? therapists
-      : therapists.filter(
-          (t) => getPrimaryRole(t.role) === activeCategory
-        );
+      : therapists.filter((t) => getAllRoles(t.role).includes(activeCategory));
 
   return (
     <div className="w-full">
@@ -36,10 +38,10 @@ export function TherapistList({ therapists }: TherapistListProps): React.JSX.Ele
           <button
             key={category}
             onClick={() => setActiveCategory(category)}
-            className={`px-6 py-2.5 rounded-full font-sans text-15px font-medium transition-all duration-300 ${
+            className={`px-6 py-2.5 rounded-full font-sans text-15px font-medium border transition-colors duration-200 cursor-pointer ${
               activeCategory === category
-                ? "bg-primary text-white shadow-sm animate-in fade-in duration-200"
-                : "bg-white text-dark border border-gray-200 hover:border-primary hover:text-primary cursor-pointer"
+                ? "bg-primary text-white border-primary shadow-sm"
+                : "bg-white text-dark border-gray-200 hover:border-primary hover:text-primary"
             }`}
           >
             {category}

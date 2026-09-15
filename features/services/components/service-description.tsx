@@ -48,7 +48,7 @@ function Bullet({ highlighted }: { highlighted: boolean }) {
   return (
     <span
       aria-hidden="true"
-      className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 mt-[10px] ${
+      className={`inline-block w-1.5 h-1.5 rounded-full shrink-0 mt-2.5 ${
         highlighted ? "bg-accent" : "bg-primary/40"
       }`}
     />
