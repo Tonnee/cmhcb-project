@@ -752,6 +752,12 @@ const LandingPageContentInputSchema = z.object({
   trainingHeadline: z.string().min(1, "Training headline is required"),
   trainingSubtitle: z.string().min(1, "Training description is required"),
   trainingImage: z.string().min(1, "Training display image is required"),
+  footerSocials: z.string().optional(),
+  footerPhone: z.string().optional(),
+  footerEmail: z.string().optional(),
+  footerAddressLine1: z.string().optional(),
+  footerAddressLine2: z.string().optional(),
+  footerAddressLine3: z.string().optional(),
 });
 
 export async function updateLandingPageContentAction(
@@ -782,9 +788,10 @@ export async function updateLandingPageContentAction(
       "LandingPageContent",
       "landing-content",
       "Landing Page Content",
-      "Updated landing page display settings and statistics."
+      "Updated landing page display settings, statistics, and footer social links."
     );
 
+    revalidatePath("/", "layout");
     revalidatePath("/");
     revalidatePath("/admin");
     revalidatePath("/admin/landing-page");

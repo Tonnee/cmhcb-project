@@ -14,6 +14,22 @@ export interface SocialLink {
   href: string;
 }
 
+export interface FooterSocialItem {
+  platform: "facebook" | "instagram" | "twitter" | "linkedin" | "youtube" | "whatsapp" | string;
+  label: string;
+  href: string;
+  enabled: boolean;
+}
+
+export const DEFAULT_FOOTER_SOCIALS: FooterSocialItem[] = [
+  { platform: "facebook", label: "Facebook", href: "https://facebook.com", enabled: true },
+  { platform: "instagram", label: "Instagram", href: "https://instagram.com", enabled: true },
+  { platform: "twitter", label: "Twitter", href: "https://x.com", enabled: true },
+  { platform: "linkedin", label: "LinkedIn", href: "https://linkedin.com", enabled: true },
+  { platform: "youtube", label: "YouTube", href: "https://youtube.com", enabled: true },
+  { platform: "whatsapp", label: "WhatsApp", href: "https://wa.me/8801974349569", enabled: false },
+];
+
 export const FOOTER_LINK_COLUMNS: FooterLinkColumn[] = [
   {
     title: "Company & Services",

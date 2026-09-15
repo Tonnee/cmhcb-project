@@ -3,6 +3,7 @@ import { Marcellus, DM_Sans } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import "./globals.css";
 import { Footer } from "@/components/layout/footer";
+import { type FooterSocialItem, CONTACT_INFO } from "@/data/footer";
 import { ScrollToTop } from "@/components/shared/scroll-to-top";
 import prisma from "@/lib/prisma";
 import { JsonLd } from "@/components/shared/json-ld";
@@ -83,26 +84,64 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   let footerContactInfo = null;
+  let dynamicFooterSocials: FooterSocialItem[] | null = null;
   let socialLinks: string[] = [];
+  let phone = CONTACT_INFO.phone as string;
+  let email = CONTACT_INFO.email as string;
+  let address = [...CONTACT_INFO.address] as string[];
 
   try {
-    const contactData = await prisma.contactPageContent.findFirst();
-    if (contactData) {
-      footerContactInfo = {
-        phone: contactData.phone,
-        email: contactData.email,
-        address: [
-          contactData.addressLine1,
-          contactData.addressLine2,
-          contactData.addressLine3,
-        ].filter(Boolean),
-        socials: {
-          Facebook: contactData.facebookUrl,
-          Instagram: contactData.instagramUrl,
-          Twitter: contactData.twitterUrl,
-          LinkedIn: contactData.linkedinUrl,
-        },
-      };
+    const [contactData, landingData] = await Promise.all([
+      prisma.contactPageContent.findFirst(),
+      prisma.landingPageContent.findFirst(),
+    ]);
+
+    if (landingData?.footerSocials) {
+      try {
+        const parsed = JSON.parse(landingData.footerSocials);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          dynamicFooterSocials = parsed;
+        }
+      } catch {
+        // use fallback
+      }
+    }
+
+    // Resolve contact information: landingPageContent overrides contactPageContent / defaults
+    phone = landingData?.footerPhone || contactData?.phone || CONTACT_INFO.phone;
+    email = landingData?.footerEmail || contactData?.email || CONTACT_INFO.email;
+
+    if (landingData?.footerAddressLine1) {
+      address = [
+        landingData.footerAddressLine1,
+        landingData.footerAddressLine2,
+        landingData.footerAddressLine3,
+      ].filter(Boolean) as string[];
+    } else if (contactData) {
+      address = [
+        contactData.addressLine1,
+        contactData.addressLine2,
+        contactData.addressLine3,
+      ].filter(Boolean) as string[];
+    }
+
+    footerContactInfo = {
+      phone,
+      email,
+      address,
+      socials: {
+        Facebook: contactData?.facebookUrl || "",
+        Instagram: contactData?.instagramUrl || "",
+        Twitter: contactData?.twitterUrl || "",
+        LinkedIn: contactData?.linkedinUrl || "",
+      },
+    };
+
+    if (dynamicFooterSocials && dynamicFooterSocials.length > 0) {
+      socialLinks = dynamicFooterSocials
+        .filter((s) => s.enabled !== false && Boolean(s.href))
+        .map((s) => s.href);
+    } else if (contactData) {
       socialLinks = [
         contactData.facebookUrl,
         contactData.instagramUrl,
@@ -111,7 +150,7 @@ export default async function RootLayout({
       ].filter(Boolean) as string[];
     }
   } catch (error) {
-    console.error("Error fetching contact page content for root layout:", error);
+    console.error("Error fetching content for root layout:", error);
   }
 
   const organizationJsonLd = {
@@ -128,7 +167,10 @@ export default async function RootLayout({
       "@type": "PostalAddress",
       addressCountry: "BD",
       addressLocality: "Dhaka",
+      streetAddress: address.join(", "),
     },
+    telephone: phone,
+    email: email,
     sameAs: socialLinks.length > 0 ? socialLinks : undefined,
   };
 
@@ -144,7 +186,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col font-sans bg-page-bg" suppressHydrationWarning>
         <Header />
         {children}
-        <Footer contactInfo={footerContactInfo} />
+        <Footer contactInfo={footerContactInfo} socialsList={dynamicFooterSocials} />
         <ScrollToTop />
       </body>
     </html>

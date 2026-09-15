@@ -9,7 +9,7 @@ import {
   LEGAL_LINKS,
   CONTACT_INFO,
 } from "@/data/footer";
-import type { FooterLinkColumn, SocialLink as SocialLinkType } from "@/data/footer";
+import type { FooterLinkColumn, FooterSocialItem, SocialLink as SocialLinkType } from "@/data/footer";
 import {
   EmailIcon,
   PhoneIcon,
@@ -28,6 +28,7 @@ const SOCIAL_ICON_MAP: Record<string, React.JSX.Element> = {
   Twitter: <TwitterXIcon />,
   LinkedIn: <LinkedInIcon />,
   YouTube: <YouTubeIcon />,
+  WhatsApp: <WhatsAppIcon />,
 };
 
 function LinkColumn({ column }: { column: FooterLinkColumn }): React.JSX.Element {
@@ -71,8 +72,34 @@ export interface FooterContactInfo {
   };
 }
 
-export function Footer({ contactInfo }: { contactInfo?: FooterContactInfo | null }): React.JSX.Element | null {
+export function Footer({
+  contactInfo,
+  socialsList,
+}: {
+  contactInfo?: FooterContactInfo | null;
+  socialsList?: FooterSocialItem[] | null;
+}): React.JSX.Element | null {
   const pathname = usePathname();
+
+  // Resolve dynamic active social links
+  const socialLinks: SocialLinkType[] = React.useMemo(() => {
+    if (socialsList && Array.isArray(socialsList) && socialsList.length > 0) {
+      return socialsList
+        .filter((item) => item.enabled !== false && Boolean(item.href))
+        .map((item) => ({
+          label: item.label,
+          href: item.href,
+        }));
+    }
+
+    return [
+      { label: "Facebook", href: contactInfo?.socials?.Facebook || "https://facebook.com" },
+      { label: "Instagram", href: contactInfo?.socials?.Instagram || "https://instagram.com" },
+      { label: "Twitter", href: contactInfo?.socials?.Twitter || "https://x.com" },
+      { label: "LinkedIn", href: contactInfo?.socials?.LinkedIn || "https://linkedin.com" },
+      { label: "YouTube", href: "https://youtube.com" },
+    ];
+  }, [socialsList, contactInfo]);
 
   if (pathname?.startsWith("/admin") || pathname === "/login" || pathname === "/forgot-password") {
     return null;
@@ -81,14 +108,6 @@ export function Footer({ contactInfo }: { contactInfo?: FooterContactInfo | null
   const phone = contactInfo?.phone || CONTACT_INFO.phone;
   const email = contactInfo?.email || CONTACT_INFO.email;
   const address = contactInfo?.address || CONTACT_INFO.address;
-
-  const socialLinks: SocialLinkType[] = [
-    { label: "Facebook", href: contactInfo?.socials?.Facebook || "https://facebook.com" },
-    { label: "Instagram", href: contactInfo?.socials?.Instagram || "https://instagram.com" },
-    { label: "Twitter", href: contactInfo?.socials?.Twitter || "https://x.com" },
-    { label: "LinkedIn", href: contactInfo?.socials?.LinkedIn || "https://linkedin.com" },
-    { label: "YouTube", href: "https://youtube.com" },
-  ];
 
   return (
     <footer className="bg-footer-bg mt-auto border-t-4 border-primary">
@@ -118,20 +137,22 @@ export function Footer({ contactInfo }: { contactInfo?: FooterContactInfo | null
               Empowering your mind and transforming your life with compassionate, evidence-based mental health care.
             </p>
 
-            <div className="flex items-center gap-6 mt-2">
-              {socialLinks.map((social: SocialLinkType) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center hover:bg-accent hover:text-dark transition-colors"
-                >
-                  {SOCIAL_ICON_MAP[social.label]}
-                </a>
-              ))}
-            </div>
+            {socialLinks.length > 0 && (
+              <div className="flex items-center gap-4 md:gap-6 mt-2 flex-wrap">
+                {socialLinks.map((social: SocialLinkType) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    aria-label={social.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white/5 text-white flex items-center justify-center hover:bg-accent hover:text-dark transition-colors"
+                  >
+                    {SOCIAL_ICON_MAP[social.label] || <FacebookIcon />}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Links 1 - 2 cols */}

@@ -2,6 +2,7 @@ import * as React from "react";
 import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import EditLandingPageForm from "@/features/admin/components/edit-landing-page-form";
+import { DEFAULT_FOOTER_SOCIALS, CONTACT_INFO } from "@/data/footer";
 
 export const metadata: Metadata = {
   title: "Customize Landing Page | Admin Portal | CMHCB",
@@ -31,9 +32,24 @@ export default async function AdminLandingPage(): Promise<React.JSX.Element> {
     trainingHeadline: "Want to Make a <span class=\"text-primary-dark\">Difference</span> in <span class=\"text-accent\">Mental Health</span>?",
     trainingSubtitle: "Our specialized trainings equip professionals, educators, and caregivers with the tools needed to foster mental well-being in their communities.",
     trainingImage: "/mental-health-training-program.png",
+    footerSocials: JSON.stringify(DEFAULT_FOOTER_SOCIALS),
+    footerPhone: CONTACT_INFO.phone,
+    footerEmail: CONTACT_INFO.email,
+    footerAddressLine1: CONTACT_INFO.address[0] || "",
+    footerAddressLine2: CONTACT_INFO.address[1] || "",
+    footerAddressLine3: CONTACT_INFO.address[2] || "",
   };
 
-  const content = landingContent || defaultContent;
+  const content = {
+    ...defaultContent,
+    ...(landingContent || {}),
+    footerPhone: landingContent?.footerPhone || defaultContent.footerPhone,
+    footerEmail: landingContent?.footerEmail || defaultContent.footerEmail,
+    footerAddressLine1: landingContent?.footerAddressLine1 ?? defaultContent.footerAddressLine1,
+    footerAddressLine2: landingContent?.footerAddressLine2 ?? defaultContent.footerAddressLine2,
+    footerAddressLine3: landingContent?.footerAddressLine3 ?? defaultContent.footerAddressLine3,
+    footerSocials: landingContent?.footerSocials || defaultContent.footerSocials,
+  };
 
   return (
     <div className="flex flex-col gap-8">
