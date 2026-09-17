@@ -2512,6 +2512,54 @@ export async function updateTrainingRequestStatusAction(
   }
 }
 
+export async function getUnreadNotificationCountsAction(): Promise<{
+  appointments: number;
+  trainingRequests: number;
+}> {
+  try {
+    const [appointments, trainingRequests] = await Promise.all([
+      prisma.appointment.count({ where: { isViewed: false } }),
+      prisma.trainingRequest.count({ where: { isViewed: false } }),
+    ]);
+    return { appointments, trainingRequests };
+  } catch (error: unknown) {
+    console.error("Error in getUnreadNotificationCountsAction:", error);
+    return { appointments: 0, trainingRequests: 0 };
+  }
+}
+
+export async function markAppointmentAsViewedAction(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await prisma.appointment.update({
+      where: { id },
+      data: { isViewed: true },
+    });
+    revalidatePath("/admin/appointments");
+    return { success: true };
+  } catch (error: unknown) {
+    console.error("Error in markAppointmentAsViewedAction:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Failed to mark appointment as viewed." };
+  }
+}
+
+export async function markTrainingRequestAsViewedAction(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await prisma.trainingRequest.update({
+      where: { id },
+      data: { isViewed: true },
+    });
+    revalidatePath("/admin/training-requests");
+    return { success: true };
+  } catch (error: unknown) {
+    console.error("Error in markTrainingRequestAsViewedAction:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Failed to mark training request as viewed." };
+  }
+}
+
 
 
 

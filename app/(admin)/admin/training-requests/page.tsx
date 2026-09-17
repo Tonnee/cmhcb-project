@@ -46,6 +46,7 @@ export default async function AdminTrainingRequestsPage(): Promise<React.JSX.Ele
       message: req.message || undefined,
       status: clientStatus,
       dateTime: `${formattedDate} at ${formattedTime}`,
+      isViewed: req.isViewed,
     };
   });
 

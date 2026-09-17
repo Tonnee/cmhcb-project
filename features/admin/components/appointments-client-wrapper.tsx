@@ -7,7 +7,11 @@ import {
   HiCheck,
   HiXMark
 } from "react-icons/hi2";
-import { updateAppointmentStatusAction } from "@/app/(admin)/admin/actions";
+import {
+  updateAppointmentStatusAction,
+  markAppointmentAsViewedAction,
+} from "@/app/(admin)/admin/actions";
+import { useAdminNotifications } from "@/features/admin/hooks/use-admin-notifications";
 
 interface Appointment {
   id: string;
@@ -18,6 +22,7 @@ interface Appointment {
   sessionType: string;
   status: "scheduled" | "completed" | "cancelled";
   amount: string;
+  isViewed: boolean;
 }
 
 
@@ -30,6 +35,18 @@ export function AppointmentsClientWrapper({ initialAppointments }: AppointmentsC
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "scheduled" | "completed" | "cancelled">("all");
   const [selectedAppointment, setSelectedAppointment] = React.useState<Appointment | null>(null);
+  const { decrementAppointments } = useAdminNotifications();
+
+  const handleViewDetails = React.useCallback((apt: Appointment): void => {
+    setSelectedAppointment(apt);
+    if (!apt.isViewed) {
+      setAppointments((prev) =>
+        prev.map((item) => (item.id === apt.id ? { ...item, isViewed: true } : item))
+      );
+      decrementAppointments();
+      void markAppointmentAsViewedAction(apt.id);
+    }
+  }, [decrementAppointments]);
 
   const handleStatusChange = async (id: string, nextStatus: "completed" | "cancelled") => {
     const dbStatus = nextStatus === "completed" ? "COMPLETED" : "CANCELLED";
@@ -159,8 +176,22 @@ export function AppointmentsClientWrapper({ initialAppointments }: AppointmentsC
             <tbody className="divide-y divide-muted/30">
               {filteredAppointments.length > 0 ? (
                 filteredAppointments.map((apt) => (
-                  <tr key={apt.id} className="hover:bg-light/10 transition-colors">
-                    <td className="px-6 py-4 font-semibold text-dark-green">{apt.id}</td>
+                  <tr
+                    key={apt.id}
+                    className={`transition-colors ${
+                      !apt.isViewed
+                        ? "bg-amber-50/80 hover:bg-amber-100/70 border-l-4 border-l-amber-500 font-medium"
+                        : "hover:bg-light/10"
+                    }`}
+                  >
+                    <td className="px-6 py-4 font-semibold text-dark-green">
+                      <div className="flex items-center gap-2">
+                        {!apt.isViewed && (
+                          <span className="inline-block w-2 h-2 rounded-full bg-amber-500 shrink-0" title="New" />
+                        )}
+                        <span>{apt.id}</span>
+                      </div>
+                    </td>
                     <td className="px-6 py-4 font-semibold text-dark">{apt.clientName}</td>
                     <td className="px-6 py-4 text-light-ash">{apt.therapistName}</td>
                     <td className="px-6 py-4 text-accent font-medium">{apt.dateTime}</td>
@@ -187,7 +218,7 @@ export function AppointmentsClientWrapper({ initialAppointments }: AppointmentsC
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           type="button"
-                          onClick={() => setSelectedAppointment(apt)}
+                          onClick={() => handleViewDetails(apt)}
                           className="p-2 text-light-ash hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"
                           title="View Details"
                         >

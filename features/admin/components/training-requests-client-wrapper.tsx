@@ -2,7 +2,11 @@
 
 import * as React from "react";
 import { HiMagnifyingGlass, HiEye, HiCheck, HiXMark } from "react-icons/hi2";
-import { updateTrainingRequestStatusAction } from "@/app/(admin)/admin/actions";
+import {
+  updateTrainingRequestStatusAction,
+  markTrainingRequestAsViewedAction,
+} from "@/app/(admin)/admin/actions";
+import { useAdminNotifications } from "@/features/admin/hooks/use-admin-notifications";
 
 interface TrainingRequest {
   id: string;
@@ -15,6 +19,7 @@ interface TrainingRequest {
   message?: string;
   status: "pending" | "approved" | "rejected";
   dateTime: string;
+  isViewed: boolean;
 }
 
 
@@ -27,6 +32,18 @@ export function TrainingRequestsClientWrapper({ initialRequests }: TrainingReque
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "pending" | "approved" | "rejected">("all");
   const [selectedRequest, setSelectedRequest] = React.useState<TrainingRequest | null>(null);
+  const { decrementTrainingRequests } = useAdminNotifications();
+
+  const handleViewDetails = React.useCallback((req: TrainingRequest): void => {
+    setSelectedRequest(req);
+    if (!req.isViewed) {
+      setRequests((prev) =>
+        prev.map((item) => (item.id === req.id ? { ...item, isViewed: true } : item))
+      );
+      decrementTrainingRequests();
+      void markTrainingRequestAsViewedAction(req.id);
+    }
+  }, [decrementTrainingRequests]);
 
   const handleStatusChange = async (id: string, nextStatus: "approved" | "rejected") => {
     const dbStatus = nextStatus === "approved" ? "APPROVED" : "REJECTED";
@@ -114,8 +131,22 @@ export function TrainingRequestsClientWrapper({ initialRequests }: TrainingReque
             <tbody className="divide-y divide-muted/30">
               {filteredRequests.length > 0 ? (
                 filteredRequests.map((req) => (
-                  <tr key={req.id} className="hover:bg-light/10 transition-colors">
-                    <td className="px-6 py-4 font-semibold text-dark-green">{req.id}</td>
+                  <tr
+                    key={req.id}
+                    className={`transition-colors ${
+                      !req.isViewed
+                        ? "bg-amber-50/80 hover:bg-amber-100/70 border-l-4 border-l-amber-500 font-medium"
+                        : "hover:bg-light/10"
+                    }`}
+                  >
+                    <td className="px-6 py-4 font-semibold text-dark-green">
+                      <div className="flex items-center gap-2">
+                        {!req.isViewed && (
+                          <span className="inline-block w-2 h-2 rounded-full bg-amber-500 shrink-0" title="New" />
+                        )}
+                        <span>{req.id}</span>
+                      </div>
+                    </td>
                     <td className="px-6 py-4 font-semibold text-dark">{req.clientName}</td>
                     <td className="px-6 py-4 text-light-ash">{req.trainingName}</td>
                     <td className="px-6 py-4 text-light-ash capitalize">{req.preference}</td>
@@ -133,7 +164,7 @@ export function TrainingRequestsClientWrapper({ initialRequests }: TrainingReque
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           type="button"
-                          onClick={() => setSelectedRequest(req)}
+                          onClick={() => handleViewDetails(req)}
                           className="p-2 text-light-ash hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"
                           title="View Details"
                         >

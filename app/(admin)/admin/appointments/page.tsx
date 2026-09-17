@@ -44,6 +44,7 @@ export default async function AdminAppointmentsPage(): Promise<React.JSX.Element
       sessionType: apt.service,
       status: clientStatus,
       amount: "BDT 2,500",
+      isViewed: apt.isViewed,
     };
   });
 

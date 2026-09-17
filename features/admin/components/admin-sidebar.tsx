@@ -23,6 +23,7 @@ import {
   HiXMark
 } from "react-icons/hi2";
 import { signOutAction } from "@/app/auth/actions";
+import { useAdminNotifications } from "@/features/admin/hooks/use-admin-notifications";
 
 interface NavItem {
   label: string;
@@ -114,6 +115,8 @@ export default function AdminSidebar({
 
   const isAnyPageActive = pathname?.startsWith("/admin/pages");
 
+  const { unreadAppointments, unreadTrainingRequests } = useAdminNotifications();
+
   return (
     <>
       {/* Mobile Sidebar Backdrop */}
@@ -174,6 +177,10 @@ export default function AdminSidebar({
                   ? pathname === "/admin"
                   : pathname?.startsWith(item.href) && !pathname?.startsWith("/admin/pages");
 
+              const hasNotification =
+                (item.href === "/admin/appointments" && unreadAppointments > 0) ||
+                (item.href === "/admin/training-requests" && unreadTrainingRequests > 0);
+
               return (
                 <Link
                   key={item.label}
@@ -186,7 +193,13 @@ export default function AdminSidebar({
                   onClick={onClose}
                 >
                   <Icon className={`w-5 h-5 ${isActive ? "text-primary" : "text-light-ash/80"}`} />
-                  {item.label}
+                  <span className="flex-1">{item.label}</span>
+                  {hasNotification && (
+                    <span className="relative flex h-2.5 w-2.5 ml-auto" aria-label="New notification">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+                    </span>
+                  )}
                 </Link>
               );
             })}
