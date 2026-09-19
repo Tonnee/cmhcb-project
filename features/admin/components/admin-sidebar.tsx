@@ -20,7 +20,9 @@ import {
   HiDocumentText,
   HiChevronDown,
   HiChevronUp,
-  HiXMark
+  HiXMark,
+  HiQuestionMarkCircle,
+  HiArrowTopRightOnSquare,
 } from "react-icons/hi2";
 import { signOutAction } from "@/app/auth/actions";
 import { useAdminNotifications } from "@/features/admin/hooks/use-admin-notifications";
@@ -29,6 +31,8 @@ interface NavItem {
   label: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
+  target?: string;
+  rel?: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -81,6 +85,13 @@ const NAV_ITEMS: NavItem[] = [
     label: "Admins",
     href: "/admin/admins",
     icon: HiShieldCheck,
+  },
+  {
+    label: "Documentation",
+    href: "/admin/docs",
+    icon: HiQuestionMarkCircle,
+    target: "_blank",
+    rel: "noopener noreferrer",
   },
 ];
 
@@ -185,20 +196,27 @@ export default function AdminSidebar({
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-sans ${
+                  target={item.target}
+                  rel={item.rel}
+                  className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 text-sm font-sans ${
                     isActive
                       ? "bg-primary/10 text-primary-dark font-semibold shadow-sm"
                       : "text-light-ash hover:bg-light/30 hover:text-dark"
                   }`}
                   onClick={onClose}
                 >
-                  <Icon className={`w-5 h-5 ${isActive ? "text-primary" : "text-light-ash/80"}`} />
-                  <span className="flex-1">{item.label}</span>
+                  <div className="flex items-center gap-3">
+                    <Icon className={`w-5 h-5 ${isActive ? "text-primary" : "text-light-ash/80"}`} />
+                    <span>{item.label}</span>
+                  </div>
                   {hasNotification && (
                     <span className="relative flex h-2.5 w-2.5 ml-auto" aria-label="New notification">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
                     </span>
+                  )}
+                  {item.target === "_blank" && (
+                    <HiArrowTopRightOnSquare className="w-4 h-4 text-light-ash/60 shrink-0 ml-auto" />
                   )}
                 </Link>
               );
