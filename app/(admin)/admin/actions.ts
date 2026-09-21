@@ -2137,6 +2137,7 @@ export async function upsertTestimonialAction(
     
     const id = validated.id || `test-${slugify(validated.name)}-${Date.now()}`;
     const existing = await prisma.testimonial.findUnique({ where: { id } });
+    const count = existing ? 0 : await prisma.testimonial.count();
 
     const dataPayload = {
       name: validated.name,
@@ -2153,6 +2154,7 @@ export async function upsertTestimonialAction(
       create: {
         id,
         ...dataPayload,
+        order: count,
       },
     });
 
@@ -2214,6 +2216,43 @@ export async function deleteTestimonialAction(
   } catch (error: any) {
     console.error("Error in deleteTestimonialAction:", error);
     return { success: false, error: error.message || "Failed to delete success story" };
+  }
+}
+
+export async function reorderTestimonialsAction(
+  orderedIds: string[]
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+
+    await prisma.$transaction(
+      orderedIds.map((id, index) =>
+        prisma.testimonial.update({
+          where: { id },
+          data: { order: index },
+        })
+      )
+    );
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "Testimonial",
+      "reorder",
+      "Success Stories Order",
+      "Reordered success stories display sequence."
+    );
+
+    revalidatePath("/");
+    revalidatePath("/success-stories");
+    revalidatePath("/admin/pages/success-stories");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error in reorderTestimonialsAction:", error);
+    return { success: false, error: error.message || "Failed to reorder success stories" };
   }
 }
 

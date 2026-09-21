@@ -27,7 +27,7 @@ export default async function SuccessStoriesPage(): Promise<React.JSX.Element> {
   let testimonials: Testimonial[] = [];
   try {
     const dbTestimonials = await prisma.testimonial.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     });
     if (dbTestimonials && dbTestimonials.length > 0) {
       testimonials = dbTestimonials as Testimonial[];

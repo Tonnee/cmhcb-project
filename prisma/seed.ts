@@ -105,7 +105,7 @@ async function main() {
   }
 
   console.log("Seeding Testimonials...");
-  for (const t of TESTIMONIALS) {
+  for (const [idx, t] of TESTIMONIALS.entries()) {
     await prisma.testimonial.create({
       data: {
         id: t.id || "",
@@ -114,6 +114,7 @@ async function main() {
         avatar: t.avatar || "",
         quote: t.quote || "",
         isFeatured: true,
+        order: idx,
       },
     });
   }

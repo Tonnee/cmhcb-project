@@ -13,6 +13,7 @@ interface TestimonialDB {
   avatar: string;
   quote: string;
   isFeatured: boolean;
+  order?: number;
   lastUpdatedBy?: string | null;
   updatedAt?: Date | string | null;
 }

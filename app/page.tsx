@@ -40,6 +40,7 @@ export default async function Page(): Promise<React.JSX.Element> {
       prisma.landingPageContent.findFirst(),
       prisma.testimonial.findMany({
         where: { isFeatured: true },
+        orderBy: [{ order: "asc" }, { createdAt: "desc" }],
         take: 10,
       }),
       prisma.workshop.findMany({

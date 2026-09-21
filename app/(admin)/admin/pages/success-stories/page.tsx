@@ -13,7 +13,7 @@ export const revalidate = 0;
 
 export default async function AdminSuccessStoriesPage(): Promise<React.JSX.Element> {
   const stories = await prisma.testimonial.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
 
   return (

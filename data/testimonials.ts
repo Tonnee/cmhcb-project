@@ -4,6 +4,8 @@ export interface Testimonial {
   role: string;
   avatar: string;
   quote: string;
+  isFeatured?: boolean;
+  order?: number;
 }
 
 export const TESTIMONIALS: Testimonial[] = [
