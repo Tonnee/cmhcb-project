@@ -86,13 +86,6 @@ const NAV_ITEMS: NavItem[] = [
     href: "/admin/admins",
     icon: HiShieldCheck,
   },
-  {
-    label: "Documentation",
-    href: "/admin/docs",
-    icon: HiQuestionMarkCircle,
-    target: "_blank",
-    rel: "noopener noreferrer",
-  },
 ];
 
 const OTHER_PAGES = [
@@ -107,6 +100,14 @@ const OTHER_PAGES = [
   { label: "Privacy Policy", href: "/admin/pages/privacy-policy" },
   { label: "Terms & Conditions", href: "/admin/pages/terms" },
 ];
+
+const DOCUMENTATION_ITEM: NavItem = {
+  label: "Documentation",
+  href: "/admin/docs",
+  icon: HiQuestionMarkCircle,
+  target: "_blank",
+  rel: "noopener noreferrer",
+};
 
 interface AdminSidebarProps {
   adminEmail: string;
@@ -127,6 +128,48 @@ export default function AdminSidebar({
   const isAnyPageActive = pathname?.startsWith("/admin/pages");
 
   const { unreadAppointments, unreadTrainingRequests } = useAdminNotifications();
+
+  const renderNavItem = (item: NavItem) => {
+    const Icon = item.icon;
+    // Matches exact path for overview, or starts with for subroutes
+    const isActive =
+      item.href === "/admin"
+        ? pathname === "/admin"
+        : pathname?.startsWith(item.href) && !pathname?.startsWith("/admin/pages");
+
+    const hasNotification =
+      (item.href === "/admin/appointments" && unreadAppointments > 0) ||
+      (item.href === "/admin/training-requests" && unreadTrainingRequests > 0);
+
+    return (
+      <Link
+        key={item.label}
+        href={item.href}
+        target={item.target}
+        rel={item.rel}
+        className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 text-sm font-sans ${
+          isActive
+            ? "bg-primary/10 text-primary-dark font-semibold shadow-sm"
+            : "text-light-ash hover:bg-light/30 hover:text-dark"
+        }`}
+        onClick={onClose}
+      >
+        <div className="flex items-center gap-3">
+          <Icon className={`w-5 h-5 ${isActive ? "text-primary" : "text-light-ash/80"}`} />
+          <span>{item.label}</span>
+        </div>
+        {hasNotification && (
+          <span className="relative flex h-2.5 w-2.5 ml-auto" aria-label="New notification">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+          </span>
+        )}
+        {item.target === "_blank" && (
+          <HiArrowTopRightOnSquare className="w-4 h-4 text-light-ash/60 shrink-0 ml-auto" />
+        )}
+      </Link>
+    );
+  };
 
   return (
     <>
@@ -180,47 +223,7 @@ export default function AdminSidebar({
 
           {/* Navigation Section */}
           <nav className="flex flex-col gap-1.5" aria-label="Admin sidebar navigation">
-            {NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-              // Matches exact path for overview, or starts with for subroutes
-              const isActive =
-                item.href === "/admin"
-                  ? pathname === "/admin"
-                  : pathname?.startsWith(item.href) && !pathname?.startsWith("/admin/pages");
-
-              const hasNotification =
-                (item.href === "/admin/appointments" && unreadAppointments > 0) ||
-                (item.href === "/admin/training-requests" && unreadTrainingRequests > 0);
-
-              return (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  target={item.target}
-                  rel={item.rel}
-                  className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 text-sm font-sans ${
-                    isActive
-                      ? "bg-primary/10 text-primary-dark font-semibold shadow-sm"
-                      : "text-light-ash hover:bg-light/30 hover:text-dark"
-                  }`}
-                  onClick={onClose}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon className={`w-5 h-5 ${isActive ? "text-primary" : "text-light-ash/80"}`} />
-                    <span>{item.label}</span>
-                  </div>
-                  {hasNotification && (
-                    <span className="relative flex h-2.5 w-2.5 ml-auto" aria-label="New notification">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
-                    </span>
-                  )}
-                  {item.target === "_blank" && (
-                    <HiArrowTopRightOnSquare className="w-4 h-4 text-light-ash/60 shrink-0 ml-auto" />
-                  )}
-                </Link>
-              );
-            })}
+            {NAV_ITEMS.map(renderNavItem)}
 
             {/* Collapsible Dropdown for Other Pages */}
             <div className="flex flex-col">
@@ -266,6 +269,9 @@ export default function AdminSidebar({
                 </div>
               )}
             </div>
+
+            {/* Documentation */}
+            {renderNavItem(DOCUMENTATION_ITEM)}
           </nav>
         </div>
 
