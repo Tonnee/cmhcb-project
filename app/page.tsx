@@ -84,6 +84,14 @@ export default async function Page(): Promise<React.JSX.Element> {
     trainingHeadline: "Want to Make a <span class=\"text-primary-dark\">Difference</span> in <span class=\"text-accent\">Mental Health</span>?",
     trainingSubtitle: "Our specialized trainings equip professionals, educators, and caregivers with the tools needed to foster mental well-being in their communities.",
     trainingImage: "/mental-health-training-program.png",
+    reviewCard1Title: "Real Experiences, Real Impact",
+    reviewCard1Description: "Discover how our clients' lives have changed through therapy, training, and mental health support at CMHC,B.",
+    reviewCard2Title: "Voices That Inspire Hope",
+    reviewCard2Description: "Our clients share their journeys of transformation—honest reflections on the care and support they received at CMHC,B.",
+    reviewPhoto1Image: "/home-review/bangladeshi-woman-mental-health-therapy-client.png",
+    reviewPhoto1Alt: "Happy Bangladeshi woman sharing her positive therapy experience and emotional recovery at CMHCB",
+    reviewPhoto2Image: "/home-review/bangladeshi-man-mental-health-therapy-client.png",
+    reviewPhoto2Alt: "Confident Bangladeshi male client reflecting on successful mental health counseling sessions at CMHCB",
     experienceCount: 20,
     happyClientsCount: 1500,
     sessionsCount: 2800,
@@ -240,8 +248,20 @@ export default async function Page(): Promise<React.JSX.Element> {
         gridWorkshops={gridWorkshops}
       />
       
-      {/* 4. Dynamic Review testimonials */}
-      <Review testimonials={testimonials} />
+      {/* 4. Dynamic Review testimonials & highlights */}
+      <Review
+        testimonials={testimonials}
+        reviewHighlights={{
+          card1Title: content.reviewCard1Title,
+          card1Description: content.reviewCard1Description,
+          card2Title: content.reviewCard2Title,
+          card2Description: content.reviewCard2Description,
+          photo1Image: content.reviewPhoto1Image,
+          photo1Alt: content.reviewPhoto1Alt,
+          photo2Image: content.reviewPhoto2Image,
+          photo2Alt: content.reviewPhoto2Alt,
+        }}
+      />
     </main>
   );
 }

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { HiPhoto, HiGlobeAlt, HiInboxStack, HiArrowsUpDown, HiShare, HiPhone, HiEnvelope, HiMapPin } from "react-icons/hi2";
+import { HiPhoto, HiGlobeAlt, HiInboxStack, HiArrowsUpDown, HiShare, HiPhone, HiEnvelope, HiMapPin, HiChatBubbleBottomCenterText } from "react-icons/hi2";
 import { FaFacebookF, FaInstagram, FaXTwitter, FaLinkedinIn, FaYoutube, FaWhatsapp } from "react-icons/fa6";
 import { uploadImageToSupabase } from "@/lib/supabase";
 import { updateLandingPageContentAction } from "@/app/(admin)/admin/actions";
@@ -32,6 +32,14 @@ interface LandingPageContentDB {
   trainingHeadline: string;
   trainingSubtitle: string;
   trainingImage: string;
+  reviewCard1Title?: string | null;
+  reviewCard1Description?: string | null;
+  reviewCard2Title?: string | null;
+  reviewCard2Description?: string | null;
+  reviewPhoto1Image?: string | null;
+  reviewPhoto1Alt?: string | null;
+  reviewPhoto2Image?: string | null;
+  reviewPhoto2Alt?: string | null;
   footerSocials?: string | null;
   footerPhone?: string | null;
   footerEmail?: string | null;
@@ -75,6 +83,93 @@ export default function EditLandingPageForm({
   const [trainingImage, setTrainingImage] = React.useState(initialContent.trainingImage);
   const [trainingPreviewUrl, setTrainingPreviewUrl] = React.useState(initialContent.trainingImage);
   const [pendingTrainingFile, setPendingTrainingFile] = React.useState<File | null>(null);
+
+  // State variables for Review Highlights 2x2 section
+  const defaultReviewValues = {
+    card1Title: "Real Experiences, Real Impact",
+    card1Description: "Discover how our clients' lives have changed through therapy, training, and mental health support at CMHC,B.",
+    card2Title: "Voices That Inspire Hope",
+    card2Description: "Our clients share their journeys of transformation—honest reflections on the care and support they received at CMHC,B.",
+    photo1Image: "/home-review/bangladeshi-woman-mental-health-therapy-client.png",
+    photo1Alt: "Happy Bangladeshi woman sharing her positive therapy experience and emotional recovery at CMHCB",
+    photo2Image: "/home-review/bangladeshi-man-mental-health-therapy-client.png",
+    photo2Alt: "Confident Bangladeshi male client reflecting on successful mental health counseling sessions at CMHCB",
+  };
+
+  const [reviewCard1Title, setReviewCard1Title] = React.useState(initialContent.reviewCard1Title ?? defaultReviewValues.card1Title);
+  const [reviewCard1Description, setReviewCard1Description] = React.useState(initialContent.reviewCard1Description ?? defaultReviewValues.card1Description);
+  const [reviewCard2Title, setReviewCard2Title] = React.useState(initialContent.reviewCard2Title ?? defaultReviewValues.card2Title);
+  const [reviewCard2Description, setReviewCard2Description] = React.useState(initialContent.reviewCard2Description ?? defaultReviewValues.card2Description);
+
+  const [reviewPhoto1Image, setReviewPhoto1Image] = React.useState(initialContent.reviewPhoto1Image ?? defaultReviewValues.photo1Image);
+  const [reviewPhoto1Alt, setReviewPhoto1Alt] = React.useState(initialContent.reviewPhoto1Alt ?? defaultReviewValues.photo1Alt);
+  const [photo1PreviewUrl, setPhoto1PreviewUrl] = React.useState(initialContent.reviewPhoto1Image ?? defaultReviewValues.photo1Image);
+  const [pendingPhoto1File, setPendingPhoto1File] = React.useState<File | null>(null);
+
+  const [reviewPhoto2Image, setReviewPhoto2Image] = React.useState(initialContent.reviewPhoto2Image ?? defaultReviewValues.photo2Image);
+  const [reviewPhoto2Alt, setReviewPhoto2Alt] = React.useState(initialContent.reviewPhoto2Alt ?? defaultReviewValues.photo2Alt);
+  const [photo2PreviewUrl, setPhoto2PreviewUrl] = React.useState(initialContent.reviewPhoto2Image ?? defaultReviewValues.photo2Image);
+  const [pendingPhoto2File, setPendingPhoto2File] = React.useState<File | null>(null);
+
+  const [isUploadingPhoto1, setIsUploadingPhoto1] = React.useState(false);
+  const [isUploadingPhoto2, setIsUploadingPhoto2] = React.useState(false);
+
+  const handleUploadPhoto1 = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setPendingPhoto1File(file);
+    const localPreview = URL.createObjectURL(file);
+    setPhoto1PreviewUrl(localPreview);
+
+    setIsUploadingPhoto1(true);
+    setError(null);
+    try {
+      const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
+      setReviewPhoto1Image(publicUrl);
+      setPhoto1PreviewUrl(publicUrl);
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload Review Photo 1.");
+    } finally {
+      setIsUploadingPhoto1(false);
+    }
+  };
+
+  const handleUploadPhoto2 = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setPendingPhoto2File(file);
+    const localPreview = URL.createObjectURL(file);
+    setPhoto2PreviewUrl(localPreview);
+
+    setIsUploadingPhoto2(true);
+    setError(null);
+    try {
+      const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
+      setReviewPhoto2Image(publicUrl);
+      setPhoto2PreviewUrl(publicUrl);
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload Review Photo 2.");
+    } finally {
+      setIsUploadingPhoto2(false);
+    }
+  };
+
+  const handleResetReviewHighlights = () => {
+    setReviewCard1Title(defaultReviewValues.card1Title);
+    setReviewCard1Description(defaultReviewValues.card1Description);
+    setReviewCard2Title(defaultReviewValues.card2Title);
+    setReviewCard2Description(defaultReviewValues.card2Description);
+    setReviewPhoto1Image(defaultReviewValues.photo1Image);
+    setReviewPhoto1Alt(defaultReviewValues.photo1Alt);
+    setPhoto1PreviewUrl(defaultReviewValues.photo1Image);
+    setPendingPhoto1File(null);
+    setReviewPhoto2Image(defaultReviewValues.photo2Image);
+    setReviewPhoto2Alt(defaultReviewValues.photo2Alt);
+    setPhoto2PreviewUrl(defaultReviewValues.photo2Image);
+    setPendingPhoto2File(null);
+  };
 
   // State variables for footer address, phone & email
   const [footerPhone, setFooterPhone] = React.useState(initialContent.footerPhone || "+8801974349569");
@@ -263,6 +358,40 @@ export default function EditLandingPageForm({
         }
       }
 
+      let finalPhoto1 = reviewPhoto1Image;
+      if (pendingPhoto1File && (!finalPhoto1 || finalPhoto1.startsWith("blob:"))) {
+        setIsUploadingPhoto1(true);
+        try {
+          finalPhoto1 = await uploadImageToSupabase(pendingPhoto1File, "cmhcb-media");
+          setReviewPhoto1Image(finalPhoto1);
+          setPhoto1PreviewUrl(finalPhoto1);
+        } catch {
+          setError("Failed to upload Review Photo 1.");
+          setIsSubmitting(false);
+          setIsUploadingPhoto1(false);
+          return;
+        } finally {
+          setIsUploadingPhoto1(false);
+        }
+      }
+
+      let finalPhoto2 = reviewPhoto2Image;
+      if (pendingPhoto2File && (!finalPhoto2 || finalPhoto2.startsWith("blob:"))) {
+        setIsUploadingPhoto2(true);
+        try {
+          finalPhoto2 = await uploadImageToSupabase(pendingPhoto2File, "cmhcb-media");
+          setReviewPhoto2Image(finalPhoto2);
+          setPhoto2PreviewUrl(finalPhoto2);
+        } catch {
+          setError("Failed to upload Review Photo 2.");
+          setIsSubmitting(false);
+          setIsUploadingPhoto2(false);
+          return;
+        } finally {
+          setIsUploadingPhoto2(false);
+        }
+      }
+
       const res = await updateLandingPageContentAction({
         heroHeadline,
         heroSubtitle,
@@ -277,6 +406,14 @@ export default function EditLandingPageForm({
         trainingHeadline,
         trainingSubtitle,
         trainingImage: finalTraining,
+        reviewCard1Title,
+        reviewCard1Description,
+        reviewCard2Title,
+        reviewCard2Description,
+        reviewPhoto1Image: finalPhoto1,
+        reviewPhoto1Alt,
+        reviewPhoto2Image: finalPhoto2,
+        reviewPhoto2Alt,
         footerSocials: JSON.stringify(footerSocials),
         footerPhone,
         footerEmail,
@@ -594,6 +731,222 @@ export default function EditLandingPageForm({
         </div>
       </div>
 
+      {/* Client Review Highlights (2×2 Grid) Customization */}
+      <div className="bg-white border border-muted p-6 rounded-2xl shadow-sm flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-muted pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <HiChatBubbleBottomCenterText className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+                Client Review Highlights (2×2 Grid)
+              </h2>
+              <p className="font-sans text-xs text-light-ash">
+                Customize the 2 photos and 2 highlight cards in the 2×2 grid of the home review section.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleResetReviewHighlights}
+            className="text-xs font-sans text-light-ash hover:text-dark underline cursor-pointer px-1 self-start sm:self-auto"
+          >
+            Reset to Default
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Top-Left: Photo 1 */}
+          <div className="flex flex-col gap-3 p-5 rounded-2xl border border-muted bg-light-ash/5">
+            <div className="flex items-center justify-between">
+              <span className="font-sans text-xs font-bold text-dark flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-bold">1</span>
+                Top-Left Photo (Client 1)
+              </span>
+              <span className="text-[10px] uppercase font-semibold text-light-ash tracking-wide">Image Tile</span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="relative w-20 h-20 bg-light/30 border border-muted rounded-xl overflow-hidden shrink-0">
+                {(photo1PreviewUrl || reviewPhoto1Image) ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={photo1PreviewUrl || reviewPhoto1Image} alt="Review Photo 1" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-light-ash/50">
+                    <HiPhoto className="w-6 h-6" />
+                  </div>
+                )}
+              </div>
+              <label className="flex-1 flex flex-col items-center justify-center border border-dashed border-muted hover:border-primary/60 rounded-xl px-4 py-3 bg-white hover:bg-primary/5 cursor-pointer transition-colors duration-200">
+                <span className="font-sans text-xs text-primary font-semibold">
+                  {isUploadingPhoto1 ? "Uploading..." : "Upload New Photo"}
+                </span>
+                <span className="text-[10px] text-light-ash mt-0.5">Recommended: 600×600 px (1:1)</span>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={handleUploadPhoto1}
+                  className="hidden"
+                  disabled={isUploadingPhoto1}
+                />
+              </label>
+            </div>
+
+            <div className="flex flex-col gap-1 mt-1">
+              <label htmlFor="review-photo-1-alt" className="font-sans text-[11px] font-semibold text-dark">
+                Photo Alt Text (Accessibility & SEO)
+              </label>
+              <input
+                id="review-photo-1-alt"
+                type="text"
+                value={reviewPhoto1Alt}
+                onChange={(e) => setReviewPhoto1Alt(e.target.value)}
+                placeholder="Description of the photo for screen readers"
+                className="w-full font-sans text-xs px-3.5 py-2.5 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Top-Right: Card 1 (Primary Dark) */}
+          <div className="flex flex-col gap-3 p-5 rounded-2xl border border-primary/20 bg-primary/5">
+            <div className="flex items-center justify-between">
+              <span className="font-sans text-xs font-bold text-dark flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-primary-dark text-white text-[10px] flex items-center justify-center font-bold">2</span>
+                Top-Right Card (Primary Dark)
+              </span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary-dark text-white">
+                Primary Dark
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label htmlFor="review-card-1-title" className="font-sans text-[11px] font-semibold text-dark">
+                Card Title
+              </label>
+              <input
+                id="review-card-1-title"
+                type="text"
+                value={reviewCard1Title}
+                onChange={(e) => setReviewCard1Title(e.target.value)}
+                placeholder="Real Experiences, Real Impact"
+                className="w-full font-sans text-xs px-3.5 py-2.5 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label htmlFor="review-card-1-desc" className="font-sans text-[11px] font-semibold text-dark">
+                Card Description
+              </label>
+              <textarea
+                id="review-card-1-desc"
+                value={reviewCard1Description}
+                onChange={(e) => setReviewCard1Description(e.target.value)}
+                rows={3}
+                placeholder="Card description text..."
+                className="w-full font-sans text-xs px-3.5 py-2.5 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors resize-y"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Bottom-Left: Card 2 (Accent Sand) */}
+          <div className="flex flex-col gap-3 p-5 rounded-2xl border border-amber-200 bg-accent/15">
+            <div className="flex items-center justify-between">
+              <span className="font-sans text-xs font-bold text-dark flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-accent-dark text-white text-[10px] flex items-center justify-center font-bold">3</span>
+                Bottom-Left Card (Accent Sand)
+              </span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-accent-dark text-white">
+                Accent Sand
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label htmlFor="review-card-2-title" className="font-sans text-[11px] font-semibold text-dark">
+                Card Title
+              </label>
+              <input
+                id="review-card-2-title"
+                type="text"
+                value={reviewCard2Title}
+                onChange={(e) => setReviewCard2Title(e.target.value)}
+                placeholder="Voices That Inspire Hope"
+                className="w-full font-sans text-xs px-3.5 py-2.5 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label htmlFor="review-card-2-desc" className="font-sans text-[11px] font-semibold text-dark">
+                Card Description
+              </label>
+              <textarea
+                id="review-card-2-desc"
+                value={reviewCard2Description}
+                onChange={(e) => setReviewCard2Description(e.target.value)}
+                rows={3}
+                placeholder="Card description text..."
+                className="w-full font-sans text-xs px-3.5 py-2.5 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors resize-y"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Bottom-Right: Photo 2 */}
+          <div className="flex flex-col gap-3 p-5 rounded-2xl border border-muted bg-light-ash/5">
+            <div className="flex items-center justify-between">
+              <span className="font-sans text-xs font-bold text-dark flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-bold">4</span>
+                Bottom-Right Photo (Client 2)
+              </span>
+              <span className="text-[10px] uppercase font-semibold text-light-ash tracking-wide">Image Tile</span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="relative w-20 h-20 bg-light/30 border border-muted rounded-xl overflow-hidden shrink-0">
+                {(photo2PreviewUrl || reviewPhoto2Image) ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={photo2PreviewUrl || reviewPhoto2Image} alt="Review Photo 2" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-light-ash/50">
+                    <HiPhoto className="w-6 h-6" />
+                  </div>
+                )}
+              </div>
+              <label className="flex-1 flex flex-col items-center justify-center border border-dashed border-muted hover:border-primary/60 rounded-xl px-4 py-3 bg-white hover:bg-primary/5 cursor-pointer transition-colors duration-200">
+                <span className="font-sans text-xs text-primary font-semibold">
+                  {isUploadingPhoto2 ? "Uploading..." : "Upload New Photo"}
+                </span>
+                <span className="text-[10px] text-light-ash mt-0.5">Recommended: 600×600 px (1:1)</span>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={handleUploadPhoto2}
+                  className="hidden"
+                  disabled={isUploadingPhoto2}
+                />
+              </label>
+            </div>
+
+            <div className="flex flex-col gap-1 mt-1">
+              <label htmlFor="review-photo-2-alt" className="font-sans text-[11px] font-semibold text-dark">
+                Photo Alt Text (Accessibility & SEO)
+              </label>
+              <input
+                id="review-photo-2-alt"
+                type="text"
+                value={reviewPhoto2Alt}
+                onChange={(e) => setReviewPhoto2Alt(e.target.value)}
+                placeholder="Description of the photo for screen readers"
+                className="w-full font-sans text-xs px-3.5 py-2.5 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Footer Social Media Links Customization */}
       <div className="bg-white border border-muted p-6 rounded-2xl shadow-sm flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-muted pb-4">
@@ -842,7 +1195,7 @@ export default function EditLandingPageForm({
         <button
           type="submit"
           className="bg-primary hover:bg-primary-dark text-white font-sans text-sm font-semibold px-6 py-3 rounded-xl transition-colors duration-200 cursor-pointer disabled:opacity-50"
-          disabled={isSubmitting || isUploadingBg || isUploadingFigure || isUploadingTraining}
+          disabled={isSubmitting || isUploadingBg || isUploadingFigure || isUploadingTraining || isUploadingPhoto1 || isUploadingPhoto2}
         >
           {isSubmitting ? "Saving Content..." : "Save Customizations"}
         </button>

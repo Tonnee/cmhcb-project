@@ -10,8 +10,42 @@ interface Testimonial {
   quote: string;
 }
 
+export interface ReviewHighlightProps {
+  card1Title?: string | null;
+  card1Description?: string | null;
+  card2Title?: string | null;
+  card2Description?: string | null;
+  photo1Image?: string | null;
+  photo1Alt?: string | null;
+  photo2Image?: string | null;
+  photo2Alt?: string | null;
+}
+
+export interface ReviewHighlightValues {
+  card1Title: string;
+  card1Description: string;
+  card2Title: string;
+  card2Description: string;
+  photo1Image: string;
+  photo1Alt: string;
+  photo2Image: string;
+  photo2Alt: string;
+}
+
+export const DEFAULT_REVIEW_HIGHLIGHTS: ReviewHighlightValues = {
+  photo1Image: "/home-review/bangladeshi-woman-mental-health-therapy-client.png",
+  photo1Alt: "Happy Bangladeshi woman sharing her positive therapy experience and emotional recovery at CMHCB",
+  card1Title: "Real Experiences, Real Impact",
+  card1Description: "Discover how our clients' lives have changed through therapy, training, and mental health support at CMHC,B.",
+  card2Title: "Voices That Inspire Hope",
+  card2Description: "Our clients share their journeys of transformation—honest reflections on the care and support they received at CMHC,B.",
+  photo2Image: "/home-review/bangladeshi-man-mental-health-therapy-client.png",
+  photo2Alt: "Confident Bangladeshi male client reflecting on successful mental health counseling sessions at CMHCB",
+};
+
 interface ReviewProps {
   testimonials: Testimonial[];
+  reviewHighlights?: ReviewHighlightProps;
 }
 
 interface InfoCardProps {
@@ -56,7 +90,18 @@ function ReviewPhoto({ src, alt }: ReviewPhotoProps): React.JSX.Element {
   );
 }
 
-export function Review({ testimonials }: ReviewProps): React.JSX.Element {
+export function Review({ testimonials, reviewHighlights }: ReviewProps): React.JSX.Element {
+  const highlights: ReviewHighlightValues = {
+    photo1Image: reviewHighlights?.photo1Image || DEFAULT_REVIEW_HIGHLIGHTS.photo1Image,
+    photo1Alt: reviewHighlights?.photo1Alt || DEFAULT_REVIEW_HIGHLIGHTS.photo1Alt,
+    card1Title: reviewHighlights?.card1Title || DEFAULT_REVIEW_HIGHLIGHTS.card1Title,
+    card1Description: reviewHighlights?.card1Description || DEFAULT_REVIEW_HIGHLIGHTS.card1Description,
+    card2Title: reviewHighlights?.card2Title || DEFAULT_REVIEW_HIGHLIGHTS.card2Title,
+    card2Description: reviewHighlights?.card2Description || DEFAULT_REVIEW_HIGHLIGHTS.card2Description,
+    photo2Image: reviewHighlights?.photo2Image || DEFAULT_REVIEW_HIGHLIGHTS.photo2Image,
+    photo2Alt: reviewHighlights?.photo2Alt || DEFAULT_REVIEW_HIGHLIGHTS.photo2Alt,
+  };
+
   return (
     <section className="py-20">
       <div className="container">
@@ -65,25 +110,25 @@ export function Review({ testimonials }: ReviewProps): React.JSX.Element {
           {/* Left side — 2×2 grid */}
           <div className="shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full lg:w-[50%] xl:w-142">
             <ReviewPhoto
-              src="/home-review/bangladeshi-woman-mental-health-therapy-client.png"
-              alt="Happy Bangladeshi woman sharing her positive therapy experience and emotional recovery at CMHCB"
+              src={highlights.photo1Image}
+              alt={highlights.photo1Alt}
             />
 
             <InfoCard
-              title="Real Experiences, Real Impact"
-              description="Discover how our clients' lives have changed through therapy, training, and mental health support at CMHC,B."
+              title={highlights.card1Title}
+              description={highlights.card1Description}
               variant="primary"
             />
 
             <InfoCard
-              title="Voices That Inspire Hope"
-              description="Our clients share their journeys of transformation—honest reflections on the care and support they received at CMHC,B."
+              title={highlights.card2Title}
+              description={highlights.card2Description}
               variant="accent"
             />
 
             <ReviewPhoto
-              src="/home-review/bangladeshi-man-mental-health-therapy-client.png"
-              alt="Confident Bangladeshi male client reflecting on successful mental health counseling sessions at CMHCB"
+              src={highlights.photo2Image}
+              alt={highlights.photo2Alt}
             />
           </div>
 
