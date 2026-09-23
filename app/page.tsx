@@ -26,8 +26,6 @@ export default async function Page(): Promise<React.JSX.Element> {
     isAdmin = false;
   }
 
-  const now = new Date().toISOString();
-
   let landingContent = null;
   let dbTestimonials: any[] = [];
   let dbFeaturedWorkshops: any[] = [];
@@ -40,17 +38,17 @@ export default async function Page(): Promise<React.JSX.Element> {
       prisma.landingPageContent.findFirst(),
       prisma.testimonial.findMany({
         where: { isFeatured: true },
-        orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+        orderBy: [{ order: "asc" } as any, { createdAt: "desc" }],
         take: 10,
       }),
       prisma.workshop.findMany({
         where: { isFeatured: true },
-        orderBy: [{ isLatest: "desc" }, { isFeatured: "desc" }, { order: "asc" }, { createdAt: "desc" }],
+        orderBy: [{ isLatest: "desc" }, { isFeatured: "desc" }, { order: "asc" } as any, { createdAt: "desc" }],
         take: 4,
       }),
       prisma.service.findMany({
         where: { isFeatured: true },
-        orderBy: { order: "asc" },
+        orderBy: { order: "asc" } as any,
         take: 6,
       }),
       prisma.workshop.findFirst({
@@ -68,9 +66,9 @@ export default async function Page(): Promise<React.JSX.Element> {
 
   try {
     dbTherapists = await prisma.therapist.findMany({
-      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+      orderBy: [{ order: "asc" } as any, { createdAt: "asc" }],
     });
-  } catch (err) {
+  } catch {
     dbTherapists = await prisma.therapist.findMany().catch(() => []);
   }
 
@@ -97,7 +95,10 @@ export default async function Page(): Promise<React.JSX.Element> {
     sessionsCount: 2800,
     satisfactionRate: 94,
   };
-  const content = landingContent || defaultContent;
+  const content = {
+    ...defaultContent,
+    ...(landingContent || {}),
+  };
 
   const statsData = [
     {
