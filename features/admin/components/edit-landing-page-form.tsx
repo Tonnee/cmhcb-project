@@ -638,46 +638,42 @@ export default function EditLandingPageForm({
             />
           </div>
 
-          {/* Well-Being Section Image Upload */}
-          <div className="flex flex-col gap-1.5 pt-3 border-t border-muted/50">
-            <div className="flex items-center justify-between">
-              <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
-                <HiPhoto className="w-4 h-4 text-primary" />
-                Well-Being Background Image
-              </label>
-              <span className="text-[11px] text-light-ash">
-                Recommended: <strong>1920×1080 px</strong> (16:9) • Max 10MB (.jpg, .png, .webp)
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center mt-1">
-              {/* Preview Thumbnail */}
-              <div className="relative w-full h-36 bg-dark-green/10 border border-muted rounded-xl overflow-hidden flex items-center justify-center">
-                {(wellbeingPreviewUrl || wellbeingImage) ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={wellbeingPreviewUrl || wellbeingImage}
-                    alt="Well-Being Section Preview"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-light-ash/50 gap-1">
-                    <HiPhoto className="w-7 h-7" />
-                    <span className="text-xs text-light-ash">Default SVG Pattern Active</span>
-                  </div>
-                )}
-                {isUploadingWellbeing && (
-                  <div className="absolute inset-0 bg-dark-green/60 backdrop-blur-xs flex items-center justify-center text-white text-xs font-semibold">
-                    Uploading image...
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Well-Being BG Banner Image Upload */}
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Well-Being Background Banner
+                </label>
+                {(wellbeingPreviewUrl || wellbeingImage) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setWellbeingImage("");
+                      setWellbeingPreviewUrl("");
+                      setPendingWellbeingFile(null);
+                    }}
+                    className="text-[11px] text-rose-600 hover:text-rose-700 underline cursor-pointer"
+                  >
+                    Remove Banner
+                  </button>
                 )}
               </div>
-
-              {/* Upload & Path Controls */}
-              <div className="flex flex-col gap-2.5">
-                <label className="flex flex-col items-center justify-center border border-dashed border-muted hover:border-primary/60 rounded-xl px-4 py-2.5 bg-light/10 hover:bg-primary/5 cursor-pointer transition-colors duration-200">
+              <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
+              <div className="flex items-center gap-4 mt-1">
+                <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
+                  {(wellbeingPreviewUrl || wellbeingImage) ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={wellbeingPreviewUrl || wellbeingImage} alt="Well-Being BG" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-light-ash/50">
+                      <HiPhoto className="w-6 h-6" />
+                    </div>
+                  )}
+                </div>
+                <label className="flex-1 flex flex-col items-center justify-center border border-dashed border-muted hover:border-primary/60 rounded-xl px-4 py-3 bg-light/10 hover:bg-primary/5 cursor-pointer transition-colors duration-200">
                   <span className="font-sans text-xs text-primary font-semibold">
-                    {isUploadingWellbeing ? "Uploading..." : "Upload New Image"}
+                    {isUploadingWellbeing ? "Uploading..." : "Upload New Banner"}
                   </span>
                   <input
                     type="file"
@@ -687,34 +683,6 @@ export default function EditLandingPageForm({
                     disabled={isUploadingWellbeing}
                   />
                 </label>
-
-                <div className="flex flex-col gap-1">
-                  <span className="text-[11px] font-medium text-dark">Or Image URL / Path</span>
-                  <input
-                    type="text"
-                    value={wellbeingImage}
-                    onChange={(e) => {
-                      setWellbeingImage(e.target.value);
-                      setWellbeingPreviewUrl(e.target.value);
-                    }}
-                    placeholder="/home-service-images/... or https://..."
-                    className="w-full px-3 py-1.5 border border-muted rounded-xl bg-white focus:outline-hidden focus:border-primary text-xs font-mono"
-                  />
-                </div>
-
-                {(wellbeingImage || wellbeingPreviewUrl) && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setWellbeingImage("");
-                      setWellbeingPreviewUrl("");
-                      setPendingWellbeingFile(null);
-                    }}
-                    className="text-xs text-rose-600 hover:text-rose-700 underline text-left self-start cursor-pointer"
-                  >
-                    Remove Image (revert to pattern)
-                  </button>
-                )}
               </div>
             </div>
           </div>
