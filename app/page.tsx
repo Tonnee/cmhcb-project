@@ -83,6 +83,14 @@ export default async function Page(): Promise<React.JSX.Element> {
     trainingHeadline: "Want to Make a <span class=\"text-primary-dark\">Difference</span> in <span class=\"text-accent\">Mental Health</span>?",
     trainingSubtitle: "Our specialized trainings equip professionals, educators, and caregivers with the tools needed to foster mental well-being in their communities.",
     trainingImage: "/mental-health-training-program.png",
+    trainingItem1Title: "Basic Counseling Skills Training",
+    trainingItem1Description: "Learn foundational techniques for effective, empathetic, and ethical communication in mental health settings.",
+    trainingItem2Title: "Child & Adolescent Mental Health",
+    trainingItem2Description: "Understand psychological development, behavior management, and therapeutic strategies for young individuals.",
+    trainingItem3Title: "Trauma-Informed Care",
+    trainingItem3Description: "Equip yourself with the knowledge and tools to support individuals dealing with trauma and PTSD.",
+    trainingItem4Title: "",
+    trainingItem4Description: "",
     reviewCard1Title: "Real Experiences, Real Impact",
     reviewCard1Description: "Discover how our clients' lives have changed through therapy, training, and mental health support at CMHC,B.",
     reviewCard2Title: "Voices That Inspire Hope",
@@ -142,6 +150,25 @@ export default async function Page(): Promise<React.JSX.Element> {
       title: content.stat4Title || "Satisfaction Positive",
       description: content.stat4Description || "outcomes and improved well-being",
     },
+  ];
+
+  const trainingItems = [
+    {
+      title: content.trainingItem1Title || "Basic Counseling Skills Training",
+      description: content.trainingItem1Description || "Learn foundational techniques for effective, empathetic, and ethical communication in mental health settings.",
+    },
+    {
+      title: content.trainingItem2Title || "Child & Adolescent Mental Health",
+      description: content.trainingItem2Description || "Understand psychological development, behavior management, and therapeutic strategies for young individuals.",
+    },
+    {
+      title: content.trainingItem3Title || "Trauma-Informed Care",
+      description: content.trainingItem3Description || "Equip yourself with the knowledge and tools to support individuals dealing with trauma and PTSD.",
+    },
+    ...(content.trainingItem4Title && content.trainingItem4Description ? [{
+      title: content.trainingItem4Title,
+      description: content.trainingItem4Description,
+    }] : []),
   ];
 
   // 2. Testimonials list fallback
@@ -253,6 +280,7 @@ export default async function Page(): Promise<React.JSX.Element> {
         headline={content.trainingHeadline}
         subtitle={content.trainingSubtitle}
         image={content.trainingImage}
+        items={trainingItems}
       />
       <Therapists therapists={dbTherapists} />
       <ScheduleAppointment />

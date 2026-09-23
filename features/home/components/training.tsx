@@ -9,12 +9,12 @@ function CheckIcon({ className = "" }: { className?: string }): React.JSX.Elemen
   return <HiCheck className={className} />;
 }
 
-interface TrainingItemProps {
+export interface TrainingItemProps {
   title: string;
   description: string;
 }
 
-const TRAINING_DATA: TrainingItemProps[] = [
+export const DEFAULT_TRAINING_ITEMS: TrainingItemProps[] = [
   {
     title: "Basic Counseling Skills Training",
     description: "Learn foundational techniques for effective, empathetic, and ethical communication in mental health settings.",
@@ -51,12 +51,14 @@ interface TrainingProps {
   headline: string;
   subtitle: string;
   image: string;
+  items?: TrainingItemProps[];
 }
 
 export default function Training({
   headline,
   subtitle,
   image,
+  items = DEFAULT_TRAINING_ITEMS,
 }: TrainingProps): React.JSX.Element {
   return (
     <section className="py-16 lg:py-24">
@@ -77,7 +79,7 @@ export default function Training({
             </p>
 
             <div className="flex flex-col gap-6 mb-12">
-              {TRAINING_DATA.map((item) => (
+              {(items.length > 0 ? items : DEFAULT_TRAINING_ITEMS).map((item) => (
                 <TrainingItem key={item.title} {...item} />
               ))}
             </div>

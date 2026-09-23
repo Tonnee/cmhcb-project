@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { HiPhoto, HiGlobeAlt, HiInboxStack, HiArrowsUpDown, HiShare, HiPhone, HiEnvelope, HiMapPin, HiChatBubbleBottomCenterText } from "react-icons/hi2";
+import { HiPhoto, HiGlobeAlt, HiInboxStack, HiArrowsUpDown, HiShare, HiPhone, HiEnvelope, HiMapPin, HiChatBubbleBottomCenterText, HiCheck } from "react-icons/hi2";
 import { FaFacebookF, FaInstagram, FaXTwitter, FaLinkedinIn, FaYoutube, FaWhatsapp } from "react-icons/fa6";
 import { uploadImageToSupabase } from "@/lib/supabase";
 import { updateLandingPageContentAction } from "@/app/(admin)/admin/actions";
@@ -45,6 +45,14 @@ interface LandingPageContentDB {
   trainingHeadline: string;
   trainingSubtitle: string;
   trainingImage: string;
+  trainingItem1Title?: string | null;
+  trainingItem1Description?: string | null;
+  trainingItem2Title?: string | null;
+  trainingItem2Description?: string | null;
+  trainingItem3Title?: string | null;
+  trainingItem3Description?: string | null;
+  trainingItem4Title?: string | null;
+  trainingItem4Description?: string | null;
   reviewCard1Title?: string | null;
   reviewCard1Description?: string | null;
   reviewCard2Title?: string | null;
@@ -129,6 +137,27 @@ export default function EditLandingPageForm({
   const [trainingImage, setTrainingImage] = React.useState(initialContent.trainingImage);
   const [trainingPreviewUrl, setTrainingPreviewUrl] = React.useState(initialContent.trainingImage);
   const [pendingTrainingFile, setPendingTrainingFile] = React.useState<File | null>(null);
+
+  const defaultTrainingItemValues = {
+    item1Title: "Basic Counseling Skills Training",
+    item1Description: "Learn foundational techniques for effective, empathetic, and ethical communication in mental health settings.",
+    item2Title: "Child & Adolescent Mental Health",
+    item2Description: "Understand psychological development, behavior management, and therapeutic strategies for young individuals.",
+    item3Title: "Trauma-Informed Care",
+    item3Description: "Equip yourself with the knowledge and tools to support individuals dealing with trauma and PTSD.",
+  };
+
+  const [trainingItem1Title, setTrainingItem1Title] = React.useState(initialContent.trainingItem1Title ?? defaultTrainingItemValues.item1Title);
+  const [trainingItem1Description, setTrainingItem1Description] = React.useState(initialContent.trainingItem1Description ?? defaultTrainingItemValues.item1Description);
+
+  const [trainingItem2Title, setTrainingItem2Title] = React.useState(initialContent.trainingItem2Title ?? defaultTrainingItemValues.item2Title);
+  const [trainingItem2Description, setTrainingItem2Description] = React.useState(initialContent.trainingItem2Description ?? defaultTrainingItemValues.item2Description);
+
+  const [trainingItem3Title, setTrainingItem3Title] = React.useState(initialContent.trainingItem3Title ?? defaultTrainingItemValues.item3Title);
+  const [trainingItem3Description, setTrainingItem3Description] = React.useState(initialContent.trainingItem3Description ?? defaultTrainingItemValues.item3Description);
+
+  const [trainingItem4Title, setTrainingItem4Title] = React.useState(initialContent.trainingItem4Title ?? "");
+  const [trainingItem4Description, setTrainingItem4Description] = React.useState(initialContent.trainingItem4Description ?? "");
 
   // State variables for Review Highlights 2x2 section
   const defaultReviewValues = {
@@ -504,6 +533,14 @@ export default function EditLandingPageForm({
         trainingHeadline,
         trainingSubtitle,
         trainingImage: finalTraining,
+        trainingItem1Title,
+        trainingItem1Description,
+        trainingItem2Title,
+        trainingItem2Description,
+        trainingItem3Title,
+        trainingItem3Description,
+        trainingItem4Title: trainingItem4Title || null,
+        trainingItem4Description: trainingItem4Description || null,
         reviewCard1Title,
         reviewCard1Description,
         reviewCard2Title,
@@ -1078,6 +1115,117 @@ export default function EditLandingPageForm({
                   disabled={isUploadingTraining}
                 />
               </label>
+            </div>
+          </div>
+
+          {/* Training Features Checklist (homepage checklist items) */}
+          <div className="flex flex-col gap-4 pt-4 border-t border-muted/50">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+              <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
+                <HiCheck className="w-4 h-4 text-primary" />
+                Training Program Highlights / Checklist
+              </label>
+              <span className="text-[11px] text-light-ash">
+                Bullet cards displayed beside the training photo with green checkmarks
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Feature 1 */}
+              <div className="p-4 bg-light-ash/5 border border-muted rounded-xl flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <HiCheck className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="font-sans text-xs font-bold text-dark">Program #1</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-sans text-[11px] font-semibold text-dark">Title</label>
+                  <input
+                    type="text"
+                    value={trainingItem1Title}
+                    onChange={(e) => setTrainingItem1Title(e.target.value)}
+                    placeholder="Basic Counseling Skills Training"
+                    className="w-full font-sans text-xs px-3 py-2 bg-white border border-muted focus:border-primary rounded-lg outline-hidden transition-colors"
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-sans text-[11px] font-semibold text-dark">Description</label>
+                  <textarea
+                    value={trainingItem1Description}
+                    onChange={(e) => setTrainingItem1Description(e.target.value)}
+                    rows={3}
+                    placeholder="Learn foundational techniques for effective, empathetic, and ethical communication..."
+                    className="w-full font-sans text-xs px-3 py-2 bg-white border border-muted focus:border-primary rounded-lg outline-hidden transition-colors resize-y"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="p-4 bg-light-ash/5 border border-muted rounded-xl flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <HiCheck className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="font-sans text-xs font-bold text-dark">Program #2</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-sans text-[11px] font-semibold text-dark">Title</label>
+                  <input
+                    type="text"
+                    value={trainingItem2Title}
+                    onChange={(e) => setTrainingItem2Title(e.target.value)}
+                    placeholder="Child & Adolescent Mental Health"
+                    className="w-full font-sans text-xs px-3 py-2 bg-white border border-muted focus:border-primary rounded-lg outline-hidden transition-colors"
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-sans text-[11px] font-semibold text-dark">Description</label>
+                  <textarea
+                    value={trainingItem2Description}
+                    onChange={(e) => setTrainingItem2Description(e.target.value)}
+                    rows={3}
+                    placeholder="Understand psychological development, behavior management, and therapeutic strategies..."
+                    className="w-full font-sans text-xs px-3 py-2 bg-white border border-muted focus:border-primary rounded-lg outline-hidden transition-colors resize-y"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="p-4 bg-light-ash/5 border border-muted rounded-xl flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <HiCheck className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="font-sans text-xs font-bold text-dark">Program #3</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-sans text-[11px] font-semibold text-dark">Title</label>
+                  <input
+                    type="text"
+                    value={trainingItem3Title}
+                    onChange={(e) => setTrainingItem3Title(e.target.value)}
+                    placeholder="Trauma-Informed Care"
+                    className="w-full font-sans text-xs px-3 py-2 bg-white border border-muted focus:border-primary rounded-lg outline-hidden transition-colors"
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-sans text-[11px] font-semibold text-dark">Description</label>
+                  <textarea
+                    value={trainingItem3Description}
+                    onChange={(e) => setTrainingItem3Description(e.target.value)}
+                    rows={3}
+                    placeholder="Equip yourself with the knowledge and tools to support individuals dealing with trauma..."
+                    className="w-full font-sans text-xs px-3 py-2 bg-white border border-muted focus:border-primary rounded-lg outline-hidden transition-colors resize-y"
+                    required
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

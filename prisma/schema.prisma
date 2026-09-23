@@ -106,6 +106,14 @@ model LandingPageContent {
   trainingHeadline    String   @default("Want to Make a <span class=\"text-primary-dark\">Difference</span> in <span class=\"text-accent\">Mental Health</span>?")
   trainingSubtitle    String   @default("Our specialized trainings equip professionals, educators, and caregivers with the tools needed to foster mental well-being in their communities.")
   trainingImage       String   @default("/mental-health-training-program.png")
+  trainingItem1Title        String?  @default("Basic Counseling Skills Training")
+  trainingItem1Description  String?  @default("Learn foundational techniques for effective, empathetic, and ethical communication in mental health settings.")
+  trainingItem2Title        String?  @default("Child & Adolescent Mental Health")
+  trainingItem2Description  String?  @default("Understand psychological development, behavior management, and therapeutic strategies for young individuals.")
+  trainingItem3Title        String?  @default("Trauma-Informed Care")
+  trainingItem3Description  String?  @default("Equip yourself with the knowledge and tools to support individuals dealing with trauma and PTSD.")
+  trainingItem4Title        String?
+  trainingItem4Description  String?
   reviewCard1Title        String?  @default("Real Experiences, Real Impact")
   reviewCard1Description  String?  @default("Discover how our clients' lives have changed through therapy, training, and mental health support at CMHC,B.")
   reviewCard2Title        String?  @default("Voices That Inspire Hope")
