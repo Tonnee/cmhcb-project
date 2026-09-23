@@ -77,6 +77,12 @@ export default async function Page(): Promise<React.JSX.Element> {
     heroSubtitle: "At CMHC,B, we believe every individual deserves a supportive space to heal, grow, and thrive. Connect with the right therapist, right when you need it.",
     heroBgImage: "/hero-image/hero-bg.png",
     heroFigureImage: "/hero-image/hero-figure.png",
+    aboutStatement: "We connect licensed therapists [therapist], mental health programs [brain], and personalized care [heart] services, ensuring clients [client] receive the support they need to thrive [chart] wherever they feel safe.",
+    aboutTherapistImage: "/home-about-image/licensed-mental-health-therapist.png",
+    aboutClientImage: "/home-about-image/mental-health-therapy-client.png",
+    aboutBrainIcon: "/home-about-image/mental-health-brain-icon.png",
+    aboutHeartIcon: "/home-about-image/personalized-care-heart-icon.png",
+    aboutChartIcon: "/home-about-image/mental-health-progress-chart-icon.png",
     wellbeingHeadline: "Our Commitment to Your <span class=\"text-accent\">Well-Being</span>",
     wellbeingSubtitle: "At CMHC,B, we are committed to delivering compassionate and effective mental health care. Explore how we've supported individuals on their path to emotional well-being and resilience.",
     wellbeingImage: null,
@@ -271,7 +277,14 @@ export default async function Page(): Promise<React.JSX.Element> {
         heroFigureImage={content.heroFigureImage}
       />
       
-      <About />
+      <About
+        statement={content.aboutStatement}
+        therapistImage={content.aboutTherapistImage}
+        clientImage={content.aboutClientImage}
+        brainIcon={content.aboutBrainIcon}
+        heartIcon={content.aboutHeartIcon}
+        chartIcon={content.aboutChartIcon}
+      />
       <Guide />
       <Services services={featuredServices} />
       

@@ -84,6 +84,12 @@ model LandingPageContent {
   heroSubtitle        String
   heroBgImage         String   @default("/hero-image/hero-bg.png")
   heroFigureImage     String   @default("/hero-image/hero-figure.png")
+  aboutStatement      String?  @default("We connect licensed therapists [therapist], mental health programs [brain], and personalized care [heart] services, ensuring clients [client] receive the support they need to thrive [chart] wherever they feel safe.")
+  aboutTherapistImage String?  @default("/home-about-image/licensed-mental-health-therapist.png")
+  aboutClientImage    String?  @default("/home-about-image/mental-health-therapy-client.png")
+  aboutBrainIcon      String?  @default("/home-about-image/mental-health-brain-icon.png")
+  aboutHeartIcon      String?  @default("/home-about-image/personalized-care-heart-icon.png")
+  aboutChartIcon      String?  @default("/home-about-image/mental-health-progress-chart-icon.png")
   wellbeingHeadline   String
   wellbeingSubtitle   String
   wellbeingImage      String?

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { HiPhoto, HiGlobeAlt, HiInboxStack, HiArrowsUpDown, HiShare, HiPhone, HiEnvelope, HiMapPin, HiChatBubbleBottomCenterText, HiCheck, HiCalendarDays } from "react-icons/hi2";
+import { HiPhoto, HiGlobeAlt, HiInboxStack, HiArrowsUpDown, HiShare, HiPhone, HiEnvelope, HiMapPin, HiChatBubbleBottomCenterText, HiCheck, HiCalendarDays, HiUserGroup } from "react-icons/hi2";
 import { FaFacebookF, FaInstagram, FaXTwitter, FaLinkedinIn, FaYoutube, FaWhatsapp } from "react-icons/fa6";
 import { uploadImageToSupabase } from "@/lib/supabase";
 import { updateLandingPageContentAction } from "@/app/(admin)/admin/actions";
@@ -23,6 +23,12 @@ interface LandingPageContentDB {
   heroSubtitle: string;
   heroBgImage: string;
   heroFigureImage: string;
+  aboutStatement?: string | null;
+  aboutTherapistImage?: string | null;
+  aboutClientImage?: string | null;
+  aboutBrainIcon?: string | null;
+  aboutHeartIcon?: string | null;
+  aboutChartIcon?: string | null;
   wellbeingHeadline: string;
   wellbeingSubtitle: string;
   wellbeingImage?: string | null;
@@ -97,6 +103,30 @@ export default function EditLandingPageForm({
   const [heroFigureImage, setHeroFigureImage] = React.useState(initialContent.heroFigureImage);
   const [figurePreviewUrl, setFigurePreviewUrl] = React.useState(initialContent.heroFigureImage);
   const [pendingFigureFile, setPendingFigureFile] = React.useState<File | null>(null);
+
+  const defaultAboutValues = {
+    statement: "We connect licensed therapists [therapist], mental health programs [brain], and personalized care [heart] services, ensuring clients [client] receive the support they need to thrive [chart] wherever they feel safe.",
+    therapistImage: "/home-about-image/licensed-mental-health-therapist.png",
+    clientImage: "/home-about-image/mental-health-therapy-client.png",
+    brainIcon: "/home-about-image/mental-health-brain-icon.png",
+    heartIcon: "/home-about-image/personalized-care-heart-icon.png",
+    chartIcon: "/home-about-image/mental-health-progress-chart-icon.png",
+  };
+
+  const [aboutStatement, setAboutStatement] = React.useState(initialContent.aboutStatement ?? defaultAboutValues.statement);
+  const [aboutTherapistImage, setAboutTherapistImage] = React.useState(initialContent.aboutTherapistImage ?? defaultAboutValues.therapistImage);
+  const [therapistPreviewUrl, setTherapistPreviewUrl] = React.useState(initialContent.aboutTherapistImage ?? defaultAboutValues.therapistImage);
+  const [pendingTherapistFile, setPendingTherapistFile] = React.useState<File | null>(null);
+  const [isUploadingTherapist, setIsUploadingTherapist] = React.useState(false);
+
+  const [aboutClientImage, setAboutClientImage] = React.useState(initialContent.aboutClientImage ?? defaultAboutValues.clientImage);
+  const [clientPreviewUrl, setClientPreviewUrl] = React.useState(initialContent.aboutClientImage ?? defaultAboutValues.clientImage);
+  const [pendingClientFile, setPendingClientFile] = React.useState<File | null>(null);
+  const [isUploadingClient, setIsUploadingClient] = React.useState(false);
+
+  const [aboutBrainIcon, setAboutBrainIcon] = React.useState(initialContent.aboutBrainIcon ?? defaultAboutValues.brainIcon);
+  const [aboutHeartIcon, setAboutHeartIcon] = React.useState(initialContent.aboutHeartIcon ?? defaultAboutValues.heartIcon);
+  const [aboutChartIcon, setAboutChartIcon] = React.useState(initialContent.aboutChartIcon ?? defaultAboutValues.chartIcon);
   
   const [wellbeingHeadline, setWellbeingHeadline] = React.useState(initialContent.wellbeingHeadline);
   const [wellbeingSubtitle, setWellbeingSubtitle] = React.useState(initialContent.wellbeingSubtitle);
@@ -381,6 +411,48 @@ export default function EditLandingPageForm({
     }
   };
 
+  const handleUploadTherapist = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setPendingTherapistFile(file);
+    const localPreview = URL.createObjectURL(file);
+    setTherapistPreviewUrl(localPreview);
+
+    setIsUploadingTherapist(true);
+    setError(null);
+    try {
+      const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
+      setAboutTherapistImage(publicUrl);
+      setTherapistPreviewUrl(publicUrl);
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload Therapist Avatar.");
+    } finally {
+      setIsUploadingTherapist(false);
+    }
+  };
+
+  const handleUploadClient = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setPendingClientFile(file);
+    const localPreview = URL.createObjectURL(file);
+    setClientPreviewUrl(localPreview);
+
+    setIsUploadingClient(true);
+    setError(null);
+    try {
+      const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
+      setAboutClientImage(publicUrl);
+      setClientPreviewUrl(publicUrl);
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload Client Avatar.");
+    } finally {
+      setIsUploadingClient(false);
+    }
+  };
+
   const handleUploadWellbeing = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -535,11 +607,51 @@ export default function EditLandingPageForm({
         }
       }
 
+      let finalTherapist = aboutTherapistImage;
+      if (pendingTherapistFile && (!finalTherapist || finalTherapist.startsWith("blob:"))) {
+        setIsUploadingTherapist(true);
+        try {
+          finalTherapist = await uploadImageToSupabase(pendingTherapistFile, "cmhcb-media");
+          setAboutTherapistImage(finalTherapist);
+          setTherapistPreviewUrl(finalTherapist);
+        } catch {
+          setError("Failed to upload Therapist Avatar.");
+          setIsSubmitting(false);
+          setIsUploadingTherapist(false);
+          return;
+        } finally {
+          setIsUploadingTherapist(false);
+        }
+      }
+
+      let finalClient = aboutClientImage;
+      if (pendingClientFile && (!finalClient || finalClient.startsWith("blob:"))) {
+        setIsUploadingClient(true);
+        try {
+          finalClient = await uploadImageToSupabase(pendingClientFile, "cmhcb-media");
+          setAboutClientImage(finalClient);
+          setClientPreviewUrl(finalClient);
+        } catch {
+          setError("Failed to upload Client Avatar.");
+          setIsSubmitting(false);
+          setIsUploadingClient(false);
+          return;
+        } finally {
+          setIsUploadingClient(false);
+        }
+      }
+
       const res = await updateLandingPageContentAction({
         heroHeadline,
         heroSubtitle,
         heroBgImage: finalBg,
         heroFigureImage: finalFigure,
+        aboutStatement,
+        aboutTherapistImage: finalTherapist,
+        aboutClientImage: finalClient,
+        aboutBrainIcon,
+        aboutHeartIcon,
+        aboutChartIcon,
         wellbeingHeadline,
         wellbeingSubtitle,
         wellbeingImage: finalWellbeing || null,
@@ -723,6 +835,189 @@ export default function EditLandingPageForm({
                     onChange={handleUploadFigure}
                     className="hidden"
                     disabled={isUploadingFigure}
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* About Statement & Badges Customization */}
+      <div className="bg-white border border-muted p-6 rounded-2xl shadow-sm flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-muted pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary-dark shrink-0">
+              <HiUserGroup className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+                About Mission Statement & Badges
+              </h2>
+              <p className="font-sans text-xs text-light-ash">
+                Customize the mission statement and inline badge avatars displayed directly below the Hero section on the homepage.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setAboutStatement(defaultAboutValues.statement);
+              setAboutTherapistImage(defaultAboutValues.therapistImage);
+              setTherapistPreviewUrl(defaultAboutValues.therapistImage);
+              setPendingTherapistFile(null);
+              setAboutClientImage(defaultAboutValues.clientImage);
+              setClientPreviewUrl(defaultAboutValues.clientImage);
+              setPendingClientFile(null);
+              setAboutBrainIcon(defaultAboutValues.brainIcon);
+              setAboutHeartIcon(defaultAboutValues.heartIcon);
+              setAboutChartIcon(defaultAboutValues.chartIcon);
+            }}
+            className="text-xs font-sans text-light-ash hover:text-dark underline cursor-pointer px-1 self-start sm:self-auto"
+          >
+            Reset to Default
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-6">
+          {/* Statement Editor */}
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Mission Statement with Inline Badge Placeholders
+              </label>
+              <span className="text-[11px] text-light-ash">
+                Insert badge tokens: click any badge pill below to append it
+              </span>
+            </div>
+
+            {/* Quick Badge Insertion Pills */}
+            <div className="flex flex-wrap items-center gap-2 p-2.5 bg-light-ash/5 border border-muted/80 rounded-xl">
+              <span className="text-xs font-medium text-light-ash mr-1">Available Badges:</span>
+              <button
+                type="button"
+                onClick={() => setAboutStatement((prev) => prev + " [therapist]")}
+                className="px-2.5 py-1 bg-white hover:bg-primary/10 border border-muted hover:border-primary text-dark rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Insert Therapist Avatar Badge"
+              >
+                <span className="w-2 h-2 rounded-full bg-primary" />
+                <code>[therapist]</code> (Therapist Avatar)
+              </button>
+              <button
+                type="button"
+                onClick={() => setAboutStatement((prev) => prev + " [brain]")}
+                className="px-2.5 py-1 bg-white hover:bg-primary/10 border border-muted hover:border-primary text-dark rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Insert Brain Icon Badge"
+              >
+                <span className="w-2 h-2 rounded-full bg-accent" />
+                <code>[brain]</code> (Brain Icon)
+              </button>
+              <button
+                type="button"
+                onClick={() => setAboutStatement((prev) => prev + " [heart]")}
+                className="px-2.5 py-1 bg-white hover:bg-primary/10 border border-muted hover:border-primary text-dark rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Insert Heart Icon Badge"
+              >
+                <span className="w-2 h-2 rounded-full bg-primary" />
+                <code>[heart]</code> (Heart Icon)
+              </button>
+              <button
+                type="button"
+                onClick={() => setAboutStatement((prev) => prev + " [client]")}
+                className="px-2.5 py-1 bg-white hover:bg-primary/10 border border-muted hover:border-primary text-dark rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Insert Client Avatar Badge"
+              >
+                <span className="w-2 h-2 rounded-full bg-dark-green" />
+                <code>[client]</code> (Client Avatar)
+              </button>
+              <button
+                type="button"
+                onClick={() => setAboutStatement((prev) => prev + " [chart]")}
+                className="px-2.5 py-1 bg-white hover:bg-primary/10 border border-muted hover:border-primary text-dark rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Insert Progress Chart Icon Badge"
+              >
+                <span className="w-2 h-2 rounded-full bg-primary" />
+                <code>[chart]</code> (Growth Icon)
+              </button>
+            </div>
+
+            <textarea
+              value={aboutStatement}
+              onChange={(e) => setAboutStatement(e.target.value)}
+              rows={4}
+              placeholder="We connect licensed therapists [therapist], mental health programs [brain]..."
+              className="w-full font-sans text-sm px-4 py-3 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors resize-y leading-relaxed"
+              required
+            />
+          </div>
+
+          {/* Avatar Images Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Therapist Avatar Upload */}
+            <div className="flex flex-col gap-2 p-4 bg-light-ash/5 border border-muted rounded-xl">
+              <div className="flex items-center justify-between">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Therapist Avatar Badge
+                </label>
+                <span className="text-[10px] text-light-ash font-mono">[therapist]</span>
+              </div>
+              <span className="text-[11px] text-light-ash">Size: <strong>120×120 px</strong> (Square) • Format: <strong>.png, .webp, .jpg</strong></span>
+              <div className="flex items-center gap-4 mt-1">
+                <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-md bg-light/30 shrink-0">
+                  {(therapistPreviewUrl || aboutTherapistImage) ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={therapistPreviewUrl || aboutTherapistImage} alt="Therapist Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-light-ash/50">
+                      <HiPhoto className="w-5 h-5" />
+                    </div>
+                  )}
+                </div>
+                <label className="flex-1 flex flex-col items-center justify-center border border-dashed border-muted hover:border-primary/60 rounded-xl px-4 py-2.5 bg-white hover:bg-primary/5 cursor-pointer transition-colors">
+                  <span className="font-sans text-xs text-primary font-semibold">
+                    {isUploadingTherapist ? "Uploading..." : "Upload New Avatar"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    onChange={handleUploadTherapist}
+                    className="hidden"
+                    disabled={isUploadingTherapist}
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Client Avatar Upload */}
+            <div className="flex flex-col gap-2 p-4 bg-light-ash/5 border border-muted rounded-xl">
+              <div className="flex items-center justify-between">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Client Avatar Badge
+                </label>
+                <span className="text-[10px] text-light-ash font-mono">[client]</span>
+              </div>
+              <span className="text-[11px] text-light-ash">Size: <strong>120×120 px</strong> (Square) • Format: <strong>.png, .webp, .jpg</strong></span>
+              <div className="flex items-center gap-4 mt-1">
+                <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-md bg-light/30 shrink-0">
+                  {(clientPreviewUrl || aboutClientImage) ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={clientPreviewUrl || aboutClientImage} alt="Client Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-light-ash/50">
+                      <HiPhoto className="w-5 h-5" />
+                    </div>
+                  )}
+                </div>
+                <label className="flex-1 flex flex-col items-center justify-center border border-dashed border-muted hover:border-primary/60 rounded-xl px-4 py-2.5 bg-white hover:bg-primary/5 cursor-pointer transition-colors">
+                  <span className="font-sans text-xs text-primary font-semibold">
+                    {isUploadingClient ? "Uploading..." : "Upload New Avatar"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    onChange={handleUploadClient}
+                    className="hidden"
+                    disabled={isUploadingClient}
                   />
                 </label>
               </div>
