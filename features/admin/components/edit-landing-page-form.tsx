@@ -27,9 +27,21 @@ interface LandingPageContentDB {
   wellbeingSubtitle: string;
   wellbeingImage?: string | null;
   experienceCount: number;
+  stat1Suffix?: string | null;
+  stat1Title?: string | null;
+  stat1Description?: string | null;
   happyClientsCount: number;
+  stat2Suffix?: string | null;
+  stat2Title?: string | null;
+  stat2Description?: string | null;
   sessionsCount: number;
+  stat3Suffix?: string | null;
+  stat3Title?: string | null;
+  stat3Description?: string | null;
   satisfactionRate: number;
+  stat4Suffix?: string | null;
+  stat4Title?: string | null;
+  stat4Description?: string | null;
   trainingHeadline: string;
   trainingSubtitle: string;
   trainingImage: string;
@@ -77,10 +89,40 @@ export default function EditLandingPageForm({
   const [wellbeingPreviewUrl, setWellbeingPreviewUrl] = React.useState(initialContent.wellbeingImage || "");
   const [pendingWellbeingFile, setPendingWellbeingFile] = React.useState<File | null>(null);
   
+  const defaultStatValues = {
+    stat1Title: "Years of Experience",
+    stat1Suffix: "+",
+    stat1Description: "Helping individuals navigate life's",
+    stat2Title: "Happy Clients",
+    stat2Suffix: "+",
+    stat2Description: "Empowered through counseling and therapy",
+    stat3Title: "Sessions Conducted",
+    stat3Suffix: "+",
+    stat3Description: "Providing guidance and support every day",
+    stat4Title: "Satisfaction Positive",
+    stat4Suffix: "%",
+    stat4Description: "outcomes and improved well-being",
+  };
+
   const [experienceCount, setExperienceCount] = React.useState(initialContent.experienceCount);
+  const [stat1Title, setStat1Title] = React.useState(initialContent.stat1Title ?? defaultStatValues.stat1Title);
+  const [stat1Suffix, setStat1Suffix] = React.useState(initialContent.stat1Suffix ?? defaultStatValues.stat1Suffix);
+  const [stat1Description, setStat1Description] = React.useState(initialContent.stat1Description ?? defaultStatValues.stat1Description);
+
   const [happyClientsCount, setHappyClientsCount] = React.useState(initialContent.happyClientsCount);
+  const [stat2Title, setStat2Title] = React.useState(initialContent.stat2Title ?? defaultStatValues.stat2Title);
+  const [stat2Suffix, setStat2Suffix] = React.useState(initialContent.stat2Suffix ?? defaultStatValues.stat2Suffix);
+  const [stat2Description, setStat2Description] = React.useState(initialContent.stat2Description ?? defaultStatValues.stat2Description);
+
   const [sessionsCount, setSessionsCount] = React.useState(initialContent.sessionsCount);
+  const [stat3Title, setStat3Title] = React.useState(initialContent.stat3Title ?? defaultStatValues.stat3Title);
+  const [stat3Suffix, setStat3Suffix] = React.useState(initialContent.stat3Suffix ?? defaultStatValues.stat3Suffix);
+  const [stat3Description, setStat3Description] = React.useState(initialContent.stat3Description ?? defaultStatValues.stat3Description);
+
   const [satisfactionRate, setSatisfactionRate] = React.useState(initialContent.satisfactionRate);
+  const [stat4Title, setStat4Title] = React.useState(initialContent.stat4Title ?? defaultStatValues.stat4Title);
+  const [stat4Suffix, setStat4Suffix] = React.useState(initialContent.stat4Suffix ?? defaultStatValues.stat4Suffix);
+  const [stat4Description, setStat4Description] = React.useState(initialContent.stat4Description ?? defaultStatValues.stat4Description);
 
   const [trainingHeadline, setTrainingHeadline] = React.useState(initialContent.trainingHeadline);
   const [trainingSubtitle, setTrainingSubtitle] = React.useState(initialContent.trainingSubtitle);
@@ -444,9 +486,21 @@ export default function EditLandingPageForm({
         wellbeingSubtitle,
         wellbeingImage: finalWellbeing || null,
         experienceCount: Number(experienceCount),
+        stat1Suffix,
+        stat1Title,
+        stat1Description,
         happyClientsCount: Number(happyClientsCount),
+        stat2Suffix,
+        stat2Title,
+        stat2Description,
         sessionsCount: Number(sessionsCount),
+        stat3Suffix,
+        stat3Title,
+        stat3Description,
         satisfactionRate: Number(satisfactionRate),
+        stat4Suffix,
+        stat4Title,
+        stat4Description,
         trainingHeadline,
         trainingSubtitle,
         trainingImage: finalTraining,
@@ -691,67 +745,272 @@ export default function EditLandingPageForm({
 
       {/* Well Being Animated Statistics Counters */}
       <div className="bg-white border border-muted p-6 rounded-2xl shadow-sm flex flex-col gap-6">
-        <h2 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2 border-b border-muted pb-3">
-          <HiArrowsUpDown className="w-5 h-5 text-primary" />
-          Animated Statistics Counters
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-muted pb-3 gap-2">
+          <h2 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+            <HiArrowsUpDown className="w-5 h-5 text-primary" />
+            Animated Statistics Counters
+          </h2>
+          <span className="text-xs text-light-ash">
+            Displayed on the homepage within the Well-Being Commitment section
+          </span>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="flex flex-col gap-1.5">
-            <label className="font-sans text-xs font-semibold text-dark">
-              Years of Experience
-            </label>
-            <input
-              type="number"
-              value={experienceCount}
-              onChange={(e) => setExperienceCount(Number(e.target.value))}
-              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
-              min={0}
-              required
-            />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Stat 1 Card */}
+          <div className="p-5 bg-light-ash/5 border border-muted rounded-xl flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <span className="font-sans text-xs font-bold text-dark-green uppercase tracking-wider">
+                Counter 1
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-dark-green text-white">
+                Preview: {experienceCount}{stat1Suffix}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Counter Title
+              </label>
+              <input
+                type="text"
+                value={stat1Title}
+                onChange={(e) => setStat1Title(e.target.value)}
+                placeholder="Years of Experience"
+                className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                required
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Target Number
+                </label>
+                <input
+                  type="number"
+                  value={experienceCount}
+                  onChange={(e) => setExperienceCount(Number(e.target.value))}
+                  className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                  min={0}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Suffix Symbol
+                </label>
+                <input
+                  type="text"
+                  value={stat1Suffix}
+                  onChange={(e) => setStat1Suffix(e.target.value)}
+                  placeholder="+"
+                  className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Description / Subtext
+              </label>
+              <input
+                type="text"
+                value={stat1Description}
+                onChange={(e) => setStat1Description(e.target.value)}
+                placeholder="Helping individuals navigate life's"
+                className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="font-sans text-xs font-semibold text-dark">
-              Happy Clients count
-            </label>
-            <input
-              type="number"
-              value={happyClientsCount}
-              onChange={(e) => setHappyClientsCount(Number(e.target.value))}
-              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
-              min={0}
-              required
-            />
+          {/* Stat 2 Card */}
+          <div className="p-5 bg-light-ash/5 border border-muted rounded-xl flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <span className="font-sans text-xs font-bold text-dark-green uppercase tracking-wider">
+                Counter 2
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-dark-green text-white">
+                Preview: {happyClientsCount}{stat2Suffix}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Counter Title
+              </label>
+              <input
+                type="text"
+                value={stat2Title}
+                onChange={(e) => setStat2Title(e.target.value)}
+                placeholder="Happy Clients"
+                className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                required
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Target Number
+                </label>
+                <input
+                  type="number"
+                  value={happyClientsCount}
+                  onChange={(e) => setHappyClientsCount(Number(e.target.value))}
+                  className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                  min={0}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Suffix Symbol
+                </label>
+                <input
+                  type="text"
+                  value={stat2Suffix}
+                  onChange={(e) => setStat2Suffix(e.target.value)}
+                  placeholder="+"
+                  className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Description / Subtext
+              </label>
+              <input
+                type="text"
+                value={stat2Description}
+                onChange={(e) => setStat2Description(e.target.value)}
+                placeholder="Empowered through counseling and therapy"
+                className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="font-sans text-xs font-semibold text-dark">
-              Sessions Conducted
-            </label>
-            <input
-              type="number"
-              value={sessionsCount}
-              onChange={(e) => setSessionsCount(Number(e.target.value))}
-              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
-              min={0}
-              required
-            />
+          {/* Stat 3 Card */}
+          <div className="p-5 bg-light-ash/5 border border-muted rounded-xl flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <span className="font-sans text-xs font-bold text-dark-green uppercase tracking-wider">
+                Counter 3
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-dark-green text-white">
+                Preview: {sessionsCount}{stat3Suffix}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Counter Title
+              </label>
+              <input
+                type="text"
+                value={stat3Title}
+                onChange={(e) => setStat3Title(e.target.value)}
+                placeholder="Sessions Conducted"
+                className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                required
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Target Number
+                </label>
+                <input
+                  type="number"
+                  value={sessionsCount}
+                  onChange={(e) => setSessionsCount(Number(e.target.value))}
+                  className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                  min={0}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Suffix Symbol
+                </label>
+                <input
+                  type="text"
+                  value={stat3Suffix}
+                  onChange={(e) => setStat3Suffix(e.target.value)}
+                  placeholder="+"
+                  className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Description / Subtext
+              </label>
+              <input
+                type="text"
+                value={stat3Description}
+                onChange={(e) => setStat3Description(e.target.value)}
+                placeholder="Providing guidance and support every day"
+                className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="font-sans text-xs font-semibold text-dark">
-              Satisfaction Positive (%)
-            </label>
-            <input
-              type="number"
-              value={satisfactionRate}
-              onChange={(e) => setSatisfactionRate(Number(e.target.value))}
-              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
-              min={0}
-              max={100}
-              required
-            />
+          {/* Stat 4 Card */}
+          <div className="p-5 bg-light-ash/5 border border-muted rounded-xl flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <span className="font-sans text-xs font-bold text-dark-green uppercase tracking-wider">
+                Counter 4
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-dark-green text-white">
+                Preview: {satisfactionRate}{stat4Suffix}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Counter Title
+              </label>
+              <input
+                type="text"
+                value={stat4Title}
+                onChange={(e) => setStat4Title(e.target.value)}
+                placeholder="Satisfaction Positive"
+                className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                required
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Target Number
+                </label>
+                <input
+                  type="number"
+                  value={satisfactionRate}
+                  onChange={(e) => setSatisfactionRate(Number(e.target.value))}
+                  className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                  min={0}
+                  max={100}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-semibold text-dark">
+                  Suffix Symbol
+                </label>
+                <input
+                  type="text"
+                  value={stat4Suffix}
+                  onChange={(e) => setStat4Suffix(e.target.value)}
+                  placeholder="%"
+                  className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Description / Subtext
+              </label>
+              <input
+                type="text"
+                value={stat4Description}
+                onChange={(e) => setStat4Description(e.target.value)}
+                placeholder="outcomes and improved well-being"
+                className="w-full font-sans text-sm px-4 py-2 bg-white border border-muted focus:border-primary rounded-xl outline-hidden transition-colors"
+              />
+            </div>
           </div>
         </div>
       </div>
