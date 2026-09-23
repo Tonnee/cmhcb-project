@@ -726,40 +726,6 @@ export default function EditLandingPageForm({
           })}
         </div>
 
-        {/* Live Footer Preview strip */}
-        <div className="mt-2 bg-[#1E1E1E] rounded-xl p-4 border border-[#333] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-accent block">
-              Live Footer Simulation
-            </span>
-            <span className="text-xs text-white/70">
-              Only selected social icons appear below as they will in the live footer:
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {footerSocials.filter((s) => s.enabled).length === 0 ? (
-              <span className="text-xs text-white/40 italic">
-                (No icons selected. Footer social bar will be empty)
-              </span>
-            ) : (
-              footerSocials
-                .filter((s) => s.enabled)
-                .map((social) => {
-                  const icon = SOCIAL_PLATFORM_ICONS[social.platform.toLowerCase()] || <HiShare className="w-4 h-4" />;
-                  return (
-                    <div
-                      key={social.platform}
-                      title={`${social.label} (${social.href})`}
-                      className="w-9 h-9 rounded-lg bg-white/10 text-white flex items-center justify-center text-xs hover:bg-accent hover:text-dark transition-colors"
-                    >
-                      {icon}
-                    </div>
-                  );
-                })
-            )}
-          </div>
-        </div>
       </div>
 
       {/* Footer Contact Information Customization */}
@@ -869,47 +835,6 @@ export default function EditLandingPageForm({
           </div>
         </div>
 
-        {/* Live Simulation Card */}
-        <div className="mt-2 bg-[#1E1E1E] rounded-xl p-5 border border-[#333] flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="max-w-xs">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-accent block mb-1">
-              Live Contact Block Preview
-            </span>
-            <p className="text-xs text-white/60 leading-relaxed">
-              This preview matches how the contact section appears in the website footer:
-            </p>
-          </div>
-
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col gap-3 min-w-[260px]">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white/10 text-accent flex items-center justify-center shrink-0">
-                <HiMapPin className="w-4 h-4" />
-              </div>
-              <p className="font-sans text-xs text-white/80 leading-relaxed">
-                {[footerAddressLine1, footerAddressLine2, footerAddressLine3].filter(Boolean).map((line, idx, arr) => (
-                  <React.Fragment key={idx}>
-                    {line}
-                    {idx < arr.length - 1 && <br />}
-                  </React.Fragment>
-                ))}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white/10 text-accent flex items-center justify-center shrink-0">
-                <HiPhone className="w-4 h-4" />
-              </div>
-              <span className="font-sans text-xs text-white/80">{footerPhone}</span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white/10 text-accent flex items-center justify-center shrink-0">
-                <HiEnvelope className="w-4 h-4" />
-              </div>
-              <span className="font-sans text-xs text-white/80">{footerEmail}</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Bottom Save bar */}
