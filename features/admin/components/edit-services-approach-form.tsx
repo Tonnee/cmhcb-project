@@ -1,57 +1,44 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { HiPhoto, HiCheck, HiExclamationTriangle, HiArrowTopRightOnSquare } from "react-icons/hi2";
 import { uploadImageToSupabase } from "@/lib/supabase";
-import { upsertServicesPageContentAction } from "@/app/(admin)/admin/actions";
+import { upsertServicesApproachAction } from "@/app/(admin)/admin/actions";
+import { type ServicesPageContentDB } from "./edit-services-hero-form";
 
-export interface ServicesPageContentDB {
-  id?: string;
-  heroTitle: string;
-  heroDescription: string;
-  heroImage: string;
-  heroImageAlt?: string | null;
-  approachTitle?: string | null;
-  approachDescription?: string | null;
-  approachImage?: string | null;
-  approachImageAlt?: string | null;
-  lastUpdatedBy?: string | null;
-  updatedAt?: Date | string | null;
-}
-
-interface EditServicesHeroFormProps {
+interface EditServicesApproachFormProps {
   initialContent?: ServicesPageContentDB | null;
 }
 
-const DEFAULT_HERO = {
-  heroTitle: "Professional, ethical, and evidence-based mental health care",
-  heroDescription: "At CMHC,B, we provide compassionate and confidential psychotherapeutic services to support individuals, couples, families, and organizations in improving mental well-being and quality of life.",
-  heroImage: "/mental-health-services-bangladesh.jpg",
-  heroImageAlt: "Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh",
+const DEFAULT_APPROACH = {
+  approachTitle: "Our Approach",
+  approachDescription:
+    "We follow an evidence-based, client-centred approach that integrates individual experiences while providing ethical, confidential, and culturally sensitive care.",
+  approachImage: "/couple-counseling-relationship-help.jpg",
+  approachImageAlt: "Couple counseling and relationship psychotherapy session at CMHCB",
 };
 
-export function EditServicesHeroForm({
+export function EditServicesApproachForm({
   initialContent,
-}: EditServicesHeroFormProps): React.JSX.Element {
+}: EditServicesApproachFormProps): React.JSX.Element {
   const router = useRouter();
 
-  const [heroTitle, setHeroTitle] = React.useState(
-    initialContent?.heroTitle || DEFAULT_HERO.heroTitle
+  const [approachTitle, setApproachTitle] = React.useState(
+    initialContent?.approachTitle || DEFAULT_APPROACH.approachTitle
   );
-  const [heroDescription, setHeroDescription] = React.useState(
-    initialContent?.heroDescription || DEFAULT_HERO.heroDescription
+  const [approachDescription, setApproachDescription] = React.useState(
+    initialContent?.approachDescription || DEFAULT_APPROACH.approachDescription
   );
-  const [heroImage, setHeroImage] = React.useState(
-    initialContent?.heroImage || DEFAULT_HERO.heroImage
+  const [approachImage, setApproachImage] = React.useState(
+    initialContent?.approachImage || DEFAULT_APPROACH.approachImage
   );
-  const [heroImageAlt, setHeroImageAlt] = React.useState(
-    initialContent?.heroImageAlt || DEFAULT_HERO.heroImageAlt
+  const [approachImageAlt, setApproachImageAlt] = React.useState(
+    initialContent?.approachImageAlt || DEFAULT_APPROACH.approachImageAlt
   );
 
   const [previewUrl, setPreviewUrl] = React.useState(
-    initialContent?.heroImage || DEFAULT_HERO.heroImage
+    initialContent?.approachImage || DEFAULT_APPROACH.approachImage
   );
   const [pendingFile, setPendingFile] = React.useState<File | null>(null);
 
@@ -63,11 +50,11 @@ export function EditServicesHeroForm({
   // Sync if initialContent changes
   React.useEffect(() => {
     if (initialContent) {
-      setHeroTitle(initialContent.heroTitle || DEFAULT_HERO.heroTitle);
-      setHeroDescription(initialContent.heroDescription || DEFAULT_HERO.heroDescription);
-      setHeroImage(initialContent.heroImage || DEFAULT_HERO.heroImage);
-      setPreviewUrl(initialContent.heroImage || DEFAULT_HERO.heroImage);
-      setHeroImageAlt(initialContent.heroImageAlt || DEFAULT_HERO.heroImageAlt);
+      setApproachTitle(initialContent.approachTitle || DEFAULT_APPROACH.approachTitle);
+      setApproachDescription(initialContent.approachDescription || DEFAULT_APPROACH.approachDescription);
+      setApproachImage(initialContent.approachImage || DEFAULT_APPROACH.approachImage);
+      setPreviewUrl(initialContent.approachImage || DEFAULT_APPROACH.approachImage);
+      setApproachImageAlt(initialContent.approachImageAlt || DEFAULT_APPROACH.approachImageAlt);
     }
   }, [initialContent]);
 
@@ -85,7 +72,7 @@ export function EditServicesHeroForm({
 
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
-      setHeroImage(publicUrl);
+      setApproachImage(publicUrl);
       setPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setError(
@@ -101,13 +88,13 @@ export function EditServicesHeroForm({
     e.preventDefault();
     if (isSubmitting || isUploading) return;
 
-    if (!heroTitle.trim()) {
-      setError("Hero title is required.");
+    if (!approachTitle.trim()) {
+      setError("Approach title is required.");
       return;
     }
 
-    if (!heroDescription.trim()) {
-      setError("Hero description is required.");
+    if (!approachDescription.trim()) {
+      setError("Approach description is required.");
       return;
     }
 
@@ -116,17 +103,17 @@ export function EditServicesHeroForm({
     setSuccess(false);
 
     try {
-      let finalImageUrl = heroImage;
+      let finalImageUrl = approachImage;
       if (pendingFile && (!finalImageUrl || finalImageUrl.startsWith("blob:"))) {
         setIsUploading(true);
         try {
           finalImageUrl = await uploadImageToSupabase(pendingFile, "cmhcb-media");
-          setHeroImage(finalImageUrl);
+          setApproachImage(finalImageUrl);
           setPreviewUrl(finalImageUrl);
         } catch (uploadErr) {
           setError(
             (uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) ||
-              "Failed to upload hero image."
+              "Failed to upload approach image."
           );
           setIsSubmitting(false);
           setIsUploading(false);
@@ -137,24 +124,24 @@ export function EditServicesHeroForm({
       }
 
       if (!finalImageUrl) {
-        setError("Hero background image is required.");
+        setError("Approach image is required.");
         setIsSubmitting(false);
         return;
       }
 
       const payload = {
-        heroTitle: heroTitle.trim(),
-        heroDescription: heroDescription.trim(),
-        heroImage: finalImageUrl.trim(),
-        heroImageAlt: heroImageAlt.trim() || DEFAULT_HERO.heroImageAlt,
+        approachTitle: approachTitle.trim(),
+        approachDescription: approachDescription.trim(),
+        approachImage: finalImageUrl.trim(),
+        approachImageAlt: approachImageAlt.trim() || DEFAULT_APPROACH.approachImageAlt,
       };
 
-      const res = await upsertServicesPageContentAction(payload);
+      const res = await upsertServicesApproachAction(payload);
       if (res.success) {
         setSuccess(true);
         router.refresh();
       } else {
-        setError(res.error || "Failed to update Services page hero.");
+        setError(res.error || "Failed to update Services approach block.");
       }
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
@@ -169,10 +156,10 @@ export function EditServicesHeroForm({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-muted pb-4">
         <div>
           <h2 className="font-marcellus text-xl font-bold text-dark-green">
-            Services Page Hero Header
+            Services Approach Block
           </h2>
           <p className="font-sans text-xs text-light-ash mt-0.5">
-            Configure the main banner title, descriptive copy, and background image shown at the top of{" "}
+            Configure the 2-column &ldquo;Our Approach&rdquo; card and feature photo displayed at the bottom of the services grid on{" "}
             <a
               href="/services"
               target="_blank"
@@ -198,7 +185,7 @@ export function EditServicesHeroForm({
       {success && (
         <div className="bg-emerald-50 text-emerald-800 p-4 rounded-xl text-sm font-sans font-medium border border-emerald-200 flex items-center gap-2">
           <HiCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-          <span>Services page hero banner has been successfully saved and published!</span>
+          <span>Services Approach block has been successfully saved and published!</span>
         </div>
       )}
 
@@ -214,50 +201,50 @@ export function EditServicesHeroForm({
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
             <label className="font-semibold text-dark text-xs flex items-center justify-between">
-              <span>Hero Main Title / Headline <span className="text-red-500">*</span></span>
-              <span className="text-[11px] text-light-ash font-normal">Primary H1 banner heading</span>
+              <span>Approach Block Title <span className="text-red-500">*</span></span>
+              <span className="text-[11px] text-light-ash font-normal">Section card heading</span>
             </label>
             <input
               type="text"
-              value={heroTitle}
+              value={approachTitle}
               onChange={(e) => {
-                setHeroTitle(e.target.value);
+                setApproachTitle(e.target.value);
                 setSuccess(false);
               }}
-              placeholder="e.g. Professional, ethical, and evidence-based mental health care"
-              className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors"
+              placeholder="e.g. Our Approach"
+              className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-hidden focus:border-primary text-sm font-sans transition-colors"
               required
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label className="font-semibold text-dark text-xs flex items-center justify-between">
-              <span>Hero Subtitle / Description Paragraph <span className="text-red-500">*</span></span>
-              <span className="text-[11px] text-light-ash font-normal">Supporting paragraph text</span>
+              <span>Approach Description Paragraph <span className="text-red-500">*</span></span>
+              <span className="text-[11px] text-light-ash font-normal">Methodology and clinical perspective summary</span>
             </label>
             <textarea
-              value={heroDescription}
+              value={approachDescription}
               onChange={(e) => {
-                setHeroDescription(e.target.value);
+                setApproachDescription(e.target.value);
                 setSuccess(false);
               }}
-              rows={3}
-              placeholder="Enter a descriptive overview of services offered..."
-              className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors resize-y min-h-22.5"
+              rows={4}
+              placeholder="Enter details on your clinical and client-centered approach..."
+              className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-hidden focus:border-primary text-sm font-sans transition-colors resize-y min-h-[90px]"
               required
             />
           </div>
         </div>
 
-        {/* Hero Background Image */}
+        {/* Feature Image */}
         <div className="flex flex-col gap-3 bg-light-ash/5 p-4 md:p-5 rounded-2xl border border-muted/70">
           <div className="flex items-center justify-between">
             <label className="font-semibold text-dark text-xs flex items-center gap-1.5">
               <HiPhoto className="w-4 h-4 text-primary" />
-              Hero Background Image <span className="text-red-500">*</span>
+              Approach Feature Photo <span className="text-red-500">*</span>
             </label>
             <span className="text-[11px] text-light-ash">
-              Recommended: <strong>1920×1080 px</strong> (16:9) • Max 10MB (.jpg, .png, .webp)
+              Recommended: <strong>800×600 px</strong> (4:3) • Max 10MB (.jpg, .png, .webp)
             </span>
           </div>
 
@@ -268,7 +255,7 @@ export function EditServicesHeroForm({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={previewUrl}
-                  alt={heroImageAlt || "Hero Preview"}
+                  alt={approachImageAlt || "Approach Preview"}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -298,14 +285,14 @@ export function EditServicesHeroForm({
                 <span className="text-xs font-medium text-dark">Or Image URL / Path</span>
                 <input
                   type="text"
-                  value={heroImage}
+                  value={approachImage}
                   onChange={(e) => {
-                    setHeroImage(e.target.value);
+                    setApproachImage(e.target.value);
                     setPreviewUrl(e.target.value);
                     setSuccess(false);
                   }}
-                  placeholder="/mental-health-services-bangladesh.jpg or https://..."
-                  className="w-full px-3.5 py-2 border border-muted rounded-xl bg-white focus:outline-none focus:border-primary text-xs font-mono"
+                  placeholder="/couple-counseling-relationship-help.jpg or https://..."
+                  className="w-full px-3.5 py-2 border border-muted rounded-xl bg-white focus:outline-hidden focus:border-primary text-xs font-mono"
                 />
               </div>
 
@@ -313,14 +300,56 @@ export function EditServicesHeroForm({
                 <span className="text-xs font-medium text-dark">Image Alt Text (Accessibility & SEO)</span>
                 <input
                   type="text"
-                  value={heroImageAlt}
+                  value={approachImageAlt}
                   onChange={(e) => {
-                    setHeroImageAlt(e.target.value);
+                    setApproachImageAlt(e.target.value);
                     setSuccess(false);
                   }}
-                  placeholder="Describe the image content for screen readers"
-                  className="w-full px-3.5 py-2 border border-muted rounded-xl bg-white focus:outline-none focus:border-primary text-xs font-sans"
+                  placeholder="Describe the photo for screen readers"
+                  className="w-full px-3.5 py-2 border border-muted rounded-xl bg-white focus:outline-hidden focus:border-primary text-xs font-sans"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Live Preview Simulation Card */}
+        <div className="flex flex-col gap-2.5">
+          <span className="font-semibold text-dark text-xs flex items-center justify-between">
+            <span>Live Layout Preview (Split 2-Column Block)</span>
+            <span className="text-[11px] text-light-ash font-normal">How it renders in the grid on /services</span>
+          </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-2xl bg-light-ash/5 border border-muted/60">
+            {/* Left simulated photo */}
+            <div className="relative w-full h-48 md:h-56 rounded-2xl overflow-hidden bg-dark-green/10 border border-muted">
+              {previewUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={previewUrl}
+                  alt={approachImageAlt || "Approach"}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-light-ash text-xs">
+                  Photo placeholder
+                </div>
+              )}
+            </div>
+
+            {/* Right simulated dark green card */}
+            <div className="flex flex-col justify-between rounded-2xl bg-dark-green p-6 text-white min-h-[190px]">
+              <div>
+                <h4 className="font-marcellus text-2xl leading-snug text-white mb-2">
+                  {approachTitle || "Our Approach"}
+                </h4>
+                <p className="font-sans text-xs leading-relaxed text-white/80 line-clamp-4">
+                  {approachDescription || "We follow an evidence-based, client-centred approach that integrates individual experiences..."}
+                </p>
+              </div>
+              <div className="pt-3">
+                <span className="inline-block text-xs font-semibold px-3 py-1.5 rounded-lg bg-white text-dark-green font-sans">
+                  Book an Appointment
+                </span>
               </div>
             </div>
           </div>
@@ -328,22 +357,41 @@ export function EditServicesHeroForm({
 
         {/* Form Actions */}
         <div className="flex items-center justify-between border-t border-muted pt-5 mt-2">
-          <button
-            type="button"
-            onClick={() => {
-              setHeroTitle(initialContent?.heroTitle || DEFAULT_HERO.heroTitle);
-              setHeroDescription(initialContent?.heroDescription || DEFAULT_HERO.heroDescription);
-              setHeroImage(initialContent?.heroImage || DEFAULT_HERO.heroImage);
-              setPreviewUrl(initialContent?.heroImage || DEFAULT_HERO.heroImage);
-              setHeroImageAlt(initialContent?.heroImageAlt || DEFAULT_HERO.heroImageAlt);
-              setError(null);
-              setSuccess(false);
-            }}
-            disabled={isSubmitting || isUploading}
-            className="text-xs text-light-ash hover:text-dark underline cursor-pointer disabled:opacity-50"
-          >
-            Reset to Saved Values
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setApproachTitle(initialContent?.approachTitle || DEFAULT_APPROACH.approachTitle);
+                setApproachDescription(initialContent?.approachDescription || DEFAULT_APPROACH.approachDescription);
+                setApproachImage(initialContent?.approachImage || DEFAULT_APPROACH.approachImage);
+                setPreviewUrl(initialContent?.approachImage || DEFAULT_APPROACH.approachImage);
+                setApproachImageAlt(initialContent?.approachImageAlt || DEFAULT_APPROACH.approachImageAlt);
+                setError(null);
+                setSuccess(false);
+              }}
+              disabled={isSubmitting || isUploading}
+              className="text-xs text-light-ash hover:text-dark underline cursor-pointer disabled:opacity-50"
+            >
+              Reset to Saved Values
+            </button>
+            <span className="text-light-ash/40">•</span>
+            <button
+              type="button"
+              onClick={() => {
+                setApproachTitle(DEFAULT_APPROACH.approachTitle);
+                setApproachDescription(DEFAULT_APPROACH.approachDescription);
+                setApproachImage(DEFAULT_APPROACH.approachImage);
+                setPreviewUrl(DEFAULT_APPROACH.approachImage);
+                setApproachImageAlt(DEFAULT_APPROACH.approachImageAlt);
+                setError(null);
+                setSuccess(false);
+              }}
+              disabled={isSubmitting || isUploading}
+              className="text-xs text-light-ash hover:text-dark underline cursor-pointer disabled:opacity-50"
+            >
+              Reset to Default Copy
+            </button>
+          </div>
 
           <button
             type="submit"
@@ -363,7 +411,7 @@ export function EditServicesHeroForm({
             ) : (
               <>
                 <HiCheck className="w-4 h-4" />
-                Save Hero Changes
+                Save Approach Changes
               </>
             )}
           </button>

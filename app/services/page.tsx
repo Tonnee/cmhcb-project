@@ -50,7 +50,15 @@ export default async function ServicesPage(): Promise<React.JSX.Element> {
         ctaLabel="Book an Appointment"
         ctaHref="/appointment"
       />
-      <AllServices services={services} />
+      <AllServices
+        services={services}
+        approachData={{
+          title: pageContent?.approachTitle,
+          description: pageContent?.approachDescription,
+          image: pageContent?.approachImage,
+          imageAlt: pageContent?.approachImageAlt,
+        }}
+      />
       <ServiceInfoSection infoBlocks={infoBlocks} />
     </main>
   );

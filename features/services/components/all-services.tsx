@@ -1,8 +1,10 @@
 import * as React from "react";
+import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { LinkButton } from "@/components/ui/link-button";
-import { ServicesApproachBlock } from "@/features/services/components/services-approach-block";
+import { ServicesApproachBlock, type ServicesApproachBlockProps } from "@/features/services/components/services-approach-block";
+import { SERVICE_IMAGES } from "@/components/shared/service-card";
 
 interface ServiceItem {
   title: string;
@@ -10,13 +12,22 @@ interface ServiceItem {
   shortDescription: string;
   duration?: string | null;
   fees?: string | null;
+  image?: string | null;
 }
 
 interface AllServicesProps {
   services: ServiceItem[];
+  approachData?: ServicesApproachBlockProps;
 }
 
-export function AllServices({ services }: AllServicesProps): React.JSX.Element {
+export function AllServices({ services, approachData }: AllServicesProps): React.JSX.Element {
+  const isOdd = services.length % 2 !== 0;
+  const firstService = services[0];
+  const firstServiceThumbnail =
+    firstService?.image ||
+    (firstService?.slug ? SERVICE_IMAGES[firstService.slug] : undefined) ||
+    "/home-service-images/psychometric-assessment.png";
+
   return (
     <section aria-labelledby="services-heading" className="py-16 md:py-24">
       <Container>
@@ -84,7 +95,21 @@ export function AllServices({ services }: AllServicesProps): React.JSX.Element {
               </article>
             );
           })}
-          <ServicesApproachBlock />
+
+          {/* If services count is odd, fill the empty grid column with an image */}
+          {isOdd && (
+            <div className="relative w-full rounded-3xl overflow-hidden min-h-75 h-full border border-muted/30 group">
+              <Image
+                src={firstServiceThumbnail}
+                alt={firstService?.title ? `${firstService.title} thumbnail` : "Psychotherapeutic services thumbnail"}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+          )}
+
+          <ServicesApproachBlock {...approachData} />
         </div>
       </Container>
     </section>

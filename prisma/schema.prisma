@@ -156,6 +156,10 @@ model ServicesPageContent {
   heroDescription String   @default("At CMHC,B, we provide compassionate and confidential psychotherapeutic services to support individuals, couples, families, and organizations in improving mental well-being and quality of life.")
   heroImage       String   @default("/mental-health-services-bangladesh.jpg")
   heroImageAlt    String   @default("Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh")
+  approachTitle       String?  @default("Our Approach")
+  approachDescription String?  @default("We follow an evidence-based, client-centred approach that integrates individual experiences while providing ethical, confidential, and culturally sensitive care.")
+  approachImage       String?  @default("/couple-counseling-relationship-help.jpg")
+  approachImageAlt    String?  @default("Couple counseling and relationship psychotherapy session at CMHCB")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   lastUpdatedBy   String?

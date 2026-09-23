@@ -8,6 +8,7 @@ import { deleteServiceAction, deleteServiceInfoBlockAction, toggleServiceFeature
 import { SERVICE_IMAGES } from "@/components/shared/service-card";
 import { EditServiceInfoBlockForm } from "./edit-service-info-block-form";
 import { EditServicesHeroForm, type ServicesPageContentDB } from "./edit-services-hero-form";
+import { EditServicesApproachForm } from "./edit-services-approach-form";
 import { useRouter } from "next/navigation";
 
 interface ServiceDB {
@@ -68,7 +69,7 @@ export function ServicesClientWrapper({
   const [isReordering, setIsReordering] = React.useState(false);
 
   // Tab & Info Block states
-  const [activeTab, setActiveTab] = React.useState<"hero" | "services" | "infoblocks">("services");
+  const [activeTab, setActiveTab] = React.useState<"hero" | "approach" | "services" | "infoblocks">("services");
   const [infoBlocks, setInfoBlocks] = React.useState<ServiceInfoBlockDB[]>(initialInfoBlocks);
   const [selectedBlock, setSelectedBlock] = React.useState<ServiceInfoBlockDB | null>(null);
   const [isBlockModalOpen, setIsBlockModalOpen] = React.useState(false);
@@ -292,6 +293,16 @@ export function ServicesClientWrapper({
           Hero Section
         </button>
         <button
+          onClick={() => setActiveTab("approach")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "approach"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Our Approach Block
+        </button>
+        <button
           onClick={() => setActiveTab("services")}
           className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
             activeTab === "services"
@@ -316,6 +327,9 @@ export function ServicesClientWrapper({
       {/* Tab Contents */}
       {activeTab === "hero" && (
         <EditServicesHeroForm initialContent={pageContent} />
+      )}
+      {activeTab === "approach" && (
+        <EditServicesApproachForm initialContent={pageContent} />
       )}
 
       {/* Services Grid/Table */}
