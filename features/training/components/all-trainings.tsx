@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import FeatureCard, { type FeatureCardVariant } from "@/components/shared/feature-card";
-import { TrainingApproachBlock } from "@/features/training/components/training-approach-block";
+import { TrainingApproachBlock, type TrainingApproachBlockProps } from "@/features/training/components/training-approach-block";
 import { TRAINING_IMAGES } from "@/features/training/data/trainings";
 
 export interface TrainingItemProps {
@@ -19,9 +19,10 @@ export interface TrainingItemProps {
 
 interface AllTrainingsProps {
   trainings: TrainingItemProps[];
+  approachData?: TrainingApproachBlockProps;
 }
 
-export function AllTrainings({ trainings }: AllTrainingsProps): React.JSX.Element {
+export function AllTrainings({ trainings, approachData }: AllTrainingsProps): React.JSX.Element {
   const isOdd = trainings.length % 2 !== 0;
   const firstTraining = trainings[0];
   const firstTrainingThumbnail =
@@ -63,7 +64,7 @@ export function AllTrainings({ trainings }: AllTrainingsProps): React.JSX.Elemen
             </div>
           )}
 
-          <TrainingApproachBlock />
+          <TrainingApproachBlock {...approachData} />
         </div>
       </Container>
     </section>
