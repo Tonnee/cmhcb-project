@@ -14,7 +14,27 @@ export interface TrainingItem {
   fees: string;
   variant: FeatureCardVariant;
   icon?: string;
+  image?: string | null;
 }
+
+export const TRAINING_IMAGES: Record<string, string> = {
+  "trauma-focused-cognitive-behaviour-therapy-tf-cbt": "/pages-hero-background/psychological-first-aid.png",
+  "cbt-foundation-training": "/pages-hero-background/training-default.png",
+  "child-focused-cognitive-behaviour-therapy": "/pages-hero-background/child-development-parenting.png",
+  "psychological-first-aid": "/pages-hero-background/psychological-first-aid.png",
+  "anger-management": "/pages-hero-background/anger-management.png",
+  "stress-management": "/pages-hero-background/stress-management.png",
+  "relaxation": "/pages-hero-background/relaxation.png",
+  "helping-children-self-confidence": "/pages-hero-background/helping-children-self-confidence.png",
+  "managing-childrens-misbehavior": "/pages-hero-background/managing-childrens-misbehavior.png",
+  "study-skills": "/pages-hero-background/training-default.png",
+  "basic-counseling-skills": "/pages-hero-background/basic-counseling-skills.png",
+  "child-development-parenting": "/pages-hero-background/child-development-parenting.png",
+  "how-to-be-a-good-communicator": "/pages-hero-background/training-default.png",
+  "burnout-management": "/pages-hero-background/burnout-management.png",
+  "creative-therapy": "/pages-hero-background/creative-therapy.png",
+  "introduction-to-psychodrama": "/pages-hero-background/1.png",
+};
 
 export const TRAININGS: TrainingItem[] = [
   {

@@ -313,47 +313,6 @@ export function EditServicesApproachForm({
           </div>
         </div>
 
-        {/* Live Preview Simulation Card */}
-        <div className="flex flex-col gap-2.5">
-          <span className="font-semibold text-dark text-xs flex items-center justify-between">
-            <span>Live Layout Preview (Split 2-Column Block)</span>
-            <span className="text-[11px] text-light-ash font-normal">How it renders in the grid on /services</span>
-          </span>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-2xl bg-light-ash/5 border border-muted/60">
-            {/* Left simulated photo */}
-            <div className="relative w-full h-48 md:h-56 rounded-2xl overflow-hidden bg-dark-green/10 border border-muted">
-              {previewUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={previewUrl}
-                  alt={approachImageAlt || "Approach"}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-light-ash text-xs">
-                  Photo placeholder
-                </div>
-              )}
-            </div>
-
-            {/* Right simulated dark green card */}
-            <div className="flex flex-col justify-between rounded-2xl bg-dark-green p-6 text-white min-h-[190px]">
-              <div>
-                <h4 className="font-marcellus text-2xl leading-snug text-white mb-2">
-                  {approachTitle || "Our Approach"}
-                </h4>
-                <p className="font-sans text-xs leading-relaxed text-white/80 line-clamp-4">
-                  {approachDescription || "We follow an evidence-based, client-centred approach that integrates individual experiences..."}
-                </p>
-              </div>
-              <div className="pt-3">
-                <span className="inline-block text-xs font-semibold px-3 py-1.5 rounded-lg bg-white text-dark-green font-sans">
-                  Book an Appointment
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Form Actions */}
         <div className="flex items-center justify-between border-t border-muted pt-5 mt-2">

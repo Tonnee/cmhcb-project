@@ -7,22 +7,10 @@ import { Faq } from "@/components/shared/faq";
 import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import { JsonLd } from "@/components/shared/json-ld";
-import { TRAININGS } from "@/features/training/data/trainings";
+import { TRAININGS, TRAINING_IMAGES } from "@/features/training/data/trainings";
 
-const TRAINING_SLUG_IMAGE_MAP: Record<string, string> = {
-  "psychological-first-aid": "/pages-hero-background/psychological-first-aid.png",
-  "anger-management": "/pages-hero-background/anger-management.png",
-  "stress-management": "/pages-hero-background/stress-management.png",
-  "relaxation": "/pages-hero-background/relaxation.png",
-  "helping-children-self-confidence": "/pages-hero-background/helping-children-self-confidence.png",
-  "managing-childrens-misbehavior": "/pages-hero-background/managing-childrens-misbehavior.png",
-  "study-skills": "/pages-hero-background/training-default.png",
-  "basic-counseling-skills": "/pages-hero-background/basic-counseling-skills.png",
-  "child-development-parenting": "/pages-hero-background/child-development-parenting.png",
-  "how-to-be-a-good-communicator": "/pages-hero-background/training-default.png",
-  "burnout-management": "/pages-hero-background/burnout-management.png",
-  "creative-therapy": "/pages-hero-background/creative-therapy.png",
-};
+const TRAINING_SLUG_IMAGE_MAP: Record<string, string> = TRAINING_IMAGES;
+
 
 interface TrainingDetailPageProps {
   params: Promise<{ slug: string }>;

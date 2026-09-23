@@ -61,6 +61,7 @@ export default async function TrainingPage(): Promise<React.JSX.Element> {
           duration: t.duration,
           fees: t.fees,
           variant: (t.variant as FeatureCardVariant) || "primary",
+          image: t.image || t.bgImage || null,
         };
       })
     : TRAININGS.map((t) => ({
@@ -71,6 +72,7 @@ export default async function TrainingPage(): Promise<React.JSX.Element> {
         duration: t.duration,
         fees: t.fees,
         variant: t.variant,
+        image: t.image || null,
       }));
 
   return (
