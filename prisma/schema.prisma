@@ -180,14 +180,20 @@ model TrainingInfoBlock {
 }
 
 model TrainingPageContent {
-  id              String   @id @default("training-content")
-  heroTitle       String   @default("Building future mental health professionals and advocates")
-  heroDescription String   @default("CMHCB offers a range of professional training programs designed to equip individuals with practical mental health knowledge and skills — from psychological first aid to advanced counselling techniques.")
-  heroImage       String   @default("/training_hero.png")
-  heroImageAlt    String   @default("CMHCB training programme participants")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  lastUpdatedBy   String?
+  id                  String   @id @default("training-content")
+  heroTitle           String   @default("Building future mental health professionals and advocates")
+  heroDescription     String   @default("CMHCB offers a range of professional training programs designed to equip individuals with practical mental health knowledge and skills — from psychological first aid to advanced counselling techniques.")
+  heroImage           String   @default("/training_hero.png")
+  heroImageAlt        String   @default("CMHCB training programme participants")
+  approachTitle       String?  @default("Our Approach")
+  approachDescription String?  @default("Customising programs are available for institutions, professionals, families, individuals, and organizations looking to define issues and related issues around mental health knowledge.")
+  approachImage       String?  @default("/mental-health-training-program.png")
+  approachImageAlt    String?  @default("Mental health training and workshop program at CMHCB")
+  approachCtaLabel    String?  @default("Download Brochure")
+  approachCtaHref     String?  @default("#")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  lastUpdatedBy       String?
 }
 
 model TherapistsPageContent {

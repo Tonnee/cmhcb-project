@@ -12,6 +12,12 @@ export interface TrainingPageContentDB {
   heroDescription: string;
   heroImage: string;
   heroImageAlt?: string | null;
+  approachTitle?: string | null;
+  approachDescription?: string | null;
+  approachImage?: string | null;
+  approachImageAlt?: string | null;
+  approachCtaLabel?: string | null;
+  approachCtaHref?: string | null;
   lastUpdatedBy?: string | null;
   updatedAt?: Date | string | null;
 }

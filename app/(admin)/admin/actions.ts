@@ -139,6 +139,15 @@ const TrainingPageInputSchema = z.object({
   heroImageAlt: z.string().optional().default("CMHCB training programme participants"),
 });
 
+const TrainingApproachInputSchema = z.object({
+  approachTitle: z.string().min(1, "Approach Title is required"),
+  approachDescription: z.string().min(1, "Approach Description is required"),
+  approachImage: z.string().min(1, "Approach Image is required"),
+  approachImageAlt: z.string().optional().default("Mental health training and workshop program at CMHCB"),
+  approachCtaLabel: z.string().optional().default("Download Brochure"),
+  approachCtaHref: z.string().optional().default("#"),
+});
+
 const TherapistsPageInputSchema = z.object({
   heroTitle: z.string().min(1, "Hero Title is required"),
   heroDescription: z.string().min(1, "Hero Description is required"),
@@ -1989,6 +1998,61 @@ export async function upsertTrainingPageContentAction(
       return { success: false, error: error.issues.map(e => e.message).join(", ") };
     }
     return { success: false, error: error.message || "Failed to save training page content" };
+  }
+}
+
+export async function upsertTrainingApproachAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = TrainingApproachInputSchema.parse(data);
+
+    const existing = await prisma.trainingPageContent.findFirst();
+
+    const record = await prisma.trainingPageContent.upsert({
+      where: { id: existing?.id || "training-content" },
+      create: {
+        id: "training-content",
+        approachTitle: validated.approachTitle,
+        approachDescription: validated.approachDescription,
+        approachImage: validated.approachImage,
+        approachImageAlt: validated.approachImageAlt || "Mental health training and workshop program at CMHCB",
+        approachCtaLabel: validated.approachCtaLabel || "Download Brochure",
+        approachCtaHref: validated.approachCtaHref || "#",
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        approachTitle: validated.approachTitle,
+        approachDescription: validated.approachDescription,
+        approachImage: validated.approachImage,
+        approachImageAlt: validated.approachImageAlt || "Mental health training and workshop program at CMHCB",
+        approachCtaLabel: validated.approachCtaLabel || "Download Brochure",
+        approachCtaHref: validated.approachCtaHref || "#",
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "TrainingPageContent",
+      record.id,
+      "Training Page",
+      `Updated Training page approach block content`
+    );
+
+    revalidatePath("/training");
+    revalidatePath("/admin/trainings");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertTrainingApproachAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save training approach content" };
   }
 }
 

@@ -6,6 +6,7 @@ import { HiPlus, HiPencilSquare, HiTrash, HiMagnifyingGlass, HiBars3 } from "rea
 import { EditTrainingForm } from "./edit-training-form";
 import { EditTrainingInfoBlockForm } from "./edit-training-info-block-form";
 import { EditTrainingHeroForm, type TrainingPageContentDB } from "./edit-training-hero-form";
+import { EditTrainingApproachForm } from "./edit-training-approach-form";
 import { deleteTrainingAction, deleteTrainingInfoBlockAction, reorderTrainingsAction, reorderTrainingInfoBlocksAction } from "@/app/(admin)/admin/actions";
 import { useRouter } from "next/navigation";
 
@@ -72,7 +73,7 @@ export default function TrainingsClientWrapper({
   const [isReordering, setIsReordering] = React.useState(false);
 
   // Tab & Info Block states
-  const [activeTab, setActiveTab] = React.useState<"hero" | "trainings" | "infoblocks">("trainings");
+  const [activeTab, setActiveTab] = React.useState<"hero" | "approach" | "trainings" | "infoblocks">("trainings");
   const [infoBlocks, setInfoBlocks] = React.useState<TrainingInfoBlockDB[]>(initialInfoBlocks);
   const [selectedBlock, setSelectedBlock] = React.useState<TrainingInfoBlockDB | null>(null);
   const [isBlockModalOpen, setIsBlockModalOpen] = React.useState(false);
@@ -271,6 +272,16 @@ export default function TrainingsClientWrapper({
           Hero Section
         </button>
         <button
+          onClick={() => setActiveTab("approach")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "approach"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Our Approach Block
+        </button>
+        <button
           onClick={() => setActiveTab("trainings")}
           className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
             activeTab === "trainings"
@@ -295,6 +306,10 @@ export default function TrainingsClientWrapper({
       {/* Dynamic Tab Body */}
       {activeTab === "hero" && (
         <EditTrainingHeroForm initialContent={pageContent} />
+      )}
+
+      {activeTab === "approach" && (
+        <EditTrainingApproachForm initialContent={pageContent} />
       )}
 
       {activeTab === "trainings" && (

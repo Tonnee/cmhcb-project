@@ -89,7 +89,17 @@ export default async function TrainingPage(): Promise<React.JSX.Element> {
         ctaLabel="Join Training"
         ctaHref="/join-training"
       />
-      <AllTrainings trainings={mappedTrainings} />
+      <AllTrainings
+        trainings={mappedTrainings}
+        approachData={{
+          title: pageContent?.approachTitle,
+          description: pageContent?.approachDescription,
+          image: pageContent?.approachImage,
+          imageAlt: pageContent?.approachImageAlt,
+          ctaLabel: pageContent?.approachCtaLabel,
+          ctaHref: pageContent?.approachCtaHref,
+        }}
+      />
       <TrainingInfoSection infoBlocks={infoBlocks} />
     </main>
   );
