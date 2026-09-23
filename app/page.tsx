@@ -91,6 +91,10 @@ export default async function Page(): Promise<React.JSX.Element> {
     trainingItem3Description: "Equip yourself with the knowledge and tools to support individuals dealing with trauma and PTSD.",
     trainingItem4Title: "",
     trainingItem4Description: "",
+    appointmentHeadline: "Take The Next Step - Schedule Your <span class=\"text-white\">Appointment</span>",
+    appointmentSubtitle: "Your path to healing, growth, and inner peace starts with a single step. Whether you are navigating life's transitions, seeking emotional support, or striving for balance, our compassionate professionals are here to walk with you in a safe, supportive space.",
+    appointmentButtonText: "Book an Appointment",
+    appointmentButtonLink: "/appointment",
     reviewCard1Title: "Real Experiences, Real Impact",
     reviewCard1Description: "Discover how our clients' lives have changed through therapy, training, and mental health support at CMHC,B.",
     reviewCard2Title: "Voices That Inspire Hope",
@@ -283,7 +287,12 @@ export default async function Page(): Promise<React.JSX.Element> {
         items={trainingItems}
       />
       <Therapists therapists={dbTherapists} />
-      <ScheduleAppointment />
+      <ScheduleAppointment
+        headline={content.appointmentHeadline}
+        subtitle={content.appointmentSubtitle}
+        buttonText={content.appointmentButtonText}
+        buttonLink={content.appointmentButtonLink}
+      />
       
       {/* 3. Dynamic Upcoming Events */}
       <UpcomingEvents

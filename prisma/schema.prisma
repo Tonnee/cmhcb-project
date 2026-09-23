@@ -114,6 +114,10 @@ model LandingPageContent {
   trainingItem3Description  String?  @default("Equip yourself with the knowledge and tools to support individuals dealing with trauma and PTSD.")
   trainingItem4Title        String?
   trainingItem4Description  String?
+  appointmentHeadline       String?  @default("Take The Next Step - Schedule Your <span class=\"text-white\">Appointment</span>")
+  appointmentSubtitle       String?  @default("Your path to healing, growth, and inner peace starts with a single step. Whether you are navigating life's transitions, seeking emotional support, or striving for balance, our compassionate professionals are here to walk with you in a safe, supportive space.")
+  appointmentButtonText     String?  @default("Book an Appointment")
+  appointmentButtonLink     String?  @default("/appointment")
   reviewCard1Title        String?  @default("Real Experiences, Real Impact")
   reviewCard1Description  String?  @default("Discover how our clients' lives have changed through therapy, training, and mental health support at CMHC,B.")
   reviewCard2Title        String?  @default("Voices That Inspire Hope")
