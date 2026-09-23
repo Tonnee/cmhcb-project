@@ -57,6 +57,9 @@ interface LandingPageContentDB {
   appointmentSubtitle?: string | null;
   appointmentButtonText?: string | null;
   appointmentButtonLink?: string | null;
+  eventsBottomText?: string | null;
+  eventsButtonText?: string | null;
+  eventsButtonLink?: string | null;
   reviewCard1Title?: string | null;
   reviewCard1Description?: string | null;
   reviewCard2Title?: string | null;
@@ -174,6 +177,16 @@ export default function EditLandingPageForm({
   const [appointmentSubtitle, setAppointmentSubtitle] = React.useState(initialContent.appointmentSubtitle ?? defaultAppointmentValues.subtitle);
   const [appointmentButtonText, setAppointmentButtonText] = React.useState(initialContent.appointmentButtonText ?? defaultAppointmentValues.buttonText);
   const [appointmentButtonLink, setAppointmentButtonLink] = React.useState(initialContent.appointmentButtonLink ?? defaultAppointmentValues.buttonLink);
+
+  const defaultEventsValues = {
+    bottomText: "Stay informed and engaged with CMHC,B's year-round programs, workshops, and awareness events. Our annual event calendar highlights key training sessions, mental health awareness days, and community initiatives designed to educate, support, and empower individuals across all age groups.",
+    buttonText: "Explore all Events & Workshops",
+    buttonLink: "/events-workshops",
+  };
+
+  const [eventsBottomText, setEventsBottomText] = React.useState(initialContent.eventsBottomText ?? defaultEventsValues.bottomText);
+  const [eventsButtonText, setEventsButtonText] = React.useState(initialContent.eventsButtonText ?? defaultEventsValues.buttonText);
+  const [eventsButtonLink, setEventsButtonLink] = React.useState(initialContent.eventsButtonLink ?? defaultEventsValues.buttonLink);
 
   // State variables for Review Highlights 2x2 section
   const defaultReviewValues = {
@@ -561,6 +574,9 @@ export default function EditLandingPageForm({
         appointmentSubtitle,
         appointmentButtonText,
         appointmentButtonLink,
+        eventsBottomText,
+        eventsButtonText,
+        eventsButtonLink,
         reviewCard1Title,
         reviewCard1Description,
         reviewCard2Title,
@@ -1334,6 +1350,82 @@ export default function EditLandingPageForm({
                 value={appointmentButtonLink}
                 onChange={(e) => setAppointmentButtonLink(e.target.value)}
                 placeholder="/appointment"
+                className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors font-mono text-xs"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Upcoming Events & Workshops CTA Customization */}
+      <div className="bg-white border border-muted p-6 rounded-2xl shadow-sm flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-muted pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary-dark shrink-0">
+              <HiCalendarDays className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+                Upcoming Events & Workshops Bottom CTA
+              </h2>
+              <p className="font-sans text-xs text-light-ash">
+                Customize the bottom paragraph and explore button that appear below the events grid on the homepage.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setEventsBottomText(defaultEventsValues.bottomText);
+              setEventsButtonText(defaultEventsValues.buttonText);
+              setEventsButtonLink(defaultEventsValues.buttonLink);
+            }}
+            className="text-xs font-sans text-light-ash hover:text-dark underline cursor-pointer px-1 self-start sm:self-auto"
+          >
+            Reset to Default
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-sans text-xs font-semibold text-dark">
+              Bottom CTA Paragraph / Subtext
+            </label>
+            <textarea
+              value={eventsBottomText}
+              onChange={(e) => setEventsBottomText(e.target.value)}
+              rows={3}
+              placeholder="Stay informed and engaged with CMHC,B's year-round programs..."
+              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors resize-y"
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Button Label / Text
+              </label>
+              <input
+                type="text"
+                value={eventsButtonText}
+                onChange={(e) => setEventsButtonText(e.target.value)}
+                placeholder="Explore all Events & Workshops"
+                className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-semibold text-dark">
+                Button Link / Destination URL
+              </label>
+              <input
+                type="text"
+                value={eventsButtonLink}
+                onChange={(e) => setEventsButtonLink(e.target.value)}
+                placeholder="/events-workshops"
                 className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors font-mono text-xs"
                 required
               />

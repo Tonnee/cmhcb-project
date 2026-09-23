@@ -91,7 +91,14 @@ interface WorkshopDB {
 interface UpcomingEventsProps {
   featuredWorkshop: WorkshopDB | null;
   gridWorkshops: WorkshopDB[];
+  bottomText?: string | null;
+  buttonText?: string | null;
+  buttonLink?: string | null;
 }
+
+const DEFAULT_BOTTOM_TEXT = "Stay informed and engaged with CMHC,B's year-round programs, workshops, and awareness events. Our annual event calendar highlights key training sessions, mental health awareness days, and community initiatives designed to educate, support, and empower individuals across all age groups.";
+const DEFAULT_BUTTON_TEXT = "Explore all Events & Workshops";
+const DEFAULT_BUTTON_LINK = "/events-workshops";
 
 const formatDate = (dateStr: string) => {
   try {
@@ -125,6 +132,9 @@ const formatDateShort = (dateStr: string) => {
 export function UpcomingEvents({
   featuredWorkshop,
   gridWorkshops,
+  bottomText = DEFAULT_BOTTOM_TEXT,
+  buttonText = DEFAULT_BUTTON_TEXT,
+  buttonLink = DEFAULT_BUTTON_LINK,
 }: UpcomingEventsProps): React.JSX.Element {
   const displayGrid = React.useMemo(() => {
     const list = [...gridWorkshops].slice(0, 4);
@@ -287,13 +297,11 @@ export function UpcomingEvents({
 
         {/* Bottom CTA section */}
         <div className="mt-24 flex flex-col items-center justify-center text-center mx-auto">
-          <p className="font-marcellus text-lg md:text-xl leading-relaxed text-dark mb-10">
-            Stay informed and engaged with CMHC,B&apos;s year-round programs, workshops, and awareness events. Our
-            annual event calendar highlights key training sessions, mental health awareness days, and community
-            initiatives designed to educate, support, and empower individuals across all age groups.
+          <p className="font-marcellus text-lg md:text-xl leading-relaxed text-dark mb-10 max-w-4xl">
+            {bottomText || DEFAULT_BOTTOM_TEXT}
           </p>
-          <Button href="/events-workshops" variant="primary">
-            Explore all Events & Workshops
+          <Button href={buttonLink || DEFAULT_BUTTON_LINK} variant="primary">
+            {buttonText || DEFAULT_BUTTON_TEXT}
           </Button>
         </div>
       </div>

@@ -95,6 +95,9 @@ export default async function Page(): Promise<React.JSX.Element> {
     appointmentSubtitle: "Your path to healing, growth, and inner peace starts with a single step. Whether you are navigating life's transitions, seeking emotional support, or striving for balance, our compassionate professionals are here to walk with you in a safe, supportive space.",
     appointmentButtonText: "Book an Appointment",
     appointmentButtonLink: "/appointment",
+    eventsBottomText: "Stay informed and engaged with CMHC,B's year-round programs, workshops, and awareness events. Our annual event calendar highlights key training sessions, mental health awareness days, and community initiatives designed to educate, support, and empower individuals across all age groups.",
+    eventsButtonText: "Explore all Events & Workshops",
+    eventsButtonLink: "/events-workshops",
     reviewCard1Title: "Real Experiences, Real Impact",
     reviewCard1Description: "Discover how our clients' lives have changed through therapy, training, and mental health support at CMHC,B.",
     reviewCard2Title: "Voices That Inspire Hope",
@@ -298,6 +301,9 @@ export default async function Page(): Promise<React.JSX.Element> {
       <UpcomingEvents
         featuredWorkshop={featuredWorkshop}
         gridWorkshops={gridWorkshops}
+        bottomText={content.eventsBottomText}
+        buttonText={content.eventsButtonText}
+        buttonLink={content.eventsButtonLink}
       />
       
       {/* 4. Dynamic Review testimonials & highlights */}
