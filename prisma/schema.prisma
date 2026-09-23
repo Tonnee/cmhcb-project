@@ -86,6 +86,7 @@ model LandingPageContent {
   heroFigureImage     String   @default("/hero-image/hero-figure.png")
   wellbeingHeadline   String
   wellbeingSubtitle   String
+  wellbeingImage      String?
   experienceCount     Int      @default(20)
   happyClientsCount   Int      @default(1500)
   sessionsCount       Int      @default(2800)

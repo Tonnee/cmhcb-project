@@ -761,6 +761,7 @@ const LandingPageContentInputSchema = z.object({
   heroFigureImage: z.string().min(1, "Hero figure image is required"),
   wellbeingHeadline: z.string().min(1, "Wellbeing headline is required"),
   wellbeingSubtitle: z.string().min(1, "Wellbeing subtitle is required"),
+  wellbeingImage: z.string().optional().nullable(),
   experienceCount: z.number().int().nonnegative(),
   happyClientsCount: z.number().int().nonnegative(),
   sessionsCount: z.number().int().nonnegative(),

@@ -25,6 +25,7 @@ export default async function AdminLandingPage(): Promise<React.JSX.Element> {
     heroFigureImage: "/hero-image/hero-figure.png",
     wellbeingHeadline: "Our Commitment to Your <span class=\"text-accent\">Well-Being</span>",
     wellbeingSubtitle: "At CMHC,B, we are committed to delivering compassionate and effective mental health care. Explore how we've supported individuals on their path to emotional well-being and resilience.",
+    wellbeingImage: null,
     experienceCount: 20,
     happyClientsCount: 1500,
     sessionsCount: 2800,
@@ -51,6 +52,7 @@ export default async function AdminLandingPage(): Promise<React.JSX.Element> {
   const content = {
     ...defaultContent,
     ...(landingContent || {}),
+    wellbeingImage: landingContent?.wellbeingImage ?? defaultContent.wellbeingImage,
     reviewCard1Title: landingContent?.reviewCard1Title ?? defaultContent.reviewCard1Title,
     reviewCard1Description: landingContent?.reviewCard1Description ?? defaultContent.reviewCard1Description,
     reviewCard2Title: landingContent?.reviewCard2Title ?? defaultContent.reviewCard2Title,

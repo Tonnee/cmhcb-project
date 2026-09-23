@@ -1,4 +1,5 @@
 import * as React from "react";
+import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { WellBeingStats } from "./well-being-stats";
 
@@ -14,11 +15,26 @@ interface WellBeingProps {
   headline: string;
   subtitle: string;
   stats: StatItem[];
+  image?: string | null;
 }
 
-export default function WellBeing({ headline, subtitle, stats }: WellBeingProps): React.JSX.Element {
+export default function WellBeing({ headline, subtitle, stats, image }: WellBeingProps): React.JSX.Element {
   return (
     <section className="bg-dark-green py-20 lg:py-28 relative overflow-hidden">
+      {/* Background Image Layer if configured */}
+      {image && (
+        <div className="absolute inset-0 pointer-events-none">
+          <Image
+            src={image}
+            alt="Well-Being section background"
+            fill
+            className="object-cover opacity-20 mix-blend-overlay"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-dark-green/95 via-dark-green/85 to-dark-green/90" />
+        </div>
+      )}
+
       {/* Abstract Node Network Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">

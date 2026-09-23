@@ -25,6 +25,7 @@ interface LandingPageContentDB {
   heroFigureImage: string;
   wellbeingHeadline: string;
   wellbeingSubtitle: string;
+  wellbeingImage?: string | null;
   experienceCount: number;
   happyClientsCount: number;
   sessionsCount: number;
@@ -72,6 +73,9 @@ export default function EditLandingPageForm({
   
   const [wellbeingHeadline, setWellbeingHeadline] = React.useState(initialContent.wellbeingHeadline);
   const [wellbeingSubtitle, setWellbeingSubtitle] = React.useState(initialContent.wellbeingSubtitle);
+  const [wellbeingImage, setWellbeingImage] = React.useState(initialContent.wellbeingImage || "");
+  const [wellbeingPreviewUrl, setWellbeingPreviewUrl] = React.useState(initialContent.wellbeingImage || "");
+  const [pendingWellbeingFile, setPendingWellbeingFile] = React.useState<File | null>(null);
   
   const [experienceCount, setExperienceCount] = React.useState(initialContent.experienceCount);
   const [happyClientsCount, setHappyClientsCount] = React.useState(initialContent.happyClientsCount);
@@ -229,6 +233,7 @@ export default function EditLandingPageForm({
   const [isUploadingBg, setIsUploadingBg] = React.useState(false);
   const [isUploadingFigure, setIsUploadingFigure] = React.useState(false);
   const [isUploadingTraining, setIsUploadingTraining] = React.useState(false);
+  const [isUploadingWellbeing, setIsUploadingWellbeing] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
@@ -273,6 +278,27 @@ export default function EditLandingPageForm({
       setError((err instanceof Error ? err.message : String(err)) || "Failed to upload hero figure illustration.");
     } finally {
       setIsUploadingFigure(false);
+    }
+  };
+
+  const handleUploadWellbeing = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setPendingWellbeingFile(file);
+    const localPreview = URL.createObjectURL(file);
+    setWellbeingPreviewUrl(localPreview);
+
+    setIsUploadingWellbeing(true);
+    setError(null);
+    try {
+      const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
+      setWellbeingImage(publicUrl);
+      setWellbeingPreviewUrl(publicUrl);
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload Well-Being image.");
+    } finally {
+      setIsUploadingWellbeing(false);
     }
   };
 
@@ -341,6 +367,23 @@ export default function EditLandingPageForm({
         }
       }
 
+      let finalWellbeing = wellbeingImage;
+      if (pendingWellbeingFile && (!finalWellbeing || finalWellbeing.startsWith("blob:"))) {
+        setIsUploadingWellbeing(true);
+        try {
+          finalWellbeing = await uploadImageToSupabase(pendingWellbeingFile, "cmhcb-media");
+          setWellbeingImage(finalWellbeing);
+          setWellbeingPreviewUrl(finalWellbeing);
+        } catch {
+          setError("Failed to upload Well-Being image.");
+          setIsSubmitting(false);
+          setIsUploadingWellbeing(false);
+          return;
+        } finally {
+          setIsUploadingWellbeing(false);
+        }
+      }
+
       let finalTraining = trainingImage;
       if (pendingTrainingFile && (!finalTraining || finalTraining.startsWith("blob:"))) {
         setIsUploadingTraining(true);
@@ -399,6 +442,7 @@ export default function EditLandingPageForm({
         heroFigureImage: finalFigure,
         wellbeingHeadline,
         wellbeingSubtitle,
+        wellbeingImage: finalWellbeing || null,
         experienceCount: Number(experienceCount),
         happyClientsCount: Number(happyClientsCount),
         sessionsCount: Number(sessionsCount),
@@ -592,6 +636,87 @@ export default function EditLandingPageForm({
               className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors resize-y"
               required
             />
+          </div>
+
+          {/* Well-Being Section Image Upload */}
+          <div className="flex flex-col gap-1.5 pt-3 border-t border-muted/50">
+            <div className="flex items-center justify-between">
+              <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
+                <HiPhoto className="w-4 h-4 text-primary" />
+                Well-Being Background Image
+              </label>
+              <span className="text-[11px] text-light-ash">
+                Recommended: <strong>1920×1080 px</strong> (16:9) • Max 10MB (.jpg, .png, .webp)
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center mt-1">
+              {/* Preview Thumbnail */}
+              <div className="relative w-full h-36 bg-dark-green/10 border border-muted rounded-xl overflow-hidden flex items-center justify-center">
+                {(wellbeingPreviewUrl || wellbeingImage) ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={wellbeingPreviewUrl || wellbeingImage}
+                    alt="Well-Being Section Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-light-ash/50 gap-1">
+                    <HiPhoto className="w-7 h-7" />
+                    <span className="text-xs text-light-ash">Default SVG Pattern Active</span>
+                  </div>
+                )}
+                {isUploadingWellbeing && (
+                  <div className="absolute inset-0 bg-dark-green/60 backdrop-blur-xs flex items-center justify-center text-white text-xs font-semibold">
+                    Uploading image...
+                  </div>
+                )}
+              </div>
+
+              {/* Upload & Path Controls */}
+              <div className="flex flex-col gap-2.5">
+                <label className="flex flex-col items-center justify-center border border-dashed border-muted hover:border-primary/60 rounded-xl px-4 py-2.5 bg-light/10 hover:bg-primary/5 cursor-pointer transition-colors duration-200">
+                  <span className="font-sans text-xs text-primary font-semibold">
+                    {isUploadingWellbeing ? "Uploading..." : "Upload New Image"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    onChange={handleUploadWellbeing}
+                    className="hidden"
+                    disabled={isUploadingWellbeing}
+                  />
+                </label>
+
+                <div className="flex flex-col gap-1">
+                  <span className="text-[11px] font-medium text-dark">Or Image URL / Path</span>
+                  <input
+                    type="text"
+                    value={wellbeingImage}
+                    onChange={(e) => {
+                      setWellbeingImage(e.target.value);
+                      setWellbeingPreviewUrl(e.target.value);
+                    }}
+                    placeholder="/home-service-images/... or https://..."
+                    className="w-full px-3 py-1.5 border border-muted rounded-xl bg-white focus:outline-hidden focus:border-primary text-xs font-mono"
+                  />
+                </div>
+
+                {(wellbeingImage || wellbeingPreviewUrl) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setWellbeingImage("");
+                      setWellbeingPreviewUrl("");
+                      setPendingWellbeingFile(null);
+                    }}
+                    className="text-xs text-rose-600 hover:text-rose-700 underline text-left self-start cursor-pointer"
+                  >
+                    Remove Image (revert to pattern)
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
