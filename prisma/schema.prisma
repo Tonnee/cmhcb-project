@@ -212,7 +212,6 @@ model TrainingInfoBlock {
   updatedAt     DateTime @updatedAt
   lastUpdatedBy String?
 }
-
 model TrainingPageContent {
   id                  String   @id @default("training-content")
   heroTitle           String   @default("Building future mental health professionals and advocates")
@@ -225,6 +224,12 @@ model TrainingPageContent {
   approachImageAlt    String?  @default("Mental health training and workshop program at CMHCB")
   approachCtaLabel    String?  @default("Download Brochure")
   approachCtaHref     String?  @default("#")
+  ctaTitle            String?  @default("Take The Next Step - Schedule Your Appointment")
+  ctaDescription      String?  @default("We're here to support you, let's work together to create a path toward healing, growth, and balance.")
+  ctaImage            String?  @default("/pages-hero-background/1.png")
+  ctaImageAlt         String?  @default("Make an appointment background")
+  ctaButtonText       String?  @default("Book an Appointment")
+  ctaButtonHref       String?  @default("/appointment")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
   lastUpdatedBy       String?

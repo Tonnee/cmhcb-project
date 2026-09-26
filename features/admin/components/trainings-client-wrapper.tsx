@@ -7,6 +7,7 @@ import { EditTrainingForm } from "./edit-training-form";
 import { EditTrainingInfoBlockForm } from "./edit-training-info-block-form";
 import { EditTrainingHeroForm, type TrainingPageContentDB } from "./edit-training-hero-form";
 import { EditTrainingApproachForm } from "./edit-training-approach-form";
+import { EditTrainingCtaForm } from "./edit-training-cta-form";
 import { deleteTrainingAction, deleteTrainingInfoBlockAction, reorderTrainingsAction, reorderTrainingInfoBlocksAction } from "@/app/(admin)/admin/actions";
 import { useRouter } from "next/navigation";
 
@@ -73,7 +74,7 @@ export default function TrainingsClientWrapper({
   const [isReordering, setIsReordering] = React.useState(false);
 
   // Tab & Info Block states
-  const [activeTab, setActiveTab] = React.useState<"hero" | "approach" | "trainings" | "infoblocks">("trainings");
+  const [activeTab, setActiveTab] = React.useState<"hero" | "approach" | "cta" | "trainings" | "infoblocks">("trainings");
   const [infoBlocks, setInfoBlocks] = React.useState<TrainingInfoBlockDB[]>(initialInfoBlocks);
   const [selectedBlock, setSelectedBlock] = React.useState<TrainingInfoBlockDB | null>(null);
   const [isBlockModalOpen, setIsBlockModalOpen] = React.useState(false);
@@ -282,6 +283,16 @@ export default function TrainingsClientWrapper({
           Our Approach Block
         </button>
         <button
+          onClick={() => setActiveTab("cta")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "cta"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Appointment CTA
+        </button>
+        <button
           onClick={() => setActiveTab("trainings")}
           className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
             activeTab === "trainings"
@@ -310,6 +321,10 @@ export default function TrainingsClientWrapper({
 
       {activeTab === "approach" && (
         <EditTrainingApproachForm initialContent={pageContent} />
+      )}
+
+      {activeTab === "cta" && (
+        <EditTrainingCtaForm initialContent={pageContent} />
       )}
 
       {activeTab === "trainings" && (

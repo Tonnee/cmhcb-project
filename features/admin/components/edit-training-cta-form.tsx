@@ -4,62 +4,49 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { HiPhoto, HiCheck, HiExclamationTriangle, HiArrowTopRightOnSquare } from "react-icons/hi2";
 import { uploadImageToSupabase } from "@/lib/supabase";
-import { upsertTrainingPageContentAction } from "@/app/(admin)/admin/actions";
+import { upsertTrainingCtaAction } from "@/app/(admin)/admin/actions";
+import { type TrainingPageContentDB } from "./edit-training-hero-form";
 
-export interface TrainingPageContentDB {
-  id?: string;
-  heroTitle: string;
-  heroDescription: string;
-  heroImage: string;
-  heroImageAlt?: string | null;
-  approachTitle?: string | null;
-  approachDescription?: string | null;
-  approachImage?: string | null;
-  approachImageAlt?: string | null;
-  approachCtaLabel?: string | null;
-  approachCtaHref?: string | null;
-  ctaTitle?: string | null;
-  ctaDescription?: string | null;
-  ctaImage?: string | null;
-  ctaImageAlt?: string | null;
-  ctaButtonText?: string | null;
-  ctaButtonHref?: string | null;
-  lastUpdatedBy?: string | null;
-  updatedAt?: Date | string | null;
-}
-
-interface EditTrainingHeroFormProps {
+interface EditTrainingCtaFormProps {
   initialContent?: TrainingPageContentDB | null;
 }
 
-const DEFAULT_HERO = {
-  heroTitle: "Building future mental health professionals and advocates",
-  heroDescription:
-    "CMHCB offers a range of professional training programs designed to equip individuals with practical mental health knowledge and skills — from psychological first aid to advanced counselling techniques.",
-  heroImage: "/training_hero.png",
-  heroImageAlt: "CMHCB training programme participants",
+const DEFAULT_CTA = {
+  ctaTitle: "Take The Next Step - Schedule Your Appointment",
+  ctaDescription:
+    "We're here to support you, let's work together to create a path toward healing, growth, and balance.",
+  ctaImage: "/pages-hero-background/1.png",
+  ctaImageAlt: "Make an appointment background",
+  ctaButtonText: "Book an Appointment",
+  ctaButtonHref: "/appointment",
 };
 
-export function EditTrainingHeroForm({
+export function EditTrainingCtaForm({
   initialContent,
-}: EditTrainingHeroFormProps): React.JSX.Element {
+}: EditTrainingCtaFormProps): React.JSX.Element {
   const router = useRouter();
 
-  const [heroTitle, setHeroTitle] = React.useState(
-    initialContent?.heroTitle || DEFAULT_HERO.heroTitle
+  const [ctaTitle, setCtaTitle] = React.useState(
+    initialContent?.ctaTitle || DEFAULT_CTA.ctaTitle
   );
-  const [heroDescription, setHeroDescription] = React.useState(
-    initialContent?.heroDescription || DEFAULT_HERO.heroDescription
+  const [ctaDescription, setCtaDescription] = React.useState(
+    initialContent?.ctaDescription || DEFAULT_CTA.ctaDescription
   );
-  const [heroImage, setHeroImage] = React.useState(
-    initialContent?.heroImage || DEFAULT_HERO.heroImage
+  const [ctaImage, setCtaImage] = React.useState(
+    initialContent?.ctaImage || DEFAULT_CTA.ctaImage
   );
-  const [heroImageAlt, setHeroImageAlt] = React.useState(
-    initialContent?.heroImageAlt || DEFAULT_HERO.heroImageAlt
+  const [ctaImageAlt, setCtaImageAlt] = React.useState(
+    initialContent?.ctaImageAlt || DEFAULT_CTA.ctaImageAlt
+  );
+  const [ctaButtonText, setCtaButtonText] = React.useState(
+    initialContent?.ctaButtonText || DEFAULT_CTA.ctaButtonText
+  );
+  const [ctaButtonHref, setCtaButtonHref] = React.useState(
+    initialContent?.ctaButtonHref || DEFAULT_CTA.ctaButtonHref
   );
 
   const [previewUrl, setPreviewUrl] = React.useState(
-    initialContent?.heroImage || DEFAULT_HERO.heroImage
+    initialContent?.ctaImage || DEFAULT_CTA.ctaImage
   );
   const [pendingFile, setPendingFile] = React.useState<File | null>(null);
 
@@ -70,11 +57,13 @@ export function EditTrainingHeroForm({
 
   React.useEffect(() => {
     if (initialContent) {
-      setHeroTitle(initialContent.heroTitle || DEFAULT_HERO.heroTitle);
-      setHeroDescription(initialContent.heroDescription || DEFAULT_HERO.heroDescription);
-      setHeroImage(initialContent.heroImage || DEFAULT_HERO.heroImage);
-      setPreviewUrl(initialContent.heroImage || DEFAULT_HERO.heroImage);
-      setHeroImageAlt(initialContent.heroImageAlt || DEFAULT_HERO.heroImageAlt);
+      setCtaTitle(initialContent.ctaTitle || DEFAULT_CTA.ctaTitle);
+      setCtaDescription(initialContent.ctaDescription || DEFAULT_CTA.ctaDescription);
+      setCtaImage(initialContent.ctaImage || DEFAULT_CTA.ctaImage);
+      setPreviewUrl(initialContent.ctaImage || DEFAULT_CTA.ctaImage);
+      setCtaImageAlt(initialContent.ctaImageAlt || DEFAULT_CTA.ctaImageAlt);
+      setCtaButtonText(initialContent.ctaButtonText || DEFAULT_CTA.ctaButtonText);
+      setCtaButtonHref(initialContent.ctaButtonHref || DEFAULT_CTA.ctaButtonHref);
     }
   }, [initialContent]);
 
@@ -92,7 +81,7 @@ export function EditTrainingHeroForm({
 
     try {
       const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
-      setHeroImage(publicUrl);
+      setCtaImage(publicUrl);
       setPreviewUrl(publicUrl);
     } catch (err: unknown) {
       setError(
@@ -108,13 +97,13 @@ export function EditTrainingHeroForm({
     e.preventDefault();
     if (isSubmitting || isUploading) return;
 
-    if (!heroTitle.trim()) {
-      setError("Hero title is required.");
+    if (!ctaTitle.trim()) {
+      setError("CTA title is required.");
       return;
     }
 
-    if (!heroDescription.trim()) {
-      setError("Hero description is required.");
+    if (!ctaDescription.trim()) {
+      setError("CTA description is required.");
       return;
     }
 
@@ -123,17 +112,17 @@ export function EditTrainingHeroForm({
     setSuccess(false);
 
     try {
-      let finalImageUrl = heroImage;
+      let finalImageUrl = ctaImage;
       if (pendingFile && (!finalImageUrl || finalImageUrl.startsWith("blob:"))) {
         setIsUploading(true);
         try {
           finalImageUrl = await uploadImageToSupabase(pendingFile, "cmhcb-media");
-          setHeroImage(finalImageUrl);
+          setCtaImage(finalImageUrl);
           setPreviewUrl(finalImageUrl);
         } catch (uploadErr) {
           setError(
             (uploadErr instanceof Error ? uploadErr.message : String(uploadErr)) ||
-              "Failed to upload hero image."
+              "Failed to upload CTA image."
           );
           setIsSubmitting(false);
           setIsUploading(false);
@@ -144,24 +133,26 @@ export function EditTrainingHeroForm({
       }
 
       if (!finalImageUrl) {
-        setError("Hero background image is required.");
+        setError("CTA background image is required.");
         setIsSubmitting(false);
         return;
       }
 
       const payload = {
-        heroTitle: heroTitle.trim(),
-        heroDescription: heroDescription.trim(),
-        heroImage: finalImageUrl.trim(),
-        heroImageAlt: heroImageAlt.trim() || DEFAULT_HERO.heroImageAlt,
+        ctaTitle: ctaTitle.trim(),
+        ctaDescription: ctaDescription.trim(),
+        ctaImage: finalImageUrl.trim(),
+        ctaImageAlt: ctaImageAlt.trim() || DEFAULT_CTA.ctaImageAlt,
+        ctaButtonText: ctaButtonText.trim() || DEFAULT_CTA.ctaButtonText,
+        ctaButtonHref: ctaButtonHref.trim() || DEFAULT_CTA.ctaButtonHref,
       };
 
-      const res = await upsertTrainingPageContentAction(payload);
+      const res = await upsertTrainingCtaAction(payload);
       if (res.success) {
         setSuccess(true);
         router.refresh();
       } else {
-        setError(res.error || "Failed to update Training page hero.");
+        setError(res.error || "Failed to update Appointment CTA.");
       }
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred.");
@@ -176,18 +167,10 @@ export function EditTrainingHeroForm({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-muted/60 pb-4">
         <div>
           <h2 className="font-marcellus text-xl font-bold text-dark-green">
-            Training Programs Page Hero Header
+            Appointment Call to Action (CTA) Section
           </h2>
           <p className="font-sans text-xs text-light-ash mt-0.5">
-            Configure the main banner title, descriptive copy, and background image shown at the top of{" "}
-            <a
-              href="/training"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline inline-flex items-center gap-1 font-semibold"
-            >
-              /training <HiArrowTopRightOnSquare className="w-3 h-3" />
-            </a>
+            Configure the background image, headline, description, and button for the Appointment CTA banner.
           </p>
         </div>
 
@@ -205,7 +188,7 @@ export function EditTrainingHeroForm({
       {success && (
         <div className="bg-emerald-50 text-emerald-800 p-4 rounded-xl text-sm font-sans font-medium border border-emerald-200 flex items-center gap-2">
           <HiCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-          <span>Training page hero banner has been successfully saved and published!</span>
+          <span>Appointment CTA banner has been successfully saved and published!</span>
         </div>
       )}
 
@@ -221,17 +204,17 @@ export function EditTrainingHeroForm({
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
             <label className="font-semibold text-dark text-xs flex items-center justify-between">
-              <span>Hero Main Title / Headline <span className="text-red-500">*</span></span>
-              <span className="text-[11px] text-light-ash font-normal">Primary H1 banner heading</span>
+              <span>CTA Headline / Title <span className="text-red-500">*</span></span>
+              <span className="text-[11px] text-light-ash font-normal">Main callout heading</span>
             </label>
             <input
               type="text"
-              value={heroTitle}
+              value={ctaTitle}
               onChange={(e) => {
-                setHeroTitle(e.target.value);
+                setCtaTitle(e.target.value);
                 setSuccess(false);
               }}
-              placeholder="e.g. Building future mental health professionals and advocates"
+              placeholder="e.g. Take The Next Step - Schedule Your Appointment"
               className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors"
               required
             />
@@ -239,32 +222,67 @@ export function EditTrainingHeroForm({
 
           <div className="flex flex-col gap-1.5">
             <label className="font-semibold text-dark text-xs flex items-center justify-between">
-              <span>Hero Subtitle / Description Paragraph <span className="text-red-500">*</span></span>
-              <span className="text-[11px] text-light-ash font-normal">Supporting paragraph text</span>
+              <span>CTA Subtitle / Description Paragraph <span className="text-red-500">*</span></span>
+              <span className="text-[11px] text-light-ash font-normal">Supporting descriptive message</span>
             </label>
             <textarea
-              value={heroDescription}
+              value={ctaDescription}
               onChange={(e) => {
-                setHeroDescription(e.target.value);
+                setCtaDescription(e.target.value);
                 setSuccess(false);
               }}
               rows={3}
-              placeholder="Enter a descriptive overview of training programs offered..."
+              placeholder="Enter supporting paragraph for the CTA..."
               className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors resize-y min-h-22.5"
               required
             />
           </div>
+
+          {/* Button Text & Link */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark text-xs">
+                Button Label Text
+              </label>
+              <input
+                type="text"
+                value={ctaButtonText}
+                onChange={(e) => {
+                  setCtaButtonText(e.target.value);
+                  setSuccess(false);
+                }}
+                placeholder="e.g. Book an Appointment"
+                className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark text-xs">
+                Button Target Link / URL
+              </label>
+              <input
+                type="text"
+                value={ctaButtonHref}
+                onChange={(e) => {
+                  setCtaButtonHref(e.target.value);
+                  setSuccess(false);
+                }}
+                placeholder="e.g. /appointment"
+                className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-mono transition-colors"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Hero Background Image */}
+        {/* CTA Background Image */}
         <div className="flex flex-col gap-3 bg-light-ash/5 p-4 md:p-5 rounded-2xl border border-muted/70">
           <div className="flex items-center justify-between">
             <label className="font-semibold text-dark text-xs flex items-center gap-1.5">
               <HiPhoto className="w-4 h-4 text-primary" />
-              Hero Background Image <span className="text-red-500">*</span>
+              CTA Background Image <span className="text-red-500">*</span>
             </label>
             <span className="text-[11px] text-light-ash">
-              Recommended: <strong>1920×1080 px</strong> (16:9) • Max 10MB (.jpg, .png, .webp)
+              Recommended: <strong>1920×1080 px</strong> • Max 10MB (.jpg, .png, .webp)
             </span>
           </div>
 
@@ -275,7 +293,7 @@ export function EditTrainingHeroForm({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={previewUrl}
-                  alt={heroImageAlt || "Hero Preview"}
+                  alt={ctaImageAlt || "CTA Background Preview"}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -305,13 +323,13 @@ export function EditTrainingHeroForm({
                 <span className="text-xs font-medium text-dark">Or Image URL / Path</span>
                 <input
                   type="text"
-                  value={heroImage}
+                  value={ctaImage}
                   onChange={(e) => {
-                    setHeroImage(e.target.value);
+                    setCtaImage(e.target.value);
                     setPreviewUrl(e.target.value);
                     setSuccess(false);
                   }}
-                  placeholder="/training_hero.png or https://..."
+                  placeholder="/pages-hero-background/1.png or https://..."
                   className="w-full px-3.5 py-2 border border-muted rounded-xl bg-white focus:outline-none focus:border-primary text-xs font-mono"
                 />
               </div>
@@ -320,15 +338,46 @@ export function EditTrainingHeroForm({
                 <span className="text-xs font-medium text-dark">Image Alt Text (Accessibility & SEO)</span>
                 <input
                   type="text"
-                  value={heroImageAlt}
+                  value={ctaImageAlt}
                   onChange={(e) => {
-                    setHeroImageAlt(e.target.value);
+                    setCtaImageAlt(e.target.value);
                     setSuccess(false);
                   }}
-                  placeholder="Describe the image content for screen readers"
+                  placeholder="Describe background image for screen readers"
                   className="w-full px-3.5 py-2 border border-muted rounded-xl bg-white focus:outline-none focus:border-primary text-xs font-sans"
                 />
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Visual Preview Box */}
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-semibold text-dark">Live Layout Preview</span>
+          <div className="relative w-full rounded-2xl overflow-hidden py-12 px-6 flex items-center justify-center text-center shadow-xs">
+            {previewUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={previewUrl}
+                alt={ctaImageAlt || "Background"}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            )}
+            <div
+              className="absolute inset-0"
+              style={{ backgroundColor: "rgba(1, 30, 0, 0.73)" }}
+              aria-hidden="true"
+            />
+            <div className="relative z-10 max-w-xl flex flex-col items-center">
+              <h3 className="font-marcellus text-2xl md:text-3xl text-white font-medium mb-3">
+                {ctaTitle || DEFAULT_CTA.ctaTitle}
+              </h3>
+              <p className="font-sans text-xs md:text-sm text-white/90 mb-6 line-clamp-3">
+                {ctaDescription || DEFAULT_CTA.ctaDescription}
+              </p>
+              <span className="inline-block bg-white text-dark-green font-semibold text-xs px-5 py-2.5 rounded-xl shadow-sm">
+                {ctaButtonText || DEFAULT_CTA.ctaButtonText}
+              </span>
             </div>
           </div>
         </div>
@@ -338,11 +387,13 @@ export function EditTrainingHeroForm({
           <button
             type="button"
             onClick={() => {
-              setHeroTitle(initialContent?.heroTitle || DEFAULT_HERO.heroTitle);
-              setHeroDescription(initialContent?.heroDescription || DEFAULT_HERO.heroDescription);
-              setHeroImage(initialContent?.heroImage || DEFAULT_HERO.heroImage);
-              setPreviewUrl(initialContent?.heroImage || DEFAULT_HERO.heroImage);
-              setHeroImageAlt(initialContent?.heroImageAlt || DEFAULT_HERO.heroImageAlt);
+              setCtaTitle(initialContent?.ctaTitle || DEFAULT_CTA.ctaTitle);
+              setCtaDescription(initialContent?.ctaDescription || DEFAULT_CTA.ctaDescription);
+              setCtaImage(initialContent?.ctaImage || DEFAULT_CTA.ctaImage);
+              setPreviewUrl(initialContent?.ctaImage || DEFAULT_CTA.ctaImage);
+              setCtaImageAlt(initialContent?.ctaImageAlt || DEFAULT_CTA.ctaImageAlt);
+              setCtaButtonText(initialContent?.ctaButtonText || DEFAULT_CTA.ctaButtonText);
+              setCtaButtonHref(initialContent?.ctaButtonHref || DEFAULT_CTA.ctaButtonHref);
               setError(null);
               setSuccess(false);
             }}
@@ -370,7 +421,7 @@ export function EditTrainingHeroForm({
             ) : (
               <>
                 <HiCheck className="w-4 h-4" />
-                Save Hero Changes
+                Save CTA Changes
               </>
             )}
           </button>

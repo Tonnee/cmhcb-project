@@ -148,6 +148,15 @@ const TrainingApproachInputSchema = z.object({
   approachCtaHref: z.string().optional().default("#"),
 });
 
+const TrainingCtaInputSchema = z.object({
+  ctaTitle: z.string().min(1, "CTA Title is required"),
+  ctaDescription: z.string().min(1, "CTA Description is required"),
+  ctaImage: z.string().min(1, "CTA Background Image is required"),
+  ctaImageAlt: z.string().optional().default("Make an appointment background"),
+  ctaButtonText: z.string().optional().default("Book an Appointment"),
+  ctaButtonHref: z.string().optional().default("/appointment"),
+});
+
 const TherapistsPageInputSchema = z.object({
   heroTitle: z.string().min(1, "Hero Title is required"),
   heroDescription: z.string().min(1, "Hero Description is required"),
@@ -2087,6 +2096,62 @@ export async function upsertTrainingApproachAction(
       return { success: false, error: error.issues.map(e => e.message).join(", ") };
     }
     return { success: false, error: error.message || "Failed to save training approach content" };
+  }
+}
+
+export async function upsertTrainingCtaAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = TrainingCtaInputSchema.parse(data);
+
+    const existing = await prisma.trainingPageContent.findFirst();
+
+    const record = await prisma.trainingPageContent.upsert({
+      where: { id: existing?.id || "training-content" },
+      create: {
+        id: "training-content",
+        ctaTitle: validated.ctaTitle,
+        ctaDescription: validated.ctaDescription,
+        ctaImage: validated.ctaImage,
+        ctaImageAlt: validated.ctaImageAlt || "Make an appointment background",
+        ctaButtonText: validated.ctaButtonText || "Book an Appointment",
+        ctaButtonHref: validated.ctaButtonHref || "/appointment",
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        ctaTitle: validated.ctaTitle,
+        ctaDescription: validated.ctaDescription,
+        ctaImage: validated.ctaImage,
+        ctaImageAlt: validated.ctaImageAlt || "Make an appointment background",
+        ctaButtonText: validated.ctaButtonText || "Book an Appointment",
+        ctaButtonHref: validated.ctaButtonHref || "/appointment",
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "TrainingPageContent",
+      record.id,
+      "Training Page",
+      `Updated Training page Appointment CTA content`
+    );
+
+    revalidatePath("/training");
+    revalidatePath("/therapists");
+    revalidatePath("/admin/trainings");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertTrainingCtaAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map((e) => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save training CTA content" };
   }
 }
 
