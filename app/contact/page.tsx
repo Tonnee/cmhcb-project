@@ -46,6 +46,11 @@ export default async function ContactPage(): Promise<React.JSX.Element> {
   
   const mapEmbedUrl = dbContent?.mapEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.810573934375!2d90.3907579!3d23.7541819!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7793b5847e7%3A0xa64aa8a96677f40d!2sTejgaon%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1689200000000!5m2!1sen!2sbd";
 
+  const heroTitle = dbContent?.heroTitle || "Contact Us";
+  const heroDescription = dbContent?.heroDescription || "We'd love to hear from you. Please reach out with any questions or inquiries.";
+  const heroImage = dbContent?.heroImage || "/hero-image/contact-us-banner.png";
+  const heroImageAlt = dbContent?.heroImageAlt || "Contact Center for Mental Health and Care Bangladesh";
+
   const breadcrumbs = [
     { label: "Home", href: "/" },
   ];
@@ -70,9 +75,10 @@ export default async function ContactPage(): Promise<React.JSX.Element> {
       <PageHero
         breadcrumbs={breadcrumbs}
         currentPage="Contact Us"
-        title="Contact Us"
-        description="We'd love to hear from you. Please reach out with any questions or inquiries."
-        imageSrc="/hero-image/contact-us-banner.png"
+        title={heroTitle}
+        description={heroDescription}
+        imageSrc={heroImage}
+        imageAlt={heroImageAlt}
       />
 
       <Container className="py-16 md:py-24">

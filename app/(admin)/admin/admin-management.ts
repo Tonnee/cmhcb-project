@@ -92,7 +92,7 @@ export async function logActivity(
   adminEmail: string,
   adminName: string,
   action: "CREATE" | "UPDATE" | "DELETE" | "BLOCK" | "UNBLOCK" | "UPDATE_CREDENTIALS" | "CREATE_ADMIN",
-  targetType: "BlogPost" | "Service" | "Therapist" | "Workshop" | "LandingPageContent" | "AdminProfile" | "ServiceInfoBlock" | "ServicesPageContent" | "Training" | "TrainingInfoBlock" | "TrainingPageContent" | "TherapistsPageContent" | "AboutPageContent" | "ContactPageContent" | "FaqPageContent" | "PolicyPageContent" | "AffiliationPageContent" | "Testimonial" | "SupportPageContent" | "CommunityServicePageContent" | "GalleryItem" | "Appointment" | "TrainingRequest" | "WorkshopRegistration",
+  targetType: "BlogPost" | "Service" | "Therapist" | "Workshop" | "LandingPageContent" | "AdminProfile" | "ServiceInfoBlock" | "ServicesPageContent" | "Training" | "TrainingInfoBlock" | "TrainingPageContent" | "TherapistsPageContent" | "AboutPageContent" | "ContactPageContent" | "FaqPageContent" | "PolicyPageContent" | "AffiliationPageContent" | "Testimonial" | "SupportPageContent" | "CommunityServicePageContent" | "GalleryItem" | "Appointment" | "TrainingRequest" | "WorkshopRegistration" | "SuccessStoriesPageContent",
   targetId: string,
   targetName: string,
   details?: string

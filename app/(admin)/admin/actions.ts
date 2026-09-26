@@ -93,6 +93,10 @@ const AboutPageInputSchema = z.object({
 });
 
 const ContactPageInputSchema = z.object({
+  heroTitle: z.string().optional().default("Contact Us"),
+  heroDescription: z.string().optional().default("We'd love to hear from you. Please reach out with any questions or inquiries."),
+  heroImage: z.string().optional().default("/hero-image/contact-us-banner.png"),
+  heroImageAlt: z.string().optional().default("Contact Center for Mental Health and Care Bangladesh"),
   phone: z.string().min(1, "Phone is required"),
   email: z.string().min(1, "Email is required"),
   addressLine1: z.string().min(1, "Address Line 1 is required"),
@@ -103,6 +107,15 @@ const ContactPageInputSchema = z.object({
   twitterUrl: z.string().default("#"),
   linkedinUrl: z.string().default("#"),
   mapEmbedUrl: z.string().min(1, "Map Embed URL is required"),
+});
+
+const SuccessStoriesHeroInputSchema = z.object({
+  heroTitle: z.string().min(1, "Hero Title is required"),
+  heroDescription: z.string().min(1, "Hero Description is required"),
+  heroImage: z.string().min(1, "Hero Image is required"),
+  heroImageAlt: z.string().optional().default("A happy client sharing their successful journey with CMHCB"),
+  ctaLabel: z.string().optional().default("Read Stories"),
+  ctaHref: z.string().optional().default("#stories"),
 });
 
 const FaqPageInputSchema = z.object({
@@ -1762,6 +1775,10 @@ export async function upsertContactPageContentAction(
       where: { id: existing?.id || "contact-content" },
       create: {
         id: "contact-content",
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        heroImageAlt: validated.heroImageAlt,
         phone: validated.phone,
         email: validated.email,
         addressLine1: validated.addressLine1,
@@ -1775,6 +1792,10 @@ export async function upsertContactPageContentAction(
         lastUpdatedBy: admin.email,
       },
       update: {
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        heroImageAlt: validated.heroImageAlt,
         phone: validated.phone,
         email: validated.email,
         addressLine1: validated.addressLine1,
@@ -1801,6 +1822,7 @@ export async function upsertContactPageContentAction(
     );
 
     revalidatePath("/contact");
+    revalidatePath("/admin/pages/contact");
     return { success: true, data: record };
   } catch (error: any) {
     console.error("Error in upsertContactPageContentAction:", error);
@@ -2482,6 +2504,71 @@ export async function reorderTestimonialsAction(
   } catch (error: any) {
     console.error("Error in reorderTestimonialsAction:", error);
     return { success: false, error: error.message || "Failed to reorder success stories" };
+  }
+}
+
+export async function getSuccessStoriesPageContentAction(): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await prisma.successStoriesPageContent.findFirst();
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getSuccessStoriesPageContentAction:", error);
+    return { success: false, error: error.message || "Failed to fetch success stories page content" };
+  }
+}
+
+export async function upsertSuccessStoriesHeroAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = SuccessStoriesHeroInputSchema.parse(data);
+
+    const existing = await prisma.successStoriesPageContent.findFirst();
+
+    const record = await prisma.successStoriesPageContent.upsert({
+      where: { id: existing?.id || "success-stories-content" },
+      create: {
+        id: "success-stories-content",
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        heroImageAlt: validated.heroImageAlt || "A happy client sharing their successful journey with CMHCB",
+        ctaLabel: validated.ctaLabel || "Read Stories",
+        ctaHref: validated.ctaHref || "#stories",
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        heroTitle: validated.heroTitle,
+        heroDescription: validated.heroDescription,
+        heroImage: validated.heroImage,
+        heroImageAlt: validated.heroImageAlt || "A happy client sharing their successful journey with CMHCB",
+        ctaLabel: validated.ctaLabel || "Read Stories",
+        ctaHref: validated.ctaHref || "#stories",
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "SuccessStoriesPageContent",
+      record.id,
+      "Success Stories Page",
+      `Updated Success Stories page hero content`
+    );
+
+    revalidatePath("/success-stories");
+    revalidatePath("/admin/pages/success-stories");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertSuccessStoriesHeroAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save success stories hero content" };
   }
 }
 

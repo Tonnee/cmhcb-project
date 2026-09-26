@@ -12,13 +12,19 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminSuccessStoriesPage(): Promise<React.JSX.Element> {
-  const stories = await prisma.testimonial.findMany({
-    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-  });
+  const [stories, pageContent] = await Promise.all([
+    prisma.testimonial.findMany({
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    }),
+    prisma.successStoriesPageContent.findFirst(),
+  ]);
 
   return (
     <div className="flex flex-col gap-8">
-      <SuccessStoriesClientWrapper initialStories={stories} />
+      <SuccessStoriesClientWrapper
+        initialStories={stories}
+        initialPageContent={pageContent}
+      />
     </div>
   );
 }

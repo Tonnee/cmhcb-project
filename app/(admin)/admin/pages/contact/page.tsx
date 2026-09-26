@@ -16,6 +16,10 @@ export default async function AdminContactPage(): Promise<React.JSX.Element> {
 
   const defaultContent = {
     id: "contact-content",
+    heroTitle: "Contact Us",
+    heroDescription: "We'd love to hear from you. Please reach out with any questions or inquiries.",
+    heroImage: "/hero-image/contact-us-banner.png",
+    heroImageAlt: "Contact Center for Mental Health and Care Bangladesh",
     phone: "+880 1974-349569",
     email: "info@cmhcbd.com",
     addressLine1: "CMHC Office Room, 78/2 (2nd Floor)",

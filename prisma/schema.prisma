@@ -317,20 +317,24 @@ model AboutPageContent {
 }
 
 model ContactPageContent {
-  id            String   @id @default("contact-content")
-  phone         String   @default("+880 1974-349569")
-  email         String   @default("info@cmhcbd.com")
-  addressLine1  String   @default("CMHC Office Room, 78/2 (2nd Floor)")
-  addressLine2  String   @default("New Airport Road, Tejkunipara")
-  addressLine3  String   @default("Tejgoan, Dhaka-1212")
-  facebookUrl   String   @default("#")
-  instagramUrl  String   @default("#")
-  twitterUrl    String   @default("#")
-  linkedinUrl   String   @default("#")
-  mapEmbedUrl   String   @default("https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.810573934375!2d90.3907579!3d23.7541819!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7793b5847e7%3A0xa64aa8a96677f40d!2sTejgaon%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1689200000000!5m2!1sen!2sbd")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  lastUpdatedBy String?
+  id              String   @id @default("contact-content")
+  heroTitle       String?  @default("Contact Us")
+  heroDescription String?  @default("We'd love to hear from you. Please reach out with any questions or inquiries.")
+  heroImage       String?  @default("/hero-image/contact-us-banner.png")
+  heroImageAlt    String?  @default("Contact Center for Mental Health and Care Bangladesh")
+  phone           String   @default("+880 1974-349569")
+  email           String   @default("info@cmhcbd.com")
+  addressLine1    String   @default("CMHC Office Room, 78/2 (2nd Floor)")
+  addressLine2    String   @default("New Airport Road, Tejkunipara")
+  addressLine3    String   @default("Tejgoan, Dhaka-1212")
+  facebookUrl     String   @default("#")
+  instagramUrl    String   @default("#")
+  twitterUrl      String   @default("#")
+  linkedinUrl     String   @default("#")
+  mapEmbedUrl     String   @default("https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.810573934375!2d90.3907579!3d23.7541819!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7793b5847e7%3A0xa64aa8a96677f40d!2sTejgaon%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1689200000000!5m2!1sen!2sbd")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUpdatedBy   String?
 }
 
 model FaqPageContent {
@@ -462,5 +466,18 @@ model WorkshopRegistration {
   status        String   @default("PENDING") // "PENDING", "APPROVED", "REJECTED", "CANCELLED"
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model SuccessStoriesPageContent {
+  id              String   @id @default("success-stories-content")
+  heroTitle       String   @default("Real experiences, real impact")
+  heroDescription String   @default("Our clients share their journeys of transformation — honest reflections on the care, empathy, and support they received at CMHCB. Read how mental health care has empowered them to reclaim their lives.")
+  heroImage       String   @default("/home-review/mental-health-therapy-client-woman.png")
+  heroImageAlt    String   @default("A happy client sharing their successful journey with CMHCB")
+  ctaLabel        String   @default("Read Stories")
+  ctaHref         String   @default("#stories")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUpdatedBy   String?
 }
 

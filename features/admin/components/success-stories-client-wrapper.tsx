@@ -12,6 +12,7 @@ import {
 } from "react-icons/hi2";
 import { EditTestimonialForm } from "./edit-testimonial-form";
 import { deleteTestimonialAction, reorderTestimonialsAction } from "@/app/(admin)/admin/actions";
+import { EditSuccessStoriesHeroForm, type SuccessStoriesPageContentDB } from "./edit-success-stories-hero-form";
 import { useRouter } from "next/navigation";
 
 interface TestimonialDB {
@@ -27,12 +28,15 @@ interface TestimonialDB {
 
 interface SuccessStoriesClientWrapperProps {
   initialStories: TestimonialDB[];
+  initialPageContent?: SuccessStoriesPageContentDB | null;
 }
 
 export function SuccessStoriesClientWrapper({
   initialStories,
+  initialPageContent,
 }: SuccessStoriesClientWrapperProps): React.JSX.Element {
   const router = useRouter();
+  const [activeTab, setActiveTab] = React.useState<"hero" | "stories">("stories");
   const [stories, setStories] = React.useState<TestimonialDB[]>(initialStories);
   const [selectedStory, setSelectedStory] = React.useState<TestimonialDB | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -159,23 +163,56 @@ export function SuccessStoriesClientWrapper({
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {isReordering && (
-            <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-primary/10 text-primary-dark border border-primary/20 animate-pulse">
-              Saving order...
-            </span>
+          {activeTab === "stories" && (
+            <>
+              {isReordering && (
+                <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-primary/10 text-primary-dark border border-primary/20 animate-pulse">
+                  Saving order...
+                </span>
+              )}
+              <button
+                onClick={handleAddClick}
+                className="bg-primary hover:bg-primary-dark text-white font-sans text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors duration-200 flex items-center gap-2 cursor-pointer"
+              >
+                <PlusIcon className="w-4 h-4" />
+                Add Success Story
+              </button>
+            </>
           )}
-          <button
-            onClick={handleAddClick}
-            className="bg-primary hover:bg-primary-dark text-white font-sans text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors duration-200 flex items-center gap-2 cursor-pointer"
-          >
-            <PlusIcon className="w-4 h-4" />
-            Add Success Story
-          </button>
         </div>
       </div>
 
-      {/* Stories Table */}
-      <div className="bg-white border border-muted rounded-2xl shadow-xs overflow-hidden">
+      {/* Tabs */}
+      <div className="flex border-b border-muted/50 -mt-2">
+        <button
+          onClick={() => setActiveTab("hero")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "hero"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Hero Section
+        </button>
+        <button
+          onClick={() => setActiveTab("stories")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "stories"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Success Stories Directory ({stories.length})
+        </button>
+      </div>
+
+      {activeTab === "hero" && (
+        <EditSuccessStoriesHeroForm initialContent={initialPageContent} />
+      )}
+
+      {activeTab === "stories" && (
+        /* Stories Table */
+        <div className="bg-white border border-muted rounded-2xl shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse font-sans">
             <thead>
@@ -285,6 +322,7 @@ export function SuccessStoriesClientWrapper({
           </table>
         </div>
       </div>
+      )}
 
       {/* Modal Dialog */}
       {isModalOpen && (

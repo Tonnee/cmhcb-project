@@ -2,10 +2,15 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { uploadImageToSupabase } from "@/lib/supabase";
 import { upsertContactPageContentAction } from "@/app/(admin)/admin/actions";
 
 interface ContactPageContent {
   id: string;
+  heroTitle?: string | null;
+  heroDescription?: string | null;
+  heroImage?: string | null;
+  heroImageAlt?: string | null;
   phone: string;
   email: string;
   addressLine1: string;
@@ -29,6 +34,22 @@ export default function EditContactPageForm({
 }: EditContactPageFormProps): React.JSX.Element {
   const router = useRouter();
 
+  const [heroTitle, setHeroTitle] = React.useState(initialContent.heroTitle || "Contact Us");
+  const [heroDescription, setHeroDescription] = React.useState(
+    initialContent.heroDescription || "We'd love to hear from you. Please reach out with any questions or inquiries."
+  );
+  const [heroImage, setHeroImage] = React.useState(
+    initialContent.heroImage || "/hero-image/contact-us-banner.png"
+  );
+  const [heroImageAlt, setHeroImageAlt] = React.useState(
+    initialContent.heroImageAlt || "Contact Center for Mental Health and Care Bangladesh"
+  );
+  const [previewUrl, setPreviewUrl] = React.useState(
+    initialContent.heroImage || "/hero-image/contact-us-banner.png"
+  );
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
+  const [isUploading, setIsUploading] = React.useState(false);
+
   const [phone, setPhone] = React.useState(initialContent.phone);
   const [email, setEmail] = React.useState(initialContent.email);
   const [addressLine1, setAddressLine1] = React.useState(initialContent.addressLine1);
@@ -46,6 +67,27 @@ export default function EditContactPageForm({
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
 
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setPendingFile(file);
+    const localPreview = URL.createObjectURL(file);
+    setPreviewUrl(localPreview);
+
+    setIsUploading(true);
+    setError(null);
+    try {
+      const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
+      setHeroImage(publicUrl);
+      setPreviewUrl(publicUrl);
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload hero image.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -55,7 +97,28 @@ export default function EditContactPageForm({
     setSuccess(false);
 
     try {
+      let finalHeroImage = heroImage;
+      if (pendingFile && (!finalHeroImage || finalHeroImage.startsWith("blob:"))) {
+        setIsUploading(true);
+        try {
+          finalHeroImage = await uploadImageToSupabase(pendingFile, "cmhcb-media");
+          setHeroImage(finalHeroImage);
+          setPreviewUrl(finalHeroImage);
+        } catch {
+          setError("Failed to upload hero image.");
+          setIsSubmitting(false);
+          setIsUploading(false);
+          return;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
       const res = await upsertContactPageContentAction({
+        heroTitle,
+        heroDescription,
+        heroImage: finalHeroImage,
+        heroImageAlt,
         phone,
         email,
         addressLine1,
@@ -100,6 +163,71 @@ export default function EditContactPageForm({
           {error}
         </div>
       )}
+
+      {/* Hero Section Banner */}
+      <div className="flex flex-col gap-4 border-b border-muted/80 pb-6">
+        <h2 className="font-marcellus text-lg font-bold text-dark-green">Hero Section Banner</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Hero Title</label>
+            <input
+              type="text"
+              value={heroTitle}
+              onChange={(e) => setHeroTitle(e.target.value)}
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Hero Image Alt Text</label>
+            <input
+              type="text"
+              value={heroImageAlt}
+              onChange={(e) => setHeroImageAlt(e.target.value)}
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans"
+              placeholder="e.g. Contact Center for Mental Health and Care Bangladesh"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="font-semibold text-dark text-xs">Hero Description</label>
+          <textarea
+            value={heroDescription}
+            onChange={(e) => setHeroDescription(e.target.value)}
+            className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans h-20 resize-none"
+            required
+          />
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50 mt-2">
+          {(previewUrl || heroImage) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={previewUrl || heroImage}
+              alt="Hero Preview"
+              className="w-full md:w-48 max-h-32 object-cover rounded-xl border border-muted"
+            />
+          )}
+          <div className="flex-1 flex flex-col gap-1">
+            <span className="font-semibold text-dark text-xs">Hero Background Image</span>
+            <span className="text-[11px] text-light-ash">
+              Recommended: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)
+            </span>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleImageChange}
+              className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash mt-0.5"
+              disabled={isUploading}
+            />
+          </div>
+          {isUploading && (
+            <span className="text-xs text-primary font-medium animate-pulse">Uploading image...</span>
+          )}
+        </div>
+      </div>
 
       {/* Main details */}
       <div className="flex flex-col gap-4 border-b border-muted/80 pb-6">

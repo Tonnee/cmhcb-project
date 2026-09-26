@@ -25,17 +25,41 @@ export default async function SuccessStoriesPage(): Promise<React.JSX.Element> {
   }
 
   let testimonials: Testimonial[] = [];
+  let pageContent: {
+    heroTitle?: string;
+    heroDescription?: string;
+    heroImage?: string;
+    heroImageAlt?: string | null;
+    ctaLabel?: string | null;
+    ctaHref?: string | null;
+  } | null = null;
+
   try {
-    const dbTestimonials = await prisma.testimonial.findMany({
-      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-    });
+    const [dbTestimonials, dbPageContent] = await Promise.all([
+      prisma.testimonial.findMany({
+        orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+      }),
+      prisma.successStoriesPageContent.findFirst(),
+    ]);
+
     if (dbTestimonials && dbTestimonials.length > 0) {
       testimonials = dbTestimonials as Testimonial[];
     }
+    pageContent = dbPageContent;
   } catch (error) {
-    console.error("Failed to fetch testimonials from database:", error);
+    console.error("Failed to fetch testimonials/content from database:", error);
     testimonials = TESTIMONIALS;
   }
+
+  const heroTitle = pageContent?.heroTitle || "Real experiences, real impact";
+  const heroDescription =
+    pageContent?.heroDescription ||
+    "Our clients share their journeys of transformation — honest reflections on the care, empathy, and support they received at CMHCB. Read how mental health care has empowered them to reclaim their lives.";
+  const heroImage = pageContent?.heroImage || "/home-review/mental-health-therapy-client-woman.png";
+  const heroImageAlt =
+    pageContent?.heroImageAlt || "A happy client sharing their successful journey with CMHCB";
+  const ctaLabel = pageContent?.ctaLabel || "Read Stories";
+  const ctaHref = pageContent?.ctaHref || "#stories";
 
   return (
     <main>
@@ -59,12 +83,12 @@ export default async function SuccessStoriesPage(): Promise<React.JSX.Element> {
           { label: "Home", href: "/" },
         ]}
         currentPage="Success Stories"
-        title="Real experiences, real impact"
-        description="Our clients share their journeys of transformation — honest reflections on the care, empathy, and support they received at CMHCB. Read how mental health care has empowered them to reclaim their lives."
-        imageSrc="/home-review/mental-health-therapy-client-woman.png"
-        imageAlt="A happy client sharing their successful journey with CMHCB"
-        ctaLabel="Read Stories"
-        ctaHref="#stories"
+        title={heroTitle}
+        description={heroDescription}
+        imageSrc={heroImage}
+        imageAlt={heroImageAlt}
+        ctaLabel={ctaLabel}
+        ctaHref={ctaHref}
       />
       <AllSuccessStories testimonials={testimonials} />
     </main>
