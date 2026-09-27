@@ -17,7 +17,7 @@ const SOCIAL_PLATFORM_ICONS: Record<string, React.JSX.Element> = {
   whatsapp: <FaWhatsapp className="w-4 h-4" />,
 };
 
-interface LandingPageContentDB {
+export interface LandingPageContentDB {
   id: string;
   heroHeadline: string;
   heroSubtitle: string;

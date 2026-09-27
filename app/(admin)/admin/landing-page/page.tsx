@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
-import EditLandingPageForm from "@/features/admin/components/edit-landing-page-form";
+import EditLandingPageForm, { type LandingPageContentDB } from "@/features/admin/components/edit-landing-page-form";
 import { DEFAULT_FOOTER_SOCIALS, CONTACT_INFO } from "@/data/footer";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export const revalidate = 0;
 
 export default async function AdminLandingPage(): Promise<React.JSX.Element> {
   // Query dynamic database content
-  const landingContent = await prisma.landingPageContent.findFirst();
+  const landingContent = (await prisma.landingPageContent.findFirst()) as (LandingPageContentDB | null);
 
   // Fallbacks if database not seeded
   const defaultContent = {
