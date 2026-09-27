@@ -60,17 +60,19 @@ interface BenefitItem {
 
 interface AffiliationBenefitsProps {
   benefits?: BenefitItem[];
+  title?: string;
+  subtitle?: string;
 }
 
-export default function AffiliationBenefits({ benefits }: AffiliationBenefitsProps): React.JSX.Element {
+export default function AffiliationBenefits({ benefits, title, subtitle }: AffiliationBenefitsProps): React.JSX.Element {
   const displayBenefits = benefits && benefits.length > 0 ? benefits : DEFAULT_BENEFITS;
 
   return (
     <section className="py-20 md:py-24 bg-page-bg">
       <Container>
         <SectionHeading
-          subtitle="Partnership Benefits"
-          title={<>Why Affiliate <span className="text-primary-dark">with Us?</span></>}
+          subtitle={subtitle || "Partnership Benefits"}
+          title={title ? title : <>Why Affiliate <span className="text-primary-dark">with Us?</span></>}
           className="mb-16"
         />
 

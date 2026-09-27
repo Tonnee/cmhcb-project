@@ -11,6 +11,8 @@ interface ContactPageContent {
   heroDescription?: string | null;
   heroImage?: string | null;
   heroImageAlt?: string | null;
+  detailsTitle?: string | null;
+  detailsDescription?: string | null;
   phone: string;
   email: string;
   addressLine1: string;
@@ -46,6 +48,10 @@ export default function EditContactPageForm({
   );
   const [previewUrl, setPreviewUrl] = React.useState(
     initialContent.heroImage || "/hero-image/contact-us-banner.png"
+  );
+  const [detailsTitle, setDetailsTitle] = React.useState(initialContent.detailsTitle || "Get in Touch");
+  const [detailsDescription, setDetailsDescription] = React.useState(
+    initialContent.detailsDescription || "Whether you have a question about our services, need assistance, or just want to talk, we are here for you. Reach out to us through any of the channels below."
   );
   const [pendingFile, setPendingFile] = React.useState<File | null>(null);
   const [isUploading, setIsUploading] = React.useState(false);
@@ -119,6 +125,8 @@ export default function EditContactPageForm({
         heroDescription,
         heroImage: finalHeroImage,
         heroImageAlt,
+        detailsTitle,
+        detailsDescription,
         phone,
         email,
         addressLine1,
@@ -226,6 +234,32 @@ export default function EditContactPageForm({
           {isUploading && (
             <span className="text-xs text-primary font-medium animate-pulse">Uploading image...</span>
           )}
+        </div>
+      </div>
+
+      {/* Section Heading & Subtitle */}
+      <div className="flex flex-col gap-4 border-b border-muted/80 pb-6">
+        <h2 className="font-marcellus text-lg font-bold text-dark-green">Get in Touch Section Heading</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Heading</label>
+            <input
+              type="text"
+              value={detailsTitle}
+              onChange={(e) => setDetailsTitle(e.target.value)}
+              placeholder="Get in Touch"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Description</label>
+            <textarea
+              value={detailsDescription}
+              onChange={(e) => setDetailsDescription(e.target.value)}
+              placeholder="Whether you have a question about our services, need assistance, or just want to talk, we are here for you..."
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans h-20 resize-none"
+            />
+          </div>
         </div>
       </div>
 

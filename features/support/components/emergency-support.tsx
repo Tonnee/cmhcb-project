@@ -55,11 +55,15 @@ interface ContactInput {
 interface EmergencySupportProps {
   initialContacts?: string;
   initialAdvisoryText?: string;
+  title?: string;
+  subtitle?: string;
 }
 
 export function EmergencySupport({
   initialContacts,
   initialAdvisoryText,
+  title,
+  subtitle,
 }: EmergencySupportProps): React.JSX.Element {
   const contactsList = React.useMemo(() => {
     if (initialContacts) {
@@ -87,8 +91,8 @@ export function EmergencySupport({
     <section className="py-20 md:py-28 bg-page-bg">
       <Container>
         <SectionHeading
-          title="Emergency Helplines"
-          subtitle="Immediate Assistance"
+          title={title || "Emergency Helplines"}
+          subtitle={subtitle || "Immediate Assistance"}
           align="center"
           className="mb-16"
         />

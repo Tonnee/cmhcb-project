@@ -42,11 +42,63 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
       "Click 'Save Changes' at the bottom right. The live homepage updates immediately.",
     ],
     proTips: [
-      "Wrap key words in <span class=\"text-accent\">Word</span> to highlight them in warm gold.",
-      "Wrap key words in <span class=\"text-primary\">Word</span> to highlight them in dark green.",
+      'Wrap key words in <span class="text-accent">Word</span> to highlight them in warm gold.',
+      'Wrap key words in <span class="text-primary">Word</span> to highlight them in dark green.',
     ],
     previewImage: "/hero-image/hero-bg.png",
     imageCaption: "Homepage Hero Section: background wallpaper and foreground counselor artwork.",
+  },
+  {
+    id: "landing-section-headings",
+    title: "Homepage Section Headings & Subtitles",
+    category: "landing",
+    isEditable: true,
+    livePage: { name: "Homepage Sections", url: "/" },
+    adminPath: "/admin/landing-page",
+    summary:
+      "Configure the section headings, badges/subtitles, and calendar descriptions across the Homepage for Services, Therapists, Upcoming Events, and Guide sections.",
+    fields: [
+      "Services Section: Title & Subtitle Badge",
+      "Therapists Section: Title & Subtitle Badge",
+      "Upcoming Events Section: Title, Subtitle Badge & Annual Event Calendar Paragraph",
+      "Guide Section: Title & Subtitle Badge",
+    ],
+    steps: [
+      "Navigate to Admin Dashboard > 'Landing Page'.",
+      "Scroll to the 'Homepage Section Headings' card.",
+      "Customize the titles, badges, and the annual calendar narrative for upcoming events.",
+      "Click 'Save Changes' to update the homepage section headings instantly.",
+    ],
+    proTips: [
+      "You can enter HTML in titles (e.g., using <span class='text-primary-dark'>word</span>) to emphasize branded accent words.",
+    ],
+    previewImage: "/understanding-anxiety-workshop-event.png",
+    imageCaption: "Homepage section headings customized dynamically via the admin panel.",
+  },
+  {
+    id: "landing-about-teaser",
+    title: "Homepage 'About' Mission Statement with Inline Badges",
+    category: "landing",
+    adminPath: "/admin/landing-page",
+    isEditable: true,
+    livePage: { name: "Homepage (About Teaser)", url: "/#about" },
+    summary:
+      "The mission sentence on the homepage: 'We connect licensed therapists [therapist], mental health programs [brain], and personalized care [heart] services...'.",
+    fields: [
+      "Mission statement text with inline badge token placeholders ([therapist], [brain], [heart], [client], [chart])",
+      "Therapist portrait badge avatar upload",
+      "Client portrait badge avatar upload",
+    ],
+    steps: [
+      "Navigate to Admin Portal > 'Landing Page'.",
+      "Scroll to the 'About Mission Statement & Badges' section right below the Hero Banner.",
+      "Edit the statement or insert badge tokens ([therapist], [brain], [heart], [client], [chart]) using the quick badge pills.",
+      "Upload new square avatars for the therapist or client badges if desired.",
+      "Click 'Save Changes' at the top or bottom of the form.",
+    ],
+    codeLocation: "features/home/components/about.tsx",
+    previewImage: "/home-about-image/licensed-mental-health-therapist.png",
+    imageCaption: "Homepage inline badges highlighting therapists, programs, and care icons.",
   },
   {
     id: "landing-wellbeing",
@@ -64,6 +116,7 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
       "Happy Clients Count (e.g., 1500+)",
       "Sessions Completed Count (e.g., 2800+)",
       "Satisfaction Rate Percentage (e.g., 94%)",
+      "Optional Feature Banner Image",
     ],
     steps: [
       "Navigate to Admin Dashboard > 'Landing Page'.",
@@ -76,6 +129,30 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
     ],
     previewImage: "/home-service-images/well-being-bg.png",
     imageCaption: "Well-Being Section: Mission statement and four key performance statistics.",
+  },
+  {
+    id: "landing-guide",
+    title: "Homepage 'Guide' Section (Pathway Toward Well-Being)",
+    category: "landing",
+    isEditable: true,
+    livePage: { name: "Homepage (Middle Section)", url: "/#guide" },
+    adminPath: "/admin/landing-page",
+    summary:
+      "The 'Guiding You Toward Mental Well-Being' feature section on the homepage containing counseling highlights, customizable section title, subtitle badge, and appointment booking CTA.",
+    fields: [
+      "Guide Section Title",
+      "Guide Section Subtitle Badge",
+      "Counselor desk visual artwork",
+      "Direct 'Book Appointment' link",
+    ],
+    steps: [
+      "Open Admin Dashboard > 'Landing Page'.",
+      "Locate the 'Homepage Section Headings' card and find the Guide Section inputs.",
+      "Update the section title or badge to match current campaign messaging.",
+      "Click 'Save Changes' to update the live homepage.",
+    ],
+    previewImage: "/compassionate-mental-health-professional.png",
+    imageCaption: "Homepage Guide Section highlighting therapeutic guidance and appointment access.",
   },
   {
     id: "landing-training-cta",
@@ -181,6 +258,35 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
     previewImage: "/mental-health-services-bangladesh.jpg",
     imageCaption: "Services page showcasing psychotherapy specialties and consultation offerings.",
   },
+  {
+    id: "page-services",
+    title: "Services Catalog Page Header & Section Title",
+    category: "pages",
+    isEditable: true,
+    livePage: { name: "Services Catalog (/services)", url: "/services" },
+    adminPath: "/admin/pages/services",
+    summary:
+      "Customize the primary hero banner, title, subtitle description, hero background photo, and the catalog section title on the main Services page.",
+    fields: [
+      "Hero Section Title & Hero Description",
+      "Hero Background Image Upload",
+      "Catalog Section Title (e.g. 'All Services')",
+    ],
+    imageSpecs: {
+      recommendedDimensions: "1920 x 1080 px",
+      aspectRatio: "16:9",
+      format: "PNG, WebP, or JPG",
+      maxFileSize: "< 5 MB",
+    },
+    steps: [
+      "Go to Admin Dashboard > 'Other Pages' > 'Services'.",
+      "Update the Hero Title, Hero Description, or Catalog Section Heading.",
+      "Upload a new high-resolution hero background image if needed.",
+      "Click 'Save Services Page Content'.",
+    ],
+    previewImage: "/mental-health-services-bangladesh.jpg",
+    imageCaption: "Services page hero banner and dynamic catalog section heading.",
+  },
 
   // ---------------------------------------------------------------------------
   // 3. Training Programs (Editable)
@@ -220,6 +326,35 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
     ],
     previewImage: "/training_hero.png",
     imageCaption: "Training course page with syllabus modules, trainer bios, and registration links.",
+  },
+  {
+    id: "page-training",
+    title: "Trainings Catalog Page Header & Section Title",
+    category: "pages",
+    isEditable: true,
+    livePage: { name: "Trainings (/training)", url: "/training" },
+    adminPath: "/admin/pages/training",
+    summary:
+      "Configure the main Training catalog hero banner, overview description, background artwork, and the catalog section title.",
+    fields: [
+      "Hero Section Title & Hero Description",
+      "Hero Background Image Upload",
+      "Catalog Section Title (e.g. 'All Training Programs')",
+    ],
+    imageSpecs: {
+      recommendedDimensions: "1920 x 1080 px",
+      aspectRatio: "16:9",
+      format: "PNG, WebP, or JPG",
+      maxFileSize: "< 5 MB",
+    },
+    steps: [
+      "Navigate to Admin Dashboard > 'Other Pages' > 'Training'.",
+      "Adjust the training overview text and the catalog section title.",
+      "Upload a new hero background photo.",
+      "Click 'Save Training Page Content'.",
+    ],
+    previewImage: "/training_hero.png",
+    imageCaption: "Main trainings catalog header and section heading editor.",
   },
 
   // ---------------------------------------------------------------------------
@@ -341,7 +476,7 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
   },
 
   // ---------------------------------------------------------------------------
-  // 7. Appointments & Inquiries (Editable/Interactive)
+  // 7. Appointments & Training Inquiries (Editable/Interactive)
   // ---------------------------------------------------------------------------
   {
     id: "appointments-manager",
@@ -369,64 +504,67 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
     previewImage: "/hero-image/psychotherapy-counseling-session.png",
     imageCaption: "Admin appointments portal with filterable status tabs and patient intake cards.",
   },
+  {
+    id: "training-requests-manager",
+    title: "Training Course Applications & Trainee Intake",
+    category: "trainings",
+    isEditable: true,
+    livePage: { name: "Training Applications", url: "/training" },
+    adminPath: "/admin/training-requests",
+    summary:
+      "Track, approve, or update trainee applications submitted across all professional mental health certification courses.",
+    fields: [
+      "Applicant Name, Phone Number & Email",
+      "Selected Training Program Course",
+      "Educational Background & Profession",
+      "Application Status (PENDING, APPROVED, REJECTED, CANCELLED)",
+      "Submission Timestamp & Internal Notes",
+    ],
+    steps: [
+      "Navigate to Admin Dashboard > 'Training Requests'.",
+      "Filter requests by course or status.",
+      "Click to expand an application to examine professional credentials.",
+      "Update status to 'Approved' upon verifying tuition payment or enrollment eligibility.",
+    ],
+    previewImage: "/training_hero.png",
+    imageCaption: "Admin training requests workspace with status toggles and applicant profiles.",
+  },
 
   // ---------------------------------------------------------------------------
   // 8. Other Static Pages Content (Editable via Admin)
   // ---------------------------------------------------------------------------
   {
     id: "page-about",
-    title: "About Us Page (Mission, Vision & Core Values)",
+    title: "About Us Page (Mission, Vision, Values & Feature Photos)",
     category: "pages",
     isEditable: true,
     livePage: { name: "About Us (/about)", url: "/about" },
     adminPath: "/admin/pages/about",
     summary:
-      "Customizes the dedicated About Us page hero title, institutional narrative, Mission statement, Vision statement, and the 3 core values.",
+      "Full administrator control over the About Us page: Hero banner, Mission statement & dedicated photo, Vision statement & dedicated photo, and Core Values heading, subtitle, description, and list.",
     fields: [
-      "About Hero Title & Hero Description",
-      "About Hero Photograph",
-      "Mission Statement Title & Body",
-      "Vision Statement Title & Body",
-      "Core Values List (Title, Description, and Icon)",
+      "About Hero Title, Description & Hero Background Image",
+      "Mission & Vision Section: Title & Subtitle Badge",
+      "Mission Statement: Title, Narrative Text & Dedicated Mission Photo upload",
+      "Vision Statement: Title, Narrative Text & Dedicated Vision Photo upload",
+      "Core Values Section: Heading, Subtitle Badge & Detailed Description",
+      "Core Values List: Individual Value Title, Description, and Icon",
     ],
     imageSpecs: {
-      recommendedDimensions: "1000 x 750 px",
-      aspectRatio: "4:3 or 3:2",
-      format: "PNG or WebP",
-      maxFileSize: "< 2 MB",
+      recommendedDimensions: "1200 x 800 px (Hero), 800 x 600 px (Mission & Vision Photos)",
+      aspectRatio: "16:9 for Hero, 4:3 for Mission and Vision",
+      format: "PNG, WebP, or JPG",
+      maxFileSize: "< 5 MB",
     },
     steps: [
       "Open Admin Dashboard > 'Other Pages' > 'About Us'.",
-      "Update the Hero description, Mission text, and Vision paragraphs.",
-      "Modify core values or replace the banner image.",
-      "Click 'Save Changes' to update the `/about` webpage.",
+      "Update the Hero overview, Mission & Vision titles, and narratives.",
+      "Upload customized feature photos for both Mission and Vision cards.",
+      "Configure Core Values heading, description, or individual value items.",
+      "Click 'Save Changes' to update the `/about` webpage immediately.",
     ],
     previewImage: "/hero-image/about-counseling-professionals.png",
-    imageCaption: "About Us page displaying institutional mission, vision, and core values.",
-  },
-  {
-    id: "page-faq",
-    title: "Frequently Asked Questions (FAQ) Management",
-    category: "pages",
-    isEditable: true,
-    livePage: { name: "FAQs (/faqs)", url: "/faqs" },
-    adminPath: "/admin/pages/faq",
-    summary:
-      "Update the FAQ page header banner, introductory text, and add/edit/reorder categorized question and answer accordions.",
-    fields: [
-      "FAQ Page Hero Title & Subtitle",
-      "Hero Banner Image",
-      "FAQ Items List: Category (General, Therapy, Fees, Privacy)",
-      "Question String & Comprehensive Answer Body",
-    ],
-    steps: [
-      "Go to Admin Dashboard > 'Other Pages' > 'FAQ'.",
-      "Edit the hero heading or click '+ Add FAQ Item'.",
-      "Select the category, enter the question, and provide the clear clinical answer.",
-      "Click 'Save Changes' to update the live FAQ accordions.",
-    ],
-    previewImage: "/understanding-anxiety-workshop-event.png",
-    imageCaption: "FAQ page featuring categorized accordions for therapy inquiries and policies.",
+    imageCaption: "About Us page displaying institutional mission, vision, photos, and core values.",
   },
   {
     id: "page-success-stories",
@@ -436,8 +574,10 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
     livePage: { name: "Success Stories (/success-stories)", url: "/success-stories" },
     adminPath: "/admin/pages/success-stories",
     summary:
-      "Manage client feedback, heartfelt recovery stories, avatar photos, client roles, and toggle which testimonials are featured on the homepage.",
+      "Manage client feedback, heartfelt recovery stories, avatar photos, client roles, section heading and subtitle, and toggle which testimonials are featured on the homepage.",
     fields: [
+      "Hero Title, Hero Description & Hero Background Image",
+      "Section Heading (e.g. 'Transformative Journeys') & Section Subtitle (e.g. 'Real Stories')",
       "Client Name / Anonymous Alias",
       "Role / Profession / Demographic Tag",
       "Client Avatar Photograph",
@@ -445,17 +585,18 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
       "Featured on Homepage Carousel Toggle",
     ],
     imageSpecs: {
-      recommendedDimensions: "200 x 200 px (Square)",
-      aspectRatio: "1:1",
-      format: "PNG or WebP",
-      maxFileSize: "< 500 KB",
+      recommendedDimensions: "200 x 200 px (Avatar Square), 1920 x 1080 px (Hero)",
+      aspectRatio: "1:1 for Avatars, 16:9 for Hero",
+      format: "PNG, WebP, or JPG",
+      maxFileSize: "< 2 MB",
     },
     steps: [
       "Navigate to Admin Dashboard > 'Other Pages' > 'Success Stories'.",
+      "Customize the Hero Banner and the Section Heading & Subtitle.",
       "Click '+ Add Testimonial' or edit an existing review.",
       "Enter client name, quote, and upload a square avatar photograph.",
       "Toggle 'Featured' on if you want it to appear in the homepage review carousel.",
-      "Click 'Save Testimonial'.",
+      "Click 'Save Changes'.",
     ],
     previewImage: "/home-service-images/well-being-bg.png",
     imageCaption: "Client testimonials carousel displaying quotes, client names, and photos.",
@@ -468,21 +609,159 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
     livePage: { name: "Support & Crisis Lines (/support)", url: "/support" },
     adminPath: "/admin/pages/support",
     summary:
-      "Manage emergency crisis phone lines, active operational hours, primary crisis badges, and the official critical emergency disclaimer advisory.",
+      "Manage emergency crisis phone lines, active operational hours, section heading/subtitle, primary crisis badges, and the official critical emergency disclaimer advisory.",
     fields: [
-      "Support Page Hero Title & Description",
-      "Emergency Advisory Disclaimer Text (e.g., National Hotline 999)",
-      "Helpline Contacts: Title, Phone Number, Operating Hours, Description",
-      "Primary Status Toggle (highlights in bold green)",
+      "Support Page Hero Title, Description & Hero Background Image",
+      "Helpline Section: Heading (e.g. 'Emergency Helplines') & Subtitle (e.g. 'Immediate Assistance')",
+      "Emergency Advisory Disclaimer Text (e.g., National Hotline 999 notice)",
+      "Helpline Contacts: Title, Phone Number, Operating Hours, Description, Icon",
+      "Primary Status Toggle (highlights card with special alert border)",
     ],
+    imageSpecs: {
+      recommendedDimensions: "1920 x 1080 px",
+      aspectRatio: "16:9",
+      format: "PNG, WebP, or JPG",
+      maxFileSize: "< 5 MB",
+    },
     steps: [
       "Go to Admin Dashboard > 'Other Pages' > 'Support'.",
-      "Update the critical helpline contact numbers and operating schedules.",
+      "Adjust the Hero banner and the Helpline Section Title / Subtitle.",
+      "Update the critical helpline contact numbers, icons, and operating schedules.",
       "Ensure the mandatory Emergency Hotline disclaimer text is accurate.",
       "Click 'Save Support Page'.",
     ],
     previewImage: "/hero-image/group-therapy-support-circle.png",
     imageCaption: "Crisis support directory with quick dial buttons and emergency notice banner.",
+  },
+  {
+    id: "page-affiliation",
+    title: "Affiliation & Trusted Partners Network",
+    category: "pages",
+    isEditable: true,
+    livePage: { name: "Affiliation Program (/affiliation)", url: "/affiliation" },
+    adminPath: "/admin/pages/affiliation",
+    summary:
+      "Control the complete Affiliation page: Hero banner, Trusted Partners section (heading, subtitle, partner logos and links), Partnership Benefits (heading, subtitle, benefit items), and Partnership CTA banner.",
+    fields: [
+      "Hero Title, Description & Hero Background Image",
+      "Partners Network: Section Heading & Subtitle Badge",
+      "Partner Organizations List: Name, Organization Type, Abbreviation, Logo Image, Website URL",
+      "Partnership Benefits: Section Heading & Subtitle Badge",
+      "Benefit Items List: Title, Description, and Icon name",
+      "Partnership Call-to-Action: Title, Description & Promises Checkmark list",
+    ],
+    imageSpecs: {
+      recommendedDimensions: "1920 x 1080 px (Hero), 200 x 200 px (Partner Logos)",
+      aspectRatio: "16:9 for Hero, 1:1 for Logos",
+      format: "PNG (transparent for logos), WebP, or JPG",
+      maxFileSize: "< 5 MB for Hero, < 1 MB for Logos",
+    },
+    steps: [
+      "Go to Admin Dashboard > 'Other Pages' > 'Affiliation'.",
+      "Customize the Hero banner and both section headings (Partners & Benefits).",
+      "Add or update partner organizations with their logos and website links.",
+      "Edit the benefits of joining the CMHCB partner network.",
+      "Click 'Save Affiliation Page Content'.",
+    ],
+    previewImage: "/hero-image/psychotherapy-counseling-session.png",
+    imageCaption: "Affiliation page showing partner network logos and collaboration benefits.",
+  },
+  {
+    id: "page-contact",
+    title: "Contact Us Page & Direct Inquiries",
+    category: "pages",
+    isEditable: true,
+    livePage: { name: "Contact Us (/contact)", url: "/contact" },
+    adminPath: "/admin/pages/contact",
+    summary:
+      "Manage contact coordinates, Google Maps interactive location embed, support phone numbers, email addresses, 3-line office address, and the 'Get in Touch' section title and narrative.",
+    fields: [
+      "Hero Title, Description, Background Image & Image Alt text",
+      "'Get in Touch' Section: Section Heading & Introductory Description",
+      "Primary Phone Number & Inquiries Email Address",
+      "Physical Office Address Line 1, Line 2, and Line 3",
+      "Google Maps iframe embed URL",
+      "Social Media URLs: Facebook, Instagram, Twitter/X, LinkedIn",
+    ],
+    imageSpecs: {
+      recommendedDimensions: "1920 x 1080 px",
+      aspectRatio: "16:9",
+      format: "PNG, WebP, or JPG",
+      maxFileSize: "< 5 MB",
+    },
+    steps: [
+      "Open Admin Dashboard > 'Other Pages' > 'Contact'.",
+      "Update Hero banner details and the 'Get in Touch' section heading and text.",
+      "Enter new phone, email, street address lines, or Google Maps embed link.",
+      "Click 'Save Changes' to update `/contact` immediately.",
+    ],
+    previewImage: "/hero-image/contact-us-banner.png",
+    imageCaption: "Contact page displaying direct inquiries, interactive map, and office address.",
+  },
+  {
+    id: "page-faq",
+    title: "Frequently Asked Questions (FAQ) Management",
+    category: "pages",
+    isEditable: true,
+    livePage: { name: "FAQs (/faqs)", url: "/faqs" },
+    adminPath: "/admin/pages/faq",
+    summary:
+      "Update the FAQ page hero banner, FAQ section heading, subtitle badge, intro description paragraph, and add/edit/reorder categorized question and answer accordions.",
+    fields: [
+      "FAQ Page Hero Title, Description & Hero Background Image",
+      "FAQ Section: Heading, Subtitle Badge & Introductory Description",
+      "FAQ Items List: Category (Services, Trainings, Others)",
+      "Question String & Comprehensive Answer Body",
+    ],
+    imageSpecs: {
+      recommendedDimensions: "1920 x 1080 px",
+      aspectRatio: "16:9",
+      format: "PNG, WebP, or JPG",
+      maxFileSize: "< 5 MB",
+    },
+    steps: [
+      "Go to Admin Dashboard > 'Other Pages' > 'FAQ'.",
+      "Edit the hero heading, FAQ section title, subtitle, or intro description.",
+      "Click '+ Add FAQ Item' to append a new question and answer.",
+      "Select the category tab, enter the question, and provide the clear clinical answer.",
+      "Click 'Save Changes' to update the live FAQ accordions.",
+    ],
+    previewImage: "/understanding-anxiety-workshop-event.png",
+    imageCaption: "FAQ page featuring categorized accordions for therapy inquiries and policies.",
+  },
+  {
+    id: "page-community-service",
+    title: "Community Service & Social Outreach Policy",
+    category: "pages",
+    isEditable: true,
+    livePage: { name: "Community Service (/legal/community-service)", url: "/legal/community-service" },
+    adminPath: "/admin/pages/community-service",
+    summary:
+      "Full administrative control over the Community Service & Outreach page: Hero banner, Workshop/Seminar feature image, Introduction block, Impact statistics, Outreach program pillars (heading, badge, description, and cards), Eligibility criteria, Guidelines, and Session Request CTA.",
+    fields: [
+      "Hero Title, Subtitle, Description & Hero Background Image upload",
+      "Introduction Block: Heading, Paragraph 1, Paragraph 2 & Workshop Feature Image upload",
+      "Outreach Statistics: Impact counters (value, title, description)",
+      "Program Pillars: Section Heading, Badge, Description & Individual Pillar cards (badge, title, description, icon)",
+      "Eligibility & Verification: Title, Description & Criteria list",
+      "Operational Guidelines: Title, Description & Guidelines list",
+      "Outreach Request CTA: Title, Description & Coordinator contact email",
+    ],
+    imageSpecs: {
+      recommendedDimensions: "1920 x 1080 px (Hero), 800 x 600 px (Workshop/Seminar Feature Image)",
+      aspectRatio: "16:9 for Hero, 4:3 for Workshop Image",
+      format: "PNG, WebP, or JPG",
+      maxFileSize: "< 5 MB",
+    },
+    steps: [
+      "Navigate to Admin Dashboard > 'Other Pages' > 'Community Service'.",
+      "Upload high-resolution images for both the Hero Background and the Workshop Feature Image.",
+      "Customize the Introduction block, Impact Statistics, and Outreach Program Pillars heading and description.",
+      "Add or adjust individual program pillars, eligibility criteria, or operational guidelines.",
+      "Click 'Save Community Service Page Content' to publish updates.",
+    ],
+    previewImage: "/hero-image/community-service-outreach.png",
+    imageCaption: "Community Service and outreach policy page with workshop photos and program pillars.",
   },
   {
     id: "page-gallery",
@@ -516,58 +795,37 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
   },
 
   // ---------------------------------------------------------------------------
-  // 9. Static & Code-Only Content (Non-Editable in Dashboard)
+  // 9. Admin Access & User Management (Editable)
   // ---------------------------------------------------------------------------
   {
-    id: "static-guide",
-    title: "Homepage 'Guide' Section (Guiding You Toward Well-Being)",
-    category: "static",
-    isEditable: false,
-    livePage: { name: "Homepage (Middle Section)", url: "/#guide" },
-    summary:
-      "The 'Guiding You Toward Mental Well-Being' feature section on the homepage containing the counselor portrait photo and the 'Book Appointment' button.",
-    fields: [
-      "Section Title: 'Guiding You Toward Mental Well-Being'",
-      "Descriptive narrative paragraph",
-      "Counselor desk photograph (/compassionate-mental-health-professional.png)",
-      "'Book Appointment' direct link button",
-    ],
-    steps: [
-      "Notice: This is a static component hardcoded into the frontend codebase.",
-      "There is no form in the Admin Portal to edit this section.",
-      "To update the wording, button link, or photograph, submit a technical request to the developer team.",
-    ],
-    codeLocation: "features/home/components/guide.tsx",
-    staticNotice:
-      "STATIC SYSTEM CONTENT: This section is hardcoded in `features/home/components/guide.tsx`. It does not have an admin dashboard input form. To update, developers must edit the file directly in the codebase.",
-    previewImage: "/compassionate-mental-health-professional.png",
-    imageCaption: "Static Guide Section: Counselor portrait and fixed introductory message.",
-  },
-  {
-    id: "static-about-teaser",
-    title: "Homepage 'About' Mission Statement with Inline Badges",
-    category: "landing",
-    adminPath: "/admin/landing-page",
+    id: "admins-management",
+    title: "Admin Users, Roles & Security Whitelist",
+    category: "admins",
     isEditable: true,
-    livePage: { name: "Homepage (About Teaser)", url: "/#about" },
+    livePage: { name: "Admin Portal", url: "/admin" },
+    adminPath: "/admin/admins",
     summary:
-      "The mission sentence on the homepage: 'We connect licensed therapists [therapist], mental health programs [brain], and personalized care [heart] services...'.",
+      "Manage authorized administrator accounts, assign roles (Super Admin vs Admin), view recent administrative activity logs, and review the security email whitelist.",
     fields: [
-      "Mission statement text with inline badge token placeholders ([therapist], [brain], [heart], [client], [chart])",
-      "Therapist portrait badge avatar upload",
-      "Client portrait badge avatar upload",
+      "Admin Name & Email Address",
+      "Assigned Role (admin or super_admin)",
+      "Security Whitelist Enforcement (`admin@cmhcb.org`, `satonnee@gmail.com`)",
+      "Audit Activity Logs (recorded user, action, target entity, timestamp)",
+      "Password reset and profile credentials update",
     ],
     steps: [
-      "Navigate to Admin Portal > Landing Page.",
-      "Scroll to the 'About Mission Statement & Badges' section right below the Hero Banner.",
-      "Edit the statement or insert badge tokens ([therapist], [brain], [heart], [client], [chart]) using the quick badge pills.",
-      "Upload new square avatars for the therapist or client badges if desired.",
-      "Click 'Save Changes' at the top or bottom of the form.",
+      "Go to Admin Dashboard > 'Admins'.",
+      "View the list of active administrator profiles.",
+      "To add a new admin, click '+ Add Admin' (must be authorized on the security whitelist).",
+      "Inspect recent activity logs to audit changes made across the portal.",
     ],
-    codeLocation: "features/home/components/about.tsx",
-    previewImage: "/home-about-image/licensed-mental-health-therapist.png",
-    imageCaption: "Homepage inline badges highlighting therapists, programs, and care icons.",
+    previewImage: "/cmhcb-mental-health-care.png",
+    imageCaption: "Admin management console with role-based access control and security audit logs.",
   },
+
+  // ---------------------------------------------------------------------------
+  // 10. Static & Code-Only Content (Non-Editable in Dashboard)
+  // ---------------------------------------------------------------------------
   {
     id: "static-header-nav",
     title: "Main Header Navbar & CMHCB Logo Branding",

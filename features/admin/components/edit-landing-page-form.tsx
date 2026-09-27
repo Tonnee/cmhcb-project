@@ -63,6 +63,13 @@ interface LandingPageContentDB {
   appointmentSubtitle?: string | null;
   appointmentButtonText?: string | null;
   appointmentButtonLink?: string | null;
+  guideHeadline?: string | null;
+  guideSubtitle?: string | null;
+  servicesSubtitle?: string | null;
+  servicesTitle?: string | null;
+  therapistsSubtitle?: string | null;
+  therapistsTitle?: string | null;
+  eventsSubtitle?: string | null;
   eventsBottomText?: string | null;
   eventsButtonText?: string | null;
   eventsButtonLink?: string | null;
@@ -209,12 +216,35 @@ export default function EditLandingPageForm({
   const [appointmentButtonText, setAppointmentButtonText] = React.useState(initialContent.appointmentButtonText ?? defaultAppointmentValues.buttonText);
   const [appointmentButtonLink, setAppointmentButtonLink] = React.useState(initialContent.appointmentButtonLink ?? defaultAppointmentValues.buttonLink);
 
+  const defaultGuideValues = {
+    headline: "Guiding You Toward <span class=\"block\"><span class=\"text-accent mr-2\">Mental</span><span class=\"text-primary-dark\">Well-Being</span></span>",
+    subtitle: "At CMHC,B, we believe every individual deserves a supportive space to heal, grow, and thrive. Our dedicated team of licensed mental health professionals provides compassionate, evidence-based care tailored to your unique journey.",
+  };
+  const [guideHeadline, setGuideHeadline] = React.useState(initialContent.guideHeadline ?? defaultGuideValues.headline);
+  const [guideSubtitle, setGuideSubtitle] = React.useState(initialContent.guideSubtitle ?? defaultGuideValues.subtitle);
+
+  const defaultServicesHeadingValues = {
+    subtitle: "Services We Provide",
+    title: "<span class=\"text-primary-dark\">Professional</span> Psychology Therapy <span class=\"text-accent\">Services</span><br class=\"hidden md:block\" /> You Can Choose",
+  };
+  const [servicesSubtitle, setServicesSubtitle] = React.useState(initialContent.servicesSubtitle ?? defaultServicesHeadingValues.subtitle);
+  const [servicesTitle, setServicesTitle] = React.useState(initialContent.servicesTitle ?? defaultServicesHeadingValues.title);
+
+  const defaultTherapistsHeadingValues = {
+    subtitle: "Our Therapist",
+    title: "Personalized & Professional <span class=\"text-primary-dark\">Therapy</span> to Guide<br class=\"hidden md:block\" /> You Toward <span class=\"text-accent\">Healing</span>",
+  };
+  const [therapistsSubtitle, setTherapistsSubtitle] = React.useState(initialContent.therapistsSubtitle ?? defaultTherapistsHeadingValues.subtitle);
+  const [therapistsTitle, setTherapistsTitle] = React.useState(initialContent.therapistsTitle ?? defaultTherapistsHeadingValues.title);
+
   const defaultEventsValues = {
+    subtitle: "Upcoming Events",
     bottomText: "Stay informed and engaged with CMHC,B's year-round programs, workshops, and awareness events. Our annual event calendar highlights key training sessions, mental health awareness days, and community initiatives designed to educate, support, and empower individuals across all age groups.",
     buttonText: "Explore all Events & Workshops",
     buttonLink: "/events-workshops",
   };
 
+  const [eventsSubtitle, setEventsSubtitle] = React.useState(initialContent.eventsSubtitle ?? defaultEventsValues.subtitle);
   const [eventsBottomText, setEventsBottomText] = React.useState(initialContent.eventsBottomText ?? defaultEventsValues.bottomText);
   const [eventsButtonText, setEventsButtonText] = React.useState(initialContent.eventsButtonText ?? defaultEventsValues.buttonText);
   const [eventsButtonLink, setEventsButtonLink] = React.useState(initialContent.eventsButtonLink ?? defaultEventsValues.buttonLink);
@@ -687,6 +717,13 @@ export default function EditLandingPageForm({
         appointmentSubtitle,
         appointmentButtonText,
         appointmentButtonLink,
+        guideHeadline,
+        guideSubtitle,
+        servicesSubtitle,
+        servicesTitle,
+        therapistsSubtitle,
+        therapistsTitle,
+        eventsSubtitle,
         eventsBottomText,
         eventsButtonText,
         eventsButtonLink,
@@ -1023,6 +1060,124 @@ export default function EditLandingPageForm({
                 </label>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Guide Section Customization */}
+      <div className="bg-white border border-muted p-6 rounded-2xl shadow-sm flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-muted pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary-dark shrink-0">
+              <HiGlobeAlt className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+                Guide Section Heading & Content
+              </h2>
+              <p className="font-sans text-xs text-light-ash">
+                Customize the &quot;Guiding You Toward Mental Well-Being&quot; section headline and narrative paragraph.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setGuideHeadline(defaultGuideValues.headline);
+              setGuideSubtitle(defaultGuideValues.subtitle);
+            }}
+            className="text-xs font-sans text-light-ash hover:text-dark underline cursor-pointer px-1 self-start sm:self-auto"
+          >
+            Reset to Default
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-sans text-xs font-semibold text-dark">
+              Guide Headline (HTML supported)
+            </label>
+            <input
+              type="text"
+              value={guideHeadline}
+              onChange={(e) => setGuideHeadline(e.target.value)}
+              placeholder="Guiding You Toward <span class=&quot;block&quot;><span class=&quot;text-accent mr-2&quot;>Mental</span><span class=&quot;text-primary-dark&quot;>Well-Being</span></span>"
+              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="font-sans text-xs font-semibold text-dark">
+              Guide Subtitle / Descriptive Paragraph
+            </label>
+            <textarea
+              value={guideSubtitle}
+              onChange={(e) => setGuideSubtitle(e.target.value)}
+              rows={3}
+              placeholder="At CMHC,B, we believe every individual deserves a supportive space to heal..."
+              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors resize-y"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Services Section Heading Customization */}
+      <div className="bg-white border border-muted p-6 rounded-2xl shadow-sm flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-muted pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center text-primary-dark shrink-0">
+              <HiInboxStack className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+                Services Section Heading
+              </h2>
+              <p className="font-sans text-xs text-light-ash">
+                Customize the subtitle badge and main headline displayed above the featured services grid.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setServicesSubtitle(defaultServicesHeadingValues.subtitle);
+              setServicesTitle(defaultServicesHeadingValues.title);
+            }}
+            className="text-xs font-sans text-light-ash hover:text-dark underline cursor-pointer px-1 self-start sm:self-auto"
+          >
+            Reset to Default
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-sans text-xs font-semibold text-dark">
+              Section Subtitle / Badge
+            </label>
+            <input
+              type="text"
+              value={servicesSubtitle}
+              onChange={(e) => setServicesSubtitle(e.target.value)}
+              placeholder="Services We Provide"
+              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="font-sans text-xs font-semibold text-dark">
+              Section Main Title (HTML supported)
+            </label>
+            <input
+              type="text"
+              value={servicesTitle}
+              onChange={(e) => setServicesTitle(e.target.value)}
+              placeholder="<span class=&quot;text-primary-dark&quot;>Professional</span> Psychology Therapy <span class=&quot;text-accent&quot;>Services</span> You Can Choose"
+              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+              required
+            />
           </div>
         </div>
       </div>
@@ -1548,6 +1703,65 @@ export default function EditLandingPageForm({
         </div>
       </div>
 
+      {/* Therapists Section Heading Customization */}
+      <div className="bg-white border border-muted p-6 rounded-2xl shadow-sm flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-muted pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary-dark shrink-0">
+              <HiUserGroup className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="font-marcellus text-xl font-bold text-dark-green flex items-center gap-2">
+                Therapists Section Heading
+              </h2>
+              <p className="font-sans text-xs text-light-ash">
+                Customize the subtitle badge and main headline displayed above the therapists carousel.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTherapistsSubtitle(defaultTherapistsHeadingValues.subtitle);
+              setTherapistsTitle(defaultTherapistsHeadingValues.title);
+            }}
+            className="text-xs font-sans text-light-ash hover:text-dark underline cursor-pointer px-1 self-start sm:self-auto"
+          >
+            Reset to Default
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-sans text-xs font-semibold text-dark">
+              Section Subtitle / Badge
+            </label>
+            <input
+              type="text"
+              value={therapistsSubtitle}
+              onChange={(e) => setTherapistsSubtitle(e.target.value)}
+              placeholder="Our Therapist"
+              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="font-sans text-xs font-semibold text-dark">
+              Section Main Title (HTML supported)
+            </label>
+            <input
+              type="text"
+              value={therapistsTitle}
+              onChange={(e) => setTherapistsTitle(e.target.value)}
+              placeholder="Personalized & Professional <span class=&quot;text-primary-dark&quot;>Therapy</span> to Guide You Toward <span class=&quot;text-accent&quot;>Healing</span>"
+              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Schedule Appointment Banner CTA Customization */}
       <div className="bg-white border border-muted p-6 rounded-2xl shadow-sm flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-muted pb-4">
@@ -1658,6 +1872,7 @@ export default function EditLandingPageForm({
           <button
             type="button"
             onClick={() => {
+              setEventsSubtitle(defaultEventsValues.subtitle);
               setEventsBottomText(defaultEventsValues.bottomText);
               setEventsButtonText(defaultEventsValues.buttonText);
               setEventsButtonLink(defaultEventsValues.buttonLink);
@@ -1669,6 +1884,19 @@ export default function EditLandingPageForm({
         </div>
 
         <div className="grid grid-cols-1 gap-6">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-sans text-xs font-semibold text-dark">
+              Section Subtitle / Badge
+            </label>
+            <input
+              type="text"
+              value={eventsSubtitle}
+              onChange={(e) => setEventsSubtitle(e.target.value)}
+              placeholder="Upcoming Events"
+              className="w-full font-sans text-sm px-4 py-2.5 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+              required
+            />
+          </div>
           <div className="flex flex-col gap-1.5">
             <label className="font-sans text-xs font-semibold text-dark">
               Bottom CTA Paragraph / Subtext

@@ -11,6 +11,8 @@ export interface SuccessStoriesPageContent {
   heroDescription: string;
   heroImage: string;
   heroImageAlt?: string | null;
+  sectionTitle?: string | null;
+  sectionSubtitle?: string | null;
   ctaLabel?: string | null;
   ctaHref?: string | null;
   lastUpdatedBy?: string | null;
@@ -100,7 +102,11 @@ export default async function SuccessStoriesPage(): Promise<React.JSX.Element> {
         ctaLabel={ctaLabel}
         ctaHref={ctaHref}
       />
-      <AllSuccessStories testimonials={testimonials} />
+      <AllSuccessStories
+        testimonials={testimonials}
+        sectionTitle={pageContent?.sectionTitle}
+        sectionSubtitle={pageContent?.sectionSubtitle}
+      />
     </main>
   );
 }

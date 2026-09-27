@@ -20,9 +20,10 @@ export interface TrainingItemProps {
 interface AllTrainingsProps {
   trainings: TrainingItemProps[];
   approachData?: TrainingApproachBlockProps;
+  sectionTitle?: string | null;
 }
 
-export function AllTrainings({ trainings, approachData }: AllTrainingsProps): React.JSX.Element {
+export function AllTrainings({ trainings, approachData, sectionTitle }: AllTrainingsProps): React.JSX.Element {
   const isOdd = trainings.length % 2 !== 0;
   const firstTraining = trainings[0];
   const firstTrainingThumbnail =
@@ -35,7 +36,7 @@ export function AllTrainings({ trainings, approachData }: AllTrainingsProps): Re
       <Container>
         <SectionHeading
           id="trainings-heading"
-          title="Training Programs Offered"
+          title={sectionTitle || "Training Programs Offered"}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {trainings.map((training, index) => (

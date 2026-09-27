@@ -42,9 +42,17 @@ interface CoreValueItem {
 
 interface CoreValuesProps {
   values?: CoreValueItem[];
+  title?: string;
+  subtitle?: string;
+  description?: string;
 }
 
-export function CoreValues({ values }: CoreValuesProps): React.JSX.Element {
+export function CoreValues({
+  values,
+  title,
+  subtitle = "What Drives Us",
+  description = "At CMHCB, our philosophy is deeply rooted in the belief that everyone deserves access to quality mental health care. These fundamental principles guide every decision we make and every therapy session we conduct.",
+}: CoreValuesProps): React.JSX.Element {
   const displayValues = values && values.length > 0 ? values : DEFAULT_VALUES;
 
   return (
@@ -55,12 +63,12 @@ export function CoreValues({ values }: CoreValuesProps): React.JSX.Element {
           <div className="w-full lg:w-1/3">
             <SectionHeading
               align="left"
-              title={<>Our Core <span className="text-primary-dark">Values</span></>}
-              subtitle="What Drives Us"
+              title={title ? title : <>Our Core <span className="text-primary-dark">Values</span></>}
+              subtitle={subtitle}
               className="mb-8"
             />
             <p className="font-sans text-light-ash text-lg leading-relaxed mb-8">
-              At CMHCB, our philosophy is deeply rooted in the belief that everyone deserves access to quality mental health care. These fundamental principles guide every decision we make and every therapy session we conduct.
+              {description}
             </p>
           </div>
 

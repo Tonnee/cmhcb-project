@@ -5,11 +5,21 @@ import { TherapistCarousel } from "@/features/home/components/therapist-carousel
 
 import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
 
-interface TherapistsProps {
+export interface TherapistsProps {
   therapists?: any[];
+  subtitle?: string | null;
+  title?: string | null;
 }
 
-export default function Therapists({ therapists }: TherapistsProps): React.JSX.Element {
+export const DEFAULT_THERAPISTS_SUBTITLE = "Our Therapist";
+export const DEFAULT_THERAPISTS_TITLE =
+  "Personalized & Professional <span class=\"text-primary-dark\">Therapy</span> to Guide<br class=\"hidden md:block\" /> You Toward <span class=\"text-accent\">Healing</span>";
+
+export default function Therapists({
+  therapists,
+  subtitle = DEFAULT_THERAPISTS_SUBTITLE,
+  title = DEFAULT_THERAPISTS_TITLE,
+}: TherapistsProps): React.JSX.Element {
   let displayTherapists = THERAPISTS_DATA;
 
   if (therapists && therapists.length > 0) {
@@ -52,8 +62,8 @@ export default function Therapists({ therapists }: TherapistsProps): React.JSX.E
     <section className="py-20 lg:py-24">
       <Container>
         <SectionHeading 
-          subtitle="Our Therapist"
-          title={<>Personalized & Professional <span className="text-primary-dark">Therapy</span> to Guide<br className="hidden md:block" /> You Toward <span className="text-accent">Healing</span></>}
+          subtitle={subtitle || DEFAULT_THERAPISTS_SUBTITLE}
+          title={<span dangerouslySetInnerHTML={{ __html: title || DEFAULT_THERAPISTS_TITLE }} />}
           className="mb-14"
         />
 

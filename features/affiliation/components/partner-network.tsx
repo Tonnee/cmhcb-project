@@ -23,17 +23,19 @@ const PARTNERS: Partner[] = [
 
 interface PartnerNetworkProps {
   partners?: Partner[];
+  title?: string;
+  subtitle?: string;
 }
 
-export default function PartnerNetwork({ partners }: PartnerNetworkProps): React.JSX.Element {
+export default function PartnerNetwork({ partners, title, subtitle }: PartnerNetworkProps): React.JSX.Element {
   const displayPartners = partners && partners.length > 0 ? partners : PARTNERS;
 
   return (
     <section className="py-20 md:py-24 bg-white">
       <Container>
         <SectionHeading
-          subtitle="Our Network"
-          title={<>Trusted by Leading <span className="text-primary-dark">Partners</span></>}
+          subtitle={subtitle || "Our Network"}
+          title={title ? title : <>Trusted by Leading <span className="text-primary-dark">Partners</span></>}
           className="mb-16"
         />
 

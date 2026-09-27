@@ -52,6 +52,7 @@ export default async function ServicesPage(): Promise<React.JSX.Element> {
       />
       <AllServices
         services={services}
+        sectionTitle={pageContent?.sectionTitle}
         approachData={{
           title: pageContent?.approachTitle,
           description: pageContent?.approachDescription,

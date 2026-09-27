@@ -91,6 +91,7 @@ export default async function TrainingPage(): Promise<React.JSX.Element> {
       />
       <AllTrainings
         trainings={mappedTrainings}
+        sectionTitle={pageContent?.sectionTitle}
         approachData={{
           title: pageContent?.approachTitle,
           description: pageContent?.approachDescription,

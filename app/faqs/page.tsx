@@ -215,7 +215,12 @@ export default async function FaqsPage(): Promise<React.JSX.Element> {
         ctaHref="#faq-section"
       />
       <div id="faq-section">
-        <FaqTabsSection initialItems={compiledFaqs} />
+        <FaqTabsSection
+          initialItems={compiledFaqs}
+          sectionTitle={dbContent?.sectionTitle || undefined}
+          sectionSubtitle={dbContent?.sectionSubtitle || undefined}
+          sectionDescription={dbContent?.sectionDescription || undefined}
+        />
       </div>
     </main>
   );

@@ -55,10 +55,15 @@ export interface CommunityServicePageContent {
   heroTitle: string;
   heroSubtitle: string;
   heroDescription: string;
+  heroImage?: string | null;
+  seminarImage?: string | null;
   introTitle: string;
   introDescription1: string;
   introDescription2: string;
   stats: string;
+  pillarsBadge?: string | null;
+  pillarsTitle?: string | null;
+  pillarsDescription?: string | null;
   pillars: string;
   eligibilityTitle: string;
   eligibilityDescription: string;
@@ -186,7 +191,7 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
         currentPage="Community Service"
         title={heroTitle}
         description={heroDescription}
-        imageSrc="/hero-image/community-service-outreach.png"
+        imageSrc={data?.heroImage || "/hero-image/community-service-outreach.png"}
         imageAlt="Community Service Policy and Outreach - CMHCB"
         ctaLabel="Partner with Us"
         ctaHref={`mailto:${ctaEmail}`}
@@ -200,7 +205,7 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
             {/* Left Column: Workshop Image */}
             <div className="relative w-full h-87.5 sm:h-112.5 lg:h-full rounded-3xl overflow-hidden bg-gray-100 shadow-md border border-muted/20 group">
               <Image
-                src="/hero-image/community-service-seminar.png"
+                src={data?.seminarImage || "/hero-image/community-service-seminar.png"}
                 alt="Mental health awareness training camp workshop by CMHCB"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -248,12 +253,12 @@ export function CommunityService({ data }: CommunityServiceProps): React.JSX.Ele
       <section className="py-20 md:py-24 bg-white border-y border-black/5">
         <Container>
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <Tag variant="primary" className="mb-4">Outreach Programs</Tag>
+            <Tag variant="primary" className="mb-4">{data?.pillarsBadge || "Outreach Programs"}</Tag>
             <h2 className="font-marcellus text-3xl md:text-4xl text-dark mb-4">
-              Pillars of Our Social Impact
+              {data?.pillarsTitle || "Pillars of Our Social Impact"}
             </h2>
             <p className="font-sans text-base text-light-ash">
-              We operate across multiple domains to integrate therapeutic interventions directly into the daily lives of the public.
+              {data?.pillarsDescription || "We operate across multiple domains to integrate therapeutic interventions directly into the daily lives of the public."}
             </p>
           </div>
 

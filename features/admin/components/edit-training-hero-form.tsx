@@ -12,6 +12,7 @@ export interface TrainingPageContentDB {
   heroDescription: string;
   heroImage: string;
   heroImageAlt?: string | null;
+  sectionTitle?: string | null;
   approachTitle?: string | null;
   approachDescription?: string | null;
   approachImage?: string | null;
@@ -38,6 +39,7 @@ const DEFAULT_HERO = {
     "CMHCB offers a range of professional training programs designed to equip individuals with practical mental health knowledge and skills — from psychological first aid to advanced counselling techniques.",
   heroImage: "/training_hero.png",
   heroImageAlt: "CMHCB training programme participants",
+  sectionTitle: "Training Programs Offered",
 };
 
 export function EditTrainingHeroForm({
@@ -57,6 +59,9 @@ export function EditTrainingHeroForm({
   const [heroImageAlt, setHeroImageAlt] = React.useState(
     initialContent?.heroImageAlt || DEFAULT_HERO.heroImageAlt
   );
+  const [sectionTitle, setSectionTitle] = React.useState(
+    initialContent?.sectionTitle || DEFAULT_HERO.sectionTitle
+  );
 
   const [previewUrl, setPreviewUrl] = React.useState(
     initialContent?.heroImage || DEFAULT_HERO.heroImage
@@ -75,6 +80,7 @@ export function EditTrainingHeroForm({
       setHeroImage(initialContent.heroImage || DEFAULT_HERO.heroImage);
       setPreviewUrl(initialContent.heroImage || DEFAULT_HERO.heroImage);
       setHeroImageAlt(initialContent.heroImageAlt || DEFAULT_HERO.heroImageAlt);
+      setSectionTitle(initialContent.sectionTitle || DEFAULT_HERO.sectionTitle);
     }
   }, [initialContent]);
 
@@ -154,6 +160,7 @@ export function EditTrainingHeroForm({
         heroDescription: heroDescription.trim(),
         heroImage: finalImageUrl.trim(),
         heroImageAlt: heroImageAlt.trim() || DEFAULT_HERO.heroImageAlt,
+        sectionTitle: sectionTitle.trim() || DEFAULT_HERO.sectionTitle,
       };
 
       const res = await upsertTrainingPageContentAction(payload);
@@ -252,6 +259,24 @@ export function EditTrainingHeroForm({
               placeholder="Enter a descriptive overview of training programs offered..."
               className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors resize-y min-h-22.5"
               required
+            />
+          </div>
+
+          {/* Training Grid Section Title */}
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs flex items-center justify-between">
+              <span>Training Grid Section Title</span>
+              <span className="text-[11px] text-light-ash font-normal">Shown above the list of training programs</span>
+            </label>
+            <input
+              type="text"
+              value={sectionTitle}
+              onChange={(e) => {
+                setSectionTitle(e.target.value);
+                setSuccess(false);
+              }}
+              placeholder="Training Programs Offered"
+              className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors"
             />
           </div>
         </div>

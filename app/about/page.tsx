@@ -30,11 +30,19 @@ export default async function AboutPage(): Promise<React.JSX.Element> {
   const description = dbContent?.heroDescription || "The Center for Mental Health and Care Bangladesh (CMHCB) is a leading institution committed to providing accessible, compassionate, and high-quality psychological support to individuals and families across the nation.";
   const imageSrc = dbContent?.heroImage || "/hero-image/about-counseling-professionals.png";
 
+  const missionVisionTitle = dbContent?.missionVisionTitle || "Our Mission & Vision";
+  const missionVisionSubtitle = dbContent?.missionVisionSubtitle || "Purpose Driven Care";
   const missionTitle = dbContent?.missionTitle || "Our Mission";
   const missionText = dbContent?.missionText || "To empower individuals to overcome mental health challenges through compassionate, evidence-based therapy. We strive to create a safe, inclusive environment where healing begins, resilience is built, and lasting emotional well-being is achieved.";
+  const missionImage = dbContent?.missionImage || "/hero-image/group-therapy-support-circle-session.png";
 
   const visionTitle = dbContent?.visionTitle || "Our Vision";
   const visionText = dbContent?.visionText || "To be the leading center for psychological care and advocacy in Bangladesh, fostering a society where mental health is prioritized, stigma is eradicated, and everyone has access to the support they need to thrive.";
+  const visionImage = dbContent?.visionImage || "/home-about-image/mental-health-therapy-client-comfort.png";
+
+  const valuesTitle = dbContent?.valuesTitle || "Our Core Values";
+  const valuesSubtitle = dbContent?.valuesSubtitle || "What Drives Us";
+  const valuesDescription = dbContent?.valuesDescription || "At CMHCB, our philosophy is deeply rooted in the belief that everyone deserves access to quality mental health care. These fundamental principles guide every decision we make and every therapy session we conduct.";
 
   let coreValuesArray = [];
   if (dbContent?.coreValues) {
@@ -76,13 +84,22 @@ export default async function AboutPage(): Promise<React.JSX.Element> {
       />
       
       <MissionVision
+        sectionTitle={missionVisionTitle}
+        sectionSubtitle={missionVisionSubtitle}
         missionTitle={missionTitle}
         missionText={missionText}
+        missionImage={missionImage}
         visionTitle={visionTitle}
         visionText={visionText}
+        visionImage={visionImage}
       />
       
-      <CoreValues values={coreValuesArray} />
+      <CoreValues
+        values={coreValuesArray}
+        title={valuesTitle}
+        subtitle={valuesSubtitle}
+        description={valuesDescription}
+      />
     </main>
   );
 }

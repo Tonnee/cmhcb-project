@@ -3,7 +3,21 @@ import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 
-export default function Guide(): React.JSX.Element {
+export interface GuideProps {
+  headline?: string | null;
+  subtitle?: string | null;
+}
+
+export const DEFAULT_GUIDE_HEADLINE =
+  "Guiding You Toward <span class=\"block\"><span class=\"text-accent mr-2\">Mental</span><span class=\"text-primary-dark\">Well-Being</span></span>";
+
+export const DEFAULT_GUIDE_SUBTITLE =
+  "At CMHC,B, we believe every individual deserves a supportive space to heal, grow, and thrive. Our dedicated team of licensed mental health professionals provides compassionate, evidence-based care tailored to your unique journey.";
+
+export default function Guide({
+  headline = DEFAULT_GUIDE_HEADLINE,
+  subtitle = DEFAULT_GUIDE_SUBTITLE,
+}: GuideProps = {}): React.JSX.Element {
   return (
     <section className="py-16 lg:py-24">
       <Container>
@@ -23,19 +37,13 @@ export default function Guide(): React.JSX.Element {
 
           {/* Right: Content */}
           <div className="flex flex-col lg:col-span-6 lg:col-start-7">
-            <h2 className="font-marcellus text-3xl md:text-5xl leading-tight text-dark">
-              Guiding You Toward
-              <span className="block">
-                <span className="text-accent mr-2">Mental</span>
-                <span className="text-primary-dark">Well-Being</span>
-              </span>
-            </h2>
+            <h2
+              className="font-marcellus text-3xl md:text-5xl leading-tight text-dark"
+              dangerouslySetInnerHTML={{ __html: headline || DEFAULT_GUIDE_HEADLINE }}
+            />
 
             <p className="font-sans text-lg md:text-xl leading-relaxed text-dark mt-8 max-w-xl">
-              At CMHC,B, we believe every individual deserves a supportive space
-              to heal, grow, and thrive. Our dedicated team of licensed mental
-              health professionals provides compassionate, evidence-based care
-              tailored to your unique journey.
+              {subtitle || DEFAULT_GUIDE_SUBTITLE}
             </p>
 
             <Button

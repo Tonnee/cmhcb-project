@@ -26,6 +26,10 @@ interface AffiliationPageContent {
   heroTitle: string;
   heroDescription: string;
   heroImage: string;
+  partnersTitle?: string | null;
+  partnersSubtitle?: string | null;
+  benefitsTitle?: string | null;
+  benefitsSubtitle?: string | null;
   partners: string; // JSON string of Partner[]
   benefits: string; // JSON string of Benefit[]
   ctaTitle: string;
@@ -49,6 +53,11 @@ export default function EditAffiliationPageForm({
   const [heroImage, setHeroImage] = React.useState(initialContent.heroImage);
   const [previewUrl, setPreviewUrl] = React.useState(initialContent.heroImage);
   const [pendingFile, setPendingFile] = React.useState<File | null>(null);
+
+  const [partnersTitle, setPartnersTitle] = React.useState(initialContent.partnersTitle || "");
+  const [partnersSubtitle, setPartnersSubtitle] = React.useState(initialContent.partnersSubtitle || "");
+  const [benefitsTitle, setBenefitsTitle] = React.useState(initialContent.benefitsTitle || "");
+  const [benefitsSubtitle, setBenefitsSubtitle] = React.useState(initialContent.benefitsSubtitle || "");
   
   const [partners, setPartners] = React.useState<Partner[]>(() => {
     try {
@@ -200,6 +209,10 @@ export default function EditAffiliationPageForm({
         heroTitle,
         heroDescription,
         heroImage: finalHeroImage,
+        partnersTitle,
+        partnersSubtitle,
+        benefitsTitle,
+        benefitsSubtitle,
         partners,
         benefits,
         ctaTitle,
@@ -289,6 +302,29 @@ export default function EditAffiliationPageForm({
       {/* Partners List */}
       <div className="flex flex-col gap-4 border-b border-muted/80 pb-6">
         <h2 className="font-marcellus text-lg font-bold text-dark-green">Trusted Partners Network</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Subtitle / Badge</label>
+            <input
+              type="text"
+              value={partnersSubtitle}
+              onChange={(e) => setPartnersSubtitle(e.target.value)}
+              placeholder="Our Network"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Heading</label>
+            <input
+              type="text"
+              value={partnersTitle}
+              onChange={(e) => setPartnersTitle(e.target.value)}
+              placeholder="Trusted by Leading Partners"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+            />
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {partners.map((partner, idx) => (
@@ -440,6 +476,29 @@ export default function EditAffiliationPageForm({
       {/* Benefits List */}
       <div className="flex flex-col gap-4 border-b border-muted/80 pb-6">
         <h2 className="font-marcellus text-lg font-bold text-dark-green">Partnership Benefits</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Subtitle / Badge</label>
+            <input
+              type="text"
+              value={benefitsSubtitle}
+              onChange={(e) => setBenefitsSubtitle(e.target.value)}
+              placeholder="Partnership Benefits"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Heading</label>
+            <input
+              type="text"
+              value={benefitsTitle}
+              onChange={(e) => setBenefitsTitle(e.target.value)}
+              placeholder="Why Affiliate with Us?"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+            />
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {benefits.map((benefit, idx) => (

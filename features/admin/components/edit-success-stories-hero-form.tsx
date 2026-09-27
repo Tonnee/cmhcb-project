@@ -12,6 +12,8 @@ export interface SuccessStoriesPageContentDB {
   heroDescription: string;
   heroImage: string;
   heroImageAlt?: string | null;
+  sectionTitle?: string | null;
+  sectionSubtitle?: string | null;
   ctaLabel?: string | null;
   ctaHref?: string | null;
   lastUpdatedBy?: string | null;
@@ -28,6 +30,8 @@ const DEFAULT_HERO = {
     "Our clients share their journeys of transformation — honest reflections on the care, empathy, and support they received at CMHCB. Read how mental health care has empowered them to reclaim their lives.",
   heroImage: "/home-review/mental-health-therapy-client-woman.png",
   heroImageAlt: "A happy client sharing their successful journey with CMHCB",
+  sectionTitle: "Inspiring Journeys of Healing",
+  sectionSubtitle: "Real Client Stories",
   ctaLabel: "Read Stories",
   ctaHref: "#stories",
 };
@@ -55,6 +59,12 @@ export function EditSuccessStoriesHeroForm({
   const [ctaHref, setCtaHref] = React.useState(
     initialContent?.ctaHref || DEFAULT_HERO.ctaHref
   );
+  const [sectionTitle, setSectionTitle] = React.useState(
+    initialContent?.sectionTitle || DEFAULT_HERO.sectionTitle
+  );
+  const [sectionSubtitle, setSectionSubtitle] = React.useState(
+    initialContent?.sectionSubtitle || DEFAULT_HERO.sectionSubtitle
+  );
 
   const [previewUrl, setPreviewUrl] = React.useState(
     initialContent?.heroImage || DEFAULT_HERO.heroImage
@@ -75,6 +85,8 @@ export function EditSuccessStoriesHeroForm({
       setHeroImageAlt(initialContent.heroImageAlt || DEFAULT_HERO.heroImageAlt);
       setCtaLabel(initialContent.ctaLabel || DEFAULT_HERO.ctaLabel);
       setCtaHref(initialContent.ctaHref || DEFAULT_HERO.ctaHref);
+      setSectionTitle(initialContent.sectionTitle || DEFAULT_HERO.sectionTitle);
+      setSectionSubtitle(initialContent.sectionSubtitle || DEFAULT_HERO.sectionSubtitle);
     }
   }, [initialContent]);
 
@@ -154,6 +166,8 @@ export function EditSuccessStoriesHeroForm({
         heroDescription: heroDescription.trim(),
         heroImage: finalImageUrl.trim(),
         heroImageAlt: heroImageAlt.trim() || DEFAULT_HERO.heroImageAlt,
+        sectionTitle: sectionTitle.trim() || DEFAULT_HERO.sectionTitle,
+        sectionSubtitle: sectionSubtitle.trim() || DEFAULT_HERO.sectionSubtitle,
         ctaLabel: ctaLabel.trim() || DEFAULT_HERO.ctaLabel,
         ctaHref: ctaHref.trim() || DEFAULT_HERO.ctaHref,
       };
@@ -281,6 +295,36 @@ export function EditSuccessStoriesHeroForm({
                   setSuccess(false);
                 }}
                 placeholder="e.g. #stories"
+                className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Stories Grid Section Title and Subtitle */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark text-xs">Stories Grid Section Heading</label>
+              <input
+                type="text"
+                value={sectionTitle}
+                onChange={(e) => {
+                  setSectionTitle(e.target.value);
+                  setSuccess(false);
+                }}
+                placeholder="Inspiring Journeys of Healing"
+                className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-semibold text-dark text-xs">Stories Grid Section Subtitle</label>
+              <input
+                type="text"
+                value={sectionSubtitle}
+                onChange={(e) => {
+                  setSectionSubtitle(e.target.value);
+                  setSuccess(false);
+                }}
+                placeholder="Real Client Stories"
                 className="w-full px-4 py-2.5 border border-muted rounded-xl bg-page-bg/40 focus:bg-white focus:outline-none focus:border-primary text-sm font-sans transition-colors"
               />
             </div>

@@ -88,17 +88,19 @@ interface WorkshopDB {
   gallery: string | null; // JSON string
 }
 
-interface UpcomingEventsProps {
+export interface UpcomingEventsProps {
   featuredWorkshop: WorkshopDB | null;
   gridWorkshops: WorkshopDB[];
+  sectionSubtitle?: string | null;
   bottomText?: string | null;
   buttonText?: string | null;
   buttonLink?: string | null;
 }
 
-const DEFAULT_BOTTOM_TEXT = "Stay informed and engaged with CMHC,B's year-round programs, workshops, and awareness events. Our annual event calendar highlights key training sessions, mental health awareness days, and community initiatives designed to educate, support, and empower individuals across all age groups.";
-const DEFAULT_BUTTON_TEXT = "Explore all Events & Workshops";
-const DEFAULT_BUTTON_LINK = "/events-workshops";
+export const DEFAULT_SECTION_SUBTITLE = "Upcoming Events";
+export const DEFAULT_BOTTOM_TEXT = "Stay informed and engaged with CMHC,B's year-round programs, workshops, and awareness events. Our annual event calendar highlights key training sessions, mental health awareness days, and community initiatives designed to educate, support, and empower individuals across all age groups.";
+export const DEFAULT_BUTTON_TEXT = "Explore all Events & Workshops";
+export const DEFAULT_BUTTON_LINK = "/events-workshops";
 
 const formatDate = (dateStr: string) => {
   try {
@@ -132,6 +134,7 @@ const formatDateShort = (dateStr: string) => {
 export function UpcomingEvents({
   featuredWorkshop,
   gridWorkshops,
+  sectionSubtitle = DEFAULT_SECTION_SUBTITLE,
   bottomText = DEFAULT_BOTTOM_TEXT,
   buttonText = DEFAULT_BUTTON_TEXT,
   buttonLink = DEFAULT_BUTTON_LINK,
@@ -193,7 +196,7 @@ export function UpcomingEvents({
           {/* Left side - Event details */}
           <div className="flex-1 flex flex-col justify-center">
             <SectionHeading
-              subtitle="Upcoming Events"
+              subtitle={sectionSubtitle || DEFAULT_SECTION_SUBTITLE}
               title={<>&quot;{featured.title}&quot;</>}
               align="left"
               size="md"

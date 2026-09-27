@@ -18,10 +18,17 @@ interface AboutPageContent {
   heroTitle: string;
   heroDescription: string;
   heroImage: string;
+  missionVisionTitle?: string | null;
+  missionVisionSubtitle?: string | null;
   missionTitle: string;
   missionText: string;
+  missionImage?: string | null;
   visionTitle: string;
   visionText: string;
+  visionImage?: string | null;
+  valuesTitle?: string | null;
+  valuesSubtitle?: string | null;
+  valuesDescription?: string | null;
   coreValues: string; // JSON string of CoreValue[]
   lastUpdatedBy?: string | null;
   updatedAt?: Date | string | null;
@@ -42,10 +49,35 @@ export default function EditAboutPageForm({
   const [previewUrl, setPreviewUrl] = React.useState(initialContent.heroImage);
   const [pendingFile, setPendingFile] = React.useState<File | null>(null);
   
+  const [missionVisionTitle, setMissionVisionTitle] = React.useState(
+    initialContent.missionVisionTitle || "Our Mission & Vision"
+  );
+  const [missionVisionSubtitle, setMissionVisionSubtitle] = React.useState(
+    initialContent.missionVisionSubtitle || "Purpose Driven Care"
+  );
+
   const [missionTitle, setMissionTitle] = React.useState(initialContent.missionTitle);
   const [missionText, setMissionText] = React.useState(initialContent.missionText);
+  const [missionImage, setMissionImage] = React.useState(
+    initialContent.missionImage || "/hero-image/group-therapy-support-circle-session.png"
+  );
+
   const [visionTitle, setVisionTitle] = React.useState(initialContent.visionTitle);
   const [visionText, setVisionText] = React.useState(initialContent.visionText);
+  const [visionImage, setVisionImage] = React.useState(
+    initialContent.visionImage || "/home-about-image/mental-health-therapy-client-comfort.png"
+  );
+
+  const [valuesTitle, setValuesTitle] = React.useState(
+    initialContent.valuesTitle || "Our Core Values"
+  );
+  const [valuesSubtitle, setValuesSubtitle] = React.useState(
+    initialContent.valuesSubtitle || "What Drives Us"
+  );
+  const [valuesDescription, setValuesDescription] = React.useState(
+    initialContent.valuesDescription ||
+      "At CMHCB, our philosophy is deeply rooted in the belief that everyone deserves access to quality mental health care. These fundamental principles guide every decision we make and every therapy session we conduct."
+  );
   
   const [coreValues, setCoreValues] = React.useState<CoreValue[]>(() => {
     try {
@@ -133,10 +165,17 @@ export default function EditAboutPageForm({
         heroTitle,
         heroDescription,
         heroImage: finalHeroImage,
+        missionVisionTitle,
+        missionVisionSubtitle,
         missionTitle,
         missionText,
+        missionImage,
         visionTitle,
         visionText,
+        visionImage,
+        valuesTitle,
+        valuesSubtitle,
+        valuesDescription,
         coreValues,
       });
 
@@ -221,12 +260,38 @@ export default function EditAboutPageForm({
 
       {/* Mission & Vision Section */}
       <div className="flex flex-col gap-4 border-b border-muted/80 pb-6">
-        <h2 className="font-marcellus text-lg font-bold text-dark-green">Mission & Vision</h2>
+        <h2 className="font-marcellus text-lg font-bold text-dark-green">Mission & Vision Section</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Section Heading & Subtitle */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Heading</label>
+            <input
+              type="text"
+              value={missionVisionTitle}
+              onChange={(e) => setMissionVisionTitle(e.target.value)}
+              placeholder="Our Mission & Vision"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Subtitle / Badge</label>
+            <input
+              type="text"
+              value={missionVisionSubtitle}
+              onChange={(e) => setMissionVisionSubtitle(e.target.value)}
+              placeholder="Purpose Driven Care"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+          {/* Mission */}
           <div className="flex flex-col gap-4 bg-light/10 p-4 rounded-2xl border border-muted/50">
-            <span className="font-semibold text-dark text-xs border-b border-muted pb-1">Our Mission</span>
+            <span className="font-semibold text-dark text-xs border-b border-muted pb-1">Our Mission Block</span>
             <div className="flex flex-col gap-2">
+              <label className="text-[11px] text-light-ash">Mission Title</label>
               <input
                 type="text"
                 value={missionTitle}
@@ -235,6 +300,7 @@ export default function EditAboutPageForm({
                 className="px-3.5 py-1.5 border border-muted rounded-lg bg-white focus:outline-none focus:border-primary text-xs"
                 required
               />
+              <label className="text-[11px] text-light-ash">Mission Description</label>
               <textarea
                 value={missionText}
                 onChange={(e) => setMissionText(e.target.value)}
@@ -242,12 +308,22 @@ export default function EditAboutPageForm({
                 className="px-3.5 py-1.5 border border-muted rounded-lg bg-white focus:outline-none focus:border-primary text-xs h-20 resize-none"
                 required
               />
+              <label className="text-[11px] text-light-ash">Mission Image Path / URL</label>
+              <input
+                type="text"
+                value={missionImage}
+                onChange={(e) => setMissionImage(e.target.value)}
+                placeholder="/hero-image/group-therapy-support-circle-session.png"
+                className="px-3.5 py-1.5 border border-muted rounded-lg bg-white focus:outline-none focus:border-primary text-xs font-mono"
+              />
             </div>
           </div>
 
+          {/* Vision */}
           <div className="flex flex-col gap-4 bg-light/10 p-4 rounded-2xl border border-muted/50">
-            <span className="font-semibold text-dark text-xs border-b border-muted pb-1">Our Vision</span>
+            <span className="font-semibold text-dark text-xs border-b border-muted pb-1">Our Vision Block</span>
             <div className="flex flex-col gap-2">
+              <label className="text-[11px] text-light-ash">Vision Title</label>
               <input
                 type="text"
                 value={visionTitle}
@@ -256,12 +332,21 @@ export default function EditAboutPageForm({
                 className="px-3.5 py-1.5 border border-muted rounded-lg bg-white focus:outline-none focus:border-primary text-xs"
                 required
               />
+              <label className="text-[11px] text-light-ash">Vision Description</label>
               <textarea
                 value={visionText}
                 onChange={(e) => setVisionText(e.target.value)}
                 placeholder="Vision Description text"
                 className="px-3.5 py-1.5 border border-muted rounded-lg bg-white focus:outline-none focus:border-primary text-xs h-20 resize-none"
                 required
+              />
+              <label className="text-[11px] text-light-ash">Vision Image Path / URL</label>
+              <input
+                type="text"
+                value={visionImage}
+                onChange={(e) => setVisionImage(e.target.value)}
+                placeholder="/home-about-image/mental-health-therapy-client-comfort.png"
+                className="px-3.5 py-1.5 border border-muted rounded-lg bg-white focus:outline-none focus:border-primary text-xs font-mono"
               />
             </div>
           </div>
@@ -270,7 +355,42 @@ export default function EditAboutPageForm({
 
       {/* Core Values Section */}
       <div className="flex flex-col gap-4">
-        <h2 className="font-marcellus text-lg font-bold text-dark-green">Core Values</h2>
+        <h2 className="font-marcellus text-lg font-bold text-dark-green">Core Values Section</h2>
+        
+        {/* Core Values Section Title, Subtitle, Description */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Heading</label>
+            <input
+              type="text"
+              value={valuesTitle}
+              onChange={(e) => setValuesTitle(e.target.value)}
+              placeholder="Our Core Values"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Subtitle / Badge</label>
+            <input
+              type="text"
+              value={valuesSubtitle}
+              onChange={(e) => setValuesSubtitle(e.target.value)}
+              placeholder="What Drives Us"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="font-semibold text-dark text-xs">Section Supporting Description</label>
+          <textarea
+            value={valuesDescription}
+            onChange={(e) => setValuesDescription(e.target.value)}
+            rows={2}
+            placeholder="At CMHCB, our philosophy is deeply rooted..."
+            className="w-full px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-sm font-sans resize-y"
+          />
+        </div>
         
         <div className="flex flex-col gap-3">
           {coreValues.map((value, idx) => (

@@ -101,6 +101,13 @@ export default async function Page(): Promise<React.JSX.Element> {
     appointmentSubtitle: "Your path to healing, growth, and inner peace starts with a single step. Whether you are navigating life's transitions, seeking emotional support, or striving for balance, our compassionate professionals are here to walk with you in a safe, supportive space.",
     appointmentButtonText: "Book an Appointment",
     appointmentButtonLink: "/appointment",
+    guideHeadline: "Guiding You Toward <span class=\"block\"><span class=\"text-accent mr-2\">Mental</span><span class=\"text-primary-dark\">Well-Being</span></span>",
+    guideSubtitle: "At CMHC,B, we believe every individual deserves a supportive space to heal, grow, and thrive. Our dedicated team of licensed mental health professionals provides compassionate, evidence-based care tailored to your unique journey.",
+    servicesSubtitle: "Services We Provide",
+    servicesTitle: "<span class=\"text-primary-dark\">Professional</span> Psychology Therapy <span class=\"text-accent\">Services</span><br class=\"hidden md:block\" /> You Can Choose",
+    therapistsSubtitle: "Our Therapist",
+    therapistsTitle: "Personalized & Professional <span class=\"text-primary-dark\">Therapy</span> to Guide<br class=\"hidden md:block\" /> You Toward <span class=\"text-accent\">Healing</span>",
+    eventsSubtitle: "Upcoming Events",
     eventsBottomText: "Stay informed and engaged with CMHC,B's year-round programs, workshops, and awareness events. Our annual event calendar highlights key training sessions, mental health awareness days, and community initiatives designed to educate, support, and empower individuals across all age groups.",
     eventsButtonText: "Explore all Events & Workshops",
     eventsButtonLink: "/events-workshops",
@@ -285,8 +292,15 @@ export default async function Page(): Promise<React.JSX.Element> {
         heartIcon={content.aboutHeartIcon}
         chartIcon={content.aboutChartIcon}
       />
-      <Guide />
-      <Services services={featuredServices} />
+      <Guide
+        headline={content.guideHeadline}
+        subtitle={content.guideSubtitle}
+      />
+      <Services
+        services={featuredServices}
+        subtitle={content.servicesSubtitle}
+        title={content.servicesTitle}
+      />
       
       {/* 2. Dynamic WellBeing text and stats counts */}
       <WellBeing
@@ -302,7 +316,11 @@ export default async function Page(): Promise<React.JSX.Element> {
         image={content.trainingImage}
         items={trainingItems}
       />
-      <Therapists therapists={dbTherapists} />
+      <Therapists
+        therapists={dbTherapists}
+        subtitle={content.therapistsSubtitle}
+        title={content.therapistsTitle}
+      />
       <ScheduleAppointment
         headline={content.appointmentHeadline}
         subtitle={content.appointmentSubtitle}
@@ -314,6 +332,7 @@ export default async function Page(): Promise<React.JSX.Element> {
       <UpcomingEvents
         featuredWorkshop={featuredWorkshop}
         gridWorkshops={gridWorkshops}
+        sectionSubtitle={content.eventsSubtitle}
         bottomText={content.eventsBottomText}
         buttonText={content.eventsButtonText}
         buttonLink={content.eventsButtonLink}

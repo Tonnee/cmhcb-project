@@ -124,6 +124,17 @@ model LandingPageContent {
   appointmentSubtitle       String?  @default("Your path to healing, growth, and inner peace starts with a single step. Whether you are navigating life's transitions, seeking emotional support, or striving for balance, our compassionate professionals are here to walk with you in a safe, supportive space.")
   appointmentButtonText     String?  @default("Book an Appointment")
   appointmentButtonLink     String?  @default("/appointment")
+  // Guide section
+  guideHeadline             String?  @default("Guiding You Toward <span class=\"block\"><span class=\"text-accent mr-2\">Mental</span><span class=\"text-primary-dark\">Well-Being</span></span>")
+  guideSubtitle             String?  @default("At CMHC,B, we believe every individual deserves a supportive space to heal, grow, and thrive. Our dedicated team of licensed mental health professionals provides compassionate, evidence-based care tailored to your unique journey.")
+  // Services section heading
+  servicesSubtitle          String?  @default("Services We Provide")
+  servicesTitle             String?  @default("<span class=\"text-primary-dark\">Professional</span> Psychology Therapy <span class=\"text-accent\">Services</span><br class=\"hidden md:block\" /> You Can Choose")
+  // Therapists section heading
+  therapistsSubtitle        String?  @default("Our Therapist")
+  therapistsTitle           String?  @default("Personalized & Professional <span class=\"text-primary-dark\">Therapy</span> to Guide<br class=\"hidden md:block\" /> You Toward <span class=\"text-accent\">Healing</span>")
+  // Upcoming events section heading
+  eventsSubtitle            String?  @default("Upcoming Events")
   eventsBottomText          String?  @default("Stay informed and engaged with CMHC,B's year-round programs, workshops, and awareness events. Our annual event calendar highlights key training sessions, mental health awareness days, and community initiatives designed to educate, support, and empower individuals across all age groups.")
   eventsButtonText          String?  @default("Explore all Events & Workshops")
   eventsButtonLink          String?  @default("/events-workshops")
@@ -190,6 +201,7 @@ model ServicesPageContent {
   heroDescription String   @default("At CMHC,B, we provide compassionate and confidential psychotherapeutic services to support individuals, couples, families, and organizations in improving mental well-being and quality of life.")
   heroImage       String   @default("/mental-health-services-bangladesh.jpg")
   heroImageAlt    String   @default("Group psychotherapeutic support session at Center for Mental Health and Care Bangladesh")
+  sectionTitle    String?  @default("Our Psychotherapeutic Services")
   approachTitle       String?  @default("Our Approach")
   approachDescription String?  @default("We follow an evidence-based, client-centred approach that integrates individual experiences while providing ethical, confidential, and culturally sensitive care.")
   approachImage       String?  @default("/couple-counseling-relationship-help.jpg")
@@ -218,6 +230,7 @@ model TrainingPageContent {
   heroDescription     String   @default("CMHCB offers a range of professional training programs designed to equip individuals with practical mental health knowledge and skills — from psychological first aid to advanced counselling techniques.")
   heroImage           String   @default("/training_hero.png")
   heroImageAlt        String   @default("CMHCB training programme participants")
+  sectionTitle        String?  @default("Training Programs Offered")
   approachTitle       String?  @default("Our Approach")
   approachDescription String?  @default("Customising programs are available for institutions, professionals, families, individuals, and organizations looking to define issues and related issues around mental health knowledge.")
   approachImage       String?  @default("/mental-health-training-program.png")
@@ -305,12 +318,19 @@ model AboutPageContent {
   id              String   @id @default("about-content")
   heroTitle       String   @default("Dedicated to Your Mental Well-being")
   heroDescription String   @default("The Center for Mental Health and Care Bangladesh (CMHCB) is a leading institution committed to providing accessible, compassionate, and high-quality psychological support to individuals and families across the nation.")
-  heroImage       String   @default("/hero-image/psychotherapy-counseling-session.png")
-  missionTitle    String   @default("Our Mission")
-  missionText     String   @default("To provide accessible, compassionate, and evidence-based mental health care to individuals and communities across Bangladesh.")
-  visionTitle     String   @default("Our Vision")
-  visionText      String   @default("A Bangladesh where mental health is understood, valued, and prioritized as an essential component of overall well-being.")
-  coreValues      String   @default("[]") // JSON: { title, description, icon }[]
+  heroImage              String   @default("/hero-image/psychotherapy-counseling-session.png")
+  missionVisionTitle     String?  @default("Our Mission & Vision")
+  missionVisionSubtitle  String?  @default("Purpose Driven Care")
+  missionTitle           String   @default("Our Mission")
+  missionText            String   @default("To provide accessible, compassionate, and evidence-based mental health care to individuals and communities across Bangladesh.")
+  missionImage           String?  @default("/hero-image/group-therapy-support-circle-session.png")
+  visionTitle            String   @default("Our Vision")
+  visionText             String   @default("A Bangladesh where mental health is understood, valued, and prioritized as an essential component of overall well-being.")
+  visionImage            String?  @default("/home-about-image/mental-health-therapy-client-comfort.png")
+  valuesTitle            String?  @default("Our Core Values")
+  valuesSubtitle         String?  @default("What Drives Us")
+  valuesDescription      String?  @default("At CMHCB, our philosophy is deeply rooted in the belief that everyone deserves access to quality mental health care. These fundamental principles guide every decision we make and every therapy session we conduct.")
+  coreValues             String   @default("[]") // JSON: { title, description, icon }[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   lastUpdatedBy   String?
@@ -322,6 +342,8 @@ model ContactPageContent {
   heroDescription String?  @default("We'd love to hear from you. Please reach out with any questions or inquiries.")
   heroImage       String?  @default("/hero-image/contact-us-banner.png")
   heroImageAlt    String?  @default("Contact Center for Mental Health and Care Bangladesh")
+  detailsTitle       String?  @default("Get in Touch")
+  detailsDescription String?  @default("Whether you have a question about our services, need assistance, or just want to talk, we are here for you. Reach out to us through any of the channels below.")
   phone           String   @default("+880 1974-349569")
   email           String   @default("info@cmhcbd.com")
   addressLine1    String   @default("CMHC Office Room, 78/2 (2nd Floor)")
@@ -341,8 +363,11 @@ model FaqPageContent {
   id          String   @id @default("faq-content")
   heroTitle   String   @default("We are here to answer your questions")
   heroDescription String @default("Whether you're new to therapy or an existing client, we've compiled a list of common questions to help you understand our services, payment methods, and privacy policies.")
-  heroImage   String   @default("/understanding-anxiety-workshop-event.png")
-  items       String   @default("[]") // JSON: { category, question, answer }[]
+  heroImage          String   @default("/understanding-anxiety-workshop-event.png")
+  sectionTitle       String?  @default("Frequently Asked Questions")
+  sectionSubtitle    String?  @default("How can we help?")
+  sectionDescription String?  @default("Find answers to common questions about our therapy services, billing, appointments, and privacy policies. Can't find what you're looking for? Reach out to us directly.")
+  items              String   @default("[]") // JSON: { category, question, answer }[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   lastUpdatedBy String?
@@ -362,9 +387,13 @@ model AffiliationPageContent {
   id              String   @id @default("affiliation-content")
   heroTitle       String   @default("Partner with CMHCB")
   heroDescription String   @default("Join our network of professionals and organizations dedicated to advancing mental health care in Bangladesh. Together, we can make a greater impact by expanding access to quality psychological support.")
-  heroImage       String   @default("/hero-image/psychotherapy-counseling-session.png")
-  partners        String   @default("[]") // JSON: { name, type, abbr }[]
-  benefits        String   @default("[]") // JSON: { title, description, icon }[]
+  heroImage        String   @default("/hero-image/psychotherapy-counseling-session.png")
+  partnersTitle    String?  @default("Trusted by Leading Partners")
+  partnersSubtitle String?  @default("Our Network")
+  partners         String   @default("[]") // JSON: { name, type, abbr }[]
+  benefitsTitle    String?  @default("Why Affiliate with Us?")
+  benefitsSubtitle String?  @default("Partnership Benefits")
+  benefits         String   @default("[]") // JSON: { title, description, icon }[]
   ctaTitle        String   @default("Let's shape the future of mental health together")
   ctaDescription  String   @default("Join hands with CMHCB to foster clinical excellence, expand counseling accessibility, and build a stronger mental health support ecosystem across Bangladesh.")
   promises        String   @default("[]") // JSON string of string[]
@@ -377,8 +406,10 @@ model SupportPageContent {
   id              String   @id @default("support-content")
   heroTitle       String   @default("We are here to support you in times of need")
   heroDescription String   @default("Whether you are facing a mental health crisis or seeking guidance for a loved one, CMHCB is here to help. Reach out to our emergency contacts or trained professionals for immediate assistance.")
-  heroImage       String   @default("/hero-image/group-therapy-support-circle.png")
-  contacts        String   @default("[]") // JSON: { title, description, phone, hours, iconName, isPrimary }[]
+  heroImage        String   @default("/hero-image/group-therapy-support-circle.png")
+  helplineTitle    String?  @default("Emergency Helplines")
+  helplineSubtitle String?  @default("Immediate Assistance")
+  contacts         String   @default("[]") // JSON: { title, description, phone, hours, iconName, isPrimary }[]
   advisoryText    String   @default("Important Advisory: CMHCB and associated emotional helper helplines provide psychological support, mental health counseling, and crisis triage. If you or someone you know is in immediate physical danger, experiencing a severe drug/medical emergency, or threatened by active self-harm, please dial the National Emergency Hotline (999) or proceed immediately to the nearest hospital emergency department.")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -390,10 +421,15 @@ model CommunityServicePageContent {
   heroTitle              String   @default("Community Service Policy & Outreach")
   heroSubtitle           String   @default("Last Updated: May 2026")
   heroDescription        String   @default("At the Center for Mental Health and Care Bangladesh (CMHCB), we believe mental health support is a human right. Explore our structured community-oriented programs and the ethical guidelines that define our outreach initiatives.")
+  heroImage              String?  @default("/hero-image/community-service-outreach.png")
+  seminarImage           String?  @default("/hero-image/community-service-seminar.png")
   introTitle             String   @default("Our Commitment to Bangladesh's Communities")
   introDescription1      String   @default("CMHCB dedicates a portion of its resources and clinical hours to pro-bono work, local community workshops, and disaster response. Through structured partnerships, we aim to bridge the mental health service gap in Bangladesh.")
   introDescription2      String   @default("Our practitioners actively volunteer to implement community support initiatives, adhering to the same high ethical standards, confidentiality, and professional competence required in our standard clinical practices.")
   stats                  String   @default("[]") // JSON: { value, title, description }[]
+  pillarsBadge           String?  @default("Outreach Programs")
+  pillarsTitle           String?  @default("Pillars of Our Social Impact")
+  pillarsDescription     String?  @default("We operate across multiple domains to integrate therapeutic interventions directly into the daily lives of the public.")
   pillars                String   @default("[]") // JSON: { badge, title, description, iconName }[]
   eligibilityTitle       String   @default("Eligibility & Verification")
   eligibilityDescription String   @default("To ensure that our community and pro-bono services reach the individuals who need them most, we maintain a clear verification framework. Services are allocated based on these parameters:")
@@ -474,6 +510,8 @@ model SuccessStoriesPageContent {
   heroDescription String   @default("Our clients share their journeys of transformation — honest reflections on the care, empathy, and support they received at CMHCB. Read how mental health care has empowered them to reclaim their lives.")
   heroImage       String   @default("/home-review/mental-health-therapy-client-woman.png")
   heroImageAlt    String   @default("A happy client sharing their successful journey with CMHCB")
+  sectionTitle    String?  @default("Inspiring Journeys of Healing")
+  sectionSubtitle String?  @default("Real Client Stories")
   ctaLabel        String   @default("Read Stories")
   ctaHref         String   @default("#stories")
   createdAt       DateTime @default(now())

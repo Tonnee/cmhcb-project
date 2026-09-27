@@ -6,17 +6,23 @@ import { PaginatedStories } from "./paginated-stories";
 
 interface AllSuccessStoriesProps {
   testimonials: Testimonial[];
+  sectionTitle?: string | null;
+  sectionSubtitle?: string | null;
 }
 
-export function AllSuccessStories({ testimonials }: AllSuccessStoriesProps): React.JSX.Element {
+export function AllSuccessStories({
+  testimonials,
+  sectionTitle,
+  sectionSubtitle,
+}: AllSuccessStoriesProps): React.JSX.Element {
   const displayTestimonials = testimonials.length > 0 ? testimonials : TESTIMONIALS;
 
   return (
     <section className="py-20 bg-page-bg" id="stories">
       <Container>
         <SectionHeading
-          title="Inspiring Journeys of Healing"
-          subtitle="Real Client Stories"
+          title={sectionTitle || "Inspiring Journeys of Healing"}
+          subtitle={sectionSubtitle || "Real Client Stories"}
           align="center"
           className="mb-14"
         />

@@ -87,10 +87,10 @@ export default async function ContactPage(): Promise<React.JSX.Element> {
           {/* Left Column: Contact Details */}
           <div className="flex flex-col justify-center">
             <h2 className="font-marcellus text-3xl md:text-4xl text-dark mb-6">
-              Get in Touch
+              {dbContent?.detailsTitle || "Get in Touch"}
             </h2>
             <p className="font-sans text-light-ash mb-10 leading-relaxed max-w-[500px]">
-              Whether you have a question about our services, need assistance, or just want to talk, we are here for you. Reach out to us through any of the channels below.
+              {dbContent?.detailsDescription || "Whether you have a question about our services, need assistance, or just want to talk, we are here for you. Reach out to us through any of the channels below."}
             </p>
 
             <div className="flex flex-col gap-6 mb-12">

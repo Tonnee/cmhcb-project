@@ -18,9 +18,10 @@ interface ServiceItem {
 interface AllServicesProps {
   services: ServiceItem[];
   approachData?: ServicesApproachBlockProps;
+  sectionTitle?: string | null;
 }
 
-export function AllServices({ services, approachData }: AllServicesProps): React.JSX.Element {
+export function AllServices({ services, approachData, sectionTitle }: AllServicesProps): React.JSX.Element {
   const isOdd = services.length % 2 !== 0;
   const firstService = services[0];
   const firstServiceThumbnail =
@@ -33,7 +34,7 @@ export function AllServices({ services, approachData }: AllServicesProps): React
       <Container>
         <SectionHeading
           id="services-heading"
-          title="Our Psychotherapeutic Services"
+          title={sectionTitle || "Our Psychotherapeutic Services"}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {services.map((service, index) => {

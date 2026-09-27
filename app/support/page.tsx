@@ -74,6 +74,8 @@ export default async function SupportPage(): Promise<React.JSX.Element> {
         <EmergencySupport
           initialContacts={dbContent?.contacts}
           initialAdvisoryText={dbContent?.advisoryText}
+          title={dbContent?.helplineTitle || undefined}
+          subtitle={dbContent?.helplineSubtitle || undefined}
         />
       </div>
     </main>

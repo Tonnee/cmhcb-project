@@ -5,24 +5,32 @@ import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 
 interface MissionVisionProps {
+  sectionTitle?: string;
+  sectionSubtitle?: string;
   missionTitle?: string;
   missionText?: string;
+  missionImage?: string;
   visionTitle?: string;
   visionText?: string;
+  visionImage?: string;
 }
 
 export function MissionVision({
+  sectionTitle = "Our Mission & Vision",
+  sectionSubtitle = "Purpose Driven Care",
   missionTitle = "Our Mission",
   missionText = "To empower individuals to overcome mental health challenges through compassionate, evidence-based therapy. We strive to create a safe, inclusive environment where healing begins, resilience is built, and lasting emotional well-being is achieved.",
+  missionImage = "/hero-image/group-therapy-support-circle-session.png",
   visionTitle = "Our Vision",
-  visionText = "To be the leading center for psychological care and advocacy in Bangladesh, fostering a society where mental health is prioritized, stigma is eradicated, and everyone has access to the support they need to thrive."
+  visionText = "To be the leading center for psychological care and advocacy in Bangladesh, fostering a society where mental health is prioritized, stigma is eradicated, and everyone has access to the support they need to thrive.",
+  visionImage = "/home-about-image/mental-health-therapy-client-comfort.png",
 }: MissionVisionProps): React.JSX.Element {
   return (
     <section className="py-16 md:py-24 bg-white">
       <Container>
         <SectionHeading
-          title="Our Mission & Vision"
-          subtitle="Purpose Driven Care"
+          title={sectionTitle}
+          subtitle={sectionSubtitle}
           align="center"
           className="mb-16"
         />
@@ -32,8 +40,8 @@ export function MissionVision({
           <div className="w-full lg:w-1/2">
             <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[450px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm group">
               <Image
-                src="/hero-image/group-therapy-support-circle-session.png"
-                alt="Therapists engaged in a group therapy session"
+                src={missionImage}
+                alt={missionTitle || "Therapists engaged in a group therapy session"}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -56,8 +64,8 @@ export function MissionVision({
           <div className="w-full lg:w-1/2">
             <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[450px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm group">
               <Image
-                src="/home-about-image/mental-health-therapy-client-comfort.png"
-                alt="Client in a mental health therapy session"
+                src={visionImage}
+                alt={visionTitle || "Client in a mental health therapy session"}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"

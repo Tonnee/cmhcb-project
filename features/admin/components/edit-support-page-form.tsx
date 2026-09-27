@@ -22,6 +22,8 @@ interface SupportPageContent {
   heroTitle: string;
   heroDescription: string;
   heroImage: string;
+  helplineTitle?: string | null;
+  helplineSubtitle?: string | null;
   contacts: string; // JSON string of EmergencyContact[]
   advisoryText: string;
   lastUpdatedBy?: string | null;
@@ -42,6 +44,8 @@ export default function EditSupportPageForm({
   const [heroImage, setHeroImage] = React.useState(initialContent.heroImage);
   const [previewUrl, setPreviewUrl] = React.useState(initialContent.heroImage);
   const [pendingFile, setPendingFile] = React.useState<File | null>(null);
+  const [helplineTitle, setHelplineTitle] = React.useState(initialContent.helplineTitle || "");
+  const [helplineSubtitle, setHelplineSubtitle] = React.useState(initialContent.helplineSubtitle || "");
   const [advisoryText, setAdvisoryText] = React.useState(initialContent.advisoryText);
 
   const [contacts, setContacts] = React.useState<EmergencyContact[]>(
@@ -141,6 +145,8 @@ export default function EditSupportPageForm({
         heroTitle,
         heroDescription,
         heroImage: finalHeroImage,
+        helplineTitle,
+        helplineSubtitle,
         contacts,
         advisoryText,
       });
@@ -240,8 +246,31 @@ export default function EditSupportPageForm({
 
       {/* Emergency Contacts List */}
       <div className="flex flex-col gap-4">
-        <h2 className="font-marcellus text-lg font-bold text-dark-green">Emergency Helplines</h2>
+        <h2 className="font-marcellus text-lg font-bold text-dark-green">Emergency Helplines Section</h2>
         
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Subtitle / Badge</label>
+            <input
+              type="text"
+              value={helplineSubtitle}
+              onChange={(e) => setHelplineSubtitle(e.target.value)}
+              placeholder="Immediate Assistance"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Heading</label>
+            <input
+              type="text"
+              value={helplineTitle}
+              onChange={(e) => setHelplineTitle(e.target.value)}
+              placeholder="Emergency Helplines"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+            />
+          </div>
+        </div>
+
         <div className="flex flex-col gap-3">
           {contacts.map((contact, idx) => (
             <div key={idx} className="flex items-start justify-between gap-4 p-4 bg-white border border-muted rounded-xl">

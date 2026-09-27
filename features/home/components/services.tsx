@@ -12,18 +12,31 @@ interface ServiceItem {
   fees?: string | null;
 }
 
-interface ServicesProps {
+export interface ServicesProps {
   services: ServiceItem[];
+  subtitle?: string | null;
+  title?: string | null;
 }
 
-export default function Services({ services }: ServicesProps): React.JSX.Element {
+export const DEFAULT_SERVICES_SUBTITLE = "Services We Provide";
+export const DEFAULT_SERVICES_TITLE =
+  "<span class=\"text-primary-dark\">Professional</span> Psychology Therapy <span class=\"text-accent\">Services</span><br class=\"hidden md:block\" /> You Can Choose";
+
+export default function Services({
+  services,
+  subtitle = DEFAULT_SERVICES_SUBTITLE,
+  title = DEFAULT_SERVICES_TITLE,
+}: ServicesProps): React.JSX.Element {
+  const currentSubtitle = subtitle || DEFAULT_SERVICES_SUBTITLE;
+  const currentTitle = title || DEFAULT_SERVICES_TITLE;
+
   return (
     <section className="py-16 lg:py-24">
       <Container>
         {/* Header */}
         <SectionHeading 
-          subtitle="Services We Provide"
-          title={<><span className="text-primary-dark">Professional</span> Psychology Therapy <span className="text-accent">Services</span><br className="hidden md:block" /> You Can Choose</>}
+          subtitle={currentSubtitle}
+          title={<span dangerouslySetInnerHTML={{ __html: currentTitle }} />}
           className="mb-14 px-4"
         />
 

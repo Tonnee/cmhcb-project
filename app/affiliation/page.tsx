@@ -92,10 +92,18 @@ export default async function AffiliationPage(): Promise<React.JSX.Element> {
       />
 
       {/* 1. Our Network showcase */}
-      <PartnerNetwork partners={partners} />
+      <PartnerNetwork
+        partners={partners}
+        title={dbContent?.partnersTitle || undefined}
+        subtitle={dbContent?.partnersSubtitle || undefined}
+      />
 
       {/* 2. Why Affiliate with Us (Benefits) */}
-      <AffiliationBenefits benefits={benefits} />
+      <AffiliationBenefits
+        benefits={benefits}
+        title={dbContent?.benefitsTitle || undefined}
+        subtitle={dbContent?.benefitsSubtitle || undefined}
+      />
 
       {/* 3. Contact for Partnership CTA */}
       <PartnerCta

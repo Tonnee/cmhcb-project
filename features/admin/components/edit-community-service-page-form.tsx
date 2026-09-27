@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { HiOutlinePlus, HiOutlineTrash } from "react-icons/hi2";
+import { uploadImageToSupabase } from "@/lib/supabase";
 import { upsertCommunityServicePageContentAction } from "@/app/(admin)/admin/actions";
 
 interface StatItem {
@@ -28,10 +29,15 @@ interface CommunityServicePageContent {
   heroTitle: string;
   heroSubtitle: string;
   heroDescription: string;
+  heroImage?: string | null;
+  seminarImage?: string | null;
   introTitle: string;
   introDescription1: string;
   introDescription2: string;
   stats: string;
+  pillarsBadge?: string | null;
+  pillarsTitle?: string | null;
+  pillarsDescription?: string | null;
   pillars: string;
   eligibilityTitle: string;
   eligibilityDescription: string;
@@ -58,6 +64,17 @@ export default function EditCommunityServicePageForm({
   const [heroTitle, setHeroTitle] = React.useState(initialContent.heroTitle);
   const [heroSubtitle, setHeroSubtitle] = React.useState(initialContent.heroSubtitle);
   const [heroDescription, setHeroDescription] = React.useState(initialContent.heroDescription);
+  const [heroImage, setHeroImage] = React.useState(initialContent.heroImage || "");
+  const [heroPreviewUrl, setHeroPreviewUrl] = React.useState(initialContent.heroImage || "");
+  const [isHeroUploading, setIsHeroUploading] = React.useState(false);
+
+  const [seminarImage, setSeminarImage] = React.useState(initialContent.seminarImage || "");
+  const [seminarPreviewUrl, setSeminarPreviewUrl] = React.useState(initialContent.seminarImage || "");
+  const [isSeminarUploading, setIsSeminarUploading] = React.useState(false);
+
+  const [pillarsBadge, setPillarsBadge] = React.useState(initialContent.pillarsBadge || "");
+  const [pillarsTitle, setPillarsTitle] = React.useState(initialContent.pillarsTitle || "");
+  const [pillarsDescription, setPillarsDescription] = React.useState(initialContent.pillarsDescription || "");
   
   const [introTitle, setIntroTitle] = React.useState(initialContent.introTitle);
   const [introDescription1, setIntroDescription1] = React.useState(initialContent.introDescription1);
@@ -176,6 +193,38 @@ export default function EditCommunityServicePageForm({
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
 
+  const handleHeroImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setHeroPreviewUrl(URL.createObjectURL(file));
+    setIsHeroUploading(true);
+    try {
+      const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
+      setHeroImage(publicUrl);
+      setHeroPreviewUrl(publicUrl);
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload hero image.");
+    } finally {
+      setIsHeroUploading(false);
+    }
+  };
+
+  const handleSeminarImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSeminarPreviewUrl(URL.createObjectURL(file));
+    setIsSeminarUploading(true);
+    try {
+      const publicUrl = await uploadImageToSupabase(file, "cmhcb-media");
+      setSeminarImage(publicUrl);
+      setSeminarPreviewUrl(publicUrl);
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "Failed to upload workshop image.");
+    } finally {
+      setIsSeminarUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -189,10 +238,15 @@ export default function EditCommunityServicePageForm({
         heroTitle,
         heroSubtitle,
         heroDescription,
+        heroImage,
+        seminarImage,
         introTitle,
         introDescription1,
         introDescription2,
         stats,
+        pillarsBadge,
+        pillarsTitle,
+        pillarsDescription,
         pillars,
         eligibilityTitle,
         eligibilityDescription,
@@ -271,6 +325,26 @@ export default function EditCommunityServicePageForm({
             />
           </div>
         </div>
+
+        {/* Hero Background Image */}
+        <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50 mt-2">
+          {(heroPreviewUrl || heroImage) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={heroPreviewUrl || heroImage} alt="Hero Preview" className="w-full md:w-48 max-h-32 object-cover rounded-xl border border-muted" />
+          )}
+          <div className="flex-1 flex flex-col gap-1">
+            <span className="font-semibold text-dark text-xs">Hero Background Image</span>
+            <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleHeroImageChange}
+              className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash mt-0.5"
+              disabled={isHeroUploading}
+            />
+          </div>
+          {isHeroUploading && <span className="text-xs text-primary font-medium animate-pulse">Uploading image...</span>}
+        </div>
       </div>
 
       {/* Introduction Section */}
@@ -305,6 +379,26 @@ export default function EditCommunityServicePageForm({
               required
             />
           </div>
+        </div>
+
+        {/* Seminar / Workshop Image */}
+        <div className="flex flex-col md:flex-row gap-4 items-center bg-light/10 p-4 rounded-xl border border-muted/50 mt-2">
+          {(seminarPreviewUrl || seminarImage) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={seminarPreviewUrl || seminarImage} alt="Workshop Preview" className="w-full md:w-48 max-h-32 object-cover rounded-xl border border-muted" />
+          )}
+          <div className="flex-1 flex flex-col gap-1">
+            <span className="font-semibold text-dark text-xs">Workshop / Seminar Feature Image</span>
+            <span className="text-[11px] text-light-ash">Size: <strong>800×600 px</strong> (4:3 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleSeminarImageChange}
+              className="file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary-dark hover:file:bg-primary/20 text-xs text-light-ash mt-0.5"
+              disabled={isSeminarUploading}
+            />
+          </div>
+          {isSeminarUploading && <span className="text-xs text-primary font-medium animate-pulse">Uploading image...</span>}
         </div>
       </div>
 
@@ -375,6 +469,41 @@ export default function EditCommunityServicePageForm({
       {/* Pillars Section */}
       <div className="flex flex-col gap-4 border-b border-muted pb-6">
         <h2 className="font-marcellus text-lg font-bold text-dark-green border-b border-muted/50 pb-2">Outreach Program Pillars</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Pillars Badge / Subtitle</label>
+            <input
+              type="text"
+              value={pillarsBadge}
+              onChange={(e) => setPillarsBadge(e.target.value)}
+              placeholder="Outreach Programs"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Pillars Section Heading</label>
+            <input
+              type="text"
+              value={pillarsTitle}
+              onChange={(e) => setPillarsTitle(e.target.value)}
+              placeholder="Pillars of Our Social Impact"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="font-semibold text-dark text-xs">Pillars Description</label>
+          <textarea
+            value={pillarsDescription}
+            onChange={(e) => setPillarsDescription(e.target.value)}
+            placeholder="We operate across multiple domains to integrate therapeutic interventions directly into the daily lives of the public."
+            className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs h-18 resize-none"
+          />
+        </div>
+
+        <h3 className="font-marcellus text-base font-bold text-dark-green mt-2">Pillar Items</h3>
         <div className="grid grid-cols-1 gap-3">
           {pillars.map((pillar, idx) => (
             <div key={idx} className="flex items-start justify-between gap-4 p-4 bg-white border border-muted rounded-xl">

@@ -15,9 +15,17 @@ interface FaqItem {
 
 interface FaqTabsSectionProps {
   initialItems?: FaqItem[];
+  sectionTitle?: string;
+  sectionSubtitle?: string;
+  sectionDescription?: string;
 }
 
-export function FaqTabsSection({ initialItems }: FaqTabsSectionProps): React.JSX.Element {
+export function FaqTabsSection({
+  initialItems,
+  sectionTitle,
+  sectionSubtitle,
+  sectionDescription,
+}: FaqTabsSectionProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [activeTab, setActiveTab] = React.useState<string>("All");
   const [openIndex, setOpenIndex] = React.useState<number | null>(0);
@@ -70,14 +78,14 @@ export function FaqTabsSection({ initialItems }: FaqTabsSectionProps): React.JSX
     <section className="py-16 md:py-24 bg-page-bg">
       <Container>
         <SectionHeading
-          title="Frequently Asked Questions"
-          subtitle="How can we help?"
+          title={sectionTitle || "Frequently Asked Questions"}
+          subtitle={sectionSubtitle || "How can we help?"}
           align="center"
         />
 
         <div className="mb-12">
           <p className="font-sans text-center text-light-ash max-w-2xl mx-auto mb-8 text-lg">
-            Find answers to common questions about our therapy services, billing, appointments, and privacy policies. Can&apos;t find what you&apos;re looking for? Reach out to us directly.
+            {sectionDescription || "Find answers to common questions about our therapy services, billing, appointments, and privacy policies. Can't find what you're looking for? Reach out to us directly."}
           </p>
 
           <div className="relative max-w-xl mx-auto mb-10">

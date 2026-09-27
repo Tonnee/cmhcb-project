@@ -19,6 +19,9 @@ interface FaqPageContent {
   heroTitle: string;
   heroDescription: string;
   heroImage: string;
+  sectionTitle?: string | null;
+  sectionSubtitle?: string | null;
+  sectionDescription?: string | null;
   items: string; // JSON string of FaqItem[]
   lastUpdatedBy?: string | null;
   updatedAt?: Date | string | null;
@@ -38,6 +41,10 @@ export default function EditFaqPageForm({
   const [heroImage, setHeroImage] = React.useState(initialContent.heroImage);
   const [previewUrl, setPreviewUrl] = React.useState(initialContent.heroImage);
   const [pendingFile, setPendingFile] = React.useState<File | null>(null);
+
+  const [sectionTitle, setSectionTitle] = React.useState(initialContent.sectionTitle || "");
+  const [sectionSubtitle, setSectionSubtitle] = React.useState(initialContent.sectionSubtitle || "");
+  const [sectionDescription, setSectionDescription] = React.useState(initialContent.sectionDescription || "");
   
   const [items, setItems] = React.useState<FaqItem[]>(
     safeJsonParse<FaqItem[]>(initialContent.items, [])
@@ -121,6 +128,9 @@ export default function EditFaqPageForm({
         heroTitle,
         heroDescription,
         heroImage: finalHeroImage,
+        sectionTitle,
+        sectionSubtitle,
+        sectionDescription,
         items,
       });
 
@@ -205,7 +215,42 @@ export default function EditFaqPageForm({
 
       {/* FAQ items list */}
       <div className="flex flex-col gap-4">
-        <h2 className="font-marcellus text-lg font-bold text-dark-green">Frequently Asked Questions</h2>
+        <h2 className="font-marcellus text-lg font-bold text-dark-green">FAQ Section Heading & Intro</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Subtitle / Badge</label>
+            <input
+              type="text"
+              value={sectionSubtitle}
+              onChange={(e) => setSectionSubtitle(e.target.value)}
+              placeholder="How can we help?"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-dark text-xs">Section Heading</label>
+            <input
+              type="text"
+              value={sectionTitle}
+              onChange={(e) => setSectionTitle(e.target.value)}
+              placeholder="Frequently Asked Questions"
+              className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="font-semibold text-dark text-xs">Section Description / Sub-paragraph</label>
+          <textarea
+            value={sectionDescription}
+            onChange={(e) => setSectionDescription(e.target.value)}
+            placeholder="Find answers to common questions about our therapy services, billing, appointments, and privacy policies..."
+            className="px-3.5 py-2 border border-muted rounded-xl bg-page-bg/50 focus:outline-none focus:border-primary text-xs h-20 resize-none"
+          />
+        </div>
+
+        <h3 className="font-marcellus text-base font-bold text-dark-green mt-2">Questions & Answers</h3>
         
         <div className="flex flex-col gap-3">
           {items.map((item, idx) => (

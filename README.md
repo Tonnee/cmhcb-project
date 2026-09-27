@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Center for Mental Health and Care Bangladesh (CMHCB) Platform
 
-## Getting Started
+A full-stack, enterprise-grade mental health web platform built with **Next.js 16 (App Router)**, **React 19**, **TypeScript 5**, **Tailwind CSS 4**, **Prisma ORM**, and **Supabase (Auth & Storage)**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌟 Key Highlights
+
+- **Complete Public Platform**: Interactive appointment booking, clinical services directory, professional training curricula, crisis helplines, events and workshops, psychoeducational blog, affiliation network, and community outreach policy.
+- **Dynamic Content Administration**: Full administrative control over all section titles, subtitles, narratives, hero banners, and media uploads across every page.
+- **Enterprise Security**: Role-based access control (RBAC), Supabase SSR authentication with session guards, strict email whitelisting (`admin@cmhcb.org`, `satonnee@gmail.com`), and HTML sanitization (`isomorphic-dompurify`).
+- **Interactive Workspaces**: Real-time management of client appointment requests and trainee enrollment applications with optimistic UI updates.
+- **Accessibility & SEO**: WCAG 2.2 AA compliant text contrast ratios, semantic HTML5, dynamic metadata generation (`generateMetadata`), and structured JSON-LD schemas.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- **Node.js**: v18.17+ or v20+
+- **Database**: PostgreSQL (via Supabase or local instance)
+
+### 2. Environment Setup
+Configure your `.env` or `.env.local` file with the required environment variables:
+```env
+# Database
+DATABASE_URL="postgresql://user:password@host:port/database"
+DIRECT_URL="postgresql://user:password@host:port/database"
+
+# Supabase Auth & Storage
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
+SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+
+# App URL
+APP_URL="http://localhost:3000"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Database Synchronization
+```bash
+npx prisma db push
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Running the Development Server
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) to view the public website.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Admin Panel & Documentation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Admin Login**: [http://localhost:3000/login](http://localhost:3000/login) (Authorized administrators only).
+- **Admin Dashboard**: [http://localhost:3000/admin](http://localhost:3000/admin).
+- **Interactive In-App Documentation**: [http://localhost:3000/admin/docs](http://localhost:3000/admin/docs) — Searchable operations cheatsheet with step-by-step editing guides and image upload specifications.
+- **Comprehensive Technical Admin Guide**: See [ADMIN_DOCUMENTATION.md](./ADMIN_DOCUMENTATION.md) for full architecture, route mappings, data models, and operational workflows.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🧪 Testing & Validation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Type checking
+npx tsc --noEmit
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Unit tests (Vitest)
+npm run test
+
+# End-to-end tests (Playwright)
+npm run test:e2e
+```
