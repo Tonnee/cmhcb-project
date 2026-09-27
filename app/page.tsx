@@ -85,7 +85,7 @@ export default async function Page(): Promise<React.JSX.Element> {
     aboutChartIcon: "/home-about-image/mental-health-progress-chart-icon.png",
     wellbeingHeadline: "Our Commitment to Your <span class=\"text-accent\">Well-Being</span>",
     wellbeingSubtitle: "At CMHC,B, we are committed to delivering compassionate and effective mental health care. Explore how we've supported individuals on their path to emotional well-being and resilience.",
-    wellbeingImage: null,
+    wellbeingImage: "/hero-image/group-therapy-support-circle.png",
     trainingHeadline: "Want to Make a <span class=\"text-primary-dark\">Difference</span> in <span class=\"text-accent\">Mental Health</span>?",
     trainingSubtitle: "Our specialized trainings equip professionals, educators, and caregivers with the tools needed to foster mental well-being in their communities.",
     trainingImage: "/mental-health-training-program.png",

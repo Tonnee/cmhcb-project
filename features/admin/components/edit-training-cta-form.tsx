@@ -351,37 +351,6 @@ export function EditTrainingCtaForm({
           </div>
         </div>
 
-        {/* Visual Preview Box */}
-        <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold text-dark">Live Layout Preview</span>
-          <div className="relative w-full rounded-2xl overflow-hidden py-12 px-6 flex items-center justify-center text-center shadow-xs">
-            {previewUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={previewUrl}
-                alt={ctaImageAlt || "Background"}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            )}
-            <div
-              className="absolute inset-0"
-              style={{ backgroundColor: "rgba(1, 30, 0, 0.73)" }}
-              aria-hidden="true"
-            />
-            <div className="relative z-10 max-w-xl flex flex-col items-center">
-              <h3 className="font-marcellus text-2xl md:text-3xl text-white font-medium mb-3">
-                {ctaTitle || DEFAULT_CTA.ctaTitle}
-              </h3>
-              <p className="font-sans text-xs md:text-sm text-white/90 mb-6 line-clamp-3">
-                {ctaDescription || DEFAULT_CTA.ctaDescription}
-              </p>
-              <span className="inline-block bg-white text-dark-green font-semibold text-xs px-5 py-2.5 rounded-xl shadow-sm">
-                {ctaButtonText || DEFAULT_CTA.ctaButtonText}
-              </span>
-            </div>
-          </div>
-        </div>
-
         {/* Form Actions */}
         <div className="flex items-center justify-between border-t border-muted pt-5 mt-2">
           <button

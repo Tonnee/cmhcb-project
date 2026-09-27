@@ -5,6 +5,17 @@ import { AllSuccessStories } from "@/features/success-stories/components/all-suc
 import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 import { Container } from "@/components/layout/container";
 import prisma from "@/lib/prisma";
+export interface SuccessStoriesPageContent {
+  id?: string;
+  heroTitle: string;
+  heroDescription: string;
+  heroImage: string;
+  heroImageAlt?: string | null;
+  ctaLabel?: string | null;
+  ctaHref?: string | null;
+  lastUpdatedBy?: string | null;
+  updatedAt?: Date | string | null;
+}
 
 import { TESTIMONIALS, type Testimonial } from "@/data/testimonials";
 
@@ -14,6 +25,12 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
+
+interface SuccessStoriesPrismaClient {
+  successStoriesPageContent: {
+    findFirst: () => Promise<SuccessStoriesPageContent | null>;
+  };
+}
 
 export default async function SuccessStoriesPage(): Promise<React.JSX.Element> {
   let isAdmin = false;
@@ -25,21 +42,14 @@ export default async function SuccessStoriesPage(): Promise<React.JSX.Element> {
   }
 
   let testimonials: Testimonial[] = [];
-  let pageContent: {
-    heroTitle?: string;
-    heroDescription?: string;
-    heroImage?: string;
-    heroImageAlt?: string | null;
-    ctaLabel?: string | null;
-    ctaHref?: string | null;
-  } | null = null;
+  let pageContent: SuccessStoriesPageContent | null = null;
 
   try {
     const [dbTestimonials, dbPageContent] = await Promise.all([
       prisma.testimonial.findMany({
         orderBy: [{ order: "asc" }, { createdAt: "desc" }],
       }),
-      prisma.successStoriesPageContent.findFirst(),
+      (prisma as unknown as SuccessStoriesPrismaClient).successStoriesPageContent.findFirst(),
     ]);
 
     if (dbTestimonials && dbTestimonials.length > 0) {

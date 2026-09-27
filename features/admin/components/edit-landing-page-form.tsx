@@ -128,10 +128,11 @@ export default function EditLandingPageForm({
   const [aboutHeartIcon, setAboutHeartIcon] = React.useState(initialContent.aboutHeartIcon ?? defaultAboutValues.heartIcon);
   const [aboutChartIcon, setAboutChartIcon] = React.useState(initialContent.aboutChartIcon ?? defaultAboutValues.chartIcon);
   
+  const defaultWellbeingImage = "/hero-image/group-therapy-support-circle.png";
   const [wellbeingHeadline, setWellbeingHeadline] = React.useState(initialContent.wellbeingHeadline);
   const [wellbeingSubtitle, setWellbeingSubtitle] = React.useState(initialContent.wellbeingSubtitle);
-  const [wellbeingImage, setWellbeingImage] = React.useState(initialContent.wellbeingImage || "");
-  const [wellbeingPreviewUrl, setWellbeingPreviewUrl] = React.useState(initialContent.wellbeingImage || "");
+  const [wellbeingImage, setWellbeingImage] = React.useState(initialContent.wellbeingImage || defaultWellbeingImage);
+  const [wellbeingPreviewUrl, setWellbeingPreviewUrl] = React.useState(initialContent.wellbeingImage || defaultWellbeingImage);
   const [pendingWellbeingFile, setPendingWellbeingFile] = React.useState<File | null>(null);
   
   const defaultStatValues = {
@@ -1067,7 +1068,7 @@ export default function EditLandingPageForm({
                 <label className="font-sans text-xs font-semibold text-dark">
                   Well-Being Background Banner
                 </label>
-                {(wellbeingPreviewUrl || wellbeingImage) && (
+                {(wellbeingPreviewUrl || wellbeingImage) ? (
                   <button
                     type="button"
                     onClick={() => {
@@ -1079,16 +1080,28 @@ export default function EditLandingPageForm({
                   >
                     Remove Banner
                   </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setWellbeingImage(defaultWellbeingImage);
+                      setWellbeingPreviewUrl(defaultWellbeingImage);
+                      setPendingWellbeingFile(null);
+                    }}
+                    className="text-[11px] text-primary hover:text-primary-dark underline cursor-pointer"
+                  >
+                    Reset to Default
+                  </button>
                 )}
               </div>
-              <span className="text-[11px] text-light-ash">Size: <strong>1920×1080 px</strong> (16:9 ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
+              <span className="text-[11px] text-light-ash">Size: <strong>1920×600 px</strong> (~16:5 / 3:1 banner ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
               <div className="flex items-center gap-4 mt-1">
-                <div className="relative w-20 h-14 bg-light/30 border border-muted rounded-lg overflow-hidden shrink-0">
+                <div className="relative w-36 sm:w-44 aspect-[16/5] bg-dark-green/10 border border-muted rounded-lg overflow-hidden shrink-0">
                   {(wellbeingPreviewUrl || wellbeingImage) ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={wellbeingPreviewUrl || wellbeingImage} alt="Well-Being BG" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-light-ash/50">
+                    <div className="w-full h-full flex items-center justify-center text-light-ash/50 bg-light/30">
                       <HiPhoto className="w-6 h-6" />
                     </div>
                   )}
