@@ -30,11 +30,12 @@ export async function signInAction(prevState: any, formData: FormData) {
     }
 
     // Verify admin access (auto-provisions whitelisted super admins, checks DB profile & block status)
-    await getRequiredAdminSession();
+    await getRequiredAdminSession(user);
   } catch (err: any) {
+    console.error("Sign in error:", err);
     // Clear session if unauthorized or blocked
     await supabase.auth.signOut();
-    return { error: err.message || "An unexpected error occurred during sign in." };
+    return { error: (err instanceof Error ? err.message : String(err)) || "An unexpected error occurred during sign in." };
   }
 
   redirect("/admin");

@@ -1064,36 +1064,9 @@ export default function EditLandingPageForm({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Well-Being BG Banner Image Upload */}
             <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <label className="font-sans text-xs font-semibold text-dark">
-                  Well-Being Background Banner
-                </label>
-                {(wellbeingPreviewUrl || wellbeingImage) ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setWellbeingImage("");
-                      setWellbeingPreviewUrl("");
-                      setPendingWellbeingFile(null);
-                    }}
-                    className="text-[11px] text-rose-600 hover:text-rose-700 underline cursor-pointer"
-                  >
-                    Remove Banner
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setWellbeingImage(defaultWellbeingImage);
-                      setWellbeingPreviewUrl(defaultWellbeingImage);
-                      setPendingWellbeingFile(null);
-                    }}
-                    className="text-[11px] text-primary hover:text-primary-dark underline cursor-pointer"
-                  >
-                    Reset to Default
-                  </button>
-                )}
-              </div>
+              <label className="font-sans text-xs font-semibold text-dark">
+                Well-Being Background Banner
+              </label>
               <span className="text-[11px] text-light-ash">Size: <strong>1920×600 px</strong> (~16:5 / 3:1 banner ratio) • Format: <strong>.jpg, .png, .webp</strong> (Max 10MB)</span>
               <div className="flex items-center gap-4 mt-1">
                 <div className="relative w-36 sm:w-44 aspect-[16/5] bg-dark-green/10 border border-muted rounded-lg overflow-hidden shrink-0">

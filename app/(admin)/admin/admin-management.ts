@@ -25,9 +25,18 @@ function getSupabaseAdmin() {
 const WHITELISTED_SUPER_ADMIN_EMAILS = ["admin@cmhcb.com", "satonnee@gmail.com"];
 
 // Helper to authenticate the current admin session, auto-provision if needed, and check block status
-export async function getRequiredAdminSession() {
-  const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+export async function getRequiredAdminSession(existingUser?: {
+  id: string;
+  email?: string | null;
+  app_metadata?: Record<string, any>;
+  user_metadata?: Record<string, any>;
+}) {
+  let user = existingUser;
+  if (!user) {
+    const supabase = await createSupabaseServerClient();
+    const { data } = await supabase.auth.getUser();
+    user = data.user ?? undefined;
+  }
 
   if (!user) {
     throw new Error("Unauthorized: Please sign in.");
