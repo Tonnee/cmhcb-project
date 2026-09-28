@@ -272,6 +272,7 @@ export default async function FaqsPage(): Promise<React.JSX.Element> {
           sectionTitle={dbContent?.sectionTitle || undefined}
           sectionSubtitle={dbContent?.sectionSubtitle || undefined}
           sectionDescription={dbContent?.sectionDescription || undefined}
+          pageSize={10}
         />
       </div>
     </main>

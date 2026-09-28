@@ -5,6 +5,7 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { FaqAccordionItem } from "@/components/shared/faq";
+import { Pagination } from "@/components/shared/pagination";
 import { CATEGORIZED_FAQS, FAQ_CATEGORIES } from "@/data/faqs";
 
 interface FaqItem {
@@ -18,6 +19,7 @@ interface FaqTabsSectionProps {
   sectionTitle?: string;
   sectionSubtitle?: string;
   sectionDescription?: string;
+  pageSize?: number;
 }
 
 export function FaqTabsSection({
@@ -25,10 +27,12 @@ export function FaqTabsSection({
   sectionTitle,
   sectionSubtitle,
   sectionDescription,
+  pageSize = 10,
 }: FaqTabsSectionProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [activeTab, setActiveTab] = React.useState<string>("All");
   const [openIndex, setOpenIndex] = React.useState<number | null>(0);
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
 
   const parsedItems = React.useMemo(() => {
     if (initialItems && initialItems.length > 0) {
@@ -69,6 +73,34 @@ export function FaqTabsSection({
       return matchesCategory && matchesSearch;
     });
   }, [searchQuery, activeTab, parsedItems]);
+
+  // Reset page to 1 when search query or active category tab changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+    setOpenIndex(0);
+  }, [activeTab, searchQuery]);
+
+  const totalPages = Math.ceil(filteredFaqs.length / pageSize);
+
+  const paginatedFaqs = React.useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredFaqs.slice(startIndex, startIndex + pageSize);
+  }, [filteredFaqs, currentPage, pageSize]);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    setOpenIndex(0);
+    const element = document.getElementById("faq-section");
+    if (element) {
+      const headerOffset = 100;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const toggle = (index: number) => {
     setOpenIndex((prev) => (prev === index ? null : index));
@@ -145,17 +177,40 @@ export function FaqTabsSection({
 
         {/* Results */}
         <div className="min-h-100">
-          {filteredFaqs.length > 0 ? (
+          {paginatedFaqs.length > 0 ? (
             <div>
-              {filteredFaqs.map((faq, index) => (
-                <FaqAccordionItem
-                  key={faq.id}
-                  item={{ question: faq.question, answer: faq.answer }}
-                  isOpen={openIndex === index}
-                  onToggle={() => toggle(index)}
-                  showDivider={index < filteredFaqs.length - 1}
-                />
-              ))}
+              {filteredFaqs.length > pageSize && (
+                <div className="flex items-center justify-between mb-6 px-1">
+                  <span className="font-sans text-xs text-light-ash">
+                    Showing {((currentPage - 1) * pageSize) + 1}–{Math.min(currentPage * pageSize, filteredFaqs.length)} of {filteredFaqs.length} questions
+                  </span>
+                  <span className="font-sans text-xs text-light-ash">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                </div>
+              )}
+
+              <div>
+                {paginatedFaqs.map((faq, index) => (
+                  <FaqAccordionItem
+                    key={faq.id}
+                    item={{ question: faq.question, answer: faq.answer }}
+                    isOpen={openIndex === index}
+                    onToggle={() => toggle(index)}
+                    showDivider={index < paginatedFaqs.length - 1}
+                  />
+                ))}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="mt-12">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full py-16 text-center">
