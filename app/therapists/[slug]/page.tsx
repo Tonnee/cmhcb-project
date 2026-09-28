@@ -18,6 +18,7 @@ import { BookAppointmentButton } from "@/components/shared/book-appointment-butt
 import { Tag } from "@/components/ui/tag";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/shared/json-ld";
+import { Faq } from "@/components/shared/faq";
 
 /* ------------------------------------------------------------------ */
 /* Small reusable sub-components                                        */
@@ -153,6 +154,11 @@ export default async function TherapistProfilePage({
     try { if (dbTherapist.services) services = JSON.parse(dbTherapist.services); } catch {}
     try { if (dbTherapist.activities) activities = JSON.parse(dbTherapist.activities); } catch {}
     try { if (dbTherapist.fees) fees = JSON.parse(dbTherapist.fees); } catch {}
+  }
+
+  let faqs: { question: string; answer: string }[] = [];
+  if (dbTherapist?.faqs) {
+    try { faqs = JSON.parse(dbTherapist.faqs); } catch {}
   }
 
   const therapist = {
@@ -386,6 +392,11 @@ export default async function TherapistProfilePage({
             ))}
           </div>
         </Container>
+      )}
+
+      {/* Therapist FAQs Section */}
+      {faqs.length > 0 && (
+        <Faq items={faqs} heading="Frequently Asked Questions" className="mb-24" />
       )}
     </main>
   );

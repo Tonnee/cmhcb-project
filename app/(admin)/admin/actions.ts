@@ -43,6 +43,12 @@ const TherapistInputSchema = z.object({
   ).default([]),
   services: z.array(z.string()).default([]),
   activities: z.array(z.string()).default([]),
+  faqs: z.array(
+    z.object({
+      question: z.string(),
+      answer: z.string(),
+    })
+  ).default([]),
 });
 
 const WorkshopInputSchema = z.object({
@@ -345,6 +351,7 @@ export async function upsertTherapistAction(
       fees: JSON.stringify(validated.fees),
       services: JSON.stringify(validated.services),
       activities: JSON.stringify(validated.activities),
+      faqs: JSON.stringify(validated.faqs),
       lastUpdatedBy: admin.email,
     };
 
@@ -373,6 +380,7 @@ export async function upsertTherapistAction(
     revalidatePath("/therapists");
     revalidatePath(`/therapists/${id}`);
     revalidatePath("/admin/therapists");
+    revalidatePath("/faqs");
 
     return { success: true, data: therapist };
   } catch (error: any) {

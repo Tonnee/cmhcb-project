@@ -45,7 +45,7 @@ export function FaqTabsSection({
   const categories = React.useMemo(() => {
     if (initialItems && initialItems.length > 0) {
       const cats = Array.from(new Set(initialItems.map((item) => item.category)));
-      const order = ["Services", "Trainings", "Others"];
+      const order = ["Services", "Trainings", "Therapist", "Therapists", "Others"];
       return cats.sort((a, b) => {
         const idxA = order.indexOf(a);
         const idxB = order.indexOf(b);

@@ -54,6 +54,7 @@ export default async function TherapistsPage() {
         let parsedServices: string[] = [];
         let parsedActivities: string[] = [];
         let parsedFees: any = null;
+        let parsedFaqs: any[] = [];
 
         try { parsedEducation = JSON.parse(t.education || "[]"); } catch { }
         try { parsedTraining = JSON.parse(t.training || "[]"); } catch { }
@@ -62,6 +63,7 @@ export default async function TherapistsPage() {
         try { parsedServices = JSON.parse(t.services || "[]"); } catch { }
         try { parsedActivities = JSON.parse(t.activities || "[]"); } catch { }
         try { parsedFees = JSON.parse(t.fees || "null"); } catch { }
+        try { parsedFaqs = JSON.parse((t as any).faqs || "[]"); } catch { }
 
         return {
           id: t.id,
@@ -76,6 +78,7 @@ export default async function TherapistsPage() {
           fees: parsedFees,
           services: parsedServices,
           activities: parsedActivities,
+          faqs: parsedFaqs,
           order: t.order ?? 0,
         };
       });
@@ -146,7 +149,34 @@ export default async function TherapistsPage() {
       </Container>
 
       <AppointmentCta />
-      <Faq items={THERAPIST_FAQS} heading="Frequently Asked Questions" className="mb-24" />
+      {(() => {
+        const allTherapistFaqs: { question: string; answer: string }[] = [];
+        const seenFaqQuestions = new Set<string>();
+
+        therapists.forEach((t: any) => {
+          if (Array.isArray(t.faqs)) {
+            t.faqs.forEach((f: any) => {
+              if (f.question && f.answer) {
+                const key = f.question.trim().toLowerCase();
+                if (!seenFaqQuestions.has(key)) {
+                  seenFaqQuestions.add(key);
+                  allTherapistFaqs.push({ question: f.question, answer: f.answer });
+                }
+              }
+            });
+          }
+        });
+
+        THERAPIST_FAQS.forEach((f) => {
+          const key = f.question.trim().toLowerCase();
+          if (!seenFaqQuestions.has(key)) {
+            seenFaqQuestions.add(key);
+            allTherapistFaqs.push(f);
+          }
+        });
+
+        return <Faq items={allTherapistFaqs} heading="Frequently Asked Questions" className="mb-24" />;
+      })()}
     </main>
   );
 }

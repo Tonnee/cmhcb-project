@@ -295,6 +295,7 @@ export default function EditFaqPageForm({
               >
                 <option value="Services">Services</option>
                 <option value="Trainings">Trainings</option>
+                <option value="Therapist">Therapist</option>
                 <option value="Others">Others</option>
               </select>
             </div>

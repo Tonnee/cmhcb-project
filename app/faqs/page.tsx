@@ -6,6 +6,7 @@ import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
 import { Container } from "@/components/layout/container";
 import prisma from "@/lib/prisma";
 import { JsonLd } from "@/components/shared/json-ld";
+import { THERAPIST_FAQS } from "@/features/therapists/data/faqs";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions | CMHCB",
@@ -44,10 +45,11 @@ export default async function FaqsPage(): Promise<React.JSX.Element> {
     isAdmin = false;
   }
 
-  const [dbContent, dbServices, dbTrainings] = await Promise.all([
+  const [dbContent, dbServices, dbTrainings, dbTherapists] = await Promise.all([
     prisma.faqPageContent.findFirst(),
     prisma.service.findMany({ select: { title: true, faqs: true } }),
     prisma.training.findMany({ select: { title: true, faq: true } }),
+    (prisma.therapist.findMany as any)({ select: { name: true, faqs: true } }) as Promise<Array<{ name: string; faqs?: string | null }>>,
   ]);
 
   const title = dbContent?.heroTitle || "We are here to answer your questions";
@@ -100,7 +102,50 @@ export default async function FaqsPage(): Promise<React.JSX.Element> {
     }
   });
 
-  // 3. Compile Admin-added FAQs from FaqPageContent
+  // 3. Compile Therapist FAQs -> goes to "Therapist" tab
+  const therapistQuestionsSeen = new Set<string>();
+
+  dbTherapists.forEach((t: { name: string; faqs?: string | null }) => {
+    if (t.faqs) {
+      try {
+        const parsed = JSON.parse(t.faqs);
+        if (Array.isArray(parsed)) {
+          parsed.forEach((faq) => {
+            if (faq.question && faq.answer) {
+              const qKey = faq.question.trim().toLowerCase();
+              if (!therapistQuestionsSeen.has(qKey)) {
+                therapistQuestionsSeen.add(qKey);
+                compiledFaqs.push({
+                  category: "Therapist",
+                  question: faq.question,
+                  answer: faq.answer,
+                });
+              }
+            }
+          });
+        }
+      } catch (e) {
+        console.error(`Failed to parse Therapist FAQ for ${t.name}:`, e);
+      }
+    }
+  });
+
+  // Supplement with default THERAPIST_FAQS if not already added
+  THERAPIST_FAQS.forEach((faq) => {
+    if (faq.question && faq.answer) {
+      const qKey = faq.question.trim().toLowerCase();
+      if (!therapistQuestionsSeen.has(qKey)) {
+        therapistQuestionsSeen.add(qKey);
+        compiledFaqs.push({
+          category: "Therapist",
+          question: faq.question,
+          answer: faq.answer,
+        });
+      }
+    }
+  });
+
+  // 4. Compile Admin-added FAQs from FaqPageContent
   if (dbContent?.items) {
     try {
       const parsed = JSON.parse(dbContent.items);
@@ -114,6 +159,8 @@ export default async function FaqsPage(): Promise<React.JSX.Element> {
               finalCategory = "Services";
             } else if (rawCategory === "trainings" || rawCategory === "training") {
               finalCategory = "Trainings";
+            } else if (rawCategory === "therapist" || rawCategory === "therapists") {
+              finalCategory = "Therapist";
             } else {
               finalCategory = "Others";
             }
@@ -144,6 +191,11 @@ export default async function FaqsPage(): Promise<React.JSX.Element> {
         question: "Do I need a psychology background to attend trainings?",
         answer: "No. Most of our community and professional workshops are open to anyone who wants to learn helper skills.",
       },
+      ...THERAPIST_FAQS.map((faq) => ({
+        category: "Therapist",
+        question: faq.question,
+        answer: faq.answer,
+      })),
       {
         category: "Others",
         question: "How do I book an appointment?",

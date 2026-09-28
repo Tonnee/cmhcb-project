@@ -21,6 +21,7 @@ interface TherapistDB {
   fees: string;
   services: string;
   activities: string;
+  faqs?: string | null;
   order?: number;
 }
 

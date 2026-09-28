@@ -20,6 +20,11 @@ interface FeeCategory {
   serviceId?: string; // set on auto-generated categories so they can be removed when unchecked
 }
 
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 interface TherapistFormProps {
   therapist?: {
     id: string;
@@ -34,6 +39,7 @@ interface TherapistFormProps {
     fees: string; // JSON string
     services: string; // JSON string
     activities: string; // JSON string
+    faqs?: string | null; // JSON string
     lastUpdatedBy?: string | null;
     updatedAt?: string | Date;
   } | null;
@@ -105,6 +111,23 @@ export default function EditTherapistForm({
   const [fees, setFees] = React.useState<FeeCategory[]>(() =>
     therapist ? safeJsonParse<FeeCategory[]>(therapist.fees, []) : []
   );
+  const [faq, setFaq] = React.useState<FaqItem[]>(() =>
+    therapist?.faqs ? safeJsonParse<FaqItem[]>(therapist.faqs, []) : []
+  );
+
+  const addFaqItem = () => {
+    setFaq([...faq, { question: "", answer: "" }]);
+  };
+
+  const removeFaqItem = (idx: number) => {
+    setFaq(faq.filter((_, i) => i !== idx));
+  };
+
+  const updateFaqItem = (idx: number, field: keyof FaqItem, value: string) => {
+    const updated = [...faq];
+    updated[idx] = { ...updated[idx], [field]: value };
+    setFaq(updated);
+  };
 
   // Loading & error states
   const [isUploading, setIsUploading] = React.useState(false);
@@ -301,6 +324,7 @@ export default function EditTherapistForm({
         }),
         services,
         activities: therapist ? safeJsonParse<string[]>(therapist.activities, []) : [],
+        faqs: faq.filter((f) => f.question.trim() && f.answer.trim()),
       };
 
       // Zod validation on client
@@ -659,6 +683,65 @@ export default function EditTherapistForm({
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Frequently Asked Questions (FAQ) Builder */}
+        <div className="flex flex-col gap-3 p-4 bg-light/10 rounded-2xl border border-muted/50">
+          <div className="flex items-center justify-between border-b border-muted pb-2">
+            <div>
+              <span className="font-semibold text-dark text-sm block">Frequently Asked Questions (FAQs)</span>
+              <span className="text-[11px] text-light-ash">These FAQs will automatically appear under the &ldquo;Therapist&rdquo; tab on the /faqs page.</span>
+            </div>
+            <button
+              type="button"
+              onClick={addFaqItem}
+              className="text-primary hover:text-primary-dark font-semibold text-xs flex items-center gap-1 cursor-pointer bg-primary/10 hover:bg-primary/20 px-2.5 py-1.5 rounded-lg transition-colors"
+            >
+              <HiPlus className="w-3.5 h-3.5" /> Add FAQ Item
+            </button>
+          </div>
+
+          {faq.length > 0 ? (
+            <div className="flex flex-col gap-3 mt-1">
+              {faq.map((faqItem, idx) => (
+                <div key={idx} className="bg-white border border-muted rounded-xl p-3 flex flex-col gap-2 relative shadow-xs">
+                  <button
+                    type="button"
+                    onClick={() => removeFaqItem(idx)}
+                    className="absolute right-3 top-3 text-light-ash hover:text-red-600 p-1 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                    title="Remove FAQ"
+                  >
+                    <HiTrash className="w-4 h-4" />
+                  </button>
+
+                  <div className="flex flex-col gap-1 pr-8">
+                    <label className="text-[11px] font-semibold text-dark">Question</label>
+                    <input
+                      type="text"
+                      value={faqItem.question}
+                      onChange={(e) => updateFaqItem(idx, "question", e.target.value)}
+                      placeholder="e.g. What approach do you use for anxiety?"
+                      className="px-3 py-1.5 border border-muted rounded-lg bg-white focus:outline-none focus:border-primary text-xs"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[11px] font-semibold text-dark">Answer</label>
+                    <textarea
+                      value={faqItem.answer}
+                      onChange={(e) => updateFaqItem(idx, "answer", e.target.value)}
+                      placeholder="Provide a helpful response..."
+                      className="w-full h-16 px-3 py-1.5 border border-muted bg-white focus:outline-none focus:border-primary text-xs resize-none rounded-lg"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-4 text-xs text-light-ash border border-dashed border-muted rounded-xl bg-white/50">
+              No custom FAQs added for this therapist yet. Click &ldquo;Add FAQ Item&rdquo; to add therapist-specific FAQs.
+            </div>
+          )}
         </div>
 
         {/* Action buttons */}

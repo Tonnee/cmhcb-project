@@ -378,6 +378,7 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
       "Areas of Expertise (e.g., Anxiety, Depression, Trauma)",
       "Years of Experience & Consultation Fees",
       "Assigned Services & Display Sorting Order",
+      "Frequently Asked Questions (FAQs) Builder (surfaces on therapist profile & under 'Therapist' tab on /faqs)",
     ],
     imageSpecs: {
       recommendedDimensions: "800 x 1000 px",
@@ -391,6 +392,7 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
       "Click '+ Add New Therapist' or click 'Edit' on an existing profile.",
       "Upload the portrait photo, enter full name, and clinical credentials.",
       "Specify consultation fees and tags for areas of clinical focus.",
+      "Add custom Q&A items in the Frequently Asked Questions (FAQ) builder to surface on the therapist profile and under the 'Therapist' tab on /faqs.",
       "Set the display order integer (0 displays first) to control catalog sorting.",
       "Click 'Save Therapist' to update the public directory.",
     ],
@@ -710,7 +712,7 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
     fields: [
       "FAQ Page Hero Title, Description & Hero Background Image",
       "FAQ Section: Heading, Subtitle Badge & Introductory Description",
-      "FAQ Items List: Category (Services, Trainings, Others)",
+      "FAQ Items List: Category (Services, Trainings, Therapist, Others)",
       "Question String & Comprehensive Answer Body",
     ],
     imageSpecs: {
