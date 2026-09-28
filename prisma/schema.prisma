@@ -270,6 +270,7 @@ model AppointmentPageContent {
   title         String   @default("Book an Appointment")
   description   String   @default("Take the first step toward better mental well-being. Choose your preferred therapist, service, and time. Our team is here to support you every step of the way.")
   features      String   @default("[]") // JSON string of { title: string, description: string, iconName?: string }[]
+  formFields    String?  @default("[]") // JSON string of FormFieldConfig[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   lastUpdatedBy String?
@@ -281,6 +282,7 @@ model JoinTrainingPageContent {
   title         String   @default("Join Training Batch")
   description   String   @default("Take the next step in your professional development or advocacy journey. Register for one of our specialised training cohorts.")
   features      String   @default("[]") // JSON string of { title: string, description: string, iconName?: string }[]
+  formFields    String?  @default("[]") // JSON string of FormFieldConfig[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   lastUpdatedBy String?
@@ -482,36 +484,38 @@ model GalleryItem {
 }
 
 model Appointment {
-  id         String   @id @default(cuid())
-  name       String
-  age        Int
-  gender     String
-  contact    String
-  service    String   // Service slug or title
-  therapist  String   // Therapist ID or name
-  date       String
-  time       String
-  preference String   // "online" | "in-person"
-  message    String?
-  status     String   @default("PENDING") // "PENDING", "APPROVED", "CANCELLED", "COMPLETED"
-  isViewed   Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  age          Int
+  gender       String
+  contact      String
+  service      String   // Service slug or title
+  therapist    String   // Therapist ID or name
+  date         String
+  time         String
+  preference   String   // "online" | "in-person"
+  message      String?
+  customFields String?  @default("{}") // JSON string of dynamic field key-values
+  status       String   @default("PENDING") // "PENDING", "APPROVED", "CANCELLED", "COMPLETED"
+  isViewed     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model TrainingRequest {
-  id         String   @id @default(cuid())
-  name       String
-  age        Int
-  gender     String
-  contact    String
-  training   String   // Training slug or title
-  preference String   // "online" | "in-person"
-  message    String?
-  status     String   @default("PENDING") // "PENDING", "APPROVED", "REJECTED", "CANCELLED"
-  isViewed   Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  age          Int
+  gender       String
+  contact      String
+  training     String   // Training slug or title
+  preference   String   // "online" | "in-person"
+  message      String?
+  customFields String?  @default("{}") // JSON string of dynamic field key-values
+  status       String   @default("PENDING") // "PENDING", "APPROVED", "REJECTED", "CANCELLED"
+  isViewed     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model WorkshopRegistration {

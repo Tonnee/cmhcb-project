@@ -30,6 +30,7 @@ export interface AppointmentPageContentDB {
   title: string;
   description: string;
   features?: string | null;
+  formFields?: string | null;
   lastUpdatedBy?: string | null;
   updatedAt?: string | Date;
 }

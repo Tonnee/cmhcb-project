@@ -98,8 +98,8 @@ All mutations run through strictly typed Server Actions in [actions.ts](file:///
 | **Contact Us** | `/admin/pages/contact` | `ContactPageContent` | • Hero Title, Description, Background Image & Image Alt text<br>• "Get in Touch" Section Heading & Narrative Description<br>• Primary Phone, Inquiries Email, Physical Office Address (Lines 1, 2, 3)<br>• Google Maps iframe embed URL<br>• Social media profile URLs (Facebook, Instagram, Twitter/X, LinkedIn) |
 | **FAQs** | `/admin/pages/faq` | `FaqPageContent` | • Hero Title, Description & Hero Background Image<br>• FAQ Section Heading, Subtitle Badge, and Intro Description paragraph<br>• Categorized Question & Answer accordions (Services, Trainings, Therapist, Others) |
 | **Community Service** | `/admin/pages/community-service` | `CommunityServicePageContent` | • Hero Title, Subtitle, Description & Hero Background Image upload<br>• Introduction Block: Section Heading, Paragraph 1, Paragraph 2 & Seminar/Workshop Feature Photo upload<br>• Outreach Impact Statistics (metric value, title, description)<br>• Outreach Program Pillars: Section Heading, Badge, Description & Pillar Cards (badge, title, description, icon)<br>• Eligibility Verification: Title, Description & Criteria list<br>• Operational Guidelines: Title, Description & Guidelines list<br>• Outreach Session Request CTA: Title, Description & Coordinator email |
-| **Book an Appointment** | `/admin/appointments` | `AppointmentPageContent`<br>`Appointment` | • Subtitle Badge ("Get Started"), Main Title ("Book an Appointment"), and Description Narrative<br>• Benefit Highlight Pillars (title, description, and vector icon selection e.g., Expert Care, Flexible Timing, Private & Confidential)<br>• Client booking request intake roster and optimistic status transitions |
-| **Join Training Batch** | `/admin/training-requests` | `JoinTrainingPageContent`<br>`TrainingRequest` | • Subtitle Badge ("Get Started"), Main Title ("Join Training Batch"), and Description Narrative<br>• Benefit Highlight Pillars (title, description, and vector icon selection e.g., Expert Facilitators, Interactive Curriculum, Official Certification)<br>• Trainee registration intake roster and status transitions |
+| **Book an Appointment** | `/admin/appointments` | `AppointmentPageContent`<br>`Appointment` | • Subtitle Badge ("Get Started"), Main Title ("Book an Appointment"), and Description Narrative<br>• Benefit Highlight Pillars (title, description, and vector icon selection e.g., Expert Care, Flexible Timing, Private & Confidential)<br>• **Form Fields Builder**: Customize existing intake field labels/placeholders and add dynamic visitor fields (text, number, email, phone, textarea, dropdown select, radio, checkbox, date)<br>• Client booking request intake roster with optimistic status transitions and dynamic viewer for all custom fields |
+| **Join Training Batch** | `/admin/training-requests` | `JoinTrainingPageContent`<br>`TrainingRequest` | • Subtitle Badge ("Get Started"), Main Title ("Join Training Batch"), and Description Narrative<br>• Benefit Highlight Pillars (title, description, and vector icon selection e.g., Expert Facilitators, Interactive Curriculum, Official Certification)<br>• **Form Fields Builder**: Customize existing registration field labels/placeholders and add dynamic applicant fields (text, number, email, phone, textarea, dropdown select, radio, checkbox, date)<br>• Trainee registration intake roster with status transitions and dynamic viewer for all custom fields |
 | **Media Gallery** | `/admin/pages/gallery` | `GalleryItem` | • Photographs and video stream links<br>• Alt text descriptions and display captions<br>• Categorization tags (Events, Workshops, Activities, Occasions) |
 
 ---
@@ -107,23 +107,36 @@ All mutations run through strictly typed Server Actions in [actions.ts](file:///
 ## 5. Interactive Operations Workspaces
 
 ### 5.1 Client Appointments & Page Content (`/admin/appointments`)
-- **Dual Tab Architecture**: Seamlessly switch between **"Booked Appointments"** (client intake table) and **"Appointment Page Text & Highlights"** (live page content editor).
+- **Triple Tab Architecture**: Seamlessly switch between **"Booked Appointments"** (client intake table), **"Appointment Page Text & Highlights"** (live page content editor), and **"Form Fields Builder"** (dynamic intake form customizer).
+- **Form Fields Builder**:
+  - **Customize Existing Fields**: Edit labels, placeholders, required status, and help texts for default intake fields (Full Name, Phone, Email, Service, Therapist, Preferred Date, Preferred Time, Consultation Medium, Intake Notes).
+  - **Add Custom Fields**: Add unlimited new visitor input fields to collect specialized clinical or demographic information.
+  - **Field Types Dropdown**: Supports `Text`, `Number`, `Email`, `Phone Number`, `Paragraph / Textarea`, `Dropdown Select`, `Radio Choice`, `Checkbox Toggle`, and `Date Picker`.
+  - **Options Management**: Add comma-separated choices for dropdown select and radio fields.
+  - **Reordering & Layout**: Move fields up and down to structure the visitor's intake flow.
+  - **Zero Database / Security Errors**: Custom fields are safely persisted into dedicated JSON storage (`Appointment.customFields`), completely avoiding database schema changes or migrations while sanitizing against XSS and enforcing validation.
 - **Page Content Customizer**:
   - Update left-column introductory subtitle badge ("Get Started"), title ("Book an Appointment"), and descriptive narrative.
   - Add, edit, or remove benefit highlight cards with instant icon picker (`HiUserGroup`, `HiClock`, `PhoneIcon`, `HiShieldCheck`, `HiHeart`, `HiSparkles`, `HiAcademicCap`).
   - Includes direct link to preview the live `/appointment` page.
 - **Real-Time Bookings Feed**: Displays client booking requests sorted chronologically.
 - **Filter Tabs**: Filter by status (`All`, `Pending`, `Approved`, `Completed`, `Cancelled`).
-- **Client Details**: Client full name, age, gender, contact phone, email, preferred therapist, selected service, date, time slot, consultation medium (Online vs In-Person), and confidential intake notes.
+- **Client Details Modal**: Client full name, age, gender, contact phone, email, preferred therapist, selected service, date, time slot, consultation medium (Online vs In-Person), confidential intake notes, and a dynamic **"Additional Custom Fields"** grid showing all administrator-defined responses.
 - **Status Updates**: Instant status toggle with optimistic UI feedback and automatic admin activity logging.
 
 ### 5.2 Training Inquiries & Page Content (`/admin/training-requests`)
-- **Dual Tab Architecture**: Seamlessly switch between **"Training Requests"** (intake table) and **"Join Training Page Text & Highlights"** (live page content editor).
+- **Triple Tab Architecture**: Seamlessly switch between **"Training Requests"** (intake table), **"Join Training Page Text & Highlights"** (live page content editor), and **"Form Fields Builder"** (cohort registration form customizer).
+- **Form Fields Builder**:
+  - **Customize Existing Fields**: Edit labels, placeholders, required status, and help texts for default applicant fields (Full Name, Phone, Email, Selected Course, Educational Background, Profession, Message/Statement).
+  - **Add Custom Fields**: Add new fields to capture academic credentials, student ID numbers, institutional affiliations, or dietary requirements.
+  - **Field Types Dropdown**: Select between `Text`, `Number`, `Email`, `Phone Number`, `Paragraph / Textarea`, `Dropdown Select`, `Radio Choice`, `Checkbox Toggle`, and `Date Picker`.
+  - **Reordering & Layout**: Reorder registration questions with up/down controls.
+  - **Zero Database / Security Errors**: Responses to dynamic questions are persisted into `TrainingRequest.customFields` with strict XSS sanitization and payload validation.
 - **Page Content Customizer**:
   - Update left-column introductory subtitle badge ("Get Started"), title ("Join Training Batch"), and descriptive narrative.
   - Add, edit, or remove benefit highlight cards with instant icon picker (`HiUserGroup`, `HiBookOpen`, `HiSparkles`, `HiAcademicCap`, `HiShieldCheck`, `HiClock`, `HiHeart`, `PhoneIcon`).
   - Includes direct link to preview the live `/join-training` page.
-- **Trainee Applications**: Displays applicant names, contact phone, email, selected certification course, educational/professional background, and submission timestamp.
+- **Trainee Applications Feed**: Displays applicant names, contact phone, email, selected certification course, educational/professional background, submission timestamp, and dynamic **"Additional Custom Fields"** in the details drawer.
 - **Status Transitions**: One-click approval or rejection upon payment or credential verification.
 
 ### 5.3 Clinicians & Therapists Management (`/admin/therapists`)

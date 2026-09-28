@@ -3166,3 +3166,124 @@ export async function upsertJoinTrainingPageContentAction(
     return { success: false, error: error.message || "An unexpected error occurred" };
   }
 }
+
+// ============================================================================
+// Server Actions - Form Field Customizer
+// ============================================================================
+
+const FormFieldItemSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1, "Field label cannot be empty"),
+  type: z.enum([
+    "text",
+    "number",
+    "email",
+    "tel",
+    "textarea",
+    "select",
+    "date",
+    "radio",
+    "checkbox",
+  ]),
+  placeholder: z.string().optional().default(""),
+  required: z.boolean().default(false),
+  options: z.array(z.string()).optional().default([]),
+  defaultValue: z.string().optional(),
+  isSystemField: z.boolean().optional().default(false),
+  enabled: z.boolean().default(true),
+  helpText: z.string().optional().default(""),
+  order: z.number().optional().default(0),
+});
+
+export async function saveAppointmentFormFieldsAction(
+  rawFields: unknown
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = z.array(FormFieldItemSchema).parse(rawFields);
+
+    const existing = await (prisma as any).appointmentPageContent.findFirst();
+    const jsonStr = JSON.stringify(validated);
+
+    const record = await (prisma as any).appointmentPageContent.upsert({
+      where: { id: existing?.id || "appointment-content" },
+      create: {
+        id: "appointment-content",
+        formFields: jsonStr,
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        formFields: jsonStr,
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "AppointmentPageContent",
+      record.id,
+      "Appointment Form Fields",
+      `Updated appointment intake form fields configuration (${validated.length} fields)`
+    );
+
+    revalidatePath("/appointment");
+    revalidatePath("/admin/appointments");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in saveAppointmentFormFieldsAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save form fields" };
+  }
+}
+
+export async function saveTrainingFormFieldsAction(
+  rawFields: unknown
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = z.array(FormFieldItemSchema).parse(rawFields);
+
+    const existing = await (prisma as any).joinTrainingPageContent.findFirst();
+    const jsonStr = JSON.stringify(validated);
+
+    const record = await (prisma as any).joinTrainingPageContent.upsert({
+      where: { id: existing?.id || "join-training-content" },
+      create: {
+        id: "join-training-content",
+        formFields: jsonStr,
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        formFields: jsonStr,
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "JoinTrainingPageContent",
+      record.id,
+      "Training Form Fields",
+      `Updated training cohort registration form fields configuration (${validated.length} fields)`
+    );
+
+    revalidatePath("/join-training");
+    revalidatePath("/admin/training-requests");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in saveTrainingFormFieldsAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "Failed to save form fields" };
+  }
+}
+

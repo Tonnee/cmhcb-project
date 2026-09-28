@@ -11,6 +11,9 @@ import {
   EditJoinTrainingPageForm,
   type JoinTrainingPageContentDB,
 } from "./edit-join-training-page-form";
+import { FormFieldsBuilder } from "./form-fields-builder";
+import { DEFAULT_TRAINING_FORM_FIELDS } from "@/types/form-fields";
+import { safeJsonParse } from "@/lib/json";
 
 interface TrainingRequest {
   id: string;
@@ -24,6 +27,7 @@ interface TrainingRequest {
   status: "pending" | "approved" | "rejected";
   dateTime: string;
   isViewed: boolean;
+  customFields?: string | null;
 }
 
 export interface TrainingRequestsClientWrapperProps {
@@ -35,7 +39,7 @@ export function TrainingRequestsClientWrapper({
   initialRequests,
   initialPageContent,
 }: TrainingRequestsClientWrapperProps): React.JSX.Element {
-  const [activeTab, setActiveTab] = React.useState<"requests" | "page-content">("requests");
+  const [activeTab, setActiveTab] = React.useState<"requests" | "page-content" | "form-fields">("requests");
   const [requests, setRequests] = React.useState<TrainingRequest[]>(initialRequests);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "pending" | "approved" | "rejected">("all");
@@ -97,11 +101,11 @@ export function TrainingRequestsClientWrapper({
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-muted/50 -mt-2">
+      <div className="flex border-b border-muted/50 -mt-2 overflow-x-auto">
         <button
           type="button"
           onClick={() => setActiveTab("requests")}
-          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === "requests"
               ? "border-primary text-primary-dark"
               : "border-transparent text-light-ash hover:text-dark"
@@ -112,18 +116,38 @@ export function TrainingRequestsClientWrapper({
         <button
           type="button"
           onClick={() => setActiveTab("page-content")}
-          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === "page-content"
               ? "border-primary text-primary-dark"
               : "border-transparent text-light-ash hover:text-dark"
           }`}
         >
-          Join Training Page Text & Highlights
+          Page Text & Highlights
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("form-fields")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === "form-fields"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Form Fields Builder
         </button>
       </div>
 
       {activeTab === "page-content" ? (
         <EditJoinTrainingPageForm initialContent={initialPageContent} />
+      ) : activeTab === "form-fields" ? (
+        <FormFieldsBuilder
+          title="Training Cohort Registration Form Customizer"
+          description="Manage existing fields (labels, placeholders, requirement rules) and add new custom input fields to collect specialized information from trainees."
+          targetType="training"
+          initialFields={initialPageContent?.formFields}
+          defaultFields={DEFAULT_TRAINING_FORM_FIELDS}
+          previewUrl="/join-training"
+        />
       ) : (
         <>
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-muted/50 shadow-xs">
@@ -299,6 +323,25 @@ export function TrainingRequestsClientWrapper({
                   </span>
                 </span>
               </div>
+              {(() => {
+                if (!selectedRequest.customFields) return null;
+                const parsed = safeJsonParse<Record<string, any>>(selectedRequest.customFields, {});
+                const entries = Object.entries(parsed || {});
+                if (entries.length === 0) return null;
+                return (
+                  <div className="border-t border-muted pt-3 mt-1 flex flex-col gap-2">
+                    <span className="text-xs font-bold text-dark-green uppercase tracking-wider">
+                      Additional Information
+                    </span>
+                    {entries.map(([label, val]) => (
+                      <div key={label} className="grid grid-cols-3 gap-2">
+                        <span className="text-light-ash font-medium">{label}:</span>
+                        <span className="col-span-2 text-dark font-medium">{String(val)}</span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="flex justify-end gap-3 mt-6 border-t border-muted pt-4">

@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/shared/section-heading";
 import { TrainingRegistrationForm } from "@/features/training/components/training-registration-form";
 import prisma from "@/lib/prisma";
 import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
+import { safeJsonParse } from "@/lib/json";
 import { PhoneIcon } from "@/components/layout/footer-icons";
 import {
   HiUserGroup,
@@ -131,6 +132,10 @@ export default async function JoinTrainingPage({
     trainings = TRAININGS.map((t) => ({ slug: t.slug, title: t.title }));
   }
 
+  const formFields = dbContent?.formFields
+    ? safeJsonParse<import("@/types/form-fields").FormFieldConfig[] | null>(dbContent.formFields, null)
+    : null;
+
   return (
     <main className="flex-1 bg-page-bg py-16 lg:py-24">
       <Container>
@@ -143,7 +148,7 @@ export default async function JoinTrainingPage({
               href="/admin/training-requests"
               className="font-bold underline hover:text-primary transition-colors cursor-pointer"
             >
-              Edit Join Training Page Content &rarr;
+              Edit Join Training Page & Form Fields &rarr;
             </a>
           </div>
         )}
@@ -184,6 +189,7 @@ export default async function JoinTrainingPage({
             <TrainingRegistrationForm
               trainings={trainings}
               initialTrainingSlug={initialTrainingSlug}
+              formFields={formFields}
             />
           </div>
         </div>

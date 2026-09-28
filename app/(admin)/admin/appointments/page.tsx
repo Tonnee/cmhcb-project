@@ -48,6 +48,8 @@ export default async function AdminAppointmentsPage(): Promise<React.JSX.Element
       status: clientStatus,
       amount: "BDT 2,500",
       isViewed: apt.isViewed,
+      message: apt.message,
+      customFields: apt.customFields,
     };
   });
 

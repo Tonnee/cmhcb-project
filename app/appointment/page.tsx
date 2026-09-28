@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
+import { safeJsonParse } from "@/lib/json";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { AppointmentForm } from "@/features/appointment/components/appointment-form";
@@ -95,6 +96,10 @@ export default async function AppointmentPage() {
     }
   }
 
+  const formFields = dbContent?.formFields
+    ? safeJsonParse<import("@/types/form-fields").FormFieldConfig[] | null>(dbContent.formFields, null)
+    : null;
+
   return (
     <main className="flex-1 bg-page-bg py-16 lg:py-24">
       {isAdmin && (
@@ -107,7 +112,7 @@ export default async function AppointmentPage() {
               href="/admin/appointments"
               className="px-4 py-1.5 bg-primary-dark hover:bg-primary-dark/90 text-white rounded-lg font-semibold transition-all text-xs font-sans"
             >
-              Edit Page Content
+              Edit Page Content & Form Fields
             </a>
           </Container>
         </div>
@@ -147,7 +152,7 @@ export default async function AppointmentPage() {
 
           {/* Right Side: Form */}
           <div className="lg:col-span-7">
-            <AppointmentForm />
+            <AppointmentForm formFields={formFields} />
           </div>
         </div>
       </Container>

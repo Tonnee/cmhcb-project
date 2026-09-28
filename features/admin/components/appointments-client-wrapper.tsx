@@ -13,6 +13,9 @@ import {
 } from "@/app/(admin)/admin/actions";
 import { useAdminNotifications } from "@/features/admin/hooks/use-admin-notifications";
 import { EditAppointmentPageForm, type AppointmentPageContentDB } from "./edit-appointment-page-form";
+import { FormFieldsBuilder } from "./form-fields-builder";
+import { DEFAULT_APPOINTMENT_FORM_FIELDS } from "@/types/form-fields";
+import { safeJsonParse } from "@/lib/json";
 
 interface Appointment {
   id: string;
@@ -24,8 +27,9 @@ interface Appointment {
   status: "scheduled" | "completed" | "cancelled";
   amount: string;
   isViewed: boolean;
+  message?: string | null;
+  customFields?: string | null;
 }
-
 
 export interface AppointmentsClientWrapperProps {
   initialAppointments: Appointment[];
@@ -37,7 +41,7 @@ export function AppointmentsClientWrapper({
   initialPageContent,
 }: AppointmentsClientWrapperProps): React.JSX.Element {
   const [appointments, setAppointments] = React.useState<Appointment[]>(initialAppointments);
-  const [activeTab, setActiveTab] = React.useState<"bookings" | "page-content">("bookings");
+  const [activeTab, setActiveTab] = React.useState<"bookings" | "page-content" | "form-fields">("bookings");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "scheduled" | "completed" | "cancelled">("all");
   const [selectedAppointment, setSelectedAppointment] = React.useState<Appointment | null>(null);
@@ -103,11 +107,11 @@ export function AppointmentsClientWrapper({
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-muted/50 -mt-2">
+      <div className="flex border-b border-muted/50 -mt-2 overflow-x-auto">
         <button
           type="button"
           onClick={() => setActiveTab("bookings")}
-          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === "bookings"
               ? "border-primary text-primary-dark"
               : "border-transparent text-light-ash hover:text-dark"
@@ -118,18 +122,38 @@ export function AppointmentsClientWrapper({
         <button
           type="button"
           onClick={() => setActiveTab("page-content")}
-          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === "page-content"
               ? "border-primary text-primary-dark"
               : "border-transparent text-light-ash hover:text-dark"
           }`}
         >
-          Appointment Page Text & Highlights
+          Page Text & Highlights
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("form-fields")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === "form-fields"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Form Fields Builder
         </button>
       </div>
 
       {activeTab === "page-content" ? (
         <EditAppointmentPageForm initialContent={initialPageContent} />
+      ) : activeTab === "form-fields" ? (
+        <FormFieldsBuilder
+          title="Appointment Intake Form Customizer"
+          description="Manage existing fields (labels, placeholders, requirement rules) and add new custom input fields to collect specialized information from clients."
+          targetType="appointment"
+          initialFields={initialPageContent?.formFields}
+          defaultFields={DEFAULT_APPOINTMENT_FORM_FIELDS}
+          previewUrl="/appointment"
+        />
       ) : (
         <>
           {/* Filter and search bar */}
@@ -364,6 +388,31 @@ export function AppointmentsClientWrapper({
                   )}
                 </span>
               </div>
+              {selectedAppointment.message && (
+                <div className="grid grid-cols-3 gap-2">
+                  <span className="text-light-ash font-medium">Notes:</span>
+                  <span className="col-span-2 text-dark leading-relaxed">{selectedAppointment.message}</span>
+                </div>
+              )}
+              {(() => {
+                if (!selectedAppointment.customFields) return null;
+                const parsed = safeJsonParse<Record<string, any>>(selectedAppointment.customFields, {});
+                const entries = Object.entries(parsed || {});
+                if (entries.length === 0) return null;
+                return (
+                  <div className="border-t border-muted pt-3 mt-1 flex flex-col gap-2">
+                    <span className="text-xs font-bold text-dark-green uppercase tracking-wider">
+                      Additional Information
+                    </span>
+                    {entries.map(([label, val]) => (
+                      <div key={label} className="grid grid-cols-3 gap-2">
+                        <span className="text-light-ash font-medium">{label}:</span>
+                        <span className="col-span-2 text-dark font-medium">{String(val)}</span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="flex justify-end gap-3 mt-6 border-t border-muted pt-4">
