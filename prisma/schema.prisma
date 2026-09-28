@@ -264,6 +264,28 @@ model TherapistsPageContent {
   lastUpdatedBy   String?
 }
 
+model AppointmentPageContent {
+  id            String   @id @default("appointment-content")
+  subtitle      String?  @default("Get Started")
+  title         String   @default("Book an Appointment")
+  description   String   @default("Take the first step toward better mental well-being. Choose your preferred therapist, service, and time. Our team is here to support you every step of the way.")
+  features      String   @default("[]") // JSON string of { title: string, description: string, iconName?: string }[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastUpdatedBy String?
+}
+
+model JoinTrainingPageContent {
+  id            String   @id @default("join-training-content")
+  subtitle      String?  @default("Get Started")
+  title         String   @default("Join Training Batch")
+  description   String   @default("Take the next step in your professional development or advocacy journey. Register for one of our specialised training cohorts.")
+  features      String   @default("[]") // JSON string of { title: string, description: string, iconName?: string }[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastUpdatedBy String?
+}
+
 model AdminProfile {
   id           String        @id
   email        String        @unique

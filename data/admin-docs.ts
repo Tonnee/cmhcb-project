@@ -507,6 +507,35 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
     imageCaption: "Admin appointments portal with filterable status tabs and patient intake cards.",
   },
   {
+    id: "page-appointment-content",
+    title: "Appointment Page Texts & Benefit Highlights",
+    category: "appointments",
+    isEditable: true,
+    livePage: { name: "Book an Appointment (/appointment)", url: "/appointment" },
+    adminPath: "/admin/appointments",
+    summary:
+      "Customize the left-column introduction on the public /appointment page, including the subtitle badge ('Get Started'), headline ('Book an Appointment'), description paragraph, and the list of benefit highlight pillars (e.g. Expert Care, Flexible Timing, Private & Confidential).",
+    fields: [
+      "Subtitle Badge (e.g. 'Get Started')",
+      "Main Title (e.g. 'Book an Appointment')",
+      "Introductory Description Paragraph",
+      "Feature Highlights List: Title, Description, and Vector Icon selection",
+    ],
+    steps: [
+      "Navigate to Admin Dashboard > 'Appointments'.",
+      "Click on the 'Appointment Page Text & Highlights' tab at the top.",
+      "Edit the Subtitle, Main Title, and Description paragraph.",
+      "Modify existing benefit cards or click '+ Add Feature Pillar' to add new ones.",
+      "Select an appropriate icon (HiUserGroup, HiClock, PhoneIcon, HiShieldCheck, HiHeart, HiSparkles, HiAcademicCap).",
+      "Click 'Save Changes' to update the live appointment page immediately.",
+    ],
+    proTips: [
+      "Keep benefit descriptions to 1-2 lines for optimal visual alignment on wide screens.",
+    ],
+    previewImage: "/hero-image/psychotherapy-counseling-session.png",
+    imageCaption: "Appointment booking page left-column text and benefit cards editable in /admin/appointments.",
+  },
+  {
     id: "training-requests-manager",
     title: "Training Course Applications & Trainee Intake",
     category: "trainings",
@@ -530,6 +559,35 @@ export const ADMIN_DOCS_ITEMS: AdminDocItem[] = [
     ],
     previewImage: "/training_hero.png",
     imageCaption: "Admin training requests workspace with status toggles and applicant profiles.",
+  },
+  {
+    id: "page-join-training-content",
+    title: "Join Training Batch Texts & Benefit Highlights",
+    category: "trainings",
+    isEditable: true,
+    livePage: { name: "Register for Training (/join-training)", url: "/join-training" },
+    adminPath: "/admin/training-requests",
+    summary:
+      "Customize the left-column introduction on the public /join-training cohort registration page, including the subtitle badge ('Get Started'), headline ('Join Training Batch'), description paragraph, and the list of benefit highlight pillars (e.g. Expert Facilitators, Interactive Curriculum, Official Certification).",
+    fields: [
+      "Subtitle Badge (e.g. 'Get Started')",
+      "Main Title (e.g. 'Join Training Batch')",
+      "Introductory Description Paragraph",
+      "Feature Highlights List: Title, Description, and Vector Icon selection",
+    ],
+    steps: [
+      "Navigate to Admin Dashboard > 'Training Requests'.",
+      "Click on the 'Join Training Page Text & Highlights' tab at the top.",
+      "Edit the Subtitle, Main Title, and Description paragraph.",
+      "Modify existing benefit cards or click '+ Add Feature Pillar' to add new ones.",
+      "Select an appropriate icon (HiUserGroup, HiBookOpen, HiSparkles, HiAcademicCap, HiShieldCheck, HiClock, HiHeart, PhoneIcon).",
+      "Click 'Save Changes' to update the live join-training registration page immediately.",
+    ],
+    proTips: [
+      "Highlight accreditation, instructor qualifications, and certificate awards in the benefit pillars.",
+    ],
+    previewImage: "/training_hero.png",
+    imageCaption: "Join training registration page left-column text and benefit cards editable in /admin/training-requests.",
   },
 
   // ---------------------------------------------------------------------------

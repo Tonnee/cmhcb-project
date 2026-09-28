@@ -50,7 +50,12 @@ export default async function AdminTrainingRequestsPage(): Promise<React.JSX.Ele
     };
   });
 
+  const joinTrainingPageContent = await (prisma as any).joinTrainingPageContent.findFirst();
+
   return (
-    <TrainingRequestsClientWrapper initialRequests={requests} />
+    <TrainingRequestsClientWrapper
+      initialRequests={requests}
+      initialPageContent={joinTrainingPageContent}
+    />
   );
 }

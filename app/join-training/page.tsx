@@ -4,7 +4,17 @@ import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { TrainingRegistrationForm } from "@/features/training/components/training-registration-form";
 import prisma from "@/lib/prisma";
-import { HiUserGroup, HiBookOpen, HiSparkles } from "react-icons/hi2";
+import { getRequiredAdminSession } from "@/app/(admin)/admin/admin-management";
+import { PhoneIcon } from "@/components/layout/footer-icons";
+import {
+  HiUserGroup,
+  HiBookOpen,
+  HiSparkles,
+  HiAcademicCap,
+  HiShieldCheck,
+  HiClock,
+  HiHeart,
+} from "react-icons/hi2";
 
 import { TRAININGS } from "@/features/training/data/trainings";
 
@@ -20,11 +30,86 @@ interface JoinTrainingPageProps {
   searchParams: Promise<{ training?: string }>;
 }
 
+function TrainingFeatureIcon({ iconName }: { iconName?: string }) {
+  switch (iconName) {
+    case "HiBookOpen":
+    case "book":
+      return <HiBookOpen className="w-6 h-6 text-primary" />;
+    case "HiSparkles":
+    case "sparkles":
+      return <HiSparkles className="w-6 h-6 text-primary" />;
+    case "HiAcademicCap":
+    case "academic":
+      return <HiAcademicCap className="w-6 h-6 text-primary" />;
+    case "HiShieldCheck":
+    case "shield":
+      return <HiShieldCheck className="w-6 h-6 text-primary" />;
+    case "HiClock":
+    case "clock":
+      return <HiClock className="w-6 h-6 text-primary" />;
+    case "HiHeart":
+    case "heart":
+      return <HiHeart className="w-6 h-6 text-primary" />;
+    case "PhoneIcon":
+    case "phone":
+      return <PhoneIcon className="w-6 h-6 text-primary" />;
+    case "HiUserGroup":
+    case "user-group":
+    default:
+      return <HiUserGroup className="w-6 h-6 text-primary" />;
+  }
+}
+
 export default async function JoinTrainingPage({
   searchParams,
 }: JoinTrainingPageProps): Promise<React.JSX.Element> {
   const resolvedParams = await searchParams;
   const initialTrainingSlug = resolvedParams.training;
+
+  let isAdmin = false;
+  try {
+    await getRequiredAdminSession();
+    isAdmin = true;
+  } catch {
+    isAdmin = false;
+  }
+
+  const dbContent = await (prisma as any).joinTrainingPageContent.findFirst().catch(() => null);
+
+  const subtitle = dbContent?.subtitle || "Get Started";
+  const title = dbContent?.title || "Join Training Batch";
+  const description =
+    dbContent?.description ||
+    "Take the next step in your professional development or advocacy journey. Register for one of our specialised training cohorts.";
+
+  let features: Array<{ title: string; description: string; iconName?: string }> = [
+    {
+      title: "Expert Facilitators",
+      description: "Learn from qualified psychiatrists, psychologists, and facilitators.",
+      iconName: "HiUserGroup",
+    },
+    {
+      title: "Interactive Curriculum",
+      description: "Practical training with real-world case discussions and worksheets.",
+      iconName: "HiBookOpen",
+    },
+    {
+      title: "Official Certification",
+      description: "Receive a certificate of participation awarded by CMHCB.",
+      iconName: "HiSparkles",
+    },
+  ];
+
+  if (dbContent?.features) {
+    try {
+      const parsed = JSON.parse(dbContent.features);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        features = parsed;
+      }
+    } catch (e) {
+      console.error("Error parsing join training page features:", e);
+    }
+  }
 
   let trainings: { slug: string; title: string }[] = [];
   try {
@@ -49,56 +134,48 @@ export default async function JoinTrainingPage({
   return (
     <main className="flex-1 bg-page-bg py-16 lg:py-24">
       <Container>
+        {isAdmin && (
+          <div className="mb-8 p-3.5 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-between text-xs text-primary-dark font-sans">
+            <span className="font-medium">
+              Administrator Quick Access: You can edit this page&apos;s title, description, and benefit pillars in the Admin Panel.
+            </span>
+            <a
+              href="/admin/training-requests"
+              className="font-bold underline hover:text-primary transition-colors cursor-pointer"
+            >
+              Edit Join Training Page Content &rarr;
+            </a>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start">
           {/* Left Side: Upcoming Batch Information */}
           <div className="lg:col-span-5 lg:sticky lg:top-32">
             <SectionHeading
               level="h1"
-              subtitle="Get Started"
-              title="Join Training Batch"
+              subtitle={subtitle}
+              title={title}
               align="left"
               className="mb-6"
             />
             <p className="font-sans text-lg text-light-ash leading-relaxed max-w-lg mb-10">
-              Take the next step in your professional development or advocacy journey. Register for one of our specialised training cohorts.
+              {description}
             </p>
 
             <div className="space-y-6">
-              <div className="flex gap-6 items-center">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <HiUserGroup className="w-6 h-6 text-primary" />
+              {features.map((feature, idx) => (
+                <div key={idx} className="flex gap-6 items-center">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <TrainingFeatureIcon iconName={feature.iconName} />
+                  </div>
+                  <div>
+                    <h4 className="font-marcellus text-lg text-dark">{feature.title}</h4>
+                    <p className="font-sans text-sm text-light-ash">
+                      {feature.description}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-marcellus text-lg text-dark">Expert Facilitators</h4>
-                  <p className="font-sans text-sm text-light-ash">
-                    Learn from qualified psychiatrists, psychologists, and facilitators.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-6 items-center">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <HiBookOpen className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-marcellus text-lg text-dark">Interactive Curriculum</h4>
-                  <p className="font-sans text-sm text-light-ash">
-                    Practical training with real-world case discussions and worksheets.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-6 items-center">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 text-primary">
-                  <HiSparkles className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="font-marcellus text-lg text-dark">Official Certification</h4>
-                  <p className="font-sans text-sm text-light-ash">
-                    Receive a certificate of participation awarded by CMHCB.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -114,3 +191,4 @@ export default async function JoinTrainingPage({
     </main>
   );
 }
+

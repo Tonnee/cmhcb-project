@@ -7,6 +7,10 @@ import {
   markTrainingRequestAsViewedAction,
 } from "@/app/(admin)/admin/actions";
 import { useAdminNotifications } from "@/features/admin/hooks/use-admin-notifications";
+import {
+  EditJoinTrainingPageForm,
+  type JoinTrainingPageContentDB,
+} from "./edit-join-training-page-form";
 
 interface TrainingRequest {
   id: string;
@@ -22,12 +26,16 @@ interface TrainingRequest {
   isViewed: boolean;
 }
 
-
 export interface TrainingRequestsClientWrapperProps {
   initialRequests: TrainingRequest[];
+  initialPageContent?: JoinTrainingPageContentDB | null;
 }
 
-export function TrainingRequestsClientWrapper({ initialRequests }: TrainingRequestsClientWrapperProps): React.JSX.Element {
+export function TrainingRequestsClientWrapper({
+  initialRequests,
+  initialPageContent,
+}: TrainingRequestsClientWrapperProps): React.JSX.Element {
+  const [activeTab, setActiveTab] = React.useState<"requests" | "page-content">("requests");
   const [requests, setRequests] = React.useState<TrainingRequest[]>(initialRequests);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "pending" | "approved" | "rejected">("all");
@@ -83,36 +91,68 @@ export function TrainingRequestsClientWrapper({ initialRequests }: TrainingReque
     <div className="flex flex-col gap-8 font-sans">
       <div className="flex flex-col gap-1">
         <h1 className="font-marcellus text-3xl font-bold text-dark-green">Training Requests</h1>
-        <p className="text-sm text-light-ash">View and manage registration requests for training batches.</p>
+        <p className="text-sm text-light-ash">
+          Track participant registration requests and customize the public join-training page text and benefit highlights.
+        </p>
       </div>
 
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-muted/50 shadow-xs">
-        <div className="relative w-full md:w-80">
-          <HiMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-light-ash/70" />
-          <input
-            type="text"
-            placeholder="Search by client or training..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-muted bg-white focus:outline-hidden focus:border-primary rounded-xl text-sm transition-colors"
-          />
-        </div>
-
-        <div className="flex items-center gap-2 self-stretch md:self-auto overflow-x-auto pb-1 md:pb-0">
-          {(["all", "pending", "approved", "rejected"] as const).map((status) => (
-            <button
-              key={status}
-              type="button"
-              onClick={() => setStatusFilter(status)}
-              className={`px-4 py-2 text-xs font-semibold rounded-xl cursor-pointer transition-all capitalize ${
-                statusFilter === status ? "bg-primary text-white shadow-xs" : "bg-light/50 text-dark-green hover:bg-light"
-              }`}
-            >
-              {status === "all" ? "All Requests" : status}
-            </button>
-          ))}
-        </div>
+      {/* Navigation Tabs */}
+      <div className="flex border-b border-muted/50 -mt-2">
+        <button
+          type="button"
+          onClick={() => setActiveTab("requests")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "requests"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Training Requests ({requests.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("page-content")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "page-content"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Join Training Page Text & Highlights
+        </button>
       </div>
+
+      {activeTab === "page-content" ? (
+        <EditJoinTrainingPageForm initialContent={initialPageContent} />
+      ) : (
+        <>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-muted/50 shadow-xs">
+            <div className="relative w-full md:w-80">
+              <HiMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-light-ash/70" />
+              <input
+                type="text"
+                placeholder="Search by client or training..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-muted bg-white focus:outline-hidden focus:border-primary rounded-xl text-sm transition-colors"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 self-stretch md:self-auto overflow-x-auto pb-1 md:pb-0">
+              {(["all", "pending", "approved", "rejected"] as const).map((status) => (
+                <button
+                  key={status}
+                  type="button"
+                  onClick={() => setStatusFilter(status)}
+                  className={`px-4 py-2 text-xs font-semibold rounded-xl cursor-pointer transition-all capitalize ${
+                    statusFilter === status ? "bg-primary text-white shadow-xs" : "bg-light/50 text-dark-green hover:bg-light"
+                  }`}
+                >
+                  {status === "all" ? "All Requests" : status}
+                </button>
+              ))}
+            </div>
+          </div>
 
       <div className="bg-white border border-muted/50 rounded-2xl shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
@@ -297,6 +337,8 @@ export function TrainingRequestsClientWrapper({ initialRequests }: TrainingReque
           </div>
         </div>
       )}
-    </div>
+    </>
+  )}
+</div>
   );
 }

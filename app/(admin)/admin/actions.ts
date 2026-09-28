@@ -305,6 +305,32 @@ const TestimonialInputSchema = z.object({
   isFeatured: z.boolean().default(false),
 });
 
+const AppointmentPageInputSchema = z.object({
+  subtitle: z.string().optional().default("Get Started"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  features: z.array(
+    z.object({
+      title: z.string().min(1, "Feature title is required"),
+      description: z.string().min(1, "Feature description is required"),
+      iconName: z.string().optional().default("HiUserGroup"),
+    })
+  ).default([]),
+});
+
+const JoinTrainingPageInputSchema = z.object({
+  subtitle: z.string().optional().default("Get Started"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  features: z.array(
+    z.object({
+      title: z.string().min(1, "Feature title is required"),
+      description: z.string().min(1, "Feature description is required"),
+      iconName: z.string().optional().default("HiUserGroup"),
+    })
+  ).default([]),
+});
+
 const SupportPageInputSchema = z.object({
   heroTitle: z.string().min(1, "Hero Title is required"),
   heroDescription: z.string().min(1, "Hero Description is required"),
@@ -3011,6 +3037,132 @@ export async function markTrainingRequestAsViewedAction(
   }
 }
 
+// ============================================================================
+// Server Actions - Appointment Page Content
+// ============================================================================
 
+export async function getAppointmentPageContentAction(): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await (prisma as any).appointmentPageContent.findFirst();
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getAppointmentPageContentAction:", error);
+    return { success: false, error: error.message || "Failed to fetch appointment page content" };
+  }
+}
 
+export async function upsertAppointmentPageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = AppointmentPageInputSchema.parse(data);
 
+    const existing = await (prisma as any).appointmentPageContent.findFirst();
+
+    const record = await (prisma as any).appointmentPageContent.upsert({
+      where: { id: existing?.id || "appointment-content" },
+      create: {
+        id: "appointment-content",
+        subtitle: validated.subtitle || "Get Started",
+        title: validated.title,
+        description: validated.description,
+        features: JSON.stringify(validated.features),
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        subtitle: validated.subtitle || "Get Started",
+        title: validated.title,
+        description: validated.description,
+        features: JSON.stringify(validated.features),
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "AppointmentPageContent",
+      record.id,
+      "Appointment Page Content",
+      `Updated appointment page text and feature highlights`
+    );
+
+    revalidatePath("/appointment");
+    revalidatePath("/admin/appointments");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertAppointmentPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "An unexpected error occurred" };
+  }
+}
+
+// ============================================================================
+// Server Actions - Join Training Page Content
+// ============================================================================
+
+export async function getJoinTrainingPageContentAction(): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const content = await (prisma as any).joinTrainingPageContent.findFirst();
+    return { success: true, data: content };
+  } catch (error: any) {
+    console.error("Error in getJoinTrainingPageContentAction:", error);
+    return { success: false, error: error.message || "Failed to fetch join training page content" };
+  }
+}
+
+export async function upsertJoinTrainingPageContentAction(
+  data: any
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const admin = await getRequiredAdminSession();
+    const validated = JoinTrainingPageInputSchema.parse(data);
+
+    const existing = await (prisma as any).joinTrainingPageContent.findFirst();
+
+    const record = await (prisma as any).joinTrainingPageContent.upsert({
+      where: { id: existing?.id || "join-training-content" },
+      create: {
+        id: "join-training-content",
+        subtitle: validated.subtitle || "Get Started",
+        title: validated.title,
+        description: validated.description,
+        features: JSON.stringify(validated.features),
+        lastUpdatedBy: admin.email,
+      },
+      update: {
+        subtitle: validated.subtitle || "Get Started",
+        title: validated.title,
+        description: validated.description,
+        features: JSON.stringify(validated.features),
+        lastUpdatedBy: admin.email,
+      },
+    });
+
+    await logActivity(
+      admin.id,
+      admin.email,
+      admin.name,
+      "UPDATE",
+      "JoinTrainingPageContent",
+      record.id,
+      "Join Training Page Content",
+      `Updated join training page text and feature highlights`
+    );
+
+    revalidatePath("/join-training");
+    revalidatePath("/admin/training-requests");
+    return { success: true, data: record };
+  } catch (error: any) {
+    console.error("Error in upsertJoinTrainingPageContentAction:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues.map(e => e.message).join(", ") };
+    }
+    return { success: false, error: error.message || "An unexpected error occurred" };
+  }
+}

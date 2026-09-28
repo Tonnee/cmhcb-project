@@ -12,6 +12,7 @@ import {
   markAppointmentAsViewedAction,
 } from "@/app/(admin)/admin/actions";
 import { useAdminNotifications } from "@/features/admin/hooks/use-admin-notifications";
+import { EditAppointmentPageForm, type AppointmentPageContentDB } from "./edit-appointment-page-form";
 
 interface Appointment {
   id: string;
@@ -28,10 +29,15 @@ interface Appointment {
 
 export interface AppointmentsClientWrapperProps {
   initialAppointments: Appointment[];
+  initialPageContent?: AppointmentPageContentDB | null;
 }
 
-export function AppointmentsClientWrapper({ initialAppointments }: AppointmentsClientWrapperProps): React.JSX.Element {
+export function AppointmentsClientWrapper({
+  initialAppointments,
+  initialPageContent,
+}: AppointmentsClientWrapperProps): React.JSX.Element {
   const [appointments, setAppointments] = React.useState<Appointment[]>(initialAppointments);
+  const [activeTab, setActiveTab] = React.useState<"bookings" | "page-content">("bookings");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "scheduled" | "completed" | "cancelled">("all");
   const [selectedAppointment, setSelectedAppointment] = React.useState<Appointment | null>(null);
@@ -92,12 +98,42 @@ export function AppointmentsClientWrapper({ initialAppointments }: AppointmentsC
           Manage Appointments
         </h1>
         <p className="text-sm text-light-ash">
-          Track and configure therapy sessions, bookings, and appointment schedules.
+          Track client booking requests and customize the public appointment page text and benefit highlights.
         </p>
       </div>
 
-      {/* Filter and search bar */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-muted/50 shadow-xs">
+      {/* Navigation Tabs */}
+      <div className="flex border-b border-muted/50 -mt-2">
+        <button
+          type="button"
+          onClick={() => setActiveTab("bookings")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "bookings"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Booked Appointments ({appointments.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("page-content")}
+          className={`px-5 py-2.5 font-sans text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === "page-content"
+              ? "border-primary text-primary-dark"
+              : "border-transparent text-light-ash hover:text-dark"
+          }`}
+        >
+          Appointment Page Text & Highlights
+        </button>
+      </div>
+
+      {activeTab === "page-content" ? (
+        <EditAppointmentPageForm initialContent={initialPageContent} />
+      ) : (
+        <>
+          {/* Filter and search bar */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-muted/50 shadow-xs">
         <div className="relative w-full md:w-80">
           <HiMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-light-ash/70" />
           <input
@@ -259,6 +295,8 @@ export function AppointmentsClientWrapper({ initialAppointments }: AppointmentsC
           </table>
         </div>
       </div>
+    </>
+  )}
 
       {/* Appointment Details Modal */}
       {selectedAppointment && (

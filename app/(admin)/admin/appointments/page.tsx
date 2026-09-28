@@ -12,9 +12,12 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminAppointmentsPage(): Promise<React.JSX.Element> {
-  const dbAppointments = await prisma.appointment.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const [dbAppointments, dbPageContent] = await Promise.all([
+    prisma.appointment.findMany({
+      orderBy: { createdAt: "desc" },
+    }),
+    (prisma as any).appointmentPageContent.findFirst().catch(() => null),
+  ]);
 
   const appointments = dbAppointments.map((apt) => {
     let clientStatus: "scheduled" | "completed" | "cancelled" = "scheduled";
@@ -49,6 +52,9 @@ export default async function AdminAppointmentsPage(): Promise<React.JSX.Element
   });
 
   return (
-    <AppointmentsClientWrapper initialAppointments={appointments} />
+    <AppointmentsClientWrapper
+      initialAppointments={appointments}
+      initialPageContent={dbPageContent}
+    />
   );
 }
