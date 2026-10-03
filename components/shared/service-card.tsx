@@ -17,15 +17,27 @@ interface ServiceCardProps {
 
 export const SERVICE_IMAGES: Record<string, string> = {
   "psychometric-assessment": "/home-service-images/psychometric-assessment.png",
-  "individual-therapy": "/home-service-images/individual-therapy.png",
-  "child-therapy": "/home-service-images/child-therapy.png",
-  "family-therapy": "/home-service-images/family-therapy.png",
-  "couple-therapy": "/home-service-images/couple-therapy.png",
+  "individual-therapy": "https://qeaszomzltstfhikrais.supabase.co/storage/v1/object/public/cmhcb-media/uploads/zpa2q9bjcks_1790657645690.jpg",
+  "child-therapy": "https://qeaszomzltstfhikrais.supabase.co/storage/v1/object/public/cmhcb-media/uploads/wd7q47htmb_1790657708789.jpg",
+  "family-therapy": "https://qeaszomzltstfhikrais.supabase.co/storage/v1/object/public/cmhcb-media/uploads/0zlr0jtxsmd_1790659802322.jpg",
+  "couple-therapy": "https://qeaszomzltstfhikrais.supabase.co/storage/v1/object/public/cmhcb-media/uploads/pysalgupdp_1790658854751.jpg",
   "iq-test": "/home-service-images/iq-test.png",
 };
 
+const LEGACY_DEFAULT_IMAGES = [
+  "/home-service-images/individual-therapy.png",
+  "/home-service-images/child-therapy.png",
+  "/home-service-images/family-therapy.png",
+  "/home-service-images/couple-therapy.png",
+];
+
 export function ServiceCard({ item, className = "" }: ServiceCardProps): React.JSX.Element {
-  const imageSrc = item.image || SERVICE_IMAGES[item.slug] || "/home-service-images/individual-therapy.png";
+  const isLegacy = item.image && LEGACY_DEFAULT_IMAGES.includes(item.image);
+  const imageSrc =
+    (!isLegacy && item.image) ||
+    SERVICE_IMAGES[item.slug] ||
+    item.image ||
+    "/home-service-images/individual-therapy.png";
   const linkHref = `/services/${item.slug}`;
 
   return (

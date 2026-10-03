@@ -19,6 +19,7 @@ import { Tag } from "@/components/ui/tag";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/shared/json-ld";
 import { Faq } from "@/components/shared/faq";
+import prisma from "@/lib/prisma";
 
 /* ------------------------------------------------------------------ */
 /* Small reusable sub-components                                        */
@@ -59,8 +60,6 @@ function BulletList({ items }: { items: string[] }) {
     </ul>
   );
 }
-
-import prisma from "@/lib/prisma";
 
 export const revalidate = 60;
 
@@ -131,7 +130,10 @@ export default async function TherapistProfilePage({
   params: Promise<{ slug: string }>;
 }): Promise<React.JSX.Element> {
   const { slug } = await params;
-  const dbTherapist = await prisma.therapist.findUnique({ where: { id: slug } }).catch(() => null);
+  const [dbTherapist, dbServices] = await Promise.all([
+    prisma.therapist.findUnique({ where: { id: slug } }).catch(() => null),
+    prisma.service.findMany({ orderBy: { order: "asc" } }).catch(() => []),
+  ]);
   const staticTherapist = THERAPISTS_DATA.find((t) => t.id === slug);
 
   if (!dbTherapist && !staticTherapist) {
@@ -360,7 +362,11 @@ export default async function TherapistProfilePage({
 
           <div className="flex flex-wrap justify-center gap-6 lg:gap-6">
             {therapist.services
-              .map((s) => SERVICES.find((svc) => svc.slug === s))
+              .map((s) => {
+                const dbMatch = dbServices.find((svc) => svc.slug === s);
+                if (dbMatch) return dbMatch;
+                return SERVICES.find((svc) => svc.slug === s);
+              })
               .filter(Boolean)
               .map((service) => (
                 <div key={service!.slug} className="w-full md:w-[calc(50%-1.25rem)] lg:w-[calc(33.333%-2rem)] max-w-md">

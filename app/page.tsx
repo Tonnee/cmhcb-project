@@ -232,16 +232,19 @@ export default async function Page(): Promise<React.JSX.Element> {
       title: "Psychometric Assessment",
       slug: "psychometric-assessment",
       shortDescription: "understand personality, emotional functioning, and mental health needs",
+      image: "/home-service-images/psychometric-assessment.png",
     },
     {
       title: "Individual Therapy",
       slug: "individual-therapy",
       shortDescription: "one-on-one therapy sessions providing a safe, confidential space",
+      image: "https://qeaszomzltstfhikrais.supabase.co/storage/v1/object/public/cmhcb-media/uploads/zpa2q9bjcks_1790657645690.jpg",
     },
     {
       title: "Child Therapy",
       slug: "child-therapy",
       shortDescription: "Specialized, child-centered therapeutic techniques help children navigate emotional challenges",
+      image: "https://qeaszomzltstfhikrais.supabase.co/storage/v1/object/public/cmhcb-media/uploads/wd7q47htmb_1790657708789.jpg",
     },
   ];
   const featuredServices = dbServices.length > 0 ? dbServices : fallbackServices;

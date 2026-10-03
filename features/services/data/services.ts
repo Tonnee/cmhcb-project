@@ -103,7 +103,7 @@ export const SERVICES: ServiceItem[] = [
   {
     slug: "individual-therapy",
     title: "Individual Therapy",
-    image: "/home-service-images/individual-therapy.png",
+    image: "https://qeaszomzltstfhikrais.supabase.co/storage/v1/object/public/cmhcb-media/uploads/zpa2q9bjcks_1790657645690.jpg",
     icon: "/home-service-images/individual-therapy-icon.png",
     iconVariant: "accent",
     shortDescription: "Personalized one-on-one therapy to manage stress, build resilience, and improve emotional well-being",
@@ -196,7 +196,7 @@ export const SERVICES: ServiceItem[] = [
   {
     slug: "child-therapy",
     title: "Child Therapy",
-    image: "/home-service-images/child-therapy.png",
+    image: "https://qeaszomzltstfhikrais.supabase.co/storage/v1/object/public/cmhcb-media/uploads/wd7q47htmb_1790657708789.jpg",
     icon: "/home-service-images/child-therapy-icon.png",
     iconVariant: "primary",
     shortDescription: "Developmentally appropriate therapy helping children navigate emotional and behavioral challenges",
@@ -280,7 +280,7 @@ export const SERVICES: ServiceItem[] = [
   {
     slug: "family-therapy",
     title: "Family Therapy",
-    image: "/home-service-images/family-therapy.png",
+    image: "https://qeaszomzltstfhikrais.supabase.co/storage/v1/object/public/cmhcb-media/uploads/0zlr0jtxsmd_1790659802322.jpg",
     icon: "/home-service-images/family-therapy-icon.png",
     iconVariant: "accent",
     shortDescription: "Collaborative counseling to resolve conflicts, improve communication, and strengthen family dynamics",
@@ -359,7 +359,7 @@ export const SERVICES: ServiceItem[] = [
   {
     slug: "couple-therapy",
     title: "Couple Therapy",
-    image: "/home-service-images/couple-therapy.png",
+    image: "https://qeaszomzltstfhikrais.supabase.co/storage/v1/object/public/cmhcb-media/uploads/pysalgupdp_1790658854751.jpg",
     icon: "/home-service-images/couple-therapy-icon.png",
     iconVariant: "primary",
     shortDescription: "Guided support for partners to rebuild trust, enhance intimacy, and resolve relationship issues",
