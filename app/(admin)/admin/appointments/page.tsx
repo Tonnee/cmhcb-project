@@ -12,11 +12,12 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminAppointmentsPage(): Promise<React.JSX.Element> {
-  const [dbAppointments, dbPageContent] = await Promise.all([
+  const [dbAppointments, dbPageContent, dbServices] = await Promise.all([
     prisma.appointment.findMany({
       orderBy: { createdAt: "desc" },
     }),
     (prisma as any).appointmentPageContent.findFirst().catch(() => null),
+    prisma.service.findMany({ select: { title: true, slug: true, fees: true } }).catch(() => []),
   ]);
 
   const appointments = dbAppointments.map((apt) => {
@@ -38,15 +39,28 @@ export default async function AdminAppointmentsPage(): Promise<React.JSX.Element
       minute: "2-digit",
     });
 
+    const matchedService = dbServices.find(
+      (s) =>
+        s.title.toLowerCase() === apt.service.toLowerCase() ||
+        s.slug.toLowerCase() === apt.service.toLowerCase()
+    );
+    const feeDisplay = matchedService?.fees || "BDT 2,500";
+
     return {
       id: apt.id,
       clientName: apt.name,
+      age: apt.age,
+      gender: apt.gender,
+      contact: apt.contact,
       therapistName: apt.therapist,
+      date: apt.date,
+      time: apt.time,
+      preference: apt.preference,
       dateTime: `${apt.date} at ${apt.time} (${apt.preference})`,
       submittedAt: `${formattedDate} at ${formattedSubmittedTime}`,
       sessionType: apt.service,
       status: clientStatus,
-      amount: "BDT 2,500",
+      amount: feeDisplay,
       isViewed: apt.isViewed,
       message: apt.message,
       customFields: apt.customFields,

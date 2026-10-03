@@ -20,7 +20,13 @@ import { safeJsonParse } from "@/lib/json";
 interface Appointment {
   id: string;
   clientName: string;
+  age?: number | string;
+  gender?: string;
+  contact?: string;
   therapistName: string;
+  date?: string;
+  time?: string;
+  preference?: string;
   dateTime: string;
   submittedAt: string;
   sessionType: string;
@@ -58,8 +64,19 @@ export function AppointmentsClientWrapper({
     }
   }, [decrementAppointments]);
 
-  const handleStatusChange = async (id: string, nextStatus: "completed" | "cancelled") => {
-    const dbStatus = nextStatus === "completed" ? "COMPLETED" : "CANCELLED";
+  // Handle ESC key to close modal
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && selectedAppointment) {
+        setSelectedAppointment(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedAppointment]);
+
+  const handleStatusChange = async (id: string, nextStatus: "scheduled" | "completed" | "cancelled") => {
+    const dbStatus = nextStatus === "completed" ? "COMPLETED" : nextStatus === "cancelled" ? "CANCELLED" : "PENDING";
     
     // Save original state for rollback
     const originalAppointments = [...appointments];
@@ -87,7 +104,9 @@ export function AppointmentsClientWrapper({
       apt.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       apt.therapistName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       apt.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      apt.sessionType.toLowerCase().includes(searchQuery.toLowerCase());
+      apt.sessionType.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (apt.contact && apt.contact.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (apt.gender && apt.gender.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const matchesStatus = statusFilter === "all" || apt.status === statusFilter;
 
@@ -252,7 +271,12 @@ export function AppointmentsClientWrapper({
                         <span>{apt.id}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-semibold text-dark">{apt.clientName}</td>
+                    <td className="px-6 py-4 font-semibold text-dark">
+                      <div>{apt.clientName}</div>
+                      {apt.contact && (
+                        <div className="text-xs font-normal text-light-ash break-all">{apt.contact}</div>
+                      )}
+                    </td>
                     <td className="px-6 py-4 text-light-ash">{apt.therapistName}</td>
                     <td className="px-6 py-4 text-accent font-medium">{apt.dateTime}</td>
                     <td className="px-6 py-4 text-light-ash">{apt.submittedAt}</td>
@@ -324,129 +348,235 @@ export function AppointmentsClientWrapper({
 
       {/* Appointment Details Modal */}
       {selectedAppointment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/60 backdrop-blur-md px-4 py-6">
-          <div className="bg-white rounded-3xl border border-muted/50 shadow-2xl max-w-md w-full overflow-hidden animate-fade-in flex flex-col p-6 text-left">
-            <div className="flex items-center justify-between border-b border-muted pb-4 mb-4">
-              <h3 className="font-marcellus text-xl font-bold text-dark-green">
-                Appointment Details
-              </h3>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="appointment-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-dark/60 backdrop-blur-md px-4 py-6"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedAppointment(null);
+          }}
+        >
+          <div className="bg-white rounded-3xl border border-muted/50 shadow-2xl max-w-xl w-full max-h-[92vh] overflow-hidden animate-fade-in flex flex-col text-left">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-muted px-6 py-5 bg-light/20">
+              <div className="flex items-center gap-3">
+                <h3 id="appointment-modal-title" className="font-marcellus text-xl font-bold text-dark-green">
+                  Appointment Details
+                </h3>
+                <span className="font-mono text-xs font-semibold px-2.5 py-1 bg-primary/10 text-primary-dark rounded-md">
+                  #{selectedAppointment.id}
+                </span>
+              </div>
               <button
                 type="button"
                 onClick={() => setSelectedAppointment(null)}
                 className="p-1.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg transition-colors cursor-pointer"
+                aria-label="Close dialog"
               >
                 <HiXMark className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex flex-col gap-4 text-sm font-sans">
-              <div className="grid grid-cols-3 gap-2">
-                <span className="text-light-ash font-medium">ID:</span>
-                <span className="col-span-2 text-dark font-semibold font-mono">{selectedAppointment.id}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <span className="text-light-ash font-medium">Client:</span>
-                <span className="col-span-2 text-dark font-semibold">{selectedAppointment.clientName}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <span className="text-light-ash font-medium">Therapist:</span>
-                <span className="col-span-2 text-dark font-semibold">{selectedAppointment.therapistName}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <span className="text-light-ash font-medium">Date & Time:</span>
-                <span className="col-span-2 text-dark">{selectedAppointment.dateTime}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <span className="text-light-ash font-medium">Date Submitted:</span>
-                <span className="col-span-2 text-dark">{selectedAppointment.submittedAt}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <span className="text-light-ash font-medium">Session Type:</span>
-                <span className="col-span-2 text-dark">{selectedAppointment.sessionType}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <span className="text-light-ash font-medium">Fee:</span>
-                <span className="col-span-2 text-primary-dark font-semibold">{selectedAppointment.amount}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2 items-center">
-                <span className="text-light-ash font-medium">Status:</span>
-                <span className="col-span-2">
-                  {selectedAppointment.status === "scheduled" && (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-accent/15 text-accent border border-accent/20 uppercase tracking-wider text-[10px]">
-                      Scheduled
+            {/* Modal Scrollable Body */}
+            <div className="overflow-y-auto p-6 flex flex-col gap-5 text-sm font-sans">
+              {/* 1. Client Information Card */}
+              <div className="bg-light/30 border border-muted/40 rounded-2xl p-4 flex flex-col gap-3">
+                <div className="flex items-center justify-between border-b border-muted/30 pb-2">
+                  <span className="text-xs font-bold text-primary-dark uppercase tracking-wider">
+                    Client Information
+                  </span>
+                  <span className="text-xs text-light-ash">
+                    Submitted: {selectedAppointment.submittedAt}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-light-ash text-xs block">Full Name</span>
+                    <span className="text-dark font-semibold text-base">{selectedAppointment.clientName}</span>
+                  </div>
+                  <div>
+                    <span className="text-light-ash text-xs block">Age & Gender</span>
+                    <span className="text-dark font-medium">
+                      {selectedAppointment.age ? `${selectedAppointment.age} years old` : "Not specified"}
+                      {selectedAppointment.gender ? ` • ${selectedAppointment.gender}` : ""}
                     </span>
-                  )}
-                  {selectedAppointment.status === "completed" && (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary-dark border border-primary/20 uppercase tracking-wider text-[10px]">
-                      Completed
-                    </span>
-                  )}
-                  {selectedAppointment.status === "cancelled" && (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 uppercase tracking-wider text-[10px]">
-                      Cancelled
-                    </span>
-                  )}
-                </span>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <span className="text-light-ash text-xs block">Contact Details (Phone / Email)</span>
+                    <div className="flex items-center justify-between gap-2 mt-1">
+                      <span className="text-dark font-medium break-all">
+                        {selectedAppointment.contact || "None provided"}
+                      </span>
+                      {selectedAppointment.contact && (
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {selectedAppointment.contact.includes("@") && (
+                            <a
+                              href={`mailto:${selectedAppointment.contact}`}
+                              className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+                            >
+                              Email Client
+                            </a>
+                          )}
+                          {/[0-9]/.test(selectedAppointment.contact) && (
+                            <a
+                              href={`tel:${selectedAppointment.contact.replace(/[^0-9+]/g, "")}`}
+                              className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-dark-green text-white rounded-lg hover:bg-dark-green/90 transition-colors"
+                            >
+                              Call Client
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              {/* 2. Session & Scheduling Card */}
+              <div className="bg-light/30 border border-muted/40 rounded-2xl p-4 flex flex-col gap-3">
+                <div className="flex items-center justify-between border-b border-muted/30 pb-2">
+                  <span className="text-xs font-bold text-primary-dark uppercase tracking-wider">
+                    Session & Scheduling
+                  </span>
+                  <div>
+                    {selectedAppointment.status === "scheduled" && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-accent/15 text-accent border border-accent/20 uppercase tracking-wider text-[10px]">
+                        Scheduled
+                      </span>
+                    )}
+                    {selectedAppointment.status === "completed" && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary-dark border border-primary/20 uppercase tracking-wider text-[10px]">
+                        Completed
+                      </span>
+                    )}
+                    {selectedAppointment.status === "cancelled" && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 uppercase tracking-wider text-[10px]">
+                        Cancelled
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-light-ash text-xs block">Service Requested</span>
+                    <span className="text-dark font-semibold">{selectedAppointment.sessionType}</span>
+                  </div>
+                  <div>
+                    <span className="text-light-ash text-xs block">Therapist</span>
+                    <span className="text-dark font-semibold">{selectedAppointment.therapistName}</span>
+                  </div>
+                  <div>
+                    <span className="text-light-ash text-xs block">Preferred Date & Time</span>
+                    <span className="text-dark font-medium">
+                      {selectedAppointment.date && selectedAppointment.time
+                        ? `${selectedAppointment.date} (${selectedAppointment.time})`
+                        : selectedAppointment.dateTime}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-light-ash text-xs block">Consultation Medium</span>
+                    <span className="inline-flex items-center gap-1.5 text-dark font-medium capitalize mt-0.5">
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          selectedAppointment.preference === "online" ? "bg-blue-500" : "bg-emerald-500"
+                        }`}
+                      />
+                      {selectedAppointment.preference === "online" ? "Online Session" : "In-Person Session"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-light-ash text-xs block">Session Fee</span>
+                    <span className="text-primary-dark font-bold text-base">{selectedAppointment.amount}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Reason for Visit / Symptoms Note */}
               {selectedAppointment.message && (
-                <div className="grid grid-cols-3 gap-2">
-                  <span className="text-light-ash font-medium">Notes:</span>
-                  <span className="col-span-2 text-dark leading-relaxed">{selectedAppointment.message}</span>
+                <div className="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-4 flex flex-col gap-1.5">
+                  <span className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+                    Reason for Visit / Symptoms Note
+                  </span>
+                  <p className="text-dark leading-relaxed whitespace-pre-wrap text-sm">
+                    {selectedAppointment.message}
+                  </p>
                 </div>
               )}
+
+              {/* 4. Additional Custom Form Fields */}
               {(() => {
                 if (!selectedAppointment.customFields) return null;
                 const parsed = safeJsonParse<Record<string, any>>(selectedAppointment.customFields, {});
                 const entries = Object.entries(parsed || {});
                 if (entries.length === 0) return null;
                 return (
-                  <div className="border-t border-muted pt-3 mt-1 flex flex-col gap-2">
-                    <span className="text-xs font-bold text-dark-green uppercase tracking-wider">
-                      Additional Information
+                  <div className="bg-light/30 border border-muted/40 rounded-2xl p-4 flex flex-col gap-2.5">
+                    <span className="text-xs font-bold text-primary-dark uppercase tracking-wider border-b border-muted/30 pb-1.5">
+                      Additional Form Fields
                     </span>
-                    {entries.map(([label, val]) => (
-                      <div key={label} className="grid grid-cols-3 gap-2">
-                        <span className="text-light-ash font-medium">{label}:</span>
-                        <span className="col-span-2 text-dark font-medium">{String(val)}</span>
-                      </div>
-                    ))}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                      {entries.map(([label, val]) => (
+                        <div key={label} className="flex flex-col">
+                          <span className="text-light-ash text-xs">{label}</span>
+                          <span className="text-dark font-medium">{String(val)}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 );
               })()}
             </div>
 
-            <div className="flex justify-end gap-3 mt-6 border-t border-muted pt-4">
-              {selectedAppointment.status === "scheduled" && (
-                <>
+            {/* Modal Footer Actions */}
+            <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 bg-light/20 border-t border-muted">
+              <div>
+                {selectedAppointment.status !== "scheduled" && (
                   <button
                     type="button"
                     onClick={() => {
-                      handleStatusChange(selectedAppointment.id, "cancelled");
-                      setSelectedAppointment((prev) => prev ? { ...prev, status: "cancelled" } : null);
+                      handleStatusChange(selectedAppointment.id, "scheduled");
+                      setSelectedAppointment((prev) => (prev ? { ...prev, status: "scheduled" } : null));
                     }}
-                    className="bg-red-50 hover:bg-red-100 text-red-700 text-sm font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer border border-red-200"
+                    className="text-xs text-primary-dark hover:underline font-semibold cursor-pointer"
                   >
-                    Cancel Session
+                    Reset to Scheduled
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleStatusChange(selectedAppointment.id, "completed");
-                      setSelectedAppointment((prev) => prev ? { ...prev, status: "completed" } : null);
-                    }}
-                    className="bg-primary hover:bg-primary-dark text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer shadow-md"
-                  >
-                    Complete Session
-                  </button>
-                </>
-              )}
-              <button
-                type="button"
-                onClick={() => setSelectedAppointment(null)}
-                className="bg-light-ash/10 hover:bg-light-ash/20 text-dark text-sm font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer"
-              >
-                Close
-              </button>
+                )}
+              </div>
+              <div className="flex items-center gap-2.5">
+                {selectedAppointment.status === "scheduled" && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleStatusChange(selectedAppointment.id, "cancelled");
+                        setSelectedAppointment((prev) => (prev ? { ...prev, status: "cancelled" } : null));
+                      }}
+                      className="bg-red-50 hover:bg-red-100 text-red-700 text-sm font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer border border-red-200"
+                    >
+                      Cancel Session
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleStatusChange(selectedAppointment.id, "completed");
+                        setSelectedAppointment((prev) => (prev ? { ...prev, status: "completed" } : null));
+                      }}
+                      className="bg-primary hover:bg-primary-dark text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer shadow-md"
+                    >
+                      Complete Session
+                    </button>
+                  </>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setSelectedAppointment(null)}
+                  className="bg-light-ash/10 hover:bg-light-ash/20 text-dark text-sm font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
