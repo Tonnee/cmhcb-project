@@ -565,7 +565,7 @@ export default function EditTherapistForm({
                   <div className="flex flex-col gap-2">
                     <div className="hidden sm:grid sm:grid-cols-12 gap-2 text-[11px] font-semibold text-charcoal/70 px-1">
                       <span className="sm:col-span-5">Session / Tier</span>
-                      <span className="sm:col-span-3">On-site Fee</span>
+                      <span className="sm:col-span-3">In Person Fee</span>
                       <span className="sm:col-span-3">Online Fee</span>
                       <span className="sm:col-span-1 text-right">Action</span>
                     </div>
@@ -582,12 +582,12 @@ export default function EditTherapistForm({
                           />
                         </div>
                         <div className="sm:col-span-3 flex flex-col gap-0.5">
-                          <label className="text-[10px] font-medium text-light-ash sm:hidden">On-site Fee</label>
+                          <label className="text-[10px] font-medium text-light-ash sm:hidden">In Person Fee</label>
                           <input
                             type="text"
                             value={item.amountOnsite || ""}
                             onChange={(e) => updateFeeItem(catIdx, itemIdx, "amountOnsite", e.target.value)}
-                            placeholder="On-site (e.g. BDT 2,500)"
+                            placeholder="In Person (e.g. BDT 2,500)"
                             className="w-full px-2 py-1.5 border border-muted rounded text-xs focus:outline-none focus:border-primary"
                           />
                         </div>

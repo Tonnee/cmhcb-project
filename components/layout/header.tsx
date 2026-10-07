@@ -196,7 +196,7 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
                       {service.title}
                     </span>
 
-                    {/* Meta: Only keep on-site fees for nav services megamenu dropdowns */}
+                    {/* Meta: Only keep In Person fees for nav services megamenu dropdowns */}
                     <span className="text-xs font-sans text-light-ash mt-auto flex flex-col gap-0.5">
                       {(() => {
                         const onSiteFee = service.feesOnsite || service.fees;
@@ -205,7 +205,7 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
                             {service.duration && <span>{service.duration}</span>}
                             {onSiteFee ? (
                               <span className="text-primary font-medium text-[11px] leading-tight">
-                                {onSiteFee} <span className="text-light-ash/70 font-normal">(On-site)</span>
+                                {onSiteFee} <span className="text-light-ash/70 font-normal">(In Person)</span>
                               </span>
                             ) : (
                               <span>Professional Care</span>

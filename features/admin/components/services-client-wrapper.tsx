@@ -351,7 +351,7 @@ export function ServicesClientWrapper({
                   Slug Path
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-dark uppercase tracking-wider">
-                  Fees (On-site / Online)
+                  Fees (In Person / Online)
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-dark uppercase tracking-wider">
                   Icon
@@ -418,7 +418,7 @@ export function ServicesClientWrapper({
                       <div className="flex flex-col gap-1">
                         <span className="inline-flex items-center gap-1.5 font-medium text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60 w-fit">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-                          On-site: {service.feesOnsite || service.fees || "—"}
+                          In Person: {service.feesOnsite || service.fees || "—"}
                         </span>
                         <span className="inline-flex items-center gap-1.5 font-medium text-sky-800 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200/60 w-fit">
                           <span className="w-1.5 h-1.5 rounded-full bg-sky-600" />

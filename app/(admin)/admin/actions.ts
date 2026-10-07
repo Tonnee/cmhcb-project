@@ -990,7 +990,7 @@ export async function getActiveServicesListAction(): Promise<{
       },
       orderBy: [{ order: "asc" }, { createdAt: "asc" }],
     });
-    // For navbar megamenu: ensure 'fees' explicitly represents only the on-site fees as requested
+    // For navbar megamenu: ensure 'fees' explicitly represents only the In Person fees as requested
     const formatted = (services as any[]).map((s) => ({
       title: s.title,
       slug: s.slug,
@@ -1015,6 +1015,7 @@ export async function getAllServicesForFormAction(): Promise<{
     feesOnsite?: string | null;
     feesOnline?: string | null;
     fees?: string | null;
+    duration?: string | null;
   }[];
 }> {
   try {
@@ -1025,6 +1026,7 @@ export async function getAllServicesForFormAction(): Promise<{
         feesOnsite: true,
         feesOnline: true,
         fees: true,
+        duration: true,
       },
       orderBy: { title: "asc" },
     });
@@ -1037,6 +1039,7 @@ export async function getAllServicesForFormAction(): Promise<{
       feesOnsite: s.feesOnsite || s.fees,
       feesOnline: s.feesOnline || s.fees,
       fees: s.fees,
+      duration: s.duration,
     }));
     return { success: true, data: fallback };
   }

@@ -78,7 +78,7 @@ export function AllServices({ services, approachData, sectionTitle }: AllService
                   </p>
                 </div>
 
-                {/* On-site & Online Fee comparison pills */}
+                {/* In Person & Online Fee comparison pills */}
                 <div className="grid grid-cols-2 gap-3 mb-6 font-sans">
                   <div className={`rounded-2xl p-3 border ${
                     isAccent
@@ -87,7 +87,7 @@ export function AllServices({ services, approachData, sectionTitle }: AllService
                   }`}>
                     <div className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 opacity-90">
                       <span className={`w-1.5 h-1.5 rounded-full ${isAccent ? "bg-dark-green" : "bg-primary"}`} />
-                      On-site Fee
+                      In Person Fee
                     </div>
                     <div className="text-sm font-bold mt-1">
                       {onSiteFee || "Available"}
@@ -115,7 +115,7 @@ export function AllServices({ services, approachData, sectionTitle }: AllService
                   <p className={`font-sans font-medium text-xs ${
                     isAccent ? "text-dark-green/80" : "text-light-ash"
                   }`}>
-                    {service.duration ? `Duration: ${service.duration}` : "Available Online & On-site"}
+                    {service.duration ? `Duration: ${service.duration}` : "Available Online & In Person"}
                   </p>
                   <LinkButton
                     href={`/services/${service.slug}`}

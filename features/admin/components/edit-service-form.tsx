@@ -521,7 +521,7 @@ export function EditServiceForm({
             4. Session Specifications &amp; Pricing
           </h4>
           <span className="text-[11px] text-light-ash">
-            All services can be taken online or on-site, and fees will vary depending on session mode. Fees can be a fixed rate (e.g. <strong>BDT 2,500</strong>) or a range (e.g. <strong>BDT 1,500 - 2,500</strong>). Only on-site fees will be shown in the navigation megamenu dropdown.
+            All services can be taken online or in person, and fees will vary depending on session mode. Fees can be a fixed rate (e.g. <strong>BDT 2,500</strong>) or a range (e.g. <strong>BDT 1,500 - 2,500</strong>). Only In Person fees will be shown in the navigation megamenu dropdown.
           </span>
         </div>
 
@@ -529,7 +529,7 @@ export function EditServiceForm({
           <div className="flex flex-col gap-1.5">
             <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-primary" />
-              On-site Fee Rate (Can be range)
+              In Person Fee Rate (Can be range)
             </label>
             <input
               type="text"

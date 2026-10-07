@@ -34,7 +34,7 @@ export interface PageHeroProps {
   duration?: string;
   /** Optional fees text to show. */
   fees?: string;
-  /** Optional on-site fees text to show. */
+  /** Optional In Person fees text to show. */
   feesOnsite?: string;
   /** Optional online fees text to show. */
   feesOnline?: string;
@@ -96,7 +96,7 @@ export function PageHero({
                 )}
                 {feesOnsite && (
                   <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
-                    <span className="text-white/60">On-site Fee:</span> {feesOnsite}
+                    <span className="text-white/60">In Person Fee:</span> {feesOnsite}
                   </span>
                 )}
                 {feesOnline && (

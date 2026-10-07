@@ -97,6 +97,18 @@ export const THERAPISTS_DATA: Therapist[] = [
           { label: "90-minute session (Two Therapists)", amountOnsite: "BDT 6,500", amountOnline: "BDT 5,500" },
         ],
       },
+      {
+        category: "Couple Therapy",
+        items: [
+          { label: "90-minute session", amountOnsite: "BDT 3,500", amountOnline: "BDT 3,000" },
+        ],
+      },
+      {
+        category: "Child & Adolescent Therapy",
+        items: [
+          { label: "50-minute session", amountOnsite: "BDT 2,500", amountOnline: "BDT 2,000" },
+        ],
+      },
     ],
     services: ["individual-therapy", "family-therapy", "couple-therapy", "child-therapy"],
     schedule: ["Monday: 04:00 PM - 08:00 PM", "Wednesday: 04:00 PM - 08:00 PM", "Saturday: 11:00 AM - 03:00 PM"],

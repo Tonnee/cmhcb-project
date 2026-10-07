@@ -39,7 +39,7 @@ function SectionCard({
     <div className="group relative rounded-3xl border border-muted/30 bg-white p-8 hover:border-primary-dark/60 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.02)] flex flex-col">
       {/* Top Accent Line */}
       <div className="w-8 h-1 bg-accent/40 group-hover:w-16 group-hover:bg-primary-dark transition-all duration-300 mb-6 rounded-full" />
-      
+
       <div className="flex items-center gap-3 mb-6">
         <Icon className="w-5 h-5 text-primary-dark shrink-0" />
         <h3 className="font-marcellus text-xl text-dark tracking-wide">{title}</h3>
@@ -151,19 +151,19 @@ export default async function TherapistProfilePage({
   let schedule: string[] = staticTherapist?.schedule || [];
 
   if (dbTherapist) {
-    try { if (dbTherapist.education) education = JSON.parse(dbTherapist.education); } catch {}
-    try { if (dbTherapist.training) training = JSON.parse(dbTherapist.training); } catch {}
-    try { if (dbTherapist.expertise) expertise = JSON.parse(dbTherapist.expertise); } catch {}
-    try { if (dbTherapist.experience) experience = JSON.parse(dbTherapist.experience); } catch {}
-    try { if (dbTherapist.services) services = JSON.parse(dbTherapist.services); } catch {}
-    try { if (dbTherapist.activities) activities = JSON.parse(dbTherapist.activities); } catch {}
-    try { if (dbTherapist.fees) fees = JSON.parse(dbTherapist.fees); } catch {}
-    try { if ((dbTherapist as any).schedule) schedule = JSON.parse((dbTherapist as any).schedule); } catch {}
+    try { if (dbTherapist.education) education = JSON.parse(dbTherapist.education); } catch { }
+    try { if (dbTherapist.training) training = JSON.parse(dbTherapist.training); } catch { }
+    try { if (dbTherapist.expertise) expertise = JSON.parse(dbTherapist.expertise); } catch { }
+    try { if (dbTherapist.experience) experience = JSON.parse(dbTherapist.experience); } catch { }
+    try { if (dbTherapist.services) services = JSON.parse(dbTherapist.services); } catch { }
+    try { if (dbTherapist.activities) activities = JSON.parse(dbTherapist.activities); } catch { }
+    try { if (dbTherapist.fees) fees = JSON.parse(dbTherapist.fees); } catch { }
+    try { if ((dbTherapist as any).schedule) schedule = JSON.parse((dbTherapist as any).schedule); } catch { }
   }
 
   let faqs: { question: string; answer: string }[] = [];
   if (dbTherapist?.faqs) {
-    try { faqs = JSON.parse(dbTherapist.faqs); } catch {}
+    try { faqs = JSON.parse(dbTherapist.faqs); } catch { }
   }
 
   const therapist = {
@@ -239,7 +239,7 @@ export default async function TherapistProfilePage({
       <JsonLd data={[personJsonLd, breadcrumbJsonLd]} />
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-start">
-          
+
           {/* Column 1: Portrait (Sticky) */}
           <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-32">
             <div className="relative rounded-4xl overflow-hidden aspect-3/4 w-full">
@@ -329,7 +329,7 @@ export default async function TherapistProfilePage({
           <div className="lg:col-span-3 flex flex-col gap-8 lg:sticky lg:top-32 bg-primary-dark rounded-3xl p-6 shadow-[0_8px_30px_rgba(3,83,0,0.15)] text-white border border-primary-dark">
             {hasFees ? (
               <>
-                <div className="flex items-center gap-3 pb-4 border-b border-white/20">
+                <div className="flex items-center gap-3">
                   <h2 className="font-marcellus text-xl text-white tracking-wide font-semibold">Fees</h2>
                 </div>
                 <div className="flex flex-col gap-6">
@@ -355,7 +355,7 @@ export default async function TherapistProfilePage({
                                   <div className="flex flex-col">
                                     <span className="text-[10px] uppercase tracking-wider font-semibold text-white/60 flex items-center gap-1">
                                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                                      On-site
+                                      In Person
                                     </span>
                                     <span className="font-marcellus text-[13px] text-accent font-semibold whitespace-nowrap">
                                       {onsiteVal}
@@ -387,7 +387,7 @@ export default async function TherapistProfilePage({
                 Rates and fees info not available.
               </div>
             )}
-            
+
             <BookAppointmentButton therapistId={therapist.id} variant="white" className="w-full justify-center" />
           </div>
 

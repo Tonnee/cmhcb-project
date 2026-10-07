@@ -73,13 +73,13 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
           {item.shortDescription}
         </p>
 
-        {/* Fees Block (Online & On-site pricing) */}
+        {/* Fees Block (Online & In Person pricing) */}
         <div className="mt-auto pt-4 border-t border-gray-100 flex flex-col gap-3">
           <div className="grid grid-cols-2 gap-2 text-xs font-sans">
             <div className="bg-[#f0f7ef] border border-primary/20 rounded-xl p-2.5 flex flex-col justify-between">
               <span className="text-[10px] font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                On-site
+                In Person
               </span>
               <span className="font-semibold text-dark-green text-xs mt-1 leading-snug">
                 {onSiteFee || "Available"}
@@ -98,7 +98,7 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
 
           <div className="flex items-center justify-between pt-1">
             <span className="font-sans text-xs text-light-ash font-medium">
-              {item.duration ? `Duration: ${item.duration}` : "Online & On-site"}
+              {item.duration ? `Duration: ${item.duration}` : "Online & In Person"}
             </span>
             <LinkButton href={linkHref} variant="accent">
               Learn More

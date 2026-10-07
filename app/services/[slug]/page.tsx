@@ -289,18 +289,18 @@ export default async function ServiceDetailPage({
                   Session Details &amp; Fees
                 </h2>
                 <p className="font-sans text-base text-light-ash">
-                  All services can be taken online or on-site, and fees will vary depending on your preferred mode of session.
+                  All services can be taken online or in person, and fees will vary depending on your preferred mode of session.
                 </p>
               </div>
 
-              {/* On-site vs Online Fee Comparison Cards */}
+              {/* In Person vs Online Fee Comparison Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl my-2">
                 <div className="bg-white border-2 border-primary/20 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-primary shrink-0" />
                       <span className="font-sans text-xs font-bold uppercase tracking-wider text-primary">
-                        On-site Session Fee
+                        In Person Session Fee
                       </span>
                     </div>
                     <div className="font-marcellus text-2xl font-bold text-dark-green mt-2.5">

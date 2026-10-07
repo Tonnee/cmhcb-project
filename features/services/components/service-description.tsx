@@ -98,7 +98,7 @@ export function ServiceDescription({
         highlight: true,
         items: [
           `Session Duration: ${sessionDetails.duration}`,
-          ...(sessionDetails.feesOnsite ? [`On-site Fee: ${sessionDetails.feesOnsite}`] : []),
+          ...(sessionDetails.feesOnsite ? [`In Person Fee: ${sessionDetails.feesOnsite}`] : []),
           ...(sessionDetails.feesOnline ? [`Online Fee: ${sessionDetails.feesOnline}`] : []),
           ...(!sessionDetails.feesOnsite && !sessionDetails.feesOnline && sessionDetails.fees
             ? [`Fees: ${sessionDetails.fees}`]
