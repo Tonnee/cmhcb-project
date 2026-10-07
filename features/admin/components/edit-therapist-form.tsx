@@ -10,8 +10,9 @@ import { z } from "zod";
 
 interface FeeItem {
   label: string;
-  amount: string;
-  note?: string;
+  amountOnsite?: string;
+  amountOnline?: string;
+  amount?: string;
 }
 
 interface FeeCategory {
@@ -40,6 +41,7 @@ interface TherapistFormProps {
     services: string; // JSON string
     activities: string; // JSON string
     faqs?: string | null; // JSON string
+    schedule?: string | null; // JSON string
     lastUpdatedBy?: string | null;
     updatedAt?: string | Date;
   } | null;
@@ -108,12 +110,25 @@ export default function EditTherapistForm({
   const [services, setServices] = React.useState<string[]>(() =>
     therapist ? safeJsonParse<string[]>(therapist.services, []) : []
   );
-  const [fees, setFees] = React.useState<FeeCategory[]>(() =>
-    therapist ? safeJsonParse<FeeCategory[]>(therapist.fees, []) : []
-  );
+  const [fees, setFees] = React.useState<FeeCategory[]>(() => {
+    if (!therapist?.fees) return [];
+    const parsed = safeJsonParse<FeeCategory[]>(therapist.fees, []);
+    return parsed.map((cat) => ({
+      ...cat,
+      items: (cat.items || []).map((it) => ({
+        label: it.label || "",
+        amountOnsite: it.amountOnsite || it.amount || "",
+        amountOnline: it.amountOnline || "",
+      })),
+    }));
+  });
   const [faq, setFaq] = React.useState<FaqItem[]>(() =>
     therapist?.faqs ? safeJsonParse<FaqItem[]>(therapist.faqs, []) : []
   );
+  const [schedule, setSchedule] = React.useState<string[]>(() =>
+    therapist?.schedule ? safeJsonParse<string[]>(therapist.schedule, []) : []
+  );
+  const [newScheduleSlot, setNewScheduleSlot] = React.useState("");
 
   const addFaqItem = () => {
     setFaq([...faq, { question: "", answer: "" }]);
@@ -198,6 +213,12 @@ export default function EditTherapistForm({
       setNewExp("");
     }
   };
+  const addScheduleSlot = () => {
+    if (newScheduleSlot.trim()) {
+      setSchedule([...schedule, newScheduleSlot.trim()]);
+      setNewScheduleSlot("");
+    }
+  };
 
   // Handle service checkbox toggles — auto-add/remove matching fee category
   const handleServiceToggle = (serviceId: string) => {
@@ -216,7 +237,7 @@ export default function EditTherapistForm({
           {
             serviceId,
             category: serviceLabel,
-            items: [{ label: "50-minute session", amount: "BDT 2,000" }],
+            items: [{ label: "50-minute session", amountOnsite: "BDT 2,500", amountOnline: "BDT 2,000" }],
           },
         ]);
       }
@@ -225,7 +246,7 @@ export default function EditTherapistForm({
 
   // Fee category management helpers
   const addFeeCategory = () => {
-    setFees([...fees, { category: "New Service Category", items: [{ label: "Session description", amount: "BDT 2,000" }] }]);
+    setFees([...fees, { category: "New Service Category", items: [{ label: "Session description", amountOnsite: "BDT 2,500", amountOnline: "BDT 2,000" }] }]);
   };
   const updateCategoryName = (catIndex: number, newName: string) => {
     const updated = [...fees];
@@ -234,7 +255,7 @@ export default function EditTherapistForm({
   };
   const addFeeItem = (catIndex: number) => {
     const updated = [...fees];
-    updated[catIndex].items.push({ label: "New session tier", amount: "BDT 2,500" });
+    updated[catIndex].items.push({ label: "New session tier", amountOnsite: "BDT 2,500", amountOnline: "BDT 2,000" });
     setFees(updated);
   };
   const updateFeeItem = (catIndex: number, itemIndex: number, key: keyof FeeItem, val: string) => {
@@ -320,11 +341,20 @@ export default function EditTherapistForm({
         fees: fees.map((fee) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { serviceId, ...rest } = fee;
-          return rest;
+          return {
+            ...rest,
+            items: (rest.items || []).map((item) => ({
+              label: item.label,
+              amountOnsite: item.amountOnsite || "",
+              amountOnline: item.amountOnline || "",
+              amount: item.amountOnsite || item.amountOnline || item.amount || "",
+            })),
+          };
         }),
         services,
         activities: therapist ? safeJsonParse<string[]>(therapist.activities, []) : [],
         faqs: faq.filter((f) => f.question.trim() && f.answer.trim()),
+        schedule: schedule.filter((s) => s.trim().length > 0),
       };
 
       // Zod validation on client
@@ -533,34 +563,50 @@ export default function EditTherapistForm({
                   </div>
 
                   <div className="flex flex-col gap-2">
+                    <div className="hidden sm:grid sm:grid-cols-12 gap-2 text-[11px] font-semibold text-charcoal/70 px-1">
+                      <span className="sm:col-span-5">Session / Tier</span>
+                      <span className="sm:col-span-3">On-site Fee</span>
+                      <span className="sm:col-span-3">Online Fee</span>
+                      <span className="sm:col-span-1 text-right">Action</span>
+                    </div>
                     {cat.items.map((item, itemIdx) => (
-                      <div key={itemIdx} className="grid grid-cols-1 sm:grid-cols-3 gap-2 items-center">
-                        <input
-                          type="text"
-                          value={item.label}
-                          onChange={(e) => updateFeeItem(catIdx, itemIdx, "label", e.target.value)}
-                          placeholder="Session (e.g. 50-minute)"
-                          className="px-2 py-1 border border-muted rounded text-xs focus:outline-none focus:border-primary"
-                        />
-                        <input
-                          type="text"
-                          value={item.amount}
-                          onChange={(e) => updateFeeItem(catIdx, itemIdx, "amount", e.target.value)}
-                          placeholder="Amount (e.g. BDT 2,000)"
-                          className="px-2 py-1 border border-muted rounded text-xs focus:outline-none focus:border-primary"
-                        />
-                        <div className="flex items-center gap-2">
+                      <div key={itemIdx} className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-light/10 sm:bg-transparent p-2 sm:p-0 rounded-lg">
+                        <div className="sm:col-span-5 flex flex-col gap-0.5">
+                          <label className="text-[10px] font-medium text-light-ash sm:hidden">Session / Tier</label>
                           <input
                             type="text"
-                            value={item.note || ""}
-                            onChange={(e) => updateFeeItem(catIdx, itemIdx, "note", e.target.value)}
-                            placeholder="Note (optional)"
-                            className="flex-1 px-2 py-1 border border-muted rounded text-xs focus:outline-none focus:border-primary"
+                            value={item.label}
+                            onChange={(e) => updateFeeItem(catIdx, itemIdx, "label", e.target.value)}
+                            placeholder="Session (e.g. 50-minute)"
+                            className="w-full px-2 py-1.5 border border-muted rounded text-xs focus:outline-none focus:border-primary"
                           />
+                        </div>
+                        <div className="sm:col-span-3 flex flex-col gap-0.5">
+                          <label className="text-[10px] font-medium text-light-ash sm:hidden">On-site Fee</label>
+                          <input
+                            type="text"
+                            value={item.amountOnsite || ""}
+                            onChange={(e) => updateFeeItem(catIdx, itemIdx, "amountOnsite", e.target.value)}
+                            placeholder="On-site (e.g. BDT 2,500)"
+                            className="w-full px-2 py-1.5 border border-muted rounded text-xs focus:outline-none focus:border-primary"
+                          />
+                        </div>
+                        <div className="sm:col-span-3 flex flex-col gap-0.5">
+                          <label className="text-[10px] font-medium text-light-ash sm:hidden">Online Fee</label>
+                          <input
+                            type="text"
+                            value={item.amountOnline || ""}
+                            onChange={(e) => updateFeeItem(catIdx, itemIdx, "amountOnline", e.target.value)}
+                            placeholder="Online (e.g. BDT 2,000)"
+                            className="w-full px-2 py-1.5 border border-muted rounded text-xs focus:outline-none focus:border-primary"
+                          />
+                        </div>
+                        <div className="sm:col-span-1 flex items-center justify-end">
                           <button
                             type="button"
                             onClick={() => deleteFeeItem(catIdx, itemIdx)}
-                            className="text-red-500 hover:text-red-700"
+                            className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
+                            title="Delete item"
                           >
                             <HiTrash className="w-3.5 h-3.5" />
                           </button>
@@ -680,6 +726,61 @@ export default function EditTherapistForm({
               />
               <button type="button" onClick={addExp} className="p-1.5 bg-primary text-white rounded-lg hover:bg-primary-dark">
                 <HiPlus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Available Time Blocks (Schedule) */}
+          <div className="md:col-span-2 flex flex-col gap-3 p-4 bg-light/10 rounded-2xl border border-muted/50">
+            <div className="flex flex-col gap-0.5 border-b border-muted pb-1">
+              <span className="font-semibold text-dark">Available Time Blocks (Schedule)</span>
+              <span className="text-[11px] text-light-ash">
+                These time blocks appear on the therapist&apos;s profile page and in the appointment booking dropdown.
+              </span>
+            </div>
+            <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto">
+              {schedule.map((item, idx) => (
+                <div key={idx} className="flex items-center justify-between gap-2 p-2 bg-white rounded-lg border border-muted/60 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                    <span className="text-dark font-medium">{item}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSchedule(schedule.filter((_, i) => i !== idx))}
+                    className="text-red-500 hover:text-red-700 p-1"
+                    title="Remove time block"
+                  >
+                    <HiTrash className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+              {schedule.length === 0 && (
+                <div className="text-xs text-light-ash py-2 text-center">
+                  No time blocks added yet. Add available slots below.
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newScheduleSlot}
+                onChange={(e) => setNewScheduleSlot(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addScheduleSlot();
+                  }
+                }}
+                placeholder="e.g. Sunday: 10:00 AM - 01:00 PM or Weekdays: 04:00 PM - 08:00 PM"
+                className="flex-1 px-3 py-1.5 border border-muted rounded-lg text-xs focus:outline-none focus:border-primary"
+              />
+              <button
+                type="button"
+                onClick={addScheduleSlot}
+                className="px-3 py-1.5 bg-primary text-white rounded-lg hover:bg-primary-dark text-xs font-semibold flex items-center gap-1"
+              >
+                <HiPlus className="w-4 h-4" /> Add Slot
               </button>
             </div>
           </div>

@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { getRequiredAdminSession, logActivity } from "./admin-management";
+import { THERAPISTS_DATA } from "@/features/therapists/data/therapists";
+import { SERVICES } from "@/features/services/data/services";
 
 // Helper to slugify strings if slug is not provided or modified
 function slugify(text: string): string {
@@ -35,7 +37,9 @@ const TherapistInputSchema = z.object({
       items: z.array(
         z.object({
           label: z.string(),
-          amount: z.string(),
+          amount: z.string().optional(),
+          amountOnsite: z.string().optional(),
+          amountOnline: z.string().optional(),
           note: z.string().optional(),
         })
       ),
@@ -49,6 +53,7 @@ const TherapistInputSchema = z.object({
       answer: z.string(),
     })
   ).default([]),
+  schedule: z.array(z.string()).default([]),
 });
 
 const WorkshopInputSchema = z.object({
@@ -378,6 +383,7 @@ export async function upsertTherapistAction(
       services: JSON.stringify(validated.services),
       activities: JSON.stringify(validated.activities),
       faqs: JSON.stringify(validated.faqs),
+      schedule: JSON.stringify(validated.schedule || []),
       lastUpdatedBy: admin.email,
     };
 
@@ -960,10 +966,18 @@ export async function updateLandingPageContentAction(
 
 export async function getActiveServicesListAction(): Promise<{
   success: boolean;
-  data: { title: string; slug: string; icon: string; duration: string | null; fees: string | null }[];
+  data: {
+    title: string;
+    slug: string;
+    icon: string;
+    duration: string | null;
+    fees: string | null;
+    feesOnsite: string | null;
+    feesOnline: string | null;
+  }[];
 }> {
   try {
-    const services = await prisma.service.findMany({
+    const services = await (prisma.service as any).findMany({
       take: 6,
       select: {
         title: true,
@@ -971,10 +985,22 @@ export async function getActiveServicesListAction(): Promise<{
         icon: true,
         duration: true,
         fees: true,
+        feesOnsite: true,
+        feesOnline: true,
       },
       orderBy: [{ order: "asc" }, { createdAt: "asc" }],
     });
-    return { success: true, data: services };
+    // For navbar megamenu: ensure 'fees' explicitly represents only the on-site fees as requested
+    const formatted = (services as any[]).map((s) => ({
+      title: s.title,
+      slug: s.slug,
+      icon: s.icon,
+      duration: s.duration ?? null,
+      fees: s.feesOnsite || s.fees || null,
+      feesOnsite: s.feesOnsite ?? s.fees ?? null,
+      feesOnline: s.feesOnline ?? null,
+    }));
+    return { success: true, data: formatted };
   } catch (error) {
     console.error("Error in getActiveServicesListAction:", error);
     return { success: false, data: [] };
@@ -983,26 +1009,50 @@ export async function getActiveServicesListAction(): Promise<{
 
 export async function getAllServicesForFormAction(): Promise<{
   success: boolean;
-  data: { title: string; slug: string }[];
+  data: {
+    title: string;
+    slug: string;
+    feesOnsite?: string | null;
+    feesOnline?: string | null;
+    fees?: string | null;
+  }[];
 }> {
   try {
     const services = await prisma.service.findMany({
       select: {
         title: true,
         slug: true,
+        feesOnsite: true,
+        feesOnline: true,
+        fees: true,
       },
       orderBy: { title: "asc" },
     });
     return { success: true, data: services };
   } catch (error) {
     console.error("Error in getAllServicesForFormAction:", error);
-    return { success: false, data: [] };
+    const fallback = SERVICES.map((s) => ({
+      title: s.title,
+      slug: s.slug,
+      feesOnsite: s.feesOnsite || s.fees,
+      feesOnline: s.feesOnline || s.fees,
+      fees: s.fees,
+    }));
+    return { success: true, data: fallback };
   }
 }
 
 export async function getAllTherapistsForFormAction(): Promise<{
   success: boolean;
-  data: { id: string; name: string; role: string }[];
+  data: {
+    id: string;
+    name: string;
+    role: string;
+    image?: string;
+    fees?: any;
+    services?: string[];
+    schedule?: string[];
+  }[];
 }> {
   try {
     const therapists = await prisma.therapist.findMany({
@@ -1010,13 +1060,71 @@ export async function getAllTherapistsForFormAction(): Promise<{
         id: true,
         name: true,
         role: true,
+        image: true,
+        fees: true,
+        services: true,
+        schedule: true,
       },
-      orderBy: { name: "asc" },
+      orderBy: { order: "asc" },
     });
-    return { success: true, data: therapists };
+
+    const parsed = therapists.map((t) => {
+      let fees = null;
+      let services: string[] = [];
+      let schedule: string[] = [];
+      try {
+        if (t.fees) fees = JSON.parse(t.fees);
+      } catch {}
+      try {
+        if (t.services) services = JSON.parse(t.services);
+      } catch {}
+      try {
+        if (t.schedule) schedule = JSON.parse(t.schedule);
+      } catch {}
+
+      if (!fees || (Array.isArray(fees) && fees.length === 0)) {
+        const fallback = THERAPISTS_DATA.find((item) => item.id === t.id);
+        if (fallback?.fees) {
+          fees = fallback.fees;
+        }
+      }
+      if (!services || services.length === 0) {
+        const fallback = THERAPISTS_DATA.find((item) => item.id === t.id);
+        if (fallback?.services) {
+          services = fallback.services;
+        }
+      }
+      if (!schedule || schedule.length === 0) {
+        const fallback = THERAPISTS_DATA.find((item) => item.id === t.id);
+        if (fallback?.schedule) {
+          schedule = fallback.schedule;
+        }
+      }
+
+      return {
+        id: t.id,
+        name: t.name,
+        role: t.role,
+        image: t.image,
+        fees,
+        services,
+        schedule,
+      };
+    });
+
+    return { success: true, data: parsed };
   } catch (error) {
     console.error("Error in getAllTherapistsForFormAction:", error);
-    return { success: false, data: [] };
+    const fallback = THERAPISTS_DATA.map((t) => ({
+      id: t.id,
+      name: t.name,
+      role: t.role,
+      image: t.image,
+      fees: t.fees || null,
+      services: t.services || [],
+      schedule: t.schedule || [],
+    }));
+    return { success: true, data: fallback };
   }
 }
 
@@ -1033,6 +1141,8 @@ const ServiceInputSchema = z.object({
   bgImage: z.string().optional().nullable(),
   duration: z.string().optional().nullable(),
   fees: z.string().optional().nullable(),
+  feesOnsite: z.string().optional().nullable(),
+  feesOnline: z.string().optional().nullable(),
   whoIsItFor: z.string().optional().nullable(),
   format: z.string().optional().nullable(),
   language: z.string().optional().nullable(),
@@ -1062,7 +1172,9 @@ export async function upsertServiceAction(
       image: validated.image,
       bgImage: validated.bgImage,
       duration: validated.duration,
-      fees: validated.fees,
+      fees: validated.fees || validated.feesOnsite || null,
+      feesOnsite: validated.feesOnsite || null,
+      feesOnline: validated.feesOnline || null,
       whoIsItFor: validated.whoIsItFor,
       format: validated.format,
       language: validated.language,

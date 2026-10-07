@@ -11,6 +11,8 @@ interface ServiceCardProps {
     image?: string | null;
     duration?: string | null;
     fees?: string | null;
+    feesOnsite?: string | null;
+    feesOnline?: string | null;
   };
   className?: string;
 }
@@ -39,6 +41,8 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
     item.image ||
     "/home-service-images/individual-therapy.png";
   const linkHref = `/services/${item.slug}`;
+  const onSiteFee = item.feesOnsite || item.fees;
+  const onlineFee = item.feesOnline || item.fees;
 
   return (
     <div
@@ -60,24 +64,46 @@ export function ServiceCard({ item, className = "" }: ServiceCardProps): React.J
 
       {/* Content Block */}
       <div className="p-6 flex flex-col flex-1">
-        <Link href={linkHref} className="block mb-3">
+        <Link href={linkHref} className="block mb-2">
           <h3 className="font-marcellus text-xl text-primary-dark leading-snug transition-colors group-hover:text-accent">
             {item.title}
           </h3>
         </Link>
-        <p className="font-sans text-sm text-light-ash leading-relaxed mb-6 flex-1 line-clamp-3">
+        <p className="font-sans text-sm text-light-ash leading-relaxed mb-4 flex-1 line-clamp-2">
           {item.shortDescription}
         </p>
 
-        <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
-          <span className="font-sans text-xs text-light-ash font-medium">
-            {item.duration && item.fees
-              ? `${item.duration} / ${item.fees}`
-              : item.duration || item.fees || "Evidence-Based Support"}
-          </span>
-          <LinkButton href={linkHref} variant="accent">
-            Learn More
-          </LinkButton>
+        {/* Fees Block (Online & On-site pricing) */}
+        <div className="mt-auto pt-4 border-t border-gray-100 flex flex-col gap-3">
+          <div className="grid grid-cols-2 gap-2 text-xs font-sans">
+            <div className="bg-[#f0f7ef] border border-primary/20 rounded-xl p-2.5 flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                On-site
+              </span>
+              <span className="font-semibold text-dark-green text-xs mt-1 leading-snug">
+                {onSiteFee || "Available"}
+              </span>
+            </div>
+            <div className="bg-[#f2f8fc] border border-sky-600/20 rounded-xl p-2.5 flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-sky-700 uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                Online
+              </span>
+              <span className="font-semibold text-dark text-xs mt-1 leading-snug">
+                {onlineFee || "Available"}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-1">
+            <span className="font-sans text-xs text-light-ash font-medium">
+              {item.duration ? `Duration: ${item.duration}` : "Online & On-site"}
+            </span>
+            <LinkButton href={linkHref} variant="accent">
+              Learn More
+            </LinkButton>
+          </div>
         </div>
       </div>
     </div>

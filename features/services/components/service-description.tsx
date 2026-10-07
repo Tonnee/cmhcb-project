@@ -25,6 +25,8 @@ export interface ServiceDescriptionData {
 export interface SessionDetails {
   duration: string;
   fees: string;
+  feesOnsite?: string;
+  feesOnline?: string;
   /** Defaults to "In-person / Online (if applicable)" */
   format?: string;
   /** Defaults to "Bangla / English" */
@@ -96,9 +98,13 @@ export function ServiceDescription({
         highlight: true,
         items: [
           `Session Duration: ${sessionDetails.duration}`,
-          `Course Fees: ${sessionDetails.fees}`,
-          `Training Type: ${sessionDetails.format ?? "In-person / Online (if applicable)"}`,
-          `Training Language: ${sessionDetails.language ?? "Bangla / English"}`,
+          ...(sessionDetails.feesOnsite ? [`On-site Fee: ${sessionDetails.feesOnsite}`] : []),
+          ...(sessionDetails.feesOnline ? [`Online Fee: ${sessionDetails.feesOnline}`] : []),
+          ...(!sessionDetails.feesOnsite && !sessionDetails.feesOnline && sessionDetails.fees
+            ? [`Fees: ${sessionDetails.fees}`]
+            : []),
+          `Session Format: ${sessionDetails.format ?? "In-person & Online"}`,
+          `Language: ${sessionDetails.language ?? "Bangla / English"}`,
         ],
       }
     : null;

@@ -10,6 +10,8 @@ interface ServiceItem {
   image?: string | null;
   duration?: string | null;
   fees?: string | null;
+  feesOnsite?: string | null;
+  feesOnline?: string | null;
 }
 
 export interface ServicesProps {

@@ -16,6 +16,8 @@ export interface ServiceItem {
   features: string[];
   duration: string;
   fees: string;
+  feesOnsite?: string;
+  feesOnline?: string;
   variant: FeatureCardVariant;
 }
 
@@ -98,6 +100,8 @@ export const SERVICES: ServiceItem[] = [
     ],
     duration: "30 mins",
     fees: "300 BDT",
+    feesOnsite: "BDT 500 - 800",
+    feesOnline: "BDT 300 - 500",
     variant: "primary",
   },
   {
@@ -191,6 +195,8 @@ export const SERVICES: ServiceItem[] = [
     ],
     duration: "60 mins",
     fees: "1,000 BDT",
+    feesOnsite: "BDT 1,500 - 2,500",
+    feesOnline: "BDT 1,000 - 1,800",
     variant: "secondary",
   },
   {
@@ -275,6 +281,8 @@ export const SERVICES: ServiceItem[] = [
     ],
     duration: "90 mins",
     fees: "1,500 BDT",
+    feesOnsite: "BDT 1,500 - 2,500",
+    feesOnline: "BDT 1,200 - 2,000",
     variant: "secondary",
   },
   {
@@ -354,6 +362,8 @@ export const SERVICES: ServiceItem[] = [
     ],
     duration: "90 mins",
     fees: "3,000 BDT",
+    feesOnsite: "BDT 3,500 - 5,000",
+    feesOnline: "BDT 2,800 - 3,800",
     variant: "secondary",
   },
   {
@@ -438,6 +448,8 @@ export const SERVICES: ServiceItem[] = [
     ],
     duration: "90 mins",
     fees: "1,500 BDT",
+    feesOnsite: "BDT 2,000 - 3,500",
+    feesOnline: "BDT 1,800 - 2,800",
     variant: "secondary",
   },
   {
@@ -522,6 +534,8 @@ export const SERVICES: ServiceItem[] = [
     ],
     duration: "90 mins",
     fees: "3,000 BDT",
+    feesOnsite: "BDT 3,000 - 5,000",
+    feesOnline: "BDT 2,500 - 3,500",
     variant: "secondary",
   },
 ];

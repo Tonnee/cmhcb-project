@@ -35,18 +35,19 @@ export const THERAPISTS_DATA: Therapist[] = [
       {
         category: "Individual Therapy",
         items: [
-          { label: "50-minute session", amount: "BDT 2,000" },
+          { label: "50-minute session", amountOnsite: "BDT 2,500", amountOnline: "BDT 2,000" },
         ],
       },
       {
         category: "Family Therapy",
         items: [
-          { label: "90-minute session", amount: "BDT 3,500", note: "Single Therapist" },
-          { label: "90-minute session", amount: "BDT 6,500", note: "Two Therapists" },
+          { label: "90-minute session (Single Therapist)", amountOnsite: "BDT 3,500", amountOnline: "BDT 3,000" },
+          { label: "90-minute session (Two Therapists)", amountOnsite: "BDT 6,500", amountOnline: "BDT 5,500" },
         ],
       },
     ],
     services: ["individual-therapy", "family-therapy", "couple-therapy", "child-therapy"],
+    schedule: ["Sunday: 10:00 AM - 01:00 PM", "Tuesday: 03:00 PM - 07:00 PM", "Thursday: 05:00 PM - 09:00 PM"],
   },
   {
     id: "zohra-parveen",
@@ -86,18 +87,19 @@ export const THERAPISTS_DATA: Therapist[] = [
       {
         category: "Individual Therapy",
         items: [
-          { label: "50-minute session", amount: "BDT 2,000" },
+          { label: "50-minute session", amountOnsite: "BDT 2,500", amountOnline: "BDT 2,000" },
         ],
       },
       {
         category: "Family Therapy",
         items: [
-          { label: "90-minute session", amount: "BDT 3,500", note: "Single Therapist" },
-          { label: "90-minute session", amount: "BDT 6,500", note: "Two Therapists" },
+          { label: "90-minute session (Single Therapist)", amountOnsite: "BDT 3,500", amountOnline: "BDT 3,000" },
+          { label: "90-minute session (Two Therapists)", amountOnsite: "BDT 6,500", amountOnline: "BDT 5,500" },
         ],
       },
     ],
     services: ["individual-therapy", "family-therapy", "couple-therapy", "child-therapy"],
+    schedule: ["Monday: 04:00 PM - 08:00 PM", "Wednesday: 04:00 PM - 08:00 PM", "Saturday: 11:00 AM - 03:00 PM"],
   },
   {
     id: "nazma-khatun",
@@ -127,13 +129,14 @@ export const THERAPISTS_DATA: Therapist[] = [
     ],
     fees: [
       {
-        category: "Individual Therapy (Online Only)",
+        category: "Individual Therapy",
         items: [
-          { label: "50-minute session", amount: "BDT 2,000" },
+          { label: "50-minute session", amountOnsite: "BDT 2,000", amountOnline: "BDT 1,800" },
         ],
       },
     ],
     services: ["individual-therapy", "child-therapy", "couple-therapy"],
+    schedule: ["Sunday: 02:00 PM - 06:00 PM", "Tuesday: 02:00 PM - 06:00 PM", "Thursday: 02:00 PM - 06:00 PM"],
   },
   {
     id: "saria-mahima",
@@ -161,13 +164,14 @@ export const THERAPISTS_DATA: Therapist[] = [
     ],
     fees: [
       {
-        category: "Individual Therapy (Online Only)",
+        category: "Individual Therapy",
         items: [
-          { label: "50-minute session", amount: "BDT 2,000" },
+          { label: "50-minute session", amountOnsite: "BDT 2,000", amountOnline: "BDT 1,800" },
         ],
       },
     ],
     services: ["individual-therapy", "child-therapy"],
+    schedule: ["Monday: 10:00 AM - 01:00 PM", "Wednesday: 10:00 AM - 01:00 PM", "Friday: 04:00 PM - 07:00 PM"],
   },
   {
     id: "mahbub-asem",
@@ -200,12 +204,13 @@ export const THERAPISTS_DATA: Therapist[] = [
       {
         category: "Individual Therapy",
         items: [
-          { label: "First Session (One-time, 50 mins)", amount: "BDT 1,500" },
-          { label: "Follow-up Sessions (50 mins)", amount: "BDT 1,000" },
+          { label: "First Session (One-time, 50 mins)", amountOnsite: "BDT 1,500", amountOnline: "BDT 1,200" },
+          { label: "Follow-up Sessions (50 mins)", amountOnsite: "BDT 1,000", amountOnline: "BDT 800" },
         ],
       },
     ],
     services: ["individual-therapy", "couple-therapy", "psychometric-assessment"],
+    schedule: ["Tuesday: 04:00 PM - 08:00 PM", "Thursday: 04:00 PM - 08:00 PM", "Friday: 02:00 PM - 06:00 PM"],
   },
   {
     id: "farhana-khan",
@@ -238,12 +243,13 @@ export const THERAPISTS_DATA: Therapist[] = [
       {
         category: "Individual Therapy",
         items: [
-          { label: "First Session (One-time, 50 mins)", amount: "BDT 1,500" },
-          { label: "Follow-up Sessions (50 mins)", amount: "BDT 1,000" },
+          { label: "First Session (One-time, 50 mins)", amountOnsite: "BDT 1,500", amountOnline: "BDT 1,200" },
+          { label: "Follow-up Sessions (50 mins)", amountOnsite: "BDT 1,000", amountOnline: "BDT 800" },
         ],
       },
     ],
     services: ["individual-therapy", "couple-therapy"],
+    schedule: ["Sunday: 04:00 PM - 08:00 PM", "Wednesday: 04:00 PM - 08:00 PM", "Saturday: 03:00 PM - 07:00 PM"],
   },
   {
     id: "nila",
@@ -272,11 +278,12 @@ export const THERAPISTS_DATA: Therapist[] = [
       {
         category: "Individual Therapy",
         items: [
-          { label: "50-minute session", amount: "BDT 2,000" },
+          { label: "50-minute session", amountOnsite: "BDT 2,000", amountOnline: "BDT 1,800" },
         ],
       },
     ],
     services: ["individual-therapy", "psychometric-assessment"],
+    schedule: ["Monday: 02:00 PM - 06:00 PM", "Thursday: 02:00 PM - 06:00 PM", "Friday: 10:00 AM - 02:00 PM"],
   },
 ];
 

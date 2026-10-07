@@ -34,6 +34,10 @@ export interface PageHeroProps {
   duration?: string;
   /** Optional fees text to show. */
   fees?: string;
+  /** Optional on-site fees text to show. */
+  feesOnsite?: string;
+  /** Optional online fees text to show. */
+  feesOnline?: string;
   /** Optional session format text to show. */
   format?: string;
   /** Optional language text to show. */
@@ -54,6 +58,8 @@ export function PageHero({
   children,
   duration,
   fees,
+  feesOnsite,
+  feesOnline,
   format,
   language,
 }: PageHeroProps): React.JSX.Element {
@@ -81,14 +87,24 @@ export function PageHero({
             )}
 
             {/* Fees & Duration Metadata */}
-            {(duration || fees || format || language) && (
+            {(duration || fees || feesOnsite || feesOnline || format || language) && (
               <div className="flex flex-wrap gap-3 items-center justify-start mb-8 text-xs font-semibold text-white">
                 {duration && (
                   <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
                     <span className="text-white/60">Duration:</span> {duration}
                   </span>
                 )}
-                {fees && (
+                {feesOnsite && (
+                  <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
+                    <span className="text-white/60">On-site Fee:</span> {feesOnsite}
+                  </span>
+                )}
+                {feesOnline && (
+                  <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
+                    <span className="text-white/60">Online Fee:</span> {feesOnline}
+                  </span>
+                )}
+                {!feesOnsite && !feesOnline && fees && (
                   <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 flex items-center gap-1.5 shadow-sm">
                     <span className="text-white/60">Fees:</span> {fees}
                   </span>

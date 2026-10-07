@@ -92,6 +92,8 @@ interface ServicesDropdownItem {
   icon: string;
   duration: string | null;
   fees: string | null;
+  feesOnsite?: string | null;
+  feesOnline?: string | null;
 }
 
 function ServicesMegaMenu({ active }: { active?: boolean }) {
@@ -194,11 +196,23 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
                       {service.title}
                     </span>
 
-                    {/* Meta */}
-                    <span className="text-xs font-sans text-light-ash mt-auto">
-                      {service.duration && service.fees
-                        ? `${service.duration} / ${service.fees}`
-                        : service.duration || service.fees || "Professional Care"}
+                    {/* Meta: Only keep on-site fees for nav services megamenu dropdowns */}
+                    <span className="text-xs font-sans text-light-ash mt-auto flex flex-col gap-0.5">
+                      {(() => {
+                        const onSiteFee = service.feesOnsite || service.fees;
+                        return (
+                          <>
+                            {service.duration && <span>{service.duration}</span>}
+                            {onSiteFee ? (
+                              <span className="text-primary font-medium text-[11px] leading-tight">
+                                {onSiteFee} <span className="text-light-ash/70 font-normal">(On-site)</span>
+                              </span>
+                            ) : (
+                              <span>Professional Care</span>
+                            )}
+                          </>
+                        );
+                      })()}
                     </span>
                   </Link>
                 </li>

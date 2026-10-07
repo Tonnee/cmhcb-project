@@ -223,6 +223,10 @@ export default async function ServiceDetailPage({
         ctaHref={`/appointment?service=${slug}`}
         duration={service.duration ?? undefined}
         fees={service.fees ?? undefined}
+        feesOnsite={service.feesOnsite ?? (service.fees || undefined)}
+        feesOnline={service.feesOnline ?? (service.fees || undefined)}
+        format={service.format ?? undefined}
+        language={service.language ?? undefined}
       />
 
       {/* Main Content Sections - Clean single-column layout */}
@@ -278,11 +282,54 @@ export default async function ServiceDetailPage({
               </div>
             )}
 
-            {/* 4. Session Details (Orange bullets) */}
-            <div className="flex flex-col gap-4">
-              <h2 className="font-marcellus text-3xl font-bold text-accent leading-snug">
-                Session Details
-              </h2>
+            {/* 4. Session Details & Fees */}
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-1.5">
+                <h2 className="font-marcellus text-3xl font-bold text-accent leading-snug">
+                  Session Details &amp; Fees
+                </h2>
+                <p className="font-sans text-base text-light-ash">
+                  All services can be taken online or on-site, and fees will vary depending on your preferred mode of session.
+                </p>
+              </div>
+
+              {/* On-site vs Online Fee Comparison Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl my-2">
+                <div className="bg-white border-2 border-primary/20 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-primary shrink-0" />
+                      <span className="font-sans text-xs font-bold uppercase tracking-wider text-primary">
+                        On-site Session Fee
+                      </span>
+                    </div>
+                    <div className="font-marcellus text-2xl font-bold text-dark-green mt-2.5">
+                      {service.feesOnsite || service.fees || "Available upon request"}
+                    </div>
+                  </div>
+                  <p className="font-sans text-xs text-light-ash mt-3 border-t border-gray-100 pt-3">
+                    In-person confidential session conducted at our clinic in Dhaka.
+                  </p>
+                </div>
+
+                <div className="bg-white border-2 border-sky-200 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-sky-600 shrink-0" />
+                      <span className="font-sans text-xs font-bold uppercase tracking-wider text-sky-700">
+                        Online Session Fee
+                      </span>
+                    </div>
+                    <div className="font-marcellus text-2xl font-bold text-dark mt-2.5">
+                      {service.feesOnline || service.fees || "Available upon request"}
+                    </div>
+                  </div>
+                  <p className="font-sans text-xs text-light-ash mt-3 border-t border-gray-100 pt-3">
+                    Convenient and secure video/audio consultation accessible from anywhere.
+                  </p>
+                </div>
+              </div>
+
               <ul className="flex flex-col gap-3 pl-1">
                 {service.duration && (
                   <li className="flex items-start gap-3">
@@ -292,22 +339,12 @@ export default async function ServiceDetailPage({
                     </span>
                   </li>
                 )}
-                {service.fees && (
-                  <li className="flex items-start gap-3">
-                    <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
-                    <span className="font-sans text-[17px] text-light-ash/95 leading-relaxed">
-                      <strong className="font-semibold text-dark">Fee:</strong> {service.fees}
-                    </span>
-                  </li>
-                )}
-                {service.format && (
-                  <li className="flex items-start gap-3">
-                    <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
-                    <span className="font-sans text-[17px] text-light-ash/95 leading-relaxed">
-                      <strong className="font-semibold text-dark">Format:</strong> {service.format}
-                    </span>
-                  </li>
-                )}
+                <li className="flex items-start gap-3">
+                  <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                  <span className="font-sans text-[17px] text-light-ash/95 leading-relaxed">
+                    <strong className="font-semibold text-dark">Mode &amp; Format:</strong> {service.format || "In-person & Online (Flexible)"}
+                  </span>
+                </li>
                 {service.language && (
                   <li className="flex items-start gap-3">
                     <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />

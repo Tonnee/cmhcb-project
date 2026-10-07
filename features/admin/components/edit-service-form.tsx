@@ -25,6 +25,8 @@ interface ServiceDB {
   bgImage?: string | null;
   duration?: string | null;
   fees?: string | null;
+  feesOnsite?: string | null;
+  feesOnline?: string | null;
   whoIsItFor?: string | null;
   format?: string | null;
   language?: string | null;
@@ -74,7 +76,8 @@ export function EditServiceForm({
   const [pendingBgFile, setPendingBgFile] = React.useState<File | null>(null);
 
   const [duration, setDuration] = React.useState(initialService?.duration || "");
-  const [fees, setFees] = React.useState(initialService?.fees || "");
+  const [feesOnsite, setFeesOnsite] = React.useState(initialService?.feesOnsite || initialService?.fees || "");
+  const [feesOnline, setFeesOnline] = React.useState(initialService?.feesOnline || "");
   const [format, setFormat] = React.useState(initialService?.format || "In-person & Online");
   const [language, setLanguage] = React.useState(initialService?.language || "English & Bangla");
   const [order] = React.useState(initialService?.order ?? 0);
@@ -221,7 +224,9 @@ export function EditServiceForm({
         image: finalCardUrl || null,
         bgImage: finalBgUrl || null,
         duration: duration || null,
-        fees: fees || null,
+        fees: feesOnsite || null,
+        feesOnsite: feesOnsite || null,
+        feesOnline: feesOnline || null,
         order: Number(order) || 0,
       };
 
@@ -509,12 +514,48 @@ export function EditServiceForm({
         </div>
       </div>
 
-      {/* 4. Session Details (Orange Bullet Items) */}
+      {/* 4. Session Specifications & Fees */}
       <div className="flex flex-col gap-4 border-b border-muted pb-6">
-        <h4 className="text-xs font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
-          4. Session Specifications (Session Details Block)
-        </h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="flex flex-col gap-1">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-primary border-l-2 border-primary pl-2">
+            4. Session Specifications &amp; Pricing
+          </h4>
+          <span className="text-[11px] text-light-ash">
+            All services can be taken online or on-site, and fees will vary depending on session mode. Fees can be a fixed rate (e.g. <strong>BDT 2,500</strong>) or a range (e.g. <strong>BDT 1,500 - 2,500</strong>). Only on-site fees will be shown in the navigation megamenu dropdown.
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-primary" />
+              On-site Fee Rate (Can be range)
+            </label>
+            <input
+              type="text"
+              value={feesOnsite}
+              onChange={(e) => setFeesOnsite(e.target.value)}
+              placeholder="e.g. BDT 1,500 - 2,500"
+              className="w-full font-sans text-sm px-3.5 py-2 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+            />
+            <span className="text-[10px] text-light-ash">Displayed on cards, service page, and megamenu</span>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="font-sans text-xs font-semibold text-dark flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-sky-600" />
+              Online Fee Rate (Can be range)
+            </label>
+            <input
+              type="text"
+              value={feesOnline}
+              onChange={(e) => setFeesOnline(e.target.value)}
+              placeholder="e.g. BDT 1,000 - 1,800"
+              className="w-full font-sans text-sm px-3.5 py-2 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
+            />
+            <span className="text-[10px] text-light-ash">Displayed on cards and service detail pages</span>
+          </div>
+
           <div className="flex flex-col gap-1.5">
             <label className="font-sans text-xs font-semibold text-dark">
               Duration
@@ -523,24 +564,14 @@ export function EditServiceForm({
               type="text"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              placeholder="e.g. 50 Minutes"
+              placeholder="e.g. 50 Minutes or 60 mins"
               className="w-full font-sans text-sm px-3.5 py-2 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
             />
+            <span className="text-[10px] text-light-ash">Standard session duration</span>
           </div>
+        </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="font-sans text-xs font-semibold text-dark">
-              Standard Fee Rate
-            </label>
-            <input
-              type="text"
-              value={fees}
-              onChange={(e) => setFees(e.target.value)}
-              placeholder="e.g. BDT 2,000 / Session"
-              className="w-full font-sans text-sm px-3.5 py-2 bg-light-ash/5 border border-muted focus:border-primary focus:bg-white rounded-xl outline-hidden transition-colors"
-            />
-          </div>
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
           <div className="flex flex-col gap-1.5">
             <label className="font-sans text-xs font-semibold text-dark">
               Session Format

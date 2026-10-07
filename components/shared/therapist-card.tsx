@@ -6,8 +6,9 @@ import { Tag } from "@/components/ui/tag";
 
 export interface TherapistFeeItem {
   label: string;
-  amount: string;
-  note?: string;
+  amount?: string;
+  amountOnsite?: string;
+  amountOnline?: string;
 }
 
 export interface TherapistFeeCategory {
@@ -28,6 +29,7 @@ export interface Therapist {
   expertise?: string[];
   experience?: string[];
   fees?: TherapistFeeCategory[];
+  schedule?: string[];
 }
 
 export interface TherapistCardProps {

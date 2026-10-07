@@ -12,6 +12,8 @@ interface ServiceItem {
   shortDescription: string;
   duration?: string | null;
   fees?: string | null;
+  feesOnsite?: string | null;
+  feesOnline?: string | null;
   image?: string | null;
 }
 
@@ -39,6 +41,9 @@ export function AllServices({ services, approachData, sectionTitle }: AllService
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {services.map((service, index) => {
             const isAccent = index === 0;
+            const onSiteFee = service.feesOnsite || service.fees;
+            const onlineFee = service.feesOnline || service.fees;
+
             return (
               <article
                 key={service.slug}
@@ -66,23 +71,51 @@ export function AllServices({ services, approachData, sectionTitle }: AllService
                   </h3>
 
                   {/* Short Description */}
-                  <p className={`font-sans font-normal text-base leading-relaxed mb-8 ${
+                  <p className={`font-sans font-normal text-base leading-relaxed mb-6 ${
                     isAccent ? "text-dark-green/80" : "text-light-ash/80"
                   }`}>
                     {service.shortDescription}
                   </p>
                 </div>
 
+                {/* On-site & Online Fee comparison pills */}
+                <div className="grid grid-cols-2 gap-3 mb-6 font-sans">
+                  <div className={`rounded-2xl p-3 border ${
+                    isAccent
+                      ? "bg-white/20 border-white/30 text-dark-green"
+                      : "bg-[#f0f7ef] border-primary/20 text-dark-green"
+                  }`}>
+                    <div className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 opacity-90">
+                      <span className={`w-1.5 h-1.5 rounded-full ${isAccent ? "bg-dark-green" : "bg-primary"}`} />
+                      On-site Fee
+                    </div>
+                    <div className="text-sm font-bold mt-1">
+                      {onSiteFee || "Available"}
+                    </div>
+                  </div>
+                  <div className={`rounded-2xl p-3 border ${
+                    isAccent
+                      ? "bg-white/20 border-white/30 text-dark-green"
+                      : "bg-[#f2f8fc] border-sky-600/20 text-dark"
+                  }`}>
+                    <div className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 opacity-90">
+                      <span className={`w-1.5 h-1.5 rounded-full ${isAccent ? "bg-dark-green" : "bg-sky-600"}`} />
+                      Online Fee
+                    </div>
+                    <div className="text-sm font-bold mt-1">
+                      {onlineFee || "Available"}
+                    </div>
+                  </div>
+                </div>
+
                 {/* Footer Info & CTA */}
-                <div className={`flex flex-wrap items-center justify-between gap-4 pt-6 border-t mt-auto ${
+                <div className={`flex flex-wrap items-center justify-between gap-4 pt-4 border-t mt-auto ${
                   isAccent ? "border-white/20" : "border-muted/20"
                 }`}>
-                  <p className={`font-sans font-semibold text-xs tracking-wider uppercase ${
-                    isAccent ? "text-dark-green/60" : "text-light-ash/60"
+                  <p className={`font-sans font-medium text-xs ${
+                    isAccent ? "text-dark-green/80" : "text-light-ash"
                   }`}>
-                    {service.duration && service.fees
-                      ? `${service.duration} / ${service.fees}`
-                      : service.duration || service.fees || "Evidence-Based Support"}
+                    {service.duration ? `Duration: ${service.duration}` : "Available Online & On-site"}
                   </p>
                   <LinkButton
                     href={`/services/${service.slug}`}

@@ -4,6 +4,7 @@ import {
   HiAcademicCap,
   HiBriefcase,
   HiSparkles,
+  HiClock,
 } from "react-icons/hi2";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -147,6 +148,7 @@ export default async function TherapistProfilePage({
   let services: string[] = staticTherapist?.services || [];
   let activities: string[] = staticTherapist?.activities || [];
   let fees: any = staticTherapist?.fees || null;
+  let schedule: string[] = staticTherapist?.schedule || [];
 
   if (dbTherapist) {
     try { if (dbTherapist.education) education = JSON.parse(dbTherapist.education); } catch {}
@@ -156,6 +158,7 @@ export default async function TherapistProfilePage({
     try { if (dbTherapist.services) services = JSON.parse(dbTherapist.services); } catch {}
     try { if (dbTherapist.activities) activities = JSON.parse(dbTherapist.activities); } catch {}
     try { if (dbTherapist.fees) fees = JSON.parse(dbTherapist.fees); } catch {}
+    try { if ((dbTherapist as any).schedule) schedule = JSON.parse((dbTherapist as any).schedule); } catch {}
   }
 
   let faqs: { question: string; answer: string }[] = [];
@@ -176,6 +179,7 @@ export default async function TherapistProfilePage({
     services,
     activities,
     fees,
+    schedule,
   };
 
   const therapistBlogs = BLOG_POSTS.filter(
@@ -189,6 +193,7 @@ export default async function TherapistProfilePage({
   const hasExpertise = therapist.expertise && therapist.expertise.length > 0;
   const hasExperience = therapist.experience && therapist.experience.length > 0;
   const hasFees = therapist.fees && therapist.fees.length > 0;
+  const hasSchedule = therapist.schedule && therapist.schedule.length > 0;
 
   const personJsonLd = {
     "@context": "https://schema.org",
@@ -280,7 +285,7 @@ export default async function TherapistProfilePage({
             )}
 
             {/* Profile Detail Cards (stacked vertically) */}
-            {(hasEducation || hasTraining || hasExpertise) && (
+            {(hasEducation || hasTraining || hasExpertise || hasSchedule) && (
               <div className="flex flex-col gap-6 mt-4">
                 {hasEducation && (
                   <SectionCard icon={HiAcademicCap} title="Education">
@@ -301,6 +306,21 @@ export default async function TherapistProfilePage({
                     </div>
                   </SectionCard>
                 )}
+                {hasSchedule && (
+                  <SectionCard icon={HiClock} title="Available Time Blocks">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {therapist.schedule!.map((slot, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-muted/50 text-dark font-sans text-xs sm:text-sm font-medium shadow-2xs hover:border-primary/40 transition-colors"
+                        >
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                          <span>{slot}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </SectionCard>
+                )}
               </div>
             )}
           </div>
@@ -313,27 +333,50 @@ export default async function TherapistProfilePage({
                   <h2 className="font-marcellus text-xl text-white tracking-wide font-semibold">Fees</h2>
                 </div>
                 <div className="flex flex-col gap-6">
-                  {therapist.fees!.map((feeCategory: { category: string; items: { label: string; amount: string; note?: string }[] }, ci: number) => (
+                  {therapist.fees!.map((feeCategory: { category: string; items: { label: string; amount?: string; amountOnsite?: string; amountOnline?: string }[] }, ci: number) => (
                     <div key={ci} className="flex flex-col">
                       <h3 className="font-sans font-bold text-xs tracking-wider text-white/60 uppercase mb-3">
                         {feeCategory.category}
                       </h3>
-                      <div className="flex flex-col gap-3">
-                        {feeCategory.items.map((item: { label: string; amount: string; note?: string }, ii: number) => (
-                          <div key={ii} className="flex flex-col gap-1">
-                            <div className="flex items-start justify-between gap-4">
-                              <span className="font-sans text-[13px] font-medium text-white/90">{item.label}</span>
-                              <span className="font-marcellus text-[14px] text-accent font-semibold whitespace-nowrap">
-                                {item.amount}
+                      <div className="flex flex-col gap-2.5">
+                        {feeCategory.items.map((item: { label: string; amount?: string; amountOnsite?: string; amountOnline?: string }, ii: number) => {
+                          const hasOnsite = Boolean(item.amountOnsite || (!item.amountOnline && item.amount));
+                          const hasOnline = Boolean(item.amountOnline);
+                          const onsiteVal = item.amountOnsite || item.amount;
+                          const onlineVal = item.amountOnline;
+
+                          return (
+                            <div key={ii} className="flex flex-col gap-2 p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors">
+                              <span className="font-sans text-[13px] font-medium text-white/95 leading-snug">
+                                {item.label}
                               </span>
+                              <div className={`grid ${hasOnsite && hasOnline ? "grid-cols-2" : "grid-cols-1"} gap-2 pt-2 border-t border-white/10`}>
+                                {hasOnsite && (
+                                  <div className="flex flex-col">
+                                    <span className="text-[10px] uppercase tracking-wider font-semibold text-white/60 flex items-center gap-1">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                                      On-site
+                                    </span>
+                                    <span className="font-marcellus text-[13px] text-accent font-semibold whitespace-nowrap">
+                                      {onsiteVal}
+                                    </span>
+                                  </div>
+                                )}
+                                {hasOnline && (
+                                  <div className="flex flex-col">
+                                    <span className="text-[10px] uppercase tracking-wider font-semibold text-white/60 flex items-center gap-1">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                                      Online
+                                    </span>
+                                    <span className="font-marcellus text-[13px] text-accent font-semibold whitespace-nowrap">
+                                      {onlineVal}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            {item.note && (
-                              <span className="font-sans text-[11px] text-white/70 italic">
-                                {item.note}
-                              </span>
-                            )}
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   ))}

@@ -22,6 +22,7 @@ model Therapist {
   services   String   // JSON string of string[]
   activities String   // JSON string of string[]
   faqs       String?  // JSON string of { question: string, answer: string }[]
+  schedule   String?  // JSON string of string[]
   order      Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -172,6 +173,8 @@ model Service {
   bgImage          String?
   duration         String?
   fees             String?
+  feesOnsite       String?
+  feesOnline       String?
   whoIsItFor       String?
   format           String?
   language         String?

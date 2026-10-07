@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useSearchParams } from "next/navigation";
@@ -9,6 +11,8 @@ import { z } from "zod";
 import { createAppointmentAction } from "@/features/appointment/actions";
 import type { FormFieldConfig } from "@/types/form-fields";
 import { DEFAULT_APPOINTMENT_FORM_FIELDS } from "@/types/form-fields";
+import type { TherapistFeeCategory } from "@/components/shared/therapist-card";
+import { HiSparkles, HiInformationCircle } from "react-icons/hi2";
 
 export const appointmentSchema = z
   .object({
@@ -48,12 +52,19 @@ export function AppointmentForm({ formFields }: AppointmentFormProps = {}) {
 interface ServiceOption {
   slug: string;
   title: string;
+  feesOnsite?: string | null;
+  feesOnline?: string | null;
+  fees?: string | null;
 }
 
 interface TherapistOption {
   id: string;
   name: string;
   role: string;
+  image?: string;
+  fees?: TherapistFeeCategory[] | null;
+  services?: string[];
+  schedule?: string[];
 }
 
 function AppointmentFormContent({ formFields }: AppointmentFormProps) {
@@ -83,6 +94,7 @@ function AppointmentFormContent({ formFields }: AppointmentFormProps) {
   });
 
   const [customValues, setCustomValues] = React.useState<Record<string, any>>({});
+  const [customTimeText, setCustomTimeText] = React.useState("");
 
   // Resolve active fields configuration
   const fieldMap = React.useMemo(() => {
@@ -112,6 +124,64 @@ function AppointmentFormContent({ formFields }: AppointmentFormProps) {
     if (!formFields || !Array.isArray(formFields)) return [];
     return formFields.filter((f) => !f.isSystemField && f.enabled !== false);
   }, [formFields]);
+
+  const selectedTherapist = React.useMemo(() => {
+    return therapists.find((t) => t.id === formData.therapist);
+  }, [therapists, formData.therapist]);
+
+  const selectedService = React.useMemo(() => {
+    return services.find((s) => s.slug === formData.service);
+  }, [services, formData.service]);
+
+  const matchingFeeCategory = React.useMemo(() => {
+    if (!selectedTherapist?.fees || !Array.isArray(selectedTherapist.fees) || selectedTherapist.fees.length === 0) {
+      return null;
+    }
+    if (!selectedService) return null;
+
+    const targetSlug = selectedService.slug.toLowerCase().replace(/[^a-z0-9]/g, "");
+    const targetTitle = selectedService.title.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    // 1. Direct or normalized match against category name
+    const exact = selectedTherapist.fees.find((cat) => {
+      const catNorm = cat.category.toLowerCase().replace(/[^a-z0-9]/g, "");
+      return (
+        catNorm === targetSlug ||
+        catNorm === targetTitle ||
+        catNorm.includes(targetSlug) ||
+        targetSlug.includes(catNorm) ||
+        (targetTitle && (catNorm.includes(targetTitle) || targetTitle.includes(catNorm)))
+      );
+    });
+    if (exact) return exact;
+
+    // 2. Keyword check (e.g. individual, family, couple, child, assessment)
+    const keywords = ["individual", "couple", "family", "child", "adolescent", "assessment", "group"];
+    for (const kw of keywords) {
+      if (targetSlug.includes(kw) || targetTitle.includes(kw)) {
+        const kwMatch = selectedTherapist.fees.find((cat) => cat.category.toLowerCase().includes(kw));
+        if (kwMatch) return kwMatch;
+      }
+    }
+
+    // 3. Fallback: if only 1 fee category configured for this therapist
+    if (selectedTherapist.fees.length === 1) {
+      return selectedTherapist.fees[0];
+    }
+
+    return null;
+  }, [selectedTherapist, selectedService]);
+
+  // Reset selected time if switching to a therapist with different slots
+  React.useEffect(() => {
+    if (formData.time && !formData.time.startsWith("Different time:") && formData.time !== "I will prefer a different time") {
+      if (selectedTherapist?.schedule && selectedTherapist.schedule.length > 0) {
+        if (!selectedTherapist.schedule.includes(formData.time)) {
+          setFormData((prev) => ({ ...prev, time: "" }));
+        }
+      }
+    }
+  }, [selectedTherapist, formData.time]);
 
   // Load services and therapists from the database
   React.useEffect(() => {
@@ -254,6 +324,22 @@ function AppointmentFormContent({ formFields }: AppointmentFormProps) {
   const timeField = getField("time", DEFAULT_APPOINTMENT_FORM_FIELDS[7]);
   const preferenceField = getField("preference", DEFAULT_APPOINTMENT_FORM_FIELDS[8]);
   const messageField = getField("message", DEFAULT_APPOINTMENT_FORM_FIELDS[9]);
+
+  const availableTimeSlots = React.useMemo(() => {
+    if (selectedTherapist?.schedule && selectedTherapist.schedule.length > 0) {
+      return selectedTherapist.schedule;
+    }
+    if (timeField.options && timeField.options.length > 0) {
+      return timeField.options;
+    }
+    return [
+      "10:00 AM - 11:00 AM",
+      "11:30 AM - 12:30 PM",
+      "02:00 PM - 03:00 PM",
+      "04:00 PM - 05:00 PM",
+      "06:00 PM - 07:00 PM",
+    ];
+  }, [selectedTherapist, timeField.options]);
 
   return (
     <form
@@ -419,6 +505,265 @@ function AppointmentFormContent({ formFields }: AppointmentFormProps) {
           </div>
         )}
 
+        {/* Dynamic Therapist & Service Fees Information Section */}
+        {(selectedTherapist || selectedService) && (
+          <div className="md:col-span-2">
+            {selectedTherapist && selectedService ? (
+              matchingFeeCategory ? (
+                /* 1. MATCHED: Therapist and Service both selected, and specific category exists */
+                <div className="rounded-2xl border border-primary/25 bg-primary/5 p-4 sm:p-5 flex flex-col gap-4 shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-primary/15">
+                    <div className="flex items-center gap-3">
+                      {selectedTherapist.image ? (
+                        <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-primary/30 shadow-xs bg-white">
+                          <Image
+                            src={selectedTherapist.image}
+                            alt={selectedTherapist.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-primary-dark text-white flex items-center justify-center font-bold text-sm shrink-0">
+                          {selectedTherapist.name.charAt(0)}
+                        </div>
+                      )}
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-dark text-sm sm:text-base">
+                            {selectedTherapist.name}
+                          </span>
+                          <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-primary/15 text-primary-dark">
+                            {matchingFeeCategory.category}
+                          </span>
+                        </div>
+                        <p className="text-xs text-light-ash">
+                          Rates configured for <strong className="text-dark font-medium">{selectedService.title}</strong>
+                        </p>
+                      </div>
+                    </div>
+
+                    <Link
+                      href={`/therapists/${selectedTherapist.id}`}
+                      target="_blank"
+                      className="text-xs text-primary-dark hover:text-primary font-medium flex items-center gap-1 self-start sm:self-auto hover:underline"
+                    >
+                      View Profile ↗
+                    </Link>
+                  </div>
+
+                  {/* Rate tiers list */}
+                  <div className="flex flex-col gap-2.5">
+                    {matchingFeeCategory.items.map((item, idx) => {
+                      const onsiteFee = item.amountOnsite || item.amount;
+                      const onlineFee = item.amountOnline || item.amount;
+                      const isOnlinePref = formData.preference === "online";
+                      const isInPersonPref = formData.preference === "in-person";
+
+                      return (
+                        <div
+                          key={idx}
+                          className="bg-white p-3.5 rounded-xl border border-muted/70 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-primary/40 transition-colors"
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-sans text-xs sm:text-sm font-semibold text-dark">
+                              {item.label}
+                            </span>
+                            <span className="text-[11px] text-light-ash">
+                              Standard consultation tier
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2 sm:min-w-[280px]">
+                            {/* On-site rate card */}
+                            <button
+                              type="button"
+                              onClick={() => setFormData((prev) => ({ ...prev, preference: "in-person" }))}
+                              className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
+                                isInPersonPref
+                                  ? "bg-emerald-50 border-emerald-500 ring-2 ring-emerald-500/20"
+                                  : "bg-light/10 border-muted/50 hover:bg-light/20"
+                              }`}
+                              title="Select In-person / On-site session"
+                            >
+                              <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/70 flex items-center justify-between">
+                                <span className="flex items-center gap-1.5">
+                                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                                  On-site
+                                </span>
+                                {isInPersonPref && (
+                                  <span className="text-[9px] text-emerald-700 font-bold lowercase px-1.5 py-0.2 rounded bg-emerald-100">
+                                    selected
+                                  </span>
+                                )}
+                              </div>
+                              <div className="font-marcellus text-sm font-bold text-primary-dark mt-1">
+                                {onsiteFee || "Available"}
+                              </div>
+                            </button>
+
+                            {/* Online rate card */}
+                            <button
+                              type="button"
+                              onClick={() => setFormData((prev) => ({ ...prev, preference: "online" }))}
+                              className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
+                                isOnlinePref
+                                  ? "bg-sky-50 border-sky-500 ring-2 ring-sky-500/20"
+                                  : "bg-light/10 border-muted/50 hover:bg-light/20"
+                              }`}
+                              title="Select Online session"
+                            >
+                              <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/70 flex items-center justify-between">
+                                <span className="flex items-center gap-1.5">
+                                  <span className="w-2 h-2 rounded-full bg-sky-500 shrink-0" />
+                                  Online
+                                </span>
+                                {isOnlinePref && (
+                                  <span className="text-[9px] text-sky-700 font-bold lowercase px-1.5 py-0.2 rounded bg-sky-100">
+                                    selected
+                                  </span>
+                                )}
+                              </div>
+                              <div className="font-marcellus text-sm font-bold text-primary-dark mt-1">
+                                {onlineFee || "Available"}
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-light-ash gap-1 pt-1">
+                    <span>
+                      Fees are synchronized with {selectedTherapist.name}&apos;s profile. Click an On-site or Online box to choose session mode.
+                    </span>
+                    <span className="font-medium text-primary-dark whitespace-nowrap">
+                      Current Mode: {formData.preference === "online" ? "Online" : "In-Person (On-site)"}
+                    </span>
+                  </div>
+                </div>
+              ) : selectedTherapist.fees && selectedTherapist.fees.length > 0 ? (
+                /* 2. Therapist has fees, but category label differs slightly */
+                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:p-5 flex flex-col gap-3 shadow-xs">
+                  <div className="flex items-center justify-between pb-2 border-b border-primary/10">
+                    <span className="font-semibold text-dark text-sm">
+                      {selectedTherapist.name}&apos;s Consultation Rates
+                    </span>
+                    <Link
+                      href={`/therapists/${selectedTherapist.id}`}
+                      target="_blank"
+                      className="text-xs text-primary-dark hover:underline font-medium"
+                    >
+                      View Profile ↗
+                    </Link>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    {selectedTherapist.fees.map((cat, ci) => (
+                      <div key={ci} className="bg-white p-3 rounded-xl border border-muted/60 flex flex-col gap-2">
+                        <span className="text-xs font-bold text-primary-dark uppercase tracking-wide">
+                          {cat.category}
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {cat.items.map((it, ii) => (
+                            <div key={ii} className="p-2 bg-light/10 rounded-lg border border-muted/30 flex items-center justify-between text-xs">
+                              <span className="text-dark font-medium">{it.label}</span>
+                              <span className="font-marcellus font-bold text-primary-dark">
+                                {formData.preference === "online"
+                                  ? (it.amountOnline || it.amount)
+                                  : (it.amountOnsite || it.amount)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                /* 3. Fallback standard service fee if therapist has no custom fees */
+                (selectedService.feesOnsite || selectedService.feesOnline || selectedService.fees) && (
+                  <div className="rounded-2xl border border-muted/60 bg-light/10 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div>
+                      <span className="font-semibold text-dark block">
+                        Standard Service Fee for {selectedService.title}
+                      </span>
+                      <span className="text-light-ash">
+                        Specific tiered rates for this practitioner are available upon booking confirmation.
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-800 font-semibold font-marcellus">
+                        On-site: {selectedService.feesOnsite || selectedService.fees}
+                      </span>
+                      <span className="px-2.5 py-1 rounded-lg bg-sky-50 border border-sky-300 text-sky-800 font-semibold font-marcellus">
+                        Online: {selectedService.feesOnline || selectedService.fees}
+                      </span>
+                    </div>
+                  </div>
+                )
+              )
+            ) : selectedTherapist ? (
+              /* 4. ONLY therapist selected (e.g. from therapist slug page link) */
+              <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+                <div className="flex items-center gap-3">
+                  {selectedTherapist.image ? (
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-primary/30 bg-white">
+                      <Image
+                        src={selectedTherapist.image}
+                        alt={selectedTherapist.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-primary-dark text-white flex items-center justify-center font-bold text-xs shrink-0">
+                      {selectedTherapist.name.charAt(0)}
+                    </div>
+                  )}
+                  <div>
+                    <span className="font-semibold text-dark text-sm block">
+                      {selectedTherapist.name} selected
+                    </span>
+                    <p className="text-xs text-light-ash">
+                      Please select a <strong className="text-primary-dark font-medium">Service</strong> above to preview consultation fees.
+                    </p>
+                  </div>
+                </div>
+
+                {selectedTherapist.fees && selectedTherapist.fees.length > 0 && (
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[11px] text-light-ash">Services:</span>
+                    {selectedTherapist.fees.slice(0, 3).map((f, i) => (
+                      <span
+                        key={i}
+                        className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-primary/20 text-dark font-medium"
+                      >
+                        {f.category}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* 5. ONLY service selected */
+              <div className="rounded-2xl border border-muted/50 bg-light/10 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-light-ash">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
+                  <span>
+                    Selected: <strong className="text-dark font-medium">{selectedService?.title}</strong>. Choose a therapist above to see their consultation rates.
+                  </span>
+                </div>
+                {(selectedService?.feesOnsite || selectedService?.feesOnline) && (
+                  <span className="text-[11px] text-dark font-medium">
+                    Catalog: On-site ({selectedService?.feesOnsite || selectedService?.fees}) | Online ({selectedService?.feesOnline || selectedService?.fees})
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Date */}
         {dateField.enabled && (
           <div>
@@ -446,34 +791,65 @@ function AppointmentFormContent({ formFields }: AppointmentFormProps) {
             <label htmlFor="time" className={labelClasses}>
               {timeField.label} {timeField.required && <span className="text-red-500">*</span>}
             </label>
-            {timeField.options && timeField.options.length > 0 ? (
-              <Select
-                id="time"
-                name="time"
-                required={timeField.required}
-                value={formData.time}
-                onChange={handleChange}
-              >
-                <option value="" disabled>
-                  {timeField.placeholder || "Select a time slot"}
+            <Select
+              id="time"
+              name="time"
+              required={timeField.required}
+              value={
+                formData.time.startsWith("Different time:") || formData.time === "I will prefer a different time"
+                  ? "I will prefer a different time"
+                  : formData.time
+              }
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "I will prefer a different time") {
+                  setFormData((prev) => ({
+                    ...prev,
+                    time: customTimeText.trim() ? `Different time: ${customTimeText.trim()}` : "I will prefer a different time",
+                  }));
+                } else {
+                  setFormData((prev) => ({ ...prev, time: val }));
+                }
+              }}
+            >
+              <option value="" disabled>
+                {selectedTherapist
+                  ? "Select from available time blocks"
+                  : timeField.placeholder || "Select a time slot"}
+              </option>
+              {availableTimeSlots.map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot}
                 </option>
-                {timeField.options.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </Select>
-            ) : (
-              <input
-                type="time"
-                id="time"
-                name="time"
-                required={timeField.required}
-                value={formData.time}
-                onChange={handleChange}
-                className={inputClasses}
-              />
+              ))}
+              <option value="I will prefer a different time">
+                I will prefer a different time
+              </option>
+            </Select>
+
+            {/* If user prefers a different time, show text input to let them specify */}
+            {(formData.time === "I will prefer a different time" || formData.time.startsWith("Different time:")) && (
+              <div className="mt-2.5 animate-fade-in">
+                <input
+                  type="text"
+                  value={customTimeText}
+                  onChange={(e) => {
+                    setCustomTimeText(e.target.value);
+                    setFormData((prev) => ({
+                      ...prev,
+                      time: e.target.value.trim() ? `Different time: ${e.target.value.trim()}` : "I will prefer a different time",
+                    }));
+                  }}
+                  placeholder="e.g. Weekdays after 6:00 PM, or Saturday mornings"
+                  className={inputClasses}
+                  required={timeField.required}
+                />
+                <p className="text-[11px] text-light-ash mt-1 ml-1">
+                  Please specify your preferred timing. Our coordinator will arrange with {selectedTherapist ? selectedTherapist.name : "the therapist"}.
+                </p>
+              </div>
             )}
+
             {timeField.helpText && (
               <p className="text-[11px] text-light-ash mt-1 ml-1">{timeField.helpText}</p>
             )}
