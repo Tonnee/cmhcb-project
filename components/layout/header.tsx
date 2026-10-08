@@ -162,7 +162,7 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
               </div>
               <Link
                 href="/services"
-                className="text-sm font-sans text-primary hover:text-primary-dark underline-offset-2 hover:underline transition-colors"
+                className="text-sm font-sans text-primary hover:text-accent underline-offset-2 transition-colors"
                 onClick={() => setOpen(false)}
               >
                 View all services →
@@ -196,14 +196,22 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
                       {service.title}
                     </span>
 
-                    {/* Meta */}
-                    <span className="text-xs font-sans text-light-ash mt-auto">
+                    {/* Meta: Display fee without In Person text */}
+                    <span className="text-xs font-sans text-light-ash mt-auto flex flex-col gap-0.5">
                       {(() => {
-                        const fee = service.feesOnsite || service.fees;
-                        if (service.duration && fee) {
-                          return `${service.duration} · ${fee}`;
-                        }
-                        return service.duration || fee || "Professional Care";
+                        const onSiteFee = service.feesOnsite || service.fees;
+                        return (
+                          <>
+                            {service.duration && <span>{service.duration}</span>}
+                            {onSiteFee ? (
+                              <span className="text-primary font-medium text-[11px] leading-tight">
+                                {onSiteFee}
+                              </span>
+                            ) : (
+                              <span>Professional Care</span>
+                            )}
+                          </>
+                        );
                       })()}
                     </span>
                   </Link>
@@ -215,7 +223,7 @@ function ServicesMegaMenu({ active }: { active?: boolean }) {
             <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-between">
               <p className="text-sm font-sans text-light-ash">
                 Not sure which service is right for you?{" "}
-                <Link href="/support" className="text-primary hover:underline" onClick={() => setOpen(false)}>
+                <Link href="/support" className="text-primary hover:text-accent" onClick={() => setOpen(false)}>
                   Talk to us
                 </Link>
               </p>
@@ -318,7 +326,7 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
               </div>
               <Link
                 href="/training"
-                className="text-sm font-sans text-primary hover:text-primary-dark underline-offset-2 hover:underline transition-colors"
+                className="text-sm font-sans text-primary hover:text-accent underline-offset-2 transition-colors"
                 onClick={() => setOpen(false)}
               >
                 View all training →
@@ -363,9 +371,16 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
                       {training.title}
                     </span>
 
-                    {/* Meta */}
-                    <span className="text-xs font-sans text-light-ash mt-auto">
-                      {training.duration} · {training.fees}
+                    {/* Meta: Follow services format & color */}
+                    <span className="text-xs font-sans text-light-ash mt-auto flex flex-col gap-0.5">
+                      {training.duration && <span>{training.duration}</span>}
+                      {training.fees ? (
+                        <span className="text-primary font-medium text-[11px] leading-tight">
+                          {training.fees}
+                        </span>
+                      ) : (
+                        <span>Professional Care</span>
+                      )}
                     </span>
                   </Link>
                 </li>
@@ -376,7 +391,7 @@ function TrainingMegaMenu({ active }: { active?: boolean }) {
             <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-between">
               <p className="text-sm font-sans text-light-ash">
                 Looking for corporate or group training?{" "}
-                <Link href="/contact" className="text-primary hover:underline" onClick={() => setOpen(false)}>
+                <Link href="/contact" className="text-primary hover:text-accent" onClick={() => setOpen(false)}>
                   Contact us
                 </Link>
               </p>
