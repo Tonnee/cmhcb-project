@@ -12,6 +12,14 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+
+# databases
+*.db
+*.db-journal
+*.sqlite
+*.sqlite-journal
 
 # next.js
 /.next/
