@@ -31,6 +31,9 @@
 # misc
 .DS_Store
 *.pem
+*.zip
+*.tar.gz
+/.deploy_stage/
 
 # debug
 npm-debug.log*

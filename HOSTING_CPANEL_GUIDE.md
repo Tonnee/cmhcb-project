@@ -13,14 +13,14 @@ Use either of these direct server links to log in:
 * **Primary (Recommended - Valid SSL):**  
   👉 **[https://fnfserver.com:2083](https://fnfserver.com:2083)**
 * **Direct Server IP:**  
-  👉 **[https://207.180.236.237:2083](https://207.180.236.237:2083)**  
+  👉 **[https://153.227.239.143:2083](https://153.227.239.143:2083)**  
   *(If your browser displays an SSL warning on the IP address, click "Advanced" → "Proceed / Accept Risk")*.
 
 ### Your Current Server Profile
 * **cPanel Username:** `cmhcb`
 * **Home Directory:** `/home/cmhcb`
-* **Shared IP:** `207.180.236.237`
-* **Current Package:** `xyzfnfhost_PACKX-512-MB` (512 MB RAM limit — requires upgrade)
+* **Shared IP:** `153.227.239.143` (Confirmed from cPanel dashboard)
+* **Confirmed Available Features:** **Setup Node.js App**, **Terminal** (in-browser CLI), **Git Version Control**, **File Manager**, and **Let's Encrypt SSL**.
 
 ---
 
@@ -101,13 +101,15 @@ app.prepare().then(() => {
 Once FNF Server completes your plan upgrade:
 
 ### Step 1: Upload Project Files
-1. Log into cPanel via **[https://fnfserver.com:2083](https://fnfserver.com:2083)**.
-2. Open **File Manager**.
-3. Create a folder in your home root named `cmhcb-app` (Path: `/home/cmhcb/cmhcb-app`).  
+1. In your local folder, your clean deployment file **`cmhcb-deploy.zip`** (49 MB) has already been built (all unnecessary tests, `.git`, `node_modules`, docs, and PDFs were automatically excluded).
+2. Log into cPanel via **[https://fnfserver.com:2083](https://fnfserver.com:2083)**.
+3. Open **File Manager** (under the **Files** section).
+4. Create a folder in your home root named `cmhcb-app` (Path: `/home/cmhcb/cmhcb-app`).  
    *(⚠️ Do **not** place your project code directly inside `public_html`).*
-4. Upload your project files (via File Manager ZIP upload, FTP, or Git Version Control in cPanel).
-   * **Files to upload:** `app/`, `components/`, `data/`, `features/`, `lib/`, `prisma/`, `public/`, `types/`, `package.json`, `package-lock.json`, `next.config.ts`, `tsconfig.json`, `server.js`.
-   * **Do NOT upload:** `node_modules` or `.git`.
+5. Double-click to open `/home/cmhcb/cmhcb-app`.
+6. Click **Upload** in the top menu and drop **`cmhcb-deploy.zip`**.
+7. Once the progress bar reaches 100% green, return to File Manager, right-click `cmhcb-deploy.zip`, and click **Extract**.
+8. (Optional) Delete `cmhcb-deploy.zip` inside cPanel after extracting to save disk space.
 
 ---
 
@@ -173,8 +175,8 @@ Currently, `cmhcb.com` is pointed to Vercel (`216.198.79.1`). When you are ready
 
 1. In cPanel, open **Zone Editor** (under the **Domains** section).
 2. Find `cmhcb.com`:
-   * Change the **A Record** for `cmhcb.com` from `216.198.79.1` to `207.180.236.237`.
-   * Ensure `www.cmhcb.com` also points to `207.180.236.237` (or CNAME to `cmhcb.com`).
+   * Change the **A Record** for `cmhcb.com` from `216.198.79.1` to `153.227.239.143`.
+   * Ensure `www.cmhcb.com` also points to `153.227.239.143` (or CNAME to `cmhcb.com`).
 3. Check the **SSL/TLS Status** in cPanel and click **Run AutoSSL** to issue a free Let's Encrypt / cPanel SSL certificate.
 
 ---

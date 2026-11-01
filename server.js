@@ -3,10 +3,9 @@ const { createServer } = require('http');
 const { parse } = require('url');
 const next = require('next');
 
-const dev = process.env.NODE_ENV !== 'production';
-const hostname = 'localhost';
-const port = parseInt(process.env.PORT, 10) || 3000;
-const app = next({ dev, hostname, port });
+const dev = false;
+const port = process.env.PORT || 3000;
+const app = next({ dev });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
@@ -21,6 +20,9 @@ app.prepare().then(() => {
     }
   }).listen(port, (err) => {
     if (err) throw err;
-    console.log(`> Ready on http://${hostname}:${port}`);
+    console.log(`> Ready on ${port}`);
   });
+}).catch(err => {
+  console.error('Failed to prepare Next.js app:', err);
+  process.exit(1);
 });
